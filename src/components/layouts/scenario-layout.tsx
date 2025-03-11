@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { CenterControlProvider } from "@/contexts/center-control-context";
 import { TooltipProvider } from "@/contexts/tooltip-context";
@@ -19,7 +19,25 @@ export function ScenarioLayout({
   isLoading = false,
 }: ScenarioLayoutProps) {
   const router = useRouter();
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  const pathname = usePathname();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+
+  // get hasCompletedIntro from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hasCompletedIntro =
+        localStorage.getItem("hasCompletedIntro") === "true";
+      if (!hasCompletedIntro) {
+        // Get current route using Next.js router
+        const scenarioPath = pathname.split("/")[1];
+        if (scenarioPath) {
+          router.push(`/${scenarioPath}/introduction`);
+          return;
+        }
+        router.push("pure-text/introduction");
+      }
+    }
+  }, [router, pathname]);
 
   // Redirect to login if not authenticated
   useEffect(() => {

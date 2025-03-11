@@ -30,13 +30,13 @@ const introductionContent = {
   ],
   "text-visual": [
     {
-      title: "Welcome to the mixed Study",
+      title: "Welcome to the Text-Visual Study",
       content:
         "Thank you for participating in our user study. This study aims to understand how visual approaches help users comprehend narrative data.",
       videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", // Example URL - replace with actual video
     },
     {
-      title: "mixed Interface Overview",
+      title: "Text-Visual Interface Overview",
       content:
         "In this study, you will explore narrative content through visualizations, complete specific tasks, and interact with the interface at your own pace.",
     },
@@ -76,13 +76,13 @@ const introductionContent = {
   ],
   mixed: [
     {
-      title: "Welcome to the mixed Study",
+      title: "Welcome to the Mixed Study",
       content:
         "Thank you for participating in our user study. This study aims to understand how visual representations with chat capabilities help users comprehend narrative data.",
       videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", // Example URL - replace with actual video
     },
     {
-      title: "mixed Interface Overview",
+      title: "Mixed Interface Overview",
       content:
         "In this study, you will explore narrative content through visualizations and a chat interface, complete specific tasks, and interact at your own pace.",
     },

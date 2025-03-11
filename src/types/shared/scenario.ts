@@ -7,13 +7,3 @@ export type ScenarioType =
   | "text-visual" // Text with visualizations
   | "text-chat" // Text with AI chat
   | "mixed"; // Mixed view with visualizations and AI chat
-
-// Map for converting between different naming conventions if needed
-export const scenarioTypeMap: Record<string, ScenarioType> = {
-  "pure-text": "pure-text",
-  "text-visual": "text-visual",
-  "text-chat": "text-chat",
-  mixed: "mixed",
-  "pure-text-chat": "text-chat", // Legacy mapping
-  "visualization-chat": "mixed", // Legacy mapping
-};

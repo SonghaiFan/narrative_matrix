@@ -8,33 +8,31 @@ import { ScenarioType } from "@/types/shared/scenario";
 interface IntroductionFactoryProps {
   scenarioType: ScenarioType;
   redirectPath: string;
-  cookieName?: string;
-  cookieExpiration?: number; // in seconds
+  storageKey?: string;
 }
 
 /**
  * A factory component that creates introduction pages for different scenarios
- * with consistent cookie handling and redirection logic
+ * with consistent local storage handling and redirection logic
  */
 export function IntroductionFactory({
   scenarioType,
   redirectPath,
-  cookieName = "hasCompletedIntro",
-  cookieExpiration = 604800, // 7 days by default
+  storageKey = "hasCompletedIntro",
 }: IntroductionFactoryProps) {
   const router = useRouter();
 
   // Check if user has already completed introduction
   useEffect(() => {
-    const hasCompletedIntro = document.cookie.includes(`${cookieName}=true`);
+    const hasCompletedIntro = localStorage.getItem(storageKey) === "true";
     if (hasCompletedIntro) {
       router.push(redirectPath);
     }
-  }, [router, cookieName, redirectPath]);
+  }, [router, storageKey, redirectPath]);
 
   const handleComplete = () => {
-    // Set cookie with specified expiration
-    document.cookie = `${cookieName}=true; path=/; max-age=${cookieExpiration}`;
+    // Store completion in localStorage
+    localStorage.setItem(storageKey, "true");
     router.push(redirectPath);
   };
 
