@@ -1,169 +1,1004 @@
 {
   "metadata": {
-    "title": "What We Know About the Conflict Between Faction X and Faction Y",
-    "description": "After Faction Y's surprise attack on Faction X on Oct. 7, Faction X has been besieging and bombarding Region Z, worsening a humanitarian crisis.",
-    "topic": "Conflict",
-    "author": "Ephrat Livni and Gaya Gupta",
-    "publishDate": "2023-11-20",
-    "quiz": [
-      {
-        "question": "When did Faction Y launch its surprise attack on Faction X?",
-        "answer": "October 7, 2023"
-      },
-      {
-        "question": "How many people were killed in the Faction Y attack according to Gov X?",
-        "answer": "1,200"
-      }
-    ]
+    "title": "A brief history of Gaza's tortured role in the Middle East conflict",
+    "description": "A historical account of Gaza's role in the Middle East conflict",
+    "topic": "Middle East Conflict",
+    "author": "Greg Myre",
+    "publishDate": "2025-03-12",
+    "imageUrl": null
   },
   "events": [
     {
       "index": 1,
-      "text": "After Faction Y's surprise attack on Faction X on Oct. 7, Faction X has been besieging and bombarding Region Z, worsening a humanitarian crisis.",
-      "short_text": "Faction X besieging and bombarding Region Z after Faction Y attack",
+      "text": "Displaced Palestinians make their way back on foot from the southern Gaza regions to their homes in the north via Al Rashid Road after the ceasefire agreement, Jan. 28.",
+      "short_text": "Displaced Palestinians return to their homes in northern Gaza via Al Rashid Road after a ceasefire.",
+      "lead_title": "A brief history of Gaza's tortured role in the Middle East conflict",
       "temporal_anchoring": {
-        "real_time": "2023-10-07",
+        "real_time": "2025-01-28",
         "narrative_time": 1
       },
       "entities": [
         {
-          "id": "Faction_Y",
-          "name": "Faction Y",
-          "social_role": "activist"
+          "id": "PUBLIC_1",
+          "name": "Palestinians",
+          "social_role": "public"
         },
         {
-          "id": "Faction_X",
-          "name": "Faction X",
-          "social_role": "government"
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
         },
         {
-          "id": "Region_Z",
-          "name": "Region Z",
+          "id": "OBJECT_3",
+          "name": "Al Rashid Road",
           "social_role": "object"
         }
       ],
       "topic": {
-        "main_topic": "conflict_military",
-        "sub_topic": ["siege", "bombardment", "humanitarian crisis"],
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
         "sentiment": {
-          "polarity": "negative",
-          "intensity": 0.8
+          "polarity": "neutral",
+          "intensity": 2
         }
       }
     },
     {
       "index": 2,
-      "text": "On Oct. 7, Faction Y led a surprise attack on towns, a music festival, army bases and other locations in Faction X, killing roughly 1,200 people and taking about 240 hostages, including children, according to Gov X.",
-      "short_text": "Faction Y attacks Gov X towns, a music festival, and military bases",
+      "text": "President Trump's call for the U.S. to take control of Gaza and drive out more than 2 million Palestinians is the most extreme and controversial proposal ever raised by a U.S. president in decades of dealing with the Israeli-Palestinian conflict.",
+      "short_text": "President Trump proposed that the U.S. take control of Gaza and expel over 2 million Palestinians.",
+      "lead_title": null,
       "temporal_anchoring": {
-        "real_time": "2023-10-07",
-        "narrative_time": 3
+        "real_time": "2025-02-05",
+        "narrative_time": 2
       },
       "entities": [
         {
-          "id": "Faction_Y",
-          "name": "Faction Y",
-          "social_role": "activist"
+          "id": "GOVERNMENT_4",
+          "name": "President Trump",
+          "social_role": "government"
         },
         {
-          "id": "Faction_X",
-          "name": "Faction X",
+          "id": "GOVERNMENT_5",
+          "name": "U.S.",
           "social_role": "government"
+        },
+        {
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "PUBLIC_1",
+          "name": "Palestinians",
+          "social_role": "public"
         }
       ],
       "topic": {
-        "main_topic": "conflict_military",
-        "sub_topic": ["casualties", "hostage-taking"],
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "crisis"],
         "sentiment": {
           "polarity": "negative",
-          "intensity": 0.9
+          "intensity": 8
         }
       }
     },
     {
       "index": 3,
-      "text": "Gov X officials vowed to destroy Faction Y, the group that controls Region Z and is considered a terrorist organization by several international bodies.",
-      "short_text": "Gov X officials vow to destroy Faction Y",
+      "text": "A large majority of Palestinians in Gaza are classified as refugees dating back generations. The suggestion that they could again be uprooted, with no guarantee of return to Gaza, strikes the rawest of nerves among many Palestinians. Trump has raised the prospect of removing Palestinians several times, and made his most explicit statement yet during a Tuesday meeting with Israeli Prime Minister Benjamin Netanyahu in Washington.",
+      "short_text": "Trump discussed the potential removal of Palestinians with Netanyahu in Washington.",
+      "lead_title": null,
       "temporal_anchoring": {
-        "real_time": "2023-10-07",
-        "narrative_time": 4
+        "real_time": "2025-02-05",
+        "narrative_time": 3
       },
       "entities": [
         {
-          "id": "Faction_X",
-          "name": "Faction X",
+          "id": "GOVERNMENT_4",
+          "name": "President Trump",
           "social_role": "government"
         },
         {
-          "id": "Faction_Y",
-          "name": "Faction Y",
-          "social_role": "activist"
+          "id": "PUBLIC_1",
+          "name": "Palestinians",
+          "social_role": "public"
         },
         {
-          "id": "Region_Z",
-          "name": "Region Z",
+          "id": "GOVERNMENT_6",
+          "name": "Benjamin Netanyahu",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_7",
+          "name": "Washington",
           "social_role": "object"
         }
       ],
       "topic": {
-        "main_topic": "conflict_military",
-        "sub_topic": ["retaliation", "terrorism designation"],
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
         "sentiment": {
           "polarity": "negative",
-          "intensity": 0.8
+          "intensity": 7
         }
       }
     },
     {
       "index": 4,
-      "text": "Faction X has since besieged Region Z in one of the most intense bombing campaigns of this century and launched a ground invasion.",
-      "short_text": "Faction X launches a ground invasion of Region Z",
+      "text": "\"I don't think people should be going back to Gaza,\" Trump said in a press conference following the meeting. \"I heard that Gaza has been very unlucky for them. They live like hell. They live like they're living in hell. Gaza is not a place for people to be living, and the only reason they want to go back, and I believe this strongly, is because they have no alternative.\" Here's a primer on Gaza and how it reached this current crisis.",
+      "short_text": "Trump expressed negative views about people returning to live in Gaza during a press conference.",
       "temporal_anchoring": {
-        "real_time": null,
-        "narrative_time": 5
+        "real_time": "2025-02-05",
+        "narrative_time": 4
       },
       "entities": [
         {
-          "id": "Faction_X",
-          "name": "Faction X",
+          "id": "GOVERNMENT_4",
+          "name": "President Trump",
           "social_role": "government"
         },
         {
-          "id": "Region_Z",
-          "name": "Region Z",
+          "id": "OBJECT_2",
+          "name": "Gaza",
           "social_role": "object"
         }
       ],
       "topic": {
-        "main_topic": "conflict_military",
-        "sub_topic": ["siege", "bombing", "ground invasion"],
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["crisis"],
         "sentiment": {
           "polarity": "negative",
-          "intensity": 0.9
+          "intensity": 7
         }
       }
     },
     {
       "index": 5,
-      "text": "More than 11,000 people in Region Z, including more than 4,600 children, have been killed since Gov X's campaign began, according to Region Z's health ministry.",
-      "short_text": "Over 11,000 killed in Region Z, including 4,600 children",
+      "text": "The first major Arab-Israeli war took place in 1948, when Israel was established. The fighting drove both Arabs and Jews from their homes throughout the region. The small, sandy, impoverished coastal territory of Gaza became the place where Palestinian refugees were most heavily concentrated. Neighboring Egypt assumed military control of Gaza, which is just 25 miles long and only 7.5 miles across at its widest point.",
+      "short_text": "In 1948, Egypt assumed military control of Gaza following the Arab-Israeli war and the establishment of Israel.",
+      "lead_title": "A 1948 war created an enclave of refugees",
       "temporal_anchoring": {
-        "real_time": "2023-11-20",
+        "real_time": "1948-01-01",
+        "narrative_time": 5
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_8",
+          "name": "Egypt",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 6,
+      "text": "Most Gaza Strip residents today are descended from those original refugees. They still consider themselves refugees, and are classified as such by UNRWA, the United Nations organization that supports them \u2014 even if they were born in Gaza and have lived their entire lives there.",
+      "short_text": "Gaza Strip residents, descendants of original refugees, are still classified as refugees by UNRWA.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
         "narrative_time": 6
       },
       "entities": [
         {
-          "id": "Region_Z",
-          "name": "Region Z",
+          "id": "PUBLIC_9",
+          "name": "Gaza Strip residents",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_10",
+          "name": "UNRWA",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "social issue",
+        "sub_topic": ["demographics", "social issues (general)"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 0
+        }
+      }
+    },
+    {
+      "index": 7,
+      "text": "Many still proudly display rusting keys and yellowing land deeds to their former family homes, which have been part of Israel since that first war. Israel has always opposed a return of Palestinians in Gaza to Israel. Periodic peace talks have focused on making Gaza part of a Palestinian state that would also include the West Bank.",
+      "short_text": "Periodic peace talks have focused on making Gaza part of a Palestinian state that would also include the West Bank.",
+      "lead_title": "What is the Gaza Strip? Here's what to know",
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 7
+      },
+      "entities": [
+        {
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "PUBLIC_1",
+          "name": "Palestinians",
           "social_role": "public"
         }
       ],
       "topic": {
-        "main_topic": "humanitarian_social_issues",
-        "sub_topic": ["civilian deaths", "child casualties"],
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
         "sentiment": {
           "polarity": "negative",
-          "intensity": 0.95
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 8,
+      "text": "Yet ever since 1948, Palestinians have harbored a deep fear of being displaced again, believing they may never be allowed to return. Trump's comments struck that chord. A picture from September 1948 shows Palestinians returning to their village after its surrender during the Arab-Israeli war in 1948, when Israel was established.",
+      "short_text": "In September 1948, Palestinians returned to their village after its surrender during the Arab-Israeli war.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "1948-09",
+        "narrative_time": 8
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_1",
+          "name": "Palestinians",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 9,
+      "text": "That 1948 war split many Palestinians into two separate territories, Gaza and the West Bank, with Israel in between. The two share much in common and aspire to a united Palestinian state, but are far from identical. Gaza's population is more religious, conservative and impoverished than that of the West Bank, which tends to be more secular, with a larger middle class and more educated residents who are likely to have spent time abroad. This is reflected in the divided Palestinian politics. The West Bank is led by the Palestinian Authority, which has taken part in negotiations with Israel dating back 30 years. At times, Israel and the Palestinian Authority quietly cooperate to carry out security operations against Palestinian militants in the West Bank.",
+      "short_text": "Israel and the Palestinian Authority cooperate on security operations against militants in the West Bank.",
+      "lead_title": "Gaza and the West Bank have key differences",
+      "temporal_anchoring": {
+        "real_time": "1948",
+        "narrative_time": 9
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_11",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_12",
+          "name": "Palestinian Authority",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_13",
+          "name": "West Bank",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war", "civil unrest"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 10,
+      "text": "In Gaza, the Islamist group Hamas has been in charge since 2007, and is considered a terrorist group by Israel and most Western countries. The current war between Israel and Hamas, which began in October 2023, when Hamas-led militants attacked Israel, is the most recent of several rounds of fighting over the years. The two sides never talk directly. This has complicated the current efforts to work out a permanent ceasefire in Gaza, since all negotiations are carried out indirectly through Qatari, Egyptian and U.S. mediators.",
+      "short_text": "Hamas-led militants attacked Israel in October 2023, initiating the current war.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-10-01",
+        "narrative_time": 10
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_14",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_11",
+          "name": "Israel",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war", "act of terror"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 11,
+      "text": "The geography is also different. Gaza's 2.2 million residents are squeezed into a flat, sandy enclave on the Mediterranean Sea. Before the current war left many without homes, 10 or more family members, spanning three generations, may have been crammed into one tiny, urban apartment. The West Bank, with more than 3 million Palestinians, is less than 40 miles away at its nearest point, but is more expansive. Much of the terrain is rolling hills and scrub brush, and it includes a half-dozen cities and towns, as well as isolated rural villages. Israeli armor advances against Egyptian troops at the start of the Six-Day War, June 5, 1967, near Rafah, Gaza Strip.",
+      "short_text": "Israeli armor advances against Egyptian troops at the start of the Six-Day War near Rafah, Gaza Strip.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "1967-06-05",
+        "narrative_time": 11
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_11",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_8",
+          "name": "Egypt",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_15",
+          "name": "Gaza Strip",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 12,
+      "text": "In a six-day war that reverberates to the present, Israel captured Gaza and the West Bank, including East Jerusalem, as well as parts of Egypt and Syria, in a stunning military operation in June 1967. Many of today's unresolved problems date to this war, including the Gaza crisis.",
+      "short_text": "In June 1967, Israel captured Gaza, the West Bank, East Jerusalem, and parts of Egypt and Syria in a six-day war.",
+      "lead_title": "Israel captured Gaza in the 1967 war",
+      "temporal_anchoring": {
+        "real_time": "1967-06",
+        "narrative_time": 12
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_11",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_13",
+          "name": "West Bank",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_16",
+          "name": "East Jerusalem",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_8",
+          "name": "Egypt",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_17",
+          "name": "Syria",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict", "crisis"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 13,
+      "text": "Israel's military drove out the Egyptian forces that had overseen the territory since 1948, and assumed full control of Gaza. Palestinians in both Gaza and the West Bank found the rules regulating their lives dictated by the Israeli military occupation.",
+      "short_text": "Israel's military drove out Egyptian forces and took control of Gaza, leading to Palestinians in Gaza and the West Bank being subjected to Israeli military occupation rules.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 13
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_11",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_8",
+          "name": "Egypt",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_13",
+          "name": "West Bank",
+          "social_role": "object"
+        },
+        {
+          "id": "PUBLIC_1",
+          "name": "Palestinians",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war", "conflict (general)"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 14,
+      "text": "Hamas was founded in 1987 in the religious, radicalized atmosphere of Gaza, and immediately began striking out against the Israeli military occupation.",
+      "short_text": "Hamas was founded in 1987 in Gaza and began actions against the Israeli military occupation.",
+      "lead_title": "Hamas has its roots in Gaza",
+      "temporal_anchoring": {
+        "real_time": "1987",
+        "narrative_time": 14
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_14",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_18",
+          "name": "Israeli military occupation",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "guerrilla activity"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 15,
+      "text": "In those early days, this often consisted of stone-throwing by Hamas supporters and occasional shootings. Hamas was a much smaller Palestinian group compared to the then-dominant Fatah movement led by Yasser Arafat. Initially, Hamas' role was limited. The group was a spoiler that undermined progress in Israeli-Palestinian peace negotiations of the 1990s by unleashing major attacks at sensitive moments. When the Palestinians launched an uprising, or intifada, in 2000, Hamas carried out a stream of suicide bombers that inflicted mass casualties on Israelis. Hamas was clearly growing more powerful and attracted more followers, particularly among young men in Gaza who felt they had no future.",
+      "short_text": "In 2000, Hamas carried out a series of suicide bombings during the Palestinian intifada, causing mass casualties among Israelis.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2000",
+        "narrative_time": 15
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_14",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "PUBLIC_1",
+          "name": "Palestinians",
+          "social_role": "public"
+        },
+        {
+          "id": "PUBLIC_19",
+          "name": "Israelis",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["act of terror", "armed conflict", "guerrilla activity"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 16,
+      "text": "Masked Palestinians from Hamas march with the Hamas flag in front of the Al Aqsa Mosque in Jerusalem's Old City in 1987.",
+      "short_text": "Masked Palestinians from Hamas march with the Hamas flag in front of the Al Aqsa Mosque in Jerusalem's Old City in 1987.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "1987",
+        "narrative_time": 16
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_1",
+          "name": "Palestinians",
+          "social_role": "public"
+        },
+        {
+          "id": "ACTIVIST_14",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "OBJECT_20",
+          "name": "Al Aqsa Mosque",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["demonstration", "guerrilla activity"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 17,
+      "text": "Over the years, Jewish settlers moved into Gaza, though in small numbers compared to the West Bank. By 2005, it was increasingly difficult to protect them from Palestinian militants. Israel's Prime Minister Ariel Sharon removed all 8,000 settlers and the Israeli military. The settlers opposed the withdrawal, with some dragged kicking and screaming from their homes.",
+      "short_text": "In 2005, Israeli Prime Minister Ariel Sharon ordered the removal of all 8,000 settlers and the Israeli military from Gaza.",
+      "lead_title": "Israel leaves Gaza, Hamas takes over",
+      "temporal_anchoring": {
+        "real_time": "2005",
+        "narrative_time": 17
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_21",
+          "name": "Ariel Sharon",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_22",
+          "name": "Israeli military",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_11",
+          "name": "Israel",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "civil unrest"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 18,
+      "text": "But as a result, for the first time in nearly four decades, no Israeli troops or civilians were in the territory. This raised fleeting hopes that Gaza's chronic tensions might subside.",
+      "short_text": "For the first time in nearly four decades, no Israeli troops or civilians were present in Gaza.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 18
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_19",
+          "name": "Israelis",
+          "social_role": "public"
+        },
+        {
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "positive",
+          "intensity": 3
+        }
+      }
+    },
+    {
+      "index": 19,
+      "text": "However, Israel still controlled Gaza's borders, restricting the flow of people and goods in and out of the territory. In 2006, Hamas won Palestinian legislative elections over the rival Fatah movement, which is centered in the West Bank and dominates the Palestinian Authority.",
+      "short_text": "In 2006, Hamas won the Palestinian legislative elections over Fatah, while Israel controlled Gaza's borders.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2006",
+        "narrative_time": 19
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_11",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "ACTIVIST_14",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "ACTIVIST_23",
+          "name": "Fatah",
+          "social_role": "activist"
+        },
+        {
+          "id": "OBJECT_13",
+          "name": "West Bank",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_12",
+          "name": "Palestinian Authority",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "civil unrest"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 20,
+      "text": "The following year, in 2007, Palestinian politics fractured in two and never recovered. Hamas drove the Palestinian Authority, including its security forces, out of Gaza in a bloody, weeklong fight in the territory.",
+      "short_text": "In 2007, Hamas expelled the Palestinian Authority from Gaza after a weeklong conflict.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2007",
+        "narrative_time": 20
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_14",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_12",
+          "name": "Palestinian Authority",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "civil unrest"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 21,
+      "text": "The Palestinian Authority still runs Palestinian affairs in the West Bank, though the Israeli military is never far away and directly controls large swaths of the territory.",
+      "short_text": "The Palestinian Authority manages Palestinian affairs in the West Bank, while the Israeli military controls significant areas.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 21
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_12",
+          "name": "Palestinian Authority",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_13",
+          "name": "West Bank",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_22",
+          "name": "Israeli military",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 5
+        }
+      }
+    },
+    {
+      "index": 23,
+      "text": "Hamas and Israel have clashed repeatedly since the Hamas takeover of Gaza in 2007, rising to the level of war on several occasions.",
+      "short_text": "Hamas and Israel have repeatedly clashed since the Hamas takeover of Gaza in 2007, escalating to war on several occasions.",
+      "lead_title": "Gaza as a recurring flashpoint",
+      "temporal_anchoring": {
+        "real_time": "2007",
+        "narrative_time": 23
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_14",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_11",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 24,
+      "text": "The Hamas-led attack on southern Israel on Oct. 7, 2023, ignited an unprecedented war in Gaza. Even if the current shaky ceasefire holds, there's no clear path to restore the devastated territory.",
+      "short_text": "Hamas-led attack on southern Israel on Oct. 7, 2023, ignited an unprecedented war in Gaza.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-10-07",
+        "narrative_time": 24
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_14",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_11",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict", "crisis"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 25,
+      "text": "Israeli troops remain in Gaza and Netanyahu has vowed that Hamas will not be allowed to rule the territory in the future. Yet Hamas, while badly battered, is still functioning in Gaza and has every intention of staying in power there.",
+      "short_text": "Israeli troops remain in Gaza, and Netanyahu has vowed to prevent Hamas from ruling the territory.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 25
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_24",
+          "name": "Israeli troops",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_6",
+          "name": "Benjamin Netanyahu",
+          "social_role": "government"
+        },
+        {
+          "id": "ACTIVIST_14",
+          "name": "Hamas",
+          "social_role": "activist"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 26,
+      "text": "In general, only far-right Israelis have talked about driving Palestinians out of Gaza. But Trump's recent remarks are making the topic part of the mainstream discussion in Israel.",
+      "short_text": "Trump's remarks mainstream the discussion of driving Palestinians out of Gaza in Israel.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 26
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_4",
+          "name": "President Trump",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_1",
+          "name": "Palestinians",
+          "social_role": "public"
+        },
+        {
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_11",
+          "name": "Israel",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["diplomacy", "human rights", "migration"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 27,
+      "text": "\"Gaza is a failed experiment,\" Israel's Foreign Minister Gideon Saar said in Israel's parliament, the Knesset, on Wednesday. \"As long as migration is carried out by a person's free will, and as long as there is a country willing to accept that person, can anyone say that it is immoral or inhumane?\"",
+      "short_text": "Israel's Foreign Minister Gideon Saar declared Gaza a failed experiment in the Knesset.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-12-06",
+        "narrative_time": 27
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_25",
+          "name": "Gideon Saar",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_26",
+          "name": "Knesset",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_11",
+          "name": "Israel",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["migration", "parliament", "diplomacy"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 28,
+      "text": "But United Nations human rights chief Volker Turk said deporting people from occupied territory is \"strictly prohibited\" under international law.",
+      "short_text": "Volker Turk stated that deporting people from occupied territory is strictly prohibited under international law.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 28
+      },
+      "entities": [
+        {
+          "id": "EXPERT_27",
+          "name": "Volker Turk",
+          "social_role": "expert"
+        }
+      ],
+      "topic": {
+        "main_topic": "crime, law and justice",
+        "sub_topic": ["international law"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 29,
+      "text": "Clearing Gaza's rubble and rebuilding homes, schools and hospitals will be measured in years. Many Palestinians will be reduced to living in tents \u2014 much as an earlier generation did when the first Gaza crisis began with the 1948 war.",
+      "short_text": "Rebuilding Gaza will take years, involving the construction of homes, schools, and hospitals, while many Palestinians will live in tents.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 29
+      },
+      "entities": [
+        {
+          "id": "OBJECT_2",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "PUBLIC_1",
+          "name": "Palestinians",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "crisis"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
         }
       }
     }

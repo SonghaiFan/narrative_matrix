@@ -21,6 +21,7 @@ import { debounce } from "lodash";
 
 interface TopicVisualProps {
   events: NarrativeEvent[];
+  viewMode: "main" | "sub";
 }
 
 interface PointState {
@@ -35,7 +36,7 @@ interface ChildPoint extends DataPoint {
   total: number;
 }
 
-export function NarrativeTopicVisual({ events }: TopicVisualProps) {
+export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
   const { selectedEventId, setSelectedEventId } = useCenterControl();
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -115,8 +116,8 @@ export function NarrativeTopicVisual({ events }: TopicVisualProps) {
     d3.select(headerRef.current).selectAll("*").remove();
 
     // Process data points
-    const dataPoints = processEvents(events);
-    const topicCounts = getTopicCounts(dataPoints);
+    const dataPoints = processEvents(events, viewMode);
+    const topicCounts = getTopicCounts(dataPoints, viewMode);
     const topTopics = getTopTopics(topicCounts);
 
     // Get the current container dimensions
@@ -188,8 +189,15 @@ export function NarrativeTopicVisual({ events }: TopicVisualProps) {
         const groupedPoints = groupOverlappingPoints(
           dataPoints,
           xScale,
-          yScale
+          yScale,
+          viewMode
         );
+
+        // Reset all groups to default z-order
+        pointsGroup.selectAll(".point-group").sort((a, b) => {
+          // Sort by y-position to maintain a consistent layering
+          return (a as GroupedPoint).y - (b as GroupedPoint).y;
+        });
 
         groupedPoints.forEach((point) => {
           if (point.isExpanded) {
@@ -273,7 +281,12 @@ export function NarrativeTopicVisual({ events }: TopicVisualProps) {
     });
 
     // Group overlapping points
-    const groupedPoints = groupOverlappingPoints(dataPoints, xScale, yScale);
+    const groupedPoints = groupOverlappingPoints(
+      dataPoints,
+      xScale,
+      yScale,
+      viewMode
+    );
 
     // Add points group
     const pointsGroup = g.append("g").attr("class", "points");
@@ -398,7 +411,11 @@ export function NarrativeTopicVisual({ events }: TopicVisualProps) {
         const parentCircle = parent.select("circle");
         const countText = parent.select("text");
 
+        // Raise this group to the front when expanded
         if (isExpanded) {
+          // Raise the parent group to the front
+          parent.raise();
+
           // Expand animation
           parentCircle
             .transition()
@@ -518,6 +535,19 @@ export function NarrativeTopicVisual({ events }: TopicVisualProps) {
         const node = d3.select(this);
         const isParent = node.classed("parent-point");
 
+        // Raise the node group to the front
+        if (isParent) {
+          // If it's a parent node, raise its parent group
+          d3.select(this.parentNode).raise();
+        } else {
+          // If it's a child node, raise its parent group
+          const parentKey = node.attr("data-parent-key");
+          if (parentKey) {
+            const parentNodeId = getParentNodeId(parentKey);
+            d3.select(`#${parentNodeId}`).raise();
+          }
+        }
+
         handleNodeInteraction.highlight(node, isParent);
 
         // Show tooltip
@@ -597,6 +627,13 @@ export function NarrativeTopicVisual({ events }: TopicVisualProps) {
         // Hide tooltip when clicking
         hideTooltip();
 
+        // Raise the parent group to the front
+        const parentKey = d3.select(this).attr("data-parent-key");
+        if (parentKey) {
+          const parentNodeId = getParentNodeId(parentKey);
+          d3.select(`#${parentNodeId}`).raise();
+        }
+
         setSelectedEventId(isDeselecting ? null : eventData.index);
         event.stopPropagation();
       },
@@ -626,11 +663,12 @@ export function NarrativeTopicVisual({ events }: TopicVisualProps) {
     }
   }, [
     events,
-    processEvents,
-    getTopicCounts,
-    getTopTopics,
     getParentNodeId,
     getChildNodeId,
+    viewMode,
+    showTooltip,
+    hideTooltip,
+    updatePosition,
   ]);
 
   // Initial setup and cleanup

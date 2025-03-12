@@ -29,7 +29,10 @@ export interface GroupedPoint {
 }
 
 // Process events into data points
-export function processEvents(events: NarrativeEvent[]): DataPoint[] {
+export function processEvents(
+  events: NarrativeEvent[],
+  viewMode: "main" | "sub" = "main"
+): DataPoint[] {
   const validEvents = events.filter((e) => e.temporal_anchoring.real_time);
   return validEvents.map((event, index) => ({
     event,
@@ -44,14 +47,29 @@ export function processEvents(events: NarrativeEvent[]): DataPoint[] {
 }
 
 // Get unique topics and their counts
-export function getTopicCounts(dataPoints: DataPoint[]): Map<string, number> {
+export function getTopicCounts(
+  dataPoints: DataPoint[],
+  viewMode: "main" | "sub" = "main"
+): Map<string, number> {
   const topicCounts = new Map<string, number>();
-  dataPoints.forEach((point) => {
-    topicCounts.set(
-      point.mainTopic,
-      (topicCounts.get(point.mainTopic) || 0) + 1
-    );
-  });
+
+  if (viewMode === "main") {
+    // Count main topics
+    dataPoints.forEach((point) => {
+      topicCounts.set(
+        point.mainTopic,
+        (topicCounts.get(point.mainTopic) || 0) + 1
+      );
+    });
+  } else {
+    // Count subtopics
+    dataPoints.forEach((point) => {
+      point.subTopics.forEach((subTopic) => {
+        topicCounts.set(subTopic, (topicCounts.get(subTopic) || 0) + 1);
+      });
+    });
+  }
+
   return topicCounts;
 }
 
@@ -120,7 +138,10 @@ export function createAxes(
 }
 
 // Create edges between events based on narrative time
-export function createEdges(dataPoints: DataPoint[]): Edge[] {
+export function createEdges(
+  dataPoints: DataPoint[],
+  viewMode: "main" | "sub" = "main"
+): Edge[] {
   const edges: Edge[] = [];
 
   // Sort data points by narrative time
@@ -134,12 +155,37 @@ export function createEdges(dataPoints: DataPoint[]): Edge[] {
     const current = sortedPoints[i];
     const next = sortedPoints[i + 1];
 
-    // Create an edge regardless of topic
-    edges.push({
-      source: current,
-      target: next,
-      mainTopic: current.mainTopic, // Keep track of source topic for styling
-    });
+    // Create an edge with the appropriate topic based on viewMode
+    if (viewMode === "main") {
+      edges.push({
+        source: current,
+        target: next,
+        mainTopic: current.mainTopic, // Use main topic for styling
+      });
+    } else {
+      // For subtopics, create an edge for each shared subtopic
+      const sharedSubTopics = current.subTopics.filter((subTopic) =>
+        next.subTopics.includes(subTopic)
+      );
+
+      if (sharedSubTopics.length > 0) {
+        // Create edges for shared subtopics
+        sharedSubTopics.forEach((subTopic) => {
+          edges.push({
+            source: current,
+            target: next,
+            mainTopic: subTopic, // Use subtopic for styling
+          });
+        });
+      } else {
+        // If no shared subtopics, create a default edge
+        edges.push({
+          source: current,
+          target: next,
+          mainTopic: current.subTopics[0] || current.mainTopic, // Fallback to main topic if no subtopics
+        });
+      }
+    }
   }
 
   return edges;
@@ -149,74 +195,60 @@ export function createEdges(dataPoints: DataPoint[]): Edge[] {
 export function groupOverlappingPoints(
   dataPoints: DataPoint[],
   xScale: d3.ScaleTime<number, number>,
-  yScale: d3.ScaleBand<string>
+  yScale: d3.ScaleBand<string>,
+  viewMode: "main" | "sub" = "main"
 ): GroupedPoint[] {
-  const groups = new Map<string, DataPoint[]>();
-  const nodeSize = TOPIC_CONFIG.point.radius * 2;
+  const groups: Map<string, GroupedPoint> = new Map();
+  const threshold = 10; // Threshold for considering points as overlapping
 
-  // Calculate time threshold based on current scale
-  // This makes the grouping responsive to the container width
-  const timeThreshold = Math.abs(
-    xScale.invert(nodeSize).getTime() - xScale.invert(0).getTime()
-  );
+  dataPoints.forEach((point) => {
+    const x = xScale(point.realTime);
+    const topic =
+      viewMode === "main"
+        ? point.mainTopic
+        : point.subTopics[0] || point.mainTopic;
+    const y = yScale(topic)! + yScale.bandwidth() / 2;
 
-  // Sort points by time and topic
-  const sortedPoints = [...dataPoints].sort((a, b) => {
-    const timeCompare = a.realTime.getTime() - b.realTime.getTime();
-    if (timeCompare === 0) {
-      return a.mainTopic.localeCompare(b.mainTopic);
-    }
-    return timeCompare;
-  });
-
-  // Group points that are close in time and in same topic
-  sortedPoints.forEach((point) => {
+    // Check if this point overlaps with any existing group
     let foundGroup = false;
-
-    // Check existing groups for a match
-    for (const [key, points] of groups.entries()) {
-      const lastPoint = points[points.length - 1];
-      const timeDiff = Math.abs(
-        point.realTime.getTime() - lastPoint.realTime.getTime()
+    for (const [key, group] of groups.entries()) {
+      const distance = Math.sqrt(
+        Math.pow(x - group.x, 2) + Math.pow(y - group.y, 2)
       );
 
+      // If the point is close enough to an existing group and has the same topic
       if (
-        point.mainTopic === lastPoint.mainTopic &&
-        timeDiff <= timeThreshold
+        distance < threshold &&
+        ((viewMode === "main" && group.mainTopic === point.mainTopic) ||
+          (viewMode === "sub" && point.subTopics.includes(group.mainTopic)))
       ) {
-        points.push(point);
+        // Add the point to the existing group
+        group.points.push(point);
         foundGroup = true;
         break;
       }
     }
 
-    // Create new group if no match found
+    // If no overlapping group was found, create a new one
     if (!foundGroup) {
-      const x = xScale(point.realTime);
-      const y = yScale(point.mainTopic)! + yScale.bandwidth() / 2;
-      const key = `${Math.round(x)},${Math.round(y)}`;
-      groups.set(key, [point]);
+      const groupKey = `group-${groups.size + 1}-${point.index}`;
+      const groupTopic =
+        viewMode === "main"
+          ? point.mainTopic
+          : point.subTopics[0] || point.mainTopic;
+
+      groups.set(groupKey, {
+        key: groupKey,
+        points: [point],
+        mainTopic: groupTopic,
+        x,
+        y,
+        isExpanded: false,
+      });
     }
   });
 
-  // Create GroupedPoints from the groups
-  return Array.from(groups.entries())
-    .filter(([_, points]) => points.length > 0)
-    .map(([key, points]) => {
-      // Calculate average time for the group
-      const avgTime = new Date(
-        points.reduce((sum, p) => sum + p.realTime.getTime(), 0) / points.length
-      );
-
-      return {
-        key,
-        points,
-        mainTopic: points[0].mainTopic,
-        x: xScale(avgTime),
-        y: yScale(points[0].mainTopic)! + yScale.bandwidth() / 2,
-        isExpanded: false,
-      };
-    });
+  return Array.from(groups.values());
 }
 
 // Calculate positions for expanded child nodes

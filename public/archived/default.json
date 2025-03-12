@@ -1,0 +1,171 @@
+{
+  "metadata": {
+    "title": "What We Know About the Conflict Between Faction X and Faction Y",
+    "description": "After Faction Y's surprise attack on Faction X on Oct. 7, Faction X has been besieging and bombarding Region Z, worsening a humanitarian crisis.",
+    "topic": "Conflict",
+    "author": "Ephrat Livni and Gaya Gupta",
+    "publishDate": "2023-11-20",
+    "quiz": [
+      {
+        "question": "When did Faction Y launch its surprise attack on Faction X?",
+        "answer": "October 7, 2023"
+      },
+      {
+        "question": "How many people were killed in the Faction Y attack according to Gov X?",
+        "answer": "1,200"
+      }
+    ]
+  },
+  "events": [
+    {
+      "index": 1,
+      "text": "After Faction Y's surprise attack on Faction X on Oct. 7, Faction X has been besieging and bombarding Region Z, worsening a humanitarian crisis.",
+      "short_text": "Faction X besieging and bombarding Region Z after Faction Y attack",
+      "temporal_anchoring": {
+        "real_time": "2023-10-07",
+        "narrative_time": 1
+      },
+      "entities": [
+        {
+          "id": "Faction_Y",
+          "name": "Faction Y",
+          "social_role": "activist"
+        },
+        {
+          "id": "Faction_X",
+          "name": "Faction X",
+          "social_role": "government"
+        },
+        {
+          "id": "Region_Z",
+          "name": "Region Z",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "conflict_military",
+        "sub_topic": ["siege", "bombardment", "humanitarian crisis"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 0.8
+        }
+      }
+    },
+    {
+      "index": 2,
+      "text": "On Oct. 7, Faction Y led a surprise attack on towns, a music festival, army bases and other locations in Faction X, killing roughly 1,200 people and taking about 240 hostages, including children, according to Gov X.",
+      "short_text": "Faction Y attacks Gov X towns, a music festival, and military bases",
+      "temporal_anchoring": {
+        "real_time": "2023-10-07",
+        "narrative_time": 3
+      },
+      "entities": [
+        {
+          "id": "Faction_Y",
+          "name": "Faction Y",
+          "social_role": "activist"
+        },
+        {
+          "id": "Faction_X",
+          "name": "Faction X",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "conflict_military",
+        "sub_topic": ["casualties", "hostage-taking"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 0.9
+        }
+      }
+    },
+    {
+      "index": 3,
+      "text": "Gov X officials vowed to destroy Faction Y, the group that controls Region Z and is considered a terrorist organization by several international bodies.",
+      "short_text": "Gov X officials vow to destroy Faction Y",
+      "temporal_anchoring": {
+        "real_time": "2023-10-07",
+        "narrative_time": 4
+      },
+      "entities": [
+        {
+          "id": "Faction_X",
+          "name": "Faction X",
+          "social_role": "government"
+        },
+        {
+          "id": "Faction_Y",
+          "name": "Faction Y",
+          "social_role": "activist"
+        },
+        {
+          "id": "Region_Z",
+          "name": "Region Z",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "conflict_military",
+        "sub_topic": ["retaliation", "terrorism designation"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 0.8
+        }
+      }
+    },
+    {
+      "index": 4,
+      "text": "Faction X has since besieged Region Z in one of the most intense bombing campaigns of this century and launched a ground invasion.",
+      "short_text": "Faction X launches a ground invasion of Region Z",
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 5
+      },
+      "entities": [
+        {
+          "id": "Faction_X",
+          "name": "Faction X",
+          "social_role": "government"
+        },
+        {
+          "id": "Region_Z",
+          "name": "Region Z",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "conflict_military",
+        "sub_topic": ["siege", "bombing", "ground invasion"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 0.9
+        }
+      }
+    },
+    {
+      "index": 5,
+      "text": "More than 11,000 people in Region Z, including more than 4,600 children, have been killed since Gov X's campaign began, according to Region Z's health ministry.",
+      "short_text": "Over 11,000 killed in Region Z, including 4,600 children",
+      "temporal_anchoring": {
+        "real_time": "2023-11-20",
+        "narrative_time": 6
+      },
+      "entities": [
+        {
+          "id": "Region_Z",
+          "name": "Region Z",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "humanitarian_social_issues",
+        "sub_topic": ["civilian deaths", "child casualties"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 0.95
+        }
+      }
+    }
+  ]
+}
