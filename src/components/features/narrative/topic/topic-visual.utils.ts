@@ -8,6 +8,7 @@ export interface DataPoint {
   subTopics: string[];
   narrativeTime: number;
   sentiment: number;
+  sentimentPolarity: "positive" | "negative" | "neutral";
   text: string;
   realTime: Date;
   index: number;
@@ -28,6 +29,45 @@ export interface GroupedPoint {
   isExpanded: boolean;
 }
 
+// Get color based on sentiment polarity and intensity
+export function getSentimentColor(
+  polarity: "positive" | "negative" | "neutral",
+  intensity: number
+): string {
+  // Normalize intensity to a value between 0 and 1
+  const normalizedIntensity = Math.min(Math.max(intensity / 10, 0), 1);
+
+  // Create color scales for different polarities
+  const positiveColorScale = d3
+    .scaleLinear<string>()
+    .domain([0, 1])
+    .range(["#ffffff", "#38a169"]) // White to green
+    .interpolate(d3.interpolateRgb.gamma(2.2));
+
+  const negativeColorScale = d3
+    .scaleLinear<string>()
+    .domain([0, 1])
+    .range(["#ffffff", "#e53e3e"]) // White to red
+    .interpolate(d3.interpolateRgb.gamma(2.2));
+
+  const neutralColorScale = d3
+    .scaleLinear<string>()
+    .domain([0, 1])
+    .range(["#ffffff", "#718096"]) // White to gray
+    .interpolate(d3.interpolateRgb.gamma(2.2));
+
+  // Return color based on polarity
+  switch (polarity) {
+    case "positive":
+      return positiveColorScale(normalizedIntensity);
+    case "negative":
+      return negativeColorScale(normalizedIntensity);
+    case "neutral":
+    default:
+      return neutralColorScale(normalizedIntensity);
+  }
+}
+
 // Process events into data points
 export function processEvents(
   events: NarrativeEvent[],
@@ -40,6 +80,7 @@ export function processEvents(
     subTopics: event.topic.sub_topic,
     narrativeTime: event.temporal_anchoring.narrative_time,
     sentiment: event.topic.sentiment.intensity,
+    sentimentPolarity: event.topic.sentiment.polarity,
     text: event.text,
     realTime: new Date(event.temporal_anchoring.real_time!),
     index,
@@ -62,20 +103,28 @@ export function getTopicCounts(
       );
     });
   } else {
-    // Count subtopics
+    // Only count the first subtopic of each node
     dataPoints.forEach((point) => {
-      point.subTopics.forEach((subTopic) => {
-        topicCounts.set(subTopic, (topicCounts.get(subTopic) || 0) + 1);
-      });
+      if (point.subTopics.length > 0) {
+        const firstSubTopic = point.subTopics[0];
+        topicCounts.set(
+          firstSubTopic,
+          (topicCounts.get(firstSubTopic) || 0) + 1
+        );
+      }
     });
   }
 
   return topicCounts;
 }
 
-// Get all unique topics sorted by frequency
-export function getTopTopics(topicCounts: Map<string, number>): string[] {
+// Get all unique topics sorted by frequency, filtering out empty topics
+export function getTopTopics(
+  topicCounts: Map<string, number>,
+  viewMode: "main" | "sub" = "main"
+): string[] {
   return Array.from(topicCounts.entries())
+    .filter(([_, count]) => count > 0) // Filter out topics with no nodes
     .sort((a, b) => b[1] - a[1])
     .map(([topic]) => topic);
 }
@@ -85,7 +134,8 @@ export function getScales(
   dataPoints: DataPoint[],
   topTopics: string[],
   width: number,
-  height: number
+  height: number,
+  viewMode: "main" | "sub" = "main"
 ) {
   const yScale = d3
     .scaleBand()
@@ -201,12 +251,19 @@ export function groupOverlappingPoints(
   const groups: Map<string, GroupedPoint> = new Map();
   const threshold = 10; // Threshold for considering points as overlapping
 
-  dataPoints.forEach((point) => {
+  // Filter dataPoints for "sub" viewMode to only include points with subtopics
+  const filteredDataPoints =
+    viewMode === "sub"
+      ? dataPoints.filter((point) => point.subTopics.length > 0)
+      : dataPoints;
+
+  filteredDataPoints.forEach((point) => {
     const x = xScale(point.realTime);
-    const topic =
-      viewMode === "main"
-        ? point.mainTopic
-        : point.subTopics[0] || point.mainTopic;
+    const topic = viewMode === "main" ? point.mainTopic : point.subTopics[0]; // Only use first subtopic
+
+    // Skip if topic is undefined or not in yScale domain (could happen if we filtered out some topics)
+    if (!topic || !yScale(topic)) return;
+
     const y = yScale(topic)! + yScale.bandwidth() / 2;
 
     // Check if this point overlaps with any existing group
@@ -220,7 +277,7 @@ export function groupOverlappingPoints(
       if (
         distance < threshold &&
         ((viewMode === "main" && group.mainTopic === point.mainTopic) ||
-          (viewMode === "sub" && point.subTopics.includes(group.mainTopic)))
+          (viewMode === "sub" && group.mainTopic === point.subTopics[0]))
       ) {
         // Add the point to the existing group
         group.points.push(point);
@@ -233,9 +290,7 @@ export function groupOverlappingPoints(
     if (!foundGroup) {
       const groupKey = `group-${groups.size + 1}-${point.index}`;
       const groupTopic =
-        viewMode === "main"
-          ? point.mainTopic
-          : point.subTopics[0] || point.mainTopic;
+        viewMode === "main" ? point.mainTopic : point.subTopics[0];
 
       groups.set(groupKey, {
         key: groupKey,

@@ -3,10 +3,15 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCenterControl } from "@/contexts/center-control-context";
-import { ProfileSection } from "./profile-section";
+import { ProfileSection } from "./data-profile";
 import { ScenarioCard } from "./scenario-card";
 import { useAuth } from "@/contexts/auth-context";
 import { ScenarioType } from "@/types/shared/scenario";
+import { NarrativeMatrixData } from "@/types/narrative/lite";
+import {
+  getSelectedFileFromStorage,
+  setSelectedFileInStorage,
+} from "@/utils/data-storage";
 
 export function ScenarioSelector() {
   const router = useRouter();
@@ -19,20 +24,68 @@ export function ScenarioSelector() {
     setIsLoading: setContextIsLoading,
   } = useCenterControl();
   const [isLoading, setIsLoading] = useState(true);
+  const [availableFiles, setAvailableFiles] = useState<string[]>([]);
+  const [selectedFile, setSelectedFile] = useState<string | null>(null);
+
+  // Fetch available data files
+  useEffect(() => {
+    const fetchAvailableFiles = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/data-files");
+        if (!response.ok) {
+          throw new Error("Failed to fetch available data files");
+        }
+        const files = await response.json();
+        setAvailableFiles(files);
+
+        // Get selected file from storage
+        const storedFile = getSelectedFileFromStorage();
+
+        // If there's a stored file and it's in the available files, use it
+        if (storedFile && files.includes(storedFile)) {
+          setSelectedFile(storedFile);
+        } else if (files.length > 0) {
+          // Otherwise default to the first file
+          setSelectedFile(files[0]);
+          setSelectedFileInStorage(files[0]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch available data files:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAvailableFiles();
+  }, []);
+
+  // Update localStorage when selectedFile changes
+  useEffect(() => {
+    if (selectedFile) {
+      setSelectedFileInStorage(selectedFile);
+    }
+  }, [selectedFile]);
 
   // Fetch initial data if not already loaded
   useEffect(() => {
     const fetchInitialData = async () => {
-      if (!data) {
+      if (!data && selectedFile) {
         try {
           setIsLoading(true);
           setContextIsLoading(true);
-          const response = await fetch("/default.json");
+
+          // Handle paths correctly - if the file is in the archived directory
+          const filePath = selectedFile.startsWith("archived/")
+            ? selectedFile // Keep the path as is
+            : selectedFile; // No path prefix needed
+
+          const response = await fetch(`/${filePath}`);
           if (!response.ok) {
-            throw new Error("Failed to fetch data");
+            throw new Error(`Failed to fetch ${selectedFile}`);
           }
-          const NarrativeMatrixData = await response.json();
-          setData(NarrativeMatrixData);
+          const narrativeMatrixData = await response.json();
+          setData(narrativeMatrixData);
         } catch (error) {
           console.error("Failed to load initial data:", error);
         } finally {
@@ -45,7 +98,12 @@ export function ScenarioSelector() {
     };
 
     fetchInitialData();
-  }, [data, setData, setContextIsLoading]);
+  }, [data, setData, setContextIsLoading, selectedFile]);
+
+  // Handle data change from ProfileSection
+  const handleDataChange = (newData: NarrativeMatrixData) => {
+    setData(newData);
+  };
 
   const handleScenarioSelect = (scenario: ScenarioType) => {
     setSelectedScenario(scenario);
@@ -67,6 +125,15 @@ export function ScenarioSelector() {
 
   const handleBackToDashboard = () => {
     router.push("/dashboard");
+  };
+
+  // Handle file selection change
+  const handleFileSelectionChange = (file: string) => {
+    setSelectedFile(file);
+  };
+
+  const navigateToScenario = (scenarioPath: string) => {
+    router.push(scenarioPath);
   };
 
   if (isLoading) {
@@ -112,7 +179,9 @@ export function ScenarioSelector() {
                 publishDate={metadata.publishDate || ""}
                 imageUrl={metadata.imageUrl}
                 events={events || []}
-                onDataChange={setData}
+                onDataChange={handleDataChange}
+                selectedFile={selectedFile || ""}
+                setSelectedFile={handleFileSelectionChange}
               />
             </div>
           </div>

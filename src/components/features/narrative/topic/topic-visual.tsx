@@ -14,6 +14,7 @@ import {
   createAxes,
   groupOverlappingPoints,
   calculateExpandedPositions,
+  getSentimentColor,
   type DataPoint,
   type GroupedPoint,
 } from "./topic-visual.utils";
@@ -61,10 +62,11 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     (newSelectedId: number | null) => {
       if (!svgRef.current) return;
 
-      // Reset all nodes to default style
+      // Reset all nodes to default stroke style
       d3.select(svgRef.current)
         .selectAll(".parent-point, .child-point-circle")
-        .attr("stroke", "black");
+        .attr("stroke", "black")
+        .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth);
 
       // If we have a selected event, highlight it
       if (newSelectedId !== null) {
@@ -74,8 +76,10 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           .select(`.parent-point[data-event-index="${newSelectedId}"]`);
 
         if (!parentNode.empty()) {
-          // Only change color for selection
-          parentNode.attr("stroke", "#3b82f6");
+          // Only change stroke for selection, not fill (to preserve sentiment color)
+          parentNode
+            .attr("stroke", "#3b82f6")
+            .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth * 1.5);
         }
 
         // Try to find and highlight the child node
@@ -84,16 +88,19 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           .select(`#${getChildNodeId(newSelectedId)}`);
 
         if (!childNode.empty()) {
-          // Highlight the child node - only change color
-          childNode.attr("stroke", "#3b82f6");
+          // Highlight the child node - only change stroke, not fill (to preserve sentiment color)
+          childNode
+            .attr("stroke", "#3b82f6")
+            .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth * 1.5);
 
-          // Also highlight its parent node - only change color
+          // Also highlight its parent node - only change stroke, not fill
           const parentKey = childNode.attr("data-parent-key");
           if (parentKey) {
             const parentNodeId = getParentNodeId(parentKey);
             d3.select(`#${parentNodeId}`)
               .select("circle")
-              .attr("stroke", "#3b82f6");
+              .attr("stroke", "#3b82f6")
+              .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth * 1.5);
           }
         }
       }
@@ -118,7 +125,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     // Process data points
     const dataPoints = processEvents(events, viewMode);
     const topicCounts = getTopicCounts(dataPoints, viewMode);
-    const topTopics = getTopTopics(topicCounts);
+    const topTopics = getTopTopics(topicCounts, viewMode);
 
     // Get the current container dimensions
     const containerWidth = containerRef.current.clientWidth;
@@ -135,7 +142,13 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     );
 
     // Create scales with the actual available height
-    const { xScale, yScale } = getScales(dataPoints, topTopics, width, height);
+    const { xScale, yScale } = getScales(
+      dataPoints,
+      topTopics,
+      width,
+      height,
+      viewMode
+    );
 
     // Create axes
     const { xAxis, yAxis } = createAxes(xScale, yScale);
@@ -266,7 +279,11 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       );
 
     // Add horizontal lines for each topic (similar to entity-visual)
+    // Only draw lines for topics that have nodes
     topTopics.forEach((topic) => {
+      // Skip if topic is not in the yScale domain (could happen if we filtered out some topics)
+      if (!yScale(topic)) return;
+
       const y = yScale(topic)! + yScale.bandwidth() / 2;
 
       g.append("line")
@@ -317,7 +334,46 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           ? TOPIC_CONFIG.point.radius * 1.2
           : TOPIC_CONFIG.point.radius
       )
-      .attr("fill", "white")
+      .attr("fill", (d: GroupedPoint) => {
+        // For parent nodes with multiple points, use the average sentiment
+        if (d.points.length > 1) {
+          // Calculate average sentiment intensity
+          const avgIntensity =
+            d.points.reduce((sum, p) => sum + p.sentiment, 0) / d.points.length;
+
+          // Determine dominant polarity
+          const polarityCounts = {
+            positive: 0,
+            negative: 0,
+            neutral: 0,
+          };
+
+          d.points.forEach((p) => {
+            polarityCounts[p.sentimentPolarity]++;
+          });
+
+          let dominantPolarity: "positive" | "negative" | "neutral" = "neutral";
+          if (
+            polarityCounts.positive > polarityCounts.negative &&
+            polarityCounts.positive > polarityCounts.neutral
+          ) {
+            dominantPolarity = "positive";
+          } else if (
+            polarityCounts.negative > polarityCounts.positive &&
+            polarityCounts.negative > polarityCounts.neutral
+          ) {
+            dominantPolarity = "negative";
+          }
+
+          return getSentimentColor(dominantPolarity, avgIntensity);
+        } else {
+          // For single points, use the point's sentiment
+          return getSentimentColor(
+            d.points[0].sentimentPolarity,
+            d.points[0].sentiment
+          );
+        }
+      })
       .attr("stroke", "black")
       .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth)
       .style("cursor", (d: GroupedPoint) =>
@@ -390,7 +446,9 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         return positions[d.index].y;
       })
       .attr("r", TOPIC_CONFIG.point.radius)
-      .attr("fill", "white")
+      .attr("fill", (d: ChildPoint) =>
+        getSentimentColor(d.sentimentPolarity, d.sentiment)
+      )
       .attr("stroke", "black")
       .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth)
       .style("cursor", "pointer")
@@ -423,6 +481,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             .attr("r", TOPIC_CONFIG.point.radius * 0.8)
             .style("opacity", 0.5)
             .style("cursor", "pointer");
+          // Note: We don't change the fill color, preserving the sentiment color
 
           if (countText.node()) {
             countText.style("opacity", 0);
@@ -446,6 +505,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             )
             .style("opacity", 1)
             .style("cursor", "pointer");
+          // Note: We don't change the fill color, preserving the sentiment color
 
           if (countText.node()) {
             countText.style("opacity", 1);

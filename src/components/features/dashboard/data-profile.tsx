@@ -2,7 +2,7 @@
 
 import { NarrativeEvent, NarrativeMatrixData } from "@/types/narrative/lite";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCenterControl } from "@/contexts/center-control-context";
 import {
   Select,
@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select/select";
+import { useFileSelector } from "@/hooks/use-file-selector";
 
 interface ProfileSectionProps {
   title: string;
@@ -21,6 +22,8 @@ interface ProfileSectionProps {
   imageUrl?: string | null;
   events: NarrativeEvent[];
   onDataChange?: (data: NarrativeMatrixData) => void;
+  selectedFile?: string;
+  setSelectedFile?: (file: string) => void;
 }
 
 export function ProfileSection({
@@ -32,10 +35,21 @@ export function ProfileSection({
   imageUrl,
   events = [],
   onDataChange,
+  selectedFile: propSelectedFile,
+  setSelectedFile: propSetSelectedFile,
 }: ProfileSectionProps) {
-  const [availableFiles, setAvailableFiles] = useState<string[]>([]);
-  const [selectedFile, setSelectedFile] = useState<string>("");
-  const { isLoading, setIsLoading, clearSelections, data } = useCenterControl();
+  const { isLoading } = useCenterControl();
+
+  // Use the file selector hook
+  const {
+    availableFiles,
+    selectedFile: effectiveSelectedFile,
+    setSelectedFile: handleFileChange,
+  } = useFileSelector({
+    onDataChange,
+    externalSelectedFile: propSelectedFile,
+    externalSetSelectedFile: propSetSelectedFile,
+  });
 
   const stats = {
     entities: new Set(
@@ -44,129 +58,6 @@ export function ProfileSection({
     topics: new Set(events?.map((event) => event.topic?.main_topic) || []).size,
     events: events?.length || 0,
   };
-
-  // Fetch available data files from public directory
-  useEffect(() => {
-    const fetchAvailableFiles = async () => {
-      try {
-        const response = await fetch("/api/data-files");
-        const files = await response.json();
-        setAvailableFiles(files);
-
-        // If we don't have a selected file yet and files are available, select the first one
-        if (!selectedFile && files.length > 0) {
-          // Try to find the first non-archived file
-          const nonArchivedFile = files.find(
-            (file: string) => !file.startsWith("archived/")
-          );
-          setSelectedFile(nonArchivedFile || files[0]);
-        }
-      } catch (error) {
-        console.error("Failed to fetch available data files:", error);
-      }
-    };
-    fetchAvailableFiles();
-  }, [selectedFile]);
-
-  // Handle file selection
-  const handleFileChange = useCallback(
-    async (fileName: string) => {
-      if (fileName === selectedFile) return;
-
-      setIsLoading(true);
-      setSelectedFile(fileName);
-      // Clear all selections when changing files
-      clearSelections();
-
-      try {
-        // Handle paths correctly - if the file is in the archived directory
-        const filePath = fileName.startsWith("archived/")
-          ? fileName // Keep the path as is
-          : fileName; // No path prefix needed
-
-        const response = await fetch(`/${filePath}`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch ${fileName}`);
-        }
-        const data: NarrativeMatrixData = await response.json();
-        onDataChange?.(data);
-      } catch (error) {
-        console.error("Failed to load data file:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [onDataChange, setIsLoading, clearSelections, selectedFile]
-  );
-
-  // Update selectedFile when data changes from outside this component
-  useEffect(() => {
-    // This is a simple heuristic to detect which file is currently loaded
-    // We compare the title and first event to guess which file it is
-    if (data && availableFiles.length > 0 && !isLoading) {
-      const checkCurrentFile = async () => {
-        // Skip if we're already loading
-        if (isLoading) return;
-
-        // First check if the current selectedFile matches the data
-        // This avoids unnecessary API calls
-        if (selectedFile) {
-          try {
-            const response = await fetch(
-              `/${
-                selectedFile.startsWith("archived/")
-                  ? selectedFile
-                  : selectedFile
-              }`
-            );
-            const fileData = await response.json();
-
-            // If this file matches the current data, we're done
-            if (
-              fileData.metadata.title === data.metadata.title &&
-              fileData.events.length > 0 &&
-              data.events.length > 0 &&
-              fileData.events[0].index === data.events[0].index
-            ) {
-              return; // Current selection is correct
-            }
-          } catch (error) {
-            console.error(
-              `Error checking current file ${selectedFile}:`,
-              error
-            );
-          }
-        }
-
-        // If we get here, we need to check all files
-        for (const file of availableFiles) {
-          // Skip the current file as we already checked it
-          if (file === selectedFile) continue;
-
-          try {
-            const filePath = file.startsWith("archived/") ? file : file;
-            const response = await fetch(`/${filePath}`);
-            const fileData = await response.json();
-
-            // Check if this file matches the current data
-            if (
-              fileData.metadata.title === data.metadata.title &&
-              fileData.events.length > 0 &&
-              data.events.length > 0 &&
-              fileData.events[0].index === data.events[0].index
-            ) {
-              setSelectedFile(file);
-              break;
-            }
-          } catch (error) {
-            console.error(`Error checking file ${file}:`, error);
-          }
-        }
-      };
-
-      checkCurrentFile();
-    }
-  }, [data, availableFiles, selectedFile, isLoading]);
 
   return (
     <article className="flex flex-col h-full p-4 space-y-4 overflow-hidden">
@@ -190,7 +81,10 @@ export function ProfileSection({
                 <span>Loading...</span>
               </div>
             )}
-            <Select value={selectedFile} onValueChange={handleFileChange}>
+            <Select
+              value={effectiveSelectedFile}
+              onValueChange={handleFileChange}
+            >
               <SelectTrigger className="w-[180px] h-7 px-2 py-1 text-xs">
                 <SelectValue
                   placeholder="Select data file"

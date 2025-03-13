@@ -1,0 +1,1037 @@
+{
+  "metadata": {
+    "title": "unknown",
+    "description": "A historical account of Gaza's role in the Middle East conflict",
+    "topic": "Middle East Conflict",
+    "author": "unknown",
+    "publishDate": "2025-03-12",
+    "imageUrl": null
+  },
+  "events": [
+    {
+      "index": 1,
+      "text": "On Oct. 7, Hamas led a surprise attack on towns, a music festival, army bases and other locations in Israel, killing roughly 1,200 people and taking about 240 hostages, including children, according to the Israeli government.",
+      "short_text": "Hamas led a surprise attack in Israel, killing about 1,200 people and taking 240 hostages.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-10-07",
+        "narrative_time": 1
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_3",
+          "name": "Israeli government",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["act of terror", "massacre", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 9
+        }
+      }
+    },
+    {
+      "index": 2,
+      "text": "Israeli officials vowed to destroy Hamas, the Palestinian group that controls the Gaza Strip and is considered a terrorist organization by the United States, Israel and other countries. Israel has since besieged Gaza in one of the most **intense** bombing campaigns of this century, and launched a ground invasion.",
+      "short_text": "Israeli officials vowed to destroy Hamas and launched a bombing campaign and ground invasion in Gaza.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 2
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_4",
+          "name": "Israeli officials",
+          "social_role": "government"
+        },
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "OBJECT_5",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 3,
+      "text": "More than 11,000 Palestinians, including more than 4,600 **children**, have been killed since the Israeli campaign began, according to Gaza\u2019s health ministry.",
+      "short_text": "More than 11,000 Palestinians, including over 4,600 children, were killed due to the Israeli campaign in Gaza.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 3
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_5",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "massacre", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 9
+        }
+      }
+    },
+    {
+      "index": 4,
+      "text": "The violence, its fallout and the humanitarian crisis afflicting Gazan civilians have shaken the region and the world. Here\u2019s what to know:",
+      "short_text": "Violence and humanitarian crisis impact Gazan civilians.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 4
+      },
+      "entities": [
+        {
+          "id": "OBJECT_5",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "crisis"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 5,
+      "text": "Amit Elkayam for The New York Times Early on Oct. 7, Hamas fired volleys of rockets that struck as far away as Tel Aviv and the outskirts of Jerusalem. The attackers also infiltrated border communities and army bases, as well as an outdoor music festival, opening fire on men, women and children. It took days for Israeli forces to regain control after the attack.",
+      "short_text": "On Oct. 7, Hamas launched rocket attacks and infiltrated border communities and army bases in Israel, including an outdoor music festival, causing days of unrest before Israeli forces regained control.",
+      "lead_title": "What happened during the Hamas attack?",
+      "temporal_anchoring": {
+        "real_time": "2023-10-07",
+        "narrative_time": 5
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["act of terror", "armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 6,
+      "text": "Hamas and other armed Palestinian groups also took about 240 civilians and soldiers hostage. Four have **since been released**.",
+      "short_text": "Four hostages were released by Hamas and other armed Palestinian groups.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 6
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 7,
+      "text": "After the Hamas attack on Oct. 7, the Israeli military soon began a siege to block food, water, and fuel from entering the territory, and it launched a ground invasion on Oct. 27. Israeli troops **encircled** Gaza City on Nov. 7, effectively splitting control of the strip in half. On Nov. 17, Israel signaled that it was preparing to expand military operations into southern Gaza, where Palestinians had been told to evacuate.",
+      "short_text": "Israeli troops encircled Gaza City, splitting control of the strip in half.",
+      "lead_title": "How has Israel responded?",
+      "temporal_anchoring": {
+        "real_time": "2023-11-07",
+        "narrative_time": 7
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_6",
+          "name": "Israeli troops",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_7",
+          "name": "Gaza City",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_5",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 8,
+      "text": "More than one million Palestinians have been displaced following Israel\u2019s warnings for civilians to leave northern Gaza, aid workers say. Many Gazans say **no part** of the enclave is safe.",
+      "short_text": "Over one million Palestinians were displaced from northern Gaza following evacuation warnings from Israel.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 8
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_8",
+          "name": "Palestinians",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_5",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict", "crisis"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 9,
+      "text": "Israel says Hamas uses civilian structures, including hospitals, as bases for military operations in violation of **international law**; areas including medical centers, schools, mosques and residential locations have been struck under Israel\u2019s bombardment. Palestinians and some international observers **have** **accused** Israel of breaking the law with a disproportionate military response.",
+      "short_text": "Israel accuses Hamas of using civilian structures for military operations, while Palestinians and international observers accuse Israel of a disproportionate military response.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 9
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "PUBLIC_8",
+          "name": "Palestinians",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 10,
+      "text": "On Nov. 15, the Israeli military **stormed** Gaza\u2019s largest hospital, Al-Shifa, and said it **discovered weapons** and other evidence to support its assertions that Hamas operated in a network of tunnels under the complex. Senior U.S. officials have backed Israel, though the Israeli military **has yet to show incontrovertible proof** of a vast Hamas tunnel network. Hamas and hospital officials had denied the accusations.",
+      "short_text": "The Israeli military stormed Al-Shifa, Gaza's largest hospital, claiming to have discovered weapons and evidence of Hamas operating tunnels under the complex.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-11-15",
+        "narrative_time": 10
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_9",
+          "name": "Israeli military",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_10",
+          "name": "Al-Shifa",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_5",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 11,
+      "text": "Almost two days after Israel began its raid of Al-Shifa, New York Times journalists were **taken** on a controlled tour of the complex by Israeli military officials, and saw a shaft on the hospital grounds. Electrical wiring was visible inside, along with a metal staircase, but it was unclear how deep the shaft was or where it led.",
+      "short_text": "New York Times journalists were taken on a controlled tour of Al-Shifa by Israeli military officials.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 11
+      },
+      "entities": [
+        {
+          "id": "MEDIA_11",
+          "name": "New York Times journalists",
+          "social_role": "media"
+        },
+        {
+          "id": "OBJECT_10",
+          "name": "Al-Shifa",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_12",
+          "name": "Israeli military officials",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 12,
+      "text": "As conditions have worsened for civilians in Gaza, Israel\u2019s campaign has drawn increasing outcries from the United Nations, aid organizations and much of the world. Without challenging Israel\u2019s right to defend itself, the Biden administration has repeatedly **called** for \u201chumanitarian pauses\u201d to protect Palestinian civilians and allow the delivery of desperately needed aid.",
+      "short_text": "The Biden administration called for humanitarian pauses in Gaza.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 12
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_13",
+          "name": "Biden administration",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_5",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "crisis"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 13,
+      "text": "After more than a month of war, the humanitarian crisis in Gaza has grown increasingly dire, leaving Gazans with severely limited access to food, clean water and medical care. The United Nations has **warned** that the entire territory is at risk of starvation amid mass internal displacement. Thousands of **children**, who make up nearly half of Gaza\u2019s population, have been killed, according to health officials.",
+      "short_text": "The United Nations warned of a severe humanitarian crisis in Gaza, with widespread starvation risk and mass displacement.",
+      "lead_title": "What is the situation in Gaza?",
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 13
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_14",
+          "name": "United Nations",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_5",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "massacre", "crisis"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 9
+        }
+      }
+    },
+    {
+      "index": 14,
+      "text": "After weeks of desperate fuel shortages that put hospitals on the verge of collapse, Israel **agreed** on Nov. 17 to the entry of two tankers of fuel into Gaza each day to operate desalination and sewage plants.",
+      "short_text": "Israel agreed to allow two tankers of fuel into Gaza daily to operate desalination and sewage plants.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-11-17",
+        "narrative_time": 14
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_5",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "positive",
+          "intensity": 3
+        }
+      }
+    },
+    {
+      "index": 15,
+      "text": "Before Israel\u2019s raid of Al-Shifa, the hospital complex had been struggling to treat patients, with operations limited by a dearth of supplies, including water, medicine and oxygen. Medical workers at other hospitals have described similar scenes of operations at the verge of collapse.",
+      "short_text": "Before Israel's raid, Al-Shifa hospital was struggling to treat patients due to a lack of supplies.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 15
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_10",
+          "name": "Al-Shifa",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 16,
+      "text": "Violence in the Israeli-occupied West Bank has also sharply **escalated** since Oct. 7. About **200 Palestinians** have been **killed** in confrontations with Israeli forces and in escalating settler attacks, local officials say.",
+      "short_text": "About 200 Palestinians were killed in the West Bank due to violence involving Israeli forces and settler attacks since Oct. 7.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-10-07",
+        "narrative_time": 16
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_8",
+          "name": "Palestinians",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_15",
+          "name": "Israeli forces",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "massacre"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 17,
+      "text": "Freeing the 240 **hostages** abducted by Hamas on Oct. 7 has been one of Israel\u2019s two main goals of the war, in addition to destroying Hamas.",
+      "short_text": "Israel aims to free 240 hostages abducted by Hamas on Oct. 7 as a main goal of the war.",
+      "lead_title": "What happened with the hostages?",
+      "temporal_anchoring": {
+        "real_time": "2023-10-07",
+        "narrative_time": 17
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_16",
+          "name": "240 hostages",
+          "social_role": "public"
+        },
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 18,
+      "text": "Since Oct. 7, Hamas has **released** four Israeli hostages, while Israeli troops rescued a 19-year-old Israeli soldier in October. Hamas has published some videos of hostages on social media, which Israel has **called** psychological terrorism.",
+      "short_text": "Hamas released four Israeli hostages and Israel called Hamas' actions psychological terrorism.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-10-07",
+        "narrative_time": 18
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["act of terror", "armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 19,
+      "text": "Following Israel\u2019s raid of the Al-Shifa hospital, Israeli soldiers said they **found** the bodies of two Israeli hostages nearby, which they called an indication that Hamas used the complex for military operations.",
+      "short_text": "Israeli soldiers found the bodies of two Israeli hostages near Al-Shifa hospital.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 19
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_17",
+          "name": "Israeli soldiers",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_18",
+          "name": "two Israeli hostages",
+          "social_role": "public"
+        },
+        {
+          "id": "OBJECT_19",
+          "name": "Al-Shifa hospital",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 20,
+      "text": "Negotiations for a deal that would have exchanged 50 women and children captives with roughly the same number of Palestinian women and children held in Israeli prisons had been **underway**, according to Israeli officials.",
+      "short_text": "Negotiations were underway for a prisoner exchange involving 50 women and children captives and Palestinian detainees.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 20
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_4",
+          "name": "Israeli officials",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 2
+        }
+      }
+    },
+    {
+      "index": 21,
+      "text": "In the immediate aftermath of the Oct. 7 attacks, many world leaders condemned Hamas and affirmed their support for Israel. President Biden visited to show solidarity, as did the leaders of Britain, France and Germany.",
+      "short_text": "World leaders condemned Hamas and showed support for Israel following the Oct. 7 attacks.",
+      "lead_title": "How have other leaders reacted?",
+      "temporal_anchoring": {
+        "real_time": "2023-10-07",
+        "narrative_time": 21
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_20",
+          "name": "President Biden",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_21",
+          "name": "Britain",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_22",
+          "name": "France",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_23",
+          "name": "Germany",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["act of terror", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 22,
+      "text": "But the strong support for Israel has since been tempered by calls for restraint from its allies, while protesters across the world have been calling for a cease-fire. Aid groups are warning about the spiraling crisis in Gaza.",
+      "short_text": "Calls for restraint and a cease-fire emerged globally as the crisis in Gaza worsened.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 22
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_5",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["demonstration", "crisis"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 23,
+      "text": "On Nov. 16, the U.N. Security Council **adopted a resolution** calling for days-long humanitarian pauses to the fighting in Gaza.",
+      "short_text": "The U.N. Security Council adopted a resolution calling for humanitarian pauses in Gaza.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-11-16",
+        "narrative_time": 23
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_24",
+          "name": "U.N. Security Council",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_5",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 1
+        }
+      }
+    },
+    {
+      "index": 24,
+      "text": "Ant\u00f3nio Guterres, the secretary general of the United Nations, is among the leaders who has called for a **humanitarian cease-fire**.",
+      "short_text": "Ant\u00f3nio Guterres called for a humanitarian cease-fire.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 24
+      },
+      "entities": [
+        {
+          "id": "EXPERT_25",
+          "name": "Ant\u00f3nio Guterres",
+          "social_role": "expert"
+        },
+        {
+          "id": "GOVERNMENT_14",
+          "name": "United Nations",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["act of terror"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 0
+        }
+      }
+    },
+    {
+      "index": 25,
+      "text": "Leaders of dozens of Arab and Muslim nations **convened in Saudi Arabia** in mid-November. They also called for a cease-fire and avoided blaming Hamas, but those with ties to Israel have not cut off relations.",
+      "short_text": "Leaders of Arab and Muslim nations convened in Saudi Arabia, calling for a ceasefire without blaming Hamas.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-11-15",
+        "narrative_time": 25
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_26",
+          "name": "Saudi Arabia",
+          "social_role": "government"
+        },
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["diplomacy", "government", "international organisation"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 2
+        }
+      }
+    },
+    {
+      "index": 26,
+      "text": "The war in Gaza is straining relations between Israel and its immediate neighbors, jeopardizing **months of U.S. diplomacy** to push Saudi Arabia to normalize ties with Israel, leading to protests **across the Middle East** and the world and stoking fears of a broader regional conflict. President Biden has sought to prevent the war between Israel and Hamas from spilling over into a fight with Iran and its proxies in Lebanon, Syria and Iraq. The Pentagon sent two aircraft carriers and dozens of extra warplanes to the region to make this point.",
+      "short_text": "President Biden seeks to prevent the war between Israel and Hamas from escalating into a broader regional conflict involving Iran and its proxies.",
+      "lead_title": "Is a broader conflict possible?",
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 26
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_20",
+          "name": "President Biden",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_27",
+          "name": "Iran",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 27,
+      "text": "Since the Oct. 7 attacks, the Israeli army has engaged in **almost daily clashes with Hezbollah**, the Lebanese militant group allied with Hamas and backed by Iran. Israel\u2019s military also has responded to fire from Syria.",
+      "short_text": "The Israeli army has engaged in almost daily clashes with Hezbollah since the Oct. 7 attacks.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 27
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_28",
+          "name": "Israeli army",
+          "social_role": "government"
+        },
+        {
+          "id": "ACTIVIST_29",
+          "name": "Hezbollah",
+          "social_role": "activist"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 28,
+      "text": "The Palestinian Authority, which controls parts of the West Bank, said on Nov. 9 it would be open to a role overseeing a post-Hamas Gaza as long as the Biden administration commits to a two-state solution to end the war, **according** to a top Palestinian official. The head of the authority, President Mahmoud Abbas, met with U.S. officials in Ramallah on Nov. 15, urging them to pressure Israel to stop the war, speed up humanitarian aid and crack down on violence in the West Bank.",
+      "short_text": "President Mahmoud Abbas met with U.S. officials in Ramallah to discuss the role of the Palestinian Authority in a post-Hamas Gaza and to urge actions to stop the war and increase humanitarian aid.",
+      "lead_title": "What happens after the war?",
+      "temporal_anchoring": {
+        "real_time": "2023-11-15",
+        "narrative_time": 28
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_30",
+          "name": "Palestinian Authority",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_31",
+          "name": "Mahmoud Abbas",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_32",
+          "name": "U.S. officials",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_33",
+          "name": "Ramallah",
+          "social_role": "object"
+        },
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "OBJECT_5",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_13",
+          "name": "Biden administration",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_34",
+          "name": "West Bank",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 3
+        }
+      }
+    },
+    {
+      "index": 29,
+      "text": "But Mr. Netanyahu **said** on NBC\u2019s \u201cMeet the Press\u201d on Nov. 12 that his postwar vision would not include the Palestinian Authority in the near term. Earlier, he had **said** that Israel would indefinitely \u201chave the overall security responsibility\u201d of the enclave, though he seemed to stop short of suggesting a full re-occupation of Gaza.",
+      "short_text": "Mr. Netanyahu stated on NBC's 'Meet the Press' that Israel would maintain security responsibility over Gaza and exclude the Palestinian Authority from postwar plans.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-11-12",
+        "narrative_time": 29
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_35",
+          "name": "Mr. Netanyahu",
+          "social_role": "government"
+        },
+        {
+          "id": "MEDIA_36",
+          "name": "NBC's 'Meet the Press'",
+          "social_role": "media"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_5",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_30",
+          "name": "Palestinian Authority",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 30,
+      "text": "His statement was at odds with the postwar plan that Secretary of State Antony Blinken suggested on Nov. 8, in which Gaza would be unified with the West Bank under the Palestinian Authority.",
+      "short_text": "Secretary of State Antony Blinken suggested a postwar plan to unify Gaza with the West Bank under the Palestinian Authority on Nov. 8.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-11-08",
+        "narrative_time": 30
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_37",
+          "name": "Antony Blinken",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_5",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_34",
+          "name": "West Bank",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_30",
+          "name": "Palestinian Authority",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["diplomacy", "government", "international organisation"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 0
+        }
+      }
+    }
+  ]
+}

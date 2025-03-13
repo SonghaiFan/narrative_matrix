@@ -129,7 +129,7 @@
       "short_text": "Hamas is expected to release thirty-three hostages, and Israel is expected to release hundreds of Palestinians from jails over the next six weeks.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2023-02",
         "narrative_time": 4
       },
       "entities": [
@@ -159,7 +159,7 @@
       "short_text": "Israel to withdraw forces and allow displaced residents to return to northern Gaza, with 600 humanitarian aid trucks expected daily.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2023-02",
         "narrative_time": 5
       },
       "entities": [
@@ -219,7 +219,7 @@
       "short_text": "The IDF launched a ground invasion of Lebanon after months of skirmishes with Hezbollah, following Hamas's attack on October 7.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2023-10-07",
         "narrative_time": 7
       },
       "entities": [
@@ -314,7 +314,7 @@
       "short_text": "In April and October of 2024, Iran attacked Israel directly, leading to Israeli counterstrikes on Iranian air defenses and missile facilities.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2024-04",
         "narrative_time": 9
       },
       "entities": [
@@ -335,46 +335,6 @@
         "sentiment": {
           "polarity": "negative",
           "intensity": 8
-        }
-      }
-    },
-    {
-      "index": 10,
-      "text": "(For more on the direct confrontation between Iran and Israel and the role of the United States, visit the \u201cConfrontation with Iran\u201d page. For more on the direct confrontation between Hezbollah and Israel, visit the \u201cConflict With Hezbollah in Lebanon\u201d page.)",
-      "short_text": "Web pages provide information on the confrontations between Iran and Israel, and Hezbollah and Israel, involving the United States.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": null,
-        "narrative_time": 10
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_17",
-          "name": "Iran",
-          "social_role": "government"
-        },
-        {
-          "id": "GOVERNMENT_2",
-          "name": "Israel",
-          "social_role": "government"
-        },
-        {
-          "id": "GOVERNMENT_5",
-          "name": "United States",
-          "social_role": "government"
-        },
-        {
-          "id": "ACTIVIST_11",
-          "name": "Hezbollah",
-          "social_role": "activist"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "war"],
-        "sentiment": {
-          "polarity": "neutral",
-          "intensity": 0
         }
       }
     },
@@ -444,7 +404,7 @@
       "short_text": "The war ended in 1949 with Israel's victory, leading to the displacement of 750,000 Palestinians and the division of the territory into the State of Israel, the West Bank, and the Gaza Strip.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "1949",
         "narrative_time": 13
       },
       "entities": [
@@ -489,7 +449,7 @@
       "short_text": "Following the 1956 Suez Crisis, Egypt, Jordan, and Syria signed mutual defense pacts in response to Israel's invasion of the Sinai Peninsula.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "1956",
         "narrative_time": 14
       },
       "entities": [
@@ -574,7 +534,7 @@
       "short_text": "After the war, Israel gained territorial control over the Sinai Peninsula, Gaza Strip, West Bank, East Jerusalem, and Golan Heights from Egypt, Jordan, and Syria respectively.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "1967-06-10",
         "narrative_time": 16
       },
       "entities": [
@@ -639,7 +599,7 @@
       "short_text": "In the Yom Kippur War, Egypt and Syria launched a surprise attack on Israel to regain lost territory.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "1973-10-06",
         "narrative_time": 17
       },
       "entities": [
@@ -949,7 +909,7 @@
       "short_text": "Hamas won the Palestinian Authority\u2019s parliamentary elections in 2006, deposing Fatah.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2006",
         "narrative_time": 25
       },
       "entities": [
@@ -1014,7 +974,7 @@
       "short_text": "The United States and European Union did not recognize Hamas' electoral victory due to its designation as a terrorist organization by Western governments.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "1993",
         "narrative_time": 27
       },
       "entities": [
@@ -1044,7 +1004,7 @@
       "short_text": "Violence erupted between Hamas and Fatah following Hamas' control seizure.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2006",
         "narrative_time": 28
       },
       "entities": [
@@ -1074,7 +1034,7 @@
       "short_text": "Between 2006 and 2011, failed peace talks and deadly confrontations led to an agreement to reconcile.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2006",
         "narrative_time": 29
       },
       "entities": [],
@@ -1193,7 +1153,7 @@
       "short_text": "Palestinian President Mahmoud Abbas announced that Palestinians would no longer adhere to the Oslo Accords territorial divisions after violence in 2015.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2015-09-30",
         "narrative_time": 33
       },
       "entities": [
@@ -1268,7 +1228,7 @@
       "short_text": "Hamas militants fired over one hundred rockets into Israel, which responded with strikes on more than fifty targets in Gaza during a twenty-four-hour flare-up.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2019-05-29",
         "narrative_time": 35
       },
       "entities": [
@@ -1303,7 +1263,7 @@
       "short_text": "The political tension led to disunity between Fatah and Hamas, with Fatah controlling the Palestinian Authority in the West Bank and Hamas ruling the Gaza Strip.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2017-09-21",
         "narrative_time": 36
       },
       "entities": [
@@ -1350,10 +1310,10 @@
     {
       "index": 37,
       "text": "The Donald J. Trump administration reversed longstanding U.S. policy by\u202fcanceling\u202ffunding for the UN Relief and Works Agency, which provides aid to Palestinian refugees, and\u202frelocating\u202fthe U.S.",
-      "short_text": "The Trump administration canceled funding for the UN Relief and Works Agency and relocated the U.S. embassy.",
+      "short_text": "The Trump administration canceled funding for the UN Relief and Works Agency and relocated the U.S. embassy.embassy from Tel Aviv to Jerusalem. ",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2018-08-30",
         "narrative_time": 37
       },
       "entities": [
@@ -1384,11 +1344,11 @@
     },
     {
       "index": 38,
-      "text": "embassy\u202ffrom Tel Aviv to Jerusalem. The Trump administration also helped broker the\u202fAbraham Accords, under which Bahrain and the United Arab Emirates normalized relations with Israel, becoming only the third and fourth countries in the region\u2014following Egypt in 1979 and Jordan in 1994\u2014to do so.",
+      "text": "The Trump administration also helped broker the\u202fAbraham Accords, under which Bahrain and the United Arab Emirates normalized relations with Israel, becoming only the third and fourth countries in the region\u2014following Egypt in 1979 and Jordan in 1994\u2014to do so.",
       "short_text": "The Trump administration facilitated the Abraham Accords, normalizing relations between Israel, Bahrain, and the United Arab Emirates.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2020-09-15",
         "narrative_time": 38
       },
       "entities": [
@@ -1424,11 +1384,11 @@
     },
     {
       "index": 39,
-      "text": "Similar deals followed with Morocco [PDF] and Sudan. Palestinian leader Mahmoud Abbas of Fatah\u202frejected\u202fthe accords, as did Hamas.",
+      "text": "Similar deals followed with Morocco and Sudan. Palestinian leader Mahmoud Abbas of Fatah\u202frejected\u202fthe accords, as did Hamas.",
       "short_text": "Palestinian leader Mahmoud Abbas of Fatah and Hamas rejected the accords.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2020-10-23",
         "narrative_time": 39
       },
       "entities": [
@@ -1463,7 +1423,7 @@
       "short_text": "In early May 2021, Israeli police used force against demonstrators protesting the court-ordered eviction of Palestinian families from East Jerusalem.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": "2021-05-01",
+        "real_time": "2021-05-06",
         "narrative_time": 40
       },
       "entities": [
@@ -1498,7 +1458,7 @@
       "short_text": "Hamas and other Palestinian militant groups launched hundreds of rockets into Israeli territory.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2021-05-10",
         "narrative_time": 41
       },
       "entities": [
@@ -1528,7 +1488,7 @@
       "short_text": "Israel conducted artillery bombardments and airstrikes, resulting in over twenty Palestinian deaths and damage to various infrastructures.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2021-05-17",
         "narrative_time": 42
       },
       "entities": [
@@ -1558,7 +1518,7 @@
       "short_text": "Israel and Hamas agreed to a cease-fire after eleven days of conflict, with both sides claiming victory.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2021-05-21",
         "narrative_time": 43
       },
       "entities": [
@@ -1588,7 +1548,7 @@
       "short_text": "The fighting resulted in over 250 Palestinian and 13 Israeli deaths, nearly 2,000 injuries, and the displacement of 72,000 Palestinians.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2021-05-21",
         "narrative_time": 44
       },
       "entities": [
@@ -2033,7 +1993,7 @@
       "short_text": "President Biden warned Netanyahu that the US would withhold offensive weapons if Israel launched an operation in Rafah.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2024-05-07",
         "narrative_time": 56
       },
       "entities": [
@@ -2078,7 +2038,7 @@
       "short_text": "The Biden administration did not act on a threat as it found Israel's operations in Rafah to be more targeted.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2024-05-09",
         "narrative_time": 57
       },
       "entities": [
@@ -2113,7 +2073,7 @@
       "short_text": "In the fall of 2024, the IDF launched a renewed offensive in northern Gaza around the Jabalia refugee camp while continuing operations in southern and central Gaza.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2024-10",
         "narrative_time": 58
       },
       "entities": [
@@ -2233,7 +2193,7 @@
       "short_text": "The UN attempted to reach the besieged area 165 times between October 6 and December 31, 2024.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2024-10-06",
         "narrative_time": 61
       },
       "entities": [
@@ -2258,7 +2218,7 @@
       "short_text": "Israeli authorities denied 149 attempts, while 16 faced impediments during the operations in northern Gaza in 2023.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": "2023-01-01",
+        "real_time": "2024-12-31",
         "narrative_time": 62
       },
       "entities": [
@@ -2318,7 +2278,7 @@
       "short_text": "In April 2024, an Israeli airstrike killed seven employees of the World Central Kitchen, and in August 2024, World Food Programme workers were shot.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": null,
+        "real_time": "2024-06",
         "narrative_time": 64
       },
       "entities": [

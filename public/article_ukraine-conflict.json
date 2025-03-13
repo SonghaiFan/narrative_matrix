@@ -1,0 +1,3329 @@
+{
+  "metadata": {
+    "title": "unknown",
+    "description": "A historical account of Gaza's role in the Middle East conflict",
+    "topic": "Middle East Conflict",
+    "author": "unknown",
+    "publishDate": "2025-03-13",
+    "imageUrl": null
+  },
+  "events": [
+    {
+      "index": 1,
+      "text": "Three years since Russia'\u2019's February 2022 full-scale invasion of Ukraine, Russia still occupies roughly 20 percent of the country after gaining over four thousand square kilometers of territory in 2024.",
+      "short_text": "Russia occupies roughly 20 percent of Ukraine after gaining territory in 2024.",
+      "lead_title": "Intro",
+      "temporal_anchoring": {
+        "real_time": "2024",
+        "narrative_time": 1
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 2,
+      "text": "Russia continues to bombard Ukrainian cities, while Ukraine maintains drone attacks on Russian ships and military vehicles.",
+      "short_text": "Russia bombards Ukrainian cities and Ukraine attacks Russian ships and military vehicles with drones.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2024",
+        "narrative_time": 2
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 3,
+      "text": "Since January 2022, Ukraine has received about $407 billion in aid, including over $118 billion from the United States. Fighting and air strikes have inflicted over 40,000 civilian casualties, while 4 million people are internally displaced, and 6.8 million have fled Ukraine. 14.6 million people need humanitarian assistance. As the United States works to negotiate an end to the war in Ukraine, the Trump administration\u2019s approach has escalated tensions between Kyiv and Washington.",
+      "short_text": "The United States has provided over $118 billion in aid to Ukraine since January 2022.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2022-01-01",
+        "narrative_time": 3
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 4,
+      "text": "Following a White House meeting between President Zelenskyy, President Trump, and Vice President JD Vance that descended into acrimony, Trump suspended U.S. military assistance to Ukraine.",
+      "short_text": "President Trump suspended U.S. military assistance to Ukraine following a contentious meeting with President Zelenskyy and Vice President JD Vance.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2025-02-28",
+        "narrative_time": 4
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_4",
+          "name": "President Trump",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_5",
+          "name": "President Zelenskyy",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_6",
+          "name": "Vice President JD Vance",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["defence", "diplomacy", "government"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 5,
+      "text": "On March 11, Ukraine announced it was ready to accept the Trump administration's proposal for a thirty-day interim cease-fire, contingent on Russian agreement.",
+      "short_text": "Ukraine agreed to a thirty-day interim cease-fire proposed by the Trump administration, pending Russian consent.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2025-03-11",
+        "narrative_time": 5
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_7",
+          "name": "Trump administration",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 3
+        }
+      }
+    },
+    {
+      "index": 6,
+      "text": "The United States announced it would immediately lift its intelligence-sharing pause and restore military aid to Ukraine.",
+      "short_text": "The United States announced it would immediately lift its intelligence-sharing pause and restore military aid to Ukraine.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2025-03-11",
+        "narrative_time": 6
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "positive",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 7,
+      "text": "Armed conflict in eastern Ukraine erupted in early 2014 following Russia\u2019s annexation of Crimea.",
+      "short_text": "Armed conflict in eastern Ukraine erupted following Russia\u2019s annexation of Crimea.",
+      "lead_title": "Background",
+      "temporal_anchoring": {
+        "real_time": "2014",
+        "narrative_time": 7
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 8,
+      "text": "The previous year, protests in Ukraine\u2019s capital, Kyiv, against Ukrainian President Viktor Yanukovych\u2019s rejection of a deal for greater economic integration with the European Union (EU) were met with a violent crackdown by state security forces.",
+      "short_text": "Violent crackdown by state security forces on protests in Kyiv against President Yanukovych's rejection of an EU integration deal.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2013-11-30",
+        "narrative_time": 8
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_8",
+          "name": "Kyiv",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_9",
+          "name": "Ukrainian President Viktor Yanukovych",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_10",
+          "name": "European Union",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["demonstration", "civil unrest", "crisis"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 9,
+      "text": "Subsequently, the protests escalated, and President Yanukovych fled the country in February 2014.",
+      "short_text": "President Yanukovych fled Ukraine in February 2014 amid escalating protests.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2014-02-01",
+        "narrative_time": 9
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_11",
+          "name": "President Viktor Yanukovych",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["civil unrest", "demonstration"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 10,
+      "text": "One month later, in March 2014, Russian special forces took control of the Ukrainian peninsula of Crimea.",
+      "short_text": "Russian special forces took control of the Ukrainian peninsula of Crimea in March 2014.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2014-03-01",
+        "narrative_time": 10
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_12",
+          "name": "Ukrainian peninsula of Crimea",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 11,
+      "text": "Russian President Vladimir Putin cited the need to protect the rights of Russian citizens and Russian speakers in Crimea and southeast Ukraine.",
+      "short_text": "Russian President Vladimir Putin cited the need to protect the rights of Russian citizens and Russian speakers in Crimea and southeast Ukraine.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2014-03-18",
+        "narrative_time": 11
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_13",
+          "name": "Vladimir Putin",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_14",
+          "name": "Crimea",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["diplomacy", "human rights", "government"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 0
+        }
+      }
+    },
+    {
+      "index": 12,
+      "text": "Russia then formally annexed the peninsula after Crimeans voted to join the Russian Federation in a disputed local referendum.",
+      "short_text": "Russia annexed Crimea following a local referendum.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2014-03-16",
+        "narrative_time": 12
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_14",
+          "name": "Crimea",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 13,
+      "text": "The crisis heightened ethnic divisions, and two months later, pro-Russian separatists in the eastern Ukrainian regions of Donetsk and Luhansk held independence referendums.",
+      "short_text": "Pro-Russian separatists in Donetsk and Luhansk held independence referendums.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2014-03-11",
+        "narrative_time": 13
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_15",
+          "name": "Donetsk",
+          "social_role": "public"
+        },
+        {
+          "id": "PUBLIC_16",
+          "name": "Luhansk",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "crisis"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 14,
+      "text": "Armed conflict in the regions quickly broke out between Russian-backed forces and the Ukrainian military.",
+      "short_text": "Armed conflict broke out between Russian-backed forces and the Ukrainian military.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 14
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 15,
+      "text": "Though Russia denied military involvement, both Ukraine and the North Atlantic Treaty Organization (NATO) reported Russian troops and military equipment near Donetsk and Russian cross-border shelling.",
+      "short_text": "Russia denied military involvement while Ukraine and NATO reported Russian troops and shelling near Donetsk.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 15
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_17",
+          "name": "North Atlantic Treaty Organization",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_15",
+          "name": "Donetsk",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 16,
+      "text": "The conflict transitioned to an active stalemate, with regular shelling and skirmishes occurring along the frontlines.",
+      "short_text": "The conflict transitioned to an active stalemate with regular shelling and skirmishes along the frontlines.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 16
+      },
+      "entities": [],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "conflict (general)"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 17,
+      "text": "In October 2021, months of intelligence gathering of Russian troop movements, force build-up, and military contingency financing culminated in a White House briefing with U.S.",
+      "short_text": "In October 2021, a White House briefing was held to discuss the intelligence gathered on Russian troop movements and military build-up.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2021-10-01",
+        "narrative_time": 17
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 18,
+      "text": "intelligence, military, and diplomatic leaders on a near-certain mass-scale Russian invasion of Ukraine. Leading up to the invasion, the Joe Biden administration reduced information-sharing constraints and allowed for the broader dissemination of intelligence and findings, both with allies\u2014including Ukraine\u2014and publicly.",
+      "short_text": "The Joe Biden administration reduced information-sharing constraints and allowed for broader dissemination of intelligence regarding the Russian invasion of Ukraine.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 18
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_18",
+          "name": "Joe Biden administration",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 19,
+      "text": "Commercial satellite imagery, social media posts, and published intelligence from November and December 2021 showed armor, missiles, and other heavy weaponry moving toward Ukraine with no official explanation from the Kremlin.",
+      "short_text": "In late 2021, heavy military equipment including armor and missiles was moved towards Ukraine, as observed through various sources including commercial satellite imagery and social media, without any official explanation from the Kremlin.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2021-11-01",
+        "narrative_time": 19
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_19",
+          "name": "Kremlin",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["weaponry", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 20,
+      "text": "In mid-December 2021, Russia\u2019s foreign ministry called on the United States and NATO to cease military activity in Eastern Europe and Central Asia, commit to no further NATO expansion toward Russia, and prevent Ukraine from joining NATO in the future.",
+      "short_text": "In mid-December 2021, Russia's foreign ministry requested the United States and NATO to stop military activities in Eastern Europe and Central Asia, and to prevent Ukraine from joining NATO.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2021-12-15",
+        "narrative_time": 20
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_17",
+          "name": "North Atlantic Treaty Organization",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["diplomacy", "defence", "treaty"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 21,
+      "text": "The United States and NATO rejected these demands and threatened to impose severe economic sanctions on Russia.",
+      "short_text": "The United States and NATO rejected demands and threatened Russia with severe economic sanctions.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 21
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_17",
+          "name": "North Atlantic Treaty Organization",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["act of terror"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 22,
+      "text": "In early February 2022, satellite imagery showed the largest deployment of Russian troops to its border with Belarus since the end of the Cold War.",
+      "short_text": "In early February 2022, satellite imagery showed the largest deployment of Russian troops to its border with Belarus since the end of the Cold War.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2022-02-01",
+        "narrative_time": 22
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_20",
+          "name": "Belarus",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 23,
+      "text": "Negotiations between the United States, Russia, and European powers failed to bring about a resolution.",
+      "short_text": "Negotiations between the United States, Russia, and European powers failed to bring about a resolution.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 23
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_21",
+          "name": "European powers",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["diplomacy", "international organisation", "treaty"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 24,
+      "text": "In late February 2022, the United States warned that Russia intended to invade Ukraine, citing Russia\u2019s growing military presence at the Russia-Ukraine border.",
+      "short_text": "The United States warned of Russia's intention to invade Ukraine in late February 2022.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2022-02-28",
+        "narrative_time": 24
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 25,
+      "text": "President Putin then ordered troops to Luhansk and Donetsk for a \u201cpeacekeeping\u201d function.",
+      "short_text": "President Putin ordered troops to Luhansk and Donetsk for a peacekeeping function.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 25
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_13",
+          "name": "Vladimir Putin",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_16",
+          "name": "Luhansk",
+          "social_role": "public"
+        },
+        {
+          "id": "PUBLIC_15",
+          "name": "Donetsk",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 26,
+      "text": "The United States responded by imposing sanctions on the regions and the Nord Stream 2 gas pipeline.",
+      "short_text": "The United States imposed sanctions on the regions and the Nord Stream 2 gas pipeline.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 26
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_22",
+          "name": "Nord Stream 2 gas pipeline",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "economy, business and finance",
+        "sub_topic": ["energy and resource"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 27,
+      "text": "Nevertheless, just before the invasion, U.S. and Ukrainian leaders remained at odds regarding the likelihood of an armed Russian threat, with Ukrainian officials playing down the possibility of an incursion and delaying the mobilization of their troops and reserve forces.",
+      "short_text": "Before the invasion, U.S. and Ukrainian leaders disagreed on the likelihood of a Russian armed threat, leading to a delay in Ukraine's troop mobilization.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 27
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "crisis"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 28,
+      "text": "On February 24, 2022, during a last-ditch UN Security Council effort to dissuade Russia from invading Ukraine, Putin announced the beginning of a full-scale land, sea, and air invasion, targeting Ukrainian military assets and cities across the country.",
+      "short_text": "Putin announced a full-scale invasion of Ukraine targeting military assets and cities.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2022-02-24",
+        "narrative_time": 28
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_13",
+          "name": "Vladimir Putin",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict", "crisis"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 9
+        }
+      }
+    },
+    {
+      "index": 29,
+      "text": "Putin claimed that the goals of the operation were to demilitarize and denazify Ukraine and end the alleged genocide of Russians in Ukrainian territory.",
+      "short_text": "Putin claimed the goals of the operation were to demilitarize and denazify Ukraine and end the alleged genocide of Russians in Ukrainian territory.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 29
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_13",
+          "name": "Vladimir Putin",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 30,
+      "text": "U.S. President Joe Biden called the attack \u201cunprovoked and unjustified\u201d and issued severe sanctions against top Kremlin officials, including Putin and Russian Foreign Minister Sergey Lavrov; four of Russia\u2019s largest banks; and the Russian oil and gas industry in coordination with European allies.",
+      "short_text": "U.S. President Joe Biden issued severe sanctions against top Kremlin officials and Russian industries in response to an unprovoked attack.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 30
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_23",
+          "name": "Joe Biden",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_19",
+          "name": "Kremlin",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_13",
+          "name": "Vladimir Putin",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_24",
+          "name": "Sergey Lavrov",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "CORPORATE_25",
+          "name": "Russian oil and gas industry",
+          "social_role": "corporate"
+        },
+        {
+          "id": "GOVERNMENT_26",
+          "name": "European allies",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["act of terror"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 31,
+      "text": "On March 2, 141 of 193 UN member states voted to condemn Russia\u2019s invasion in an emergency UN General Assembly session, demanding that Russia immediately withdraw from Ukraine.",
+      "short_text": "141 of 193 UN member states voted to condemn Russia's invasion of Ukraine, demanding immediate withdrawal.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-03-02",
+        "narrative_time": 31
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 32,
+      "text": "As the initial Russian invasion slowed in March, long-range missile strikes caused significant damage to Ukrainian military assets, urban residential areas, and communication and transportation infrastructure.",
+      "short_text": "Long-range missile strikes by Russia in March caused significant damage to Ukrainian military assets, urban residential areas, and infrastructure.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 32
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 33,
+      "text": "Hospitals and residential complexes also sustained shelling and bombing attacks. Later that month, Russia announced a \u201creduction in military activity\u201d near Kyiv and Chernihiv, followed by a full withdrawal of all troops from Ukraine\u2019s capital region by April 6.",
+      "short_text": "Russia announced a reduction in military activity near Kyiv and Chernihiv, followed by a full withdrawal of troops from Kyiv by April 6.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-04-06",
+        "narrative_time": 33
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_8",
+          "name": "Kyiv",
+          "social_role": "public"
+        },
+        {
+          "id": "PUBLIC_27",
+          "name": "Chernihiv",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 34,
+      "text": "In Kyiv\u2019s surrounding areas, civilians described apparent war crimes committed by Russian forces, including accounts of summary executions, torture, and rape.",
+      "short_text": "Civilians in areas surrounding Kyiv reported war crimes by Russian forces, including executions, torture, and rape.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 34
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_8",
+          "name": "Kyiv",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "massacre"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 9
+        }
+      }
+    },
+    {
+      "index": 35,
+      "text": "On April 18, Russia launched a new major offensive in eastern Ukraine following its failed attempt to seize the capital.",
+      "short_text": "Russia launched a new major offensive in eastern Ukraine.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-04-18",
+        "narrative_time": 35
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 36,
+      "text": "By May, Russian forces took control of Mariupol, a major and highly strategic southeastern port city.",
+      "short_text": "Russian forces took control of Mariupol in May.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 36
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_28",
+          "name": "Mariupol",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 37,
+      "text": "Indiscriminate and targeted attacks against civilians in the city amplified allegations against Russian forces for international humanitarian law violations.",
+      "short_text": "Indiscriminate and targeted attacks against civilians in the city led to allegations of international humanitarian law violations against Russian forces.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 37
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 38,
+      "text": "Since the summer of 2022, fighting has largely been confined to Ukraine\u2019s east and south, with Russian cruise missiles, bombs, cluster munitions, and thermobaric weapons devastating port cities along the Black Sea and the Sea of Azov.",
+      "short_text": "Since the summer of 2022, Russian military actions have devastated port cities in Ukraine's east and south.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 38
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 39,
+      "text": "The Russian seizure of several Ukrainian ports and subsequent blockade of Ukrainian food exports compounded an already acute global food crisis.",
+      "short_text": "Russia seized several Ukrainian ports and blockaded Ukrainian food exports, worsening the global food crisis.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 39
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 40,
+      "text": "Before the conflict, Ukraine was the largest supplier of commodities to the World Food Program (WFP), which provides food assistance to vulnerable populations.",
+      "short_text": "Before the conflict, Ukraine was the largest supplier of commodities to the World Food Program.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 40
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "ACTIVIST_29",
+          "name": "World Food Program",
+          "social_role": "activist"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 4
+        }
+      }
+    },
+    {
+      "index": 41,
+      "text": "In July 2022, Russia and Ukraine signed an agreement to free more than twenty million tons of grain from Russian-controlled Ukrainian ports.",
+      "short_text": "In July 2022, Russia and Ukraine signed an agreement to free more than twenty million tons of grain from Russian-controlled Ukrainian ports.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2022-07-01",
+        "narrative_time": 41
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "positive",
+          "intensity": 4
+        }
+      }
+    },
+    {
+      "index": 42,
+      "text": "In October, Russia suspended the grain deal in response to an alleged Ukrainian attack on Russian naval forces.",
+      "short_text": "In October, Russia suspended the grain deal due to an alleged Ukrainian attack on Russian naval forces.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 42
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 43,
+      "text": "Turkey quickly negotiated Russia\u2019s return to the deal, which was consistently extended until July 17, 2023, when Russia quit the deal.",
+      "short_text": "Russia quit the deal on July 17, 2023, which Turkey had negotiated for its extension.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-07-17",
+        "narrative_time": 43
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_30",
+          "name": "Turkey",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["act of terror"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 4
+        }
+      }
+    },
+    {
+      "index": 44,
+      "text": "Ukraine later adopted safe shipping lanes along the coast of NATO members Romania and Bulgaria, which has facilitated higher rates of grain exports compared to 2023.",
+      "short_text": "Ukraine adopted safe shipping lanes along the coast of NATO members Romania and Bulgaria to facilitate higher grain exports.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 44
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_31",
+          "name": "NATO members Romania and Bulgaria",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "economy, business and finance",
+        "sub_topic": ["agriculture", "transport"],
+        "sentiment": {
+          "polarity": "positive",
+          "intensity": 4
+        }
+      }
+    },
+    {
+      "index": 45,
+      "text": "In mid-August 2022, the war\u2019s frontline shifted south, sparking international fears of a nuclear disaster at the Zaporizhzhia nuclear plant along the Dnipro River.",
+      "short_text": "In mid-August 2022, the war's frontline shifted south, causing fears of a nuclear disaster at the Zaporizhzhia nuclear plant.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2022-08-15",
+        "narrative_time": 45
+      },
+      "entities": [
+        {
+          "id": "OBJECT_32",
+          "name": "Zaporizhzhia nuclear plant",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_33",
+          "name": "Dnipro River",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 46,
+      "text": "The largest nuclear plant in Europe, the Zaporizhzhia facility was seized by Russian forces in the earliest stages of the war.",
+      "short_text": "Russian forces seized the Zaporizhzhia nuclear plant in the earliest stages of the war.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 46
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_32",
+          "name": "Zaporizhzhia nuclear plant",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 47,
+      "text": "Fighting near the facility has raised concerns of critical damage to the plant: shelling of the plant\u2019s switchyard has already led to nearby energy disruptions, such as a city-wide black-out in Enerhodar.",
+      "short_text": "Shelling of the plant's switchyard caused a city-wide black-out in Enerhodar.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 47
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_34",
+          "name": "Enerhodar",
+          "social_role": "public"
+        },
+        {
+          "id": "OBJECT_35",
+          "name": "plant's switchyard",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 48,
+      "text": "Representatives of the International Atomic Energy Agency (IAEA) have visited Zaporizhzhia on multiple occasions to assess the threat of a nuclear accident.",
+      "short_text": "Representatives of the International Atomic Energy Agency visited Zaporizhzhia to assess the threat of a nuclear accident.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 48
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_36",
+          "name": "International Atomic Energy Agency",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_37",
+          "name": "Zaporizhzhia",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "disaster and accident",
+        "sub_topic": ["nuclear accident", "emergency planning", "rescue"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 0
+        }
+      }
+    },
+    {
+      "index": 49,
+      "text": "Attacks on the site and damage to its infrastructure continue: in February 2025, the IAEA warned that continued attacks on Ukraine\u2019s power grids could increase the risk of nuclear disaster.",
+      "short_text": "In February 2025, the IAEA warned of increased nuclear disaster risk due to continued attacks on Ukraine's power grids.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2025-02-01",
+        "narrative_time": 49
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_36",
+          "name": "International Atomic Energy Agency",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "disaster and accident",
+        "sub_topic": ["nuclear accident", "emergency planning"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 50,
+      "text": "In September 2022, Ukrainian forces made strong advances in the northeast and mounted a revitalized southern counteroffensive.",
+      "short_text": "In September 2022, Ukrainian forces advanced in the northeast and launched a counteroffensive in the south.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2022-09-01",
+        "narrative_time": 50
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 2
+        }
+      }
+    },
+    {
+      "index": 51,
+      "text": "Ukraine retook significant territory in the Kharkiv region, surprising Russian forces and cutting off important supply lines at Lyman before stalling and settling into a new front line.",
+      "short_text": "Ukraine retook significant territory in the Kharkiv region, surprising Russian forces and cutting off important supply lines at Lyman.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 51
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_38",
+          "name": "Kharkiv region",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_39",
+          "name": "Russian forces",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_40",
+          "name": "Lyman",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "positive",
+          "intensity": 4
+        }
+      }
+    },
+    {
+      "index": 52,
+      "text": "In southern Ukraine, Ukrainian forces retook the city of Kherson and forced a Russian withdrawal from all territory west of the Dnipro River.",
+      "short_text": "Ukrainian forces retook the city of Kherson and forced a Russian withdrawal from all territory west of the Dnipro River.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 52
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_41",
+          "name": "Kherson",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_33",
+          "name": "Dnipro River",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "positive",
+          "intensity": 4
+        }
+      }
+    },
+    {
+      "index": 53,
+      "text": "Russia then redeployed forces eastward to Donetsk, in addition to sending tens of thousands of reinforcements to the area in advance of a February 2023 offensive.",
+      "short_text": "Russia redeployed forces to Donetsk and sent reinforcements in preparation for a February 2023 offensive.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-02-01",
+        "narrative_time": 53
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_15",
+          "name": "Donetsk",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 54,
+      "text": "Later that month, Putin moved to illegally annex four occupied territories: Luhansk, Donetsk, Kherson, and Zaporizhzhia.",
+      "short_text": "Putin moved to illegally annex four occupied territories: Luhansk, Donetsk, Kherson, and Zaporizhzhia.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 54
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_13",
+          "name": "Vladimir Putin",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_16",
+          "name": "Luhansk",
+          "social_role": "public"
+        },
+        {
+          "id": "PUBLIC_15",
+          "name": "Donetsk",
+          "social_role": "public"
+        },
+        {
+          "id": "PUBLIC_41",
+          "name": "Kherson",
+          "social_role": "public"
+        },
+        {
+          "id": "PUBLIC_37",
+          "name": "Zaporizhzhia",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 55,
+      "text": "In his accompanying speech, Putin suggested the potential for nuclear escalation, referencing the United States\u2019 use of nuclear weapons against Japan during World War II.",
+      "short_text": "Putin suggested the potential for nuclear escalation, referencing the US's historical use of nuclear weapons.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 55
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_13",
+          "name": "Vladimir Putin",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 56,
+      "text": "Following a winter stalemate, Putin announced plans in February to take all of Donbas by March 2023 in an offensive surge.",
+      "short_text": "Putin announced plans to take all of Donbas by March 2023.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 56
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_13",
+          "name": "Vladimir Putin",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_42",
+          "name": "Donbas",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 57,
+      "text": "However, the attack made little progress and devolved into a months-long siege of Bakhmut, a town of limited strategic\u2014but substantial symbolic\u2014value.",
+      "short_text": "The attack devolved into a months-long siege of Bakhmut.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 57
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_43",
+          "name": "Bakhmut",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 58,
+      "text": "By late May, Russia claimed control of the city, and Ukrainian attempts to recapture the area were unsuccessful.",
+      "short_text": "Russia claimed control of the city by late May, and Ukrainian attempts to recapture it were unsuccessful.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 58
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 59,
+      "text": "The United States estimates Russia suffered one hundred thousand casualties in Bakhmut.",
+      "short_text": "The United States estimates Russia suffered one hundred thousand casualties in Bakhmut.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 59
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_43",
+          "name": "Bakhmut",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 60,
+      "text": "On June 6, 2023, a breach in the Nova Kakhovka dam, sixty kilometers north of Kherson on the Dnipro River, caused severe flooding in southwest Ukraine, affecting over eighty thousand people who live in the riparian zone.",
+      "short_text": "A breach in the Nova Kakhovka dam caused severe flooding in southwest Ukraine.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-06-06",
+        "narrative_time": 60
+      },
+      "entities": [
+        {
+          "id": "OBJECT_44",
+          "name": "Nova Kakhovka dam",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_33",
+          "name": "Dnipro River",
+          "social_role": "object"
+        },
+        {
+          "id": "PUBLIC_41",
+          "name": "Kherson",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "disaster and accident",
+        "sub_topic": ["flood", "emergency incident", "rescue"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 61,
+      "text": "Ukraine accused Russia of blowing up the dam to prevent a southeastern offensive.",
+      "short_text": "Ukraine accused Russia of blowing up the Nova Kakhovka dam to prevent a southeastern offensive.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 61
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_44",
+          "name": "Nova Kakhovka dam",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 62,
+      "text": "The Ukrainian dam operator said it was destroyed beyond repair.",
+      "short_text": "The Ukrainian dam operator reported that the dam was destroyed beyond repair.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 62
+      },
+      "entities": [
+        {
+          "id": "CORPORATE_45",
+          "name": "Ukrainian dam operator",
+          "social_role": "corporate"
+        }
+      ],
+      "topic": {
+        "main_topic": "disaster and accident",
+        "sub_topic": ["emergency incident"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 63,
+      "text": "In June 2023, Ukraine launched a much-anticipated counteroffensive, attempting to break through Russian defenses eastward in Donetsk province and southward in Zaporizhzhia province, which forms the \u201cland corridor\u201d to Crimea.",
+      "short_text": "In June 2023, Ukraine launched a counteroffensive against Russian defenses in Donetsk and Zaporizhzhia provinces.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-06-01",
+        "narrative_time": 63
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_15",
+          "name": "Donetsk",
+          "social_role": "public"
+        },
+        {
+          "id": "PUBLIC_37",
+          "name": "Zaporizhzhia",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 64,
+      "text": "Ukrainian forces met stiff resistance and suffered heavy losses against hardened Russian defensive positions, air superiority, and minefields.",
+      "short_text": "Ukrainian forces suffered heavy losses against Russian defenses.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 64
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 65,
+      "text": "Nonetheless, Ukraine made small gains on the ground and has stepped up attacks on bridges to Crimea, Russian ships, and buildings in Moscow.",
+      "short_text": "Ukraine made small gains on the ground and increased attacks on bridges to Crimea, Russian ships, and buildings in Moscow.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 65
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_14",
+          "name": "Crimea",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_46",
+          "name": "Moscow",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 66,
+      "text": "Since February 24, 2022, the United States has committed over $118 billion in assistance to Ukraine, including roughly $65 billion in immediate military aid.",
+      "short_text": "The United States has committed over $118 billion in assistance to Ukraine since February 24, 2022.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2022-02-24",
+        "narrative_time": 66
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 0
+        }
+      }
+    },
+    {
+      "index": 67,
+      "text": "In early 2023, the Biden administration approved the provision of increasingly advanced weaponry, such as the Patriot air defense system, crucial for defending against Russian airstrikes, and top-tier battle tanks.",
+      "short_text": "In early 2023, the Biden administration approved the provision of advanced weaponry, including the Patriot air defense system and top-tier battle tanks, to defend against Russian airstrikes.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-01-01",
+        "narrative_time": 67
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_18",
+          "name": "Joe Biden administration",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_47",
+          "name": "Patriot air defense system",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["weaponry", "armed conflict"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 2
+        }
+      }
+    },
+    {
+      "index": 68,
+      "text": "U.S. troop presence in Europe has also increased to more than one hundred thousand soldiers.",
+      "short_text": "U.S. troop presence in Europe has increased to more than one hundred thousand soldiers.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 68
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 0
+        }
+      }
+    },
+    {
+      "index": 69,
+      "text": "Despite continued condemnation by key international actors, Russia continues to build valuable partnerships; North Korea and Iran share intelligence and military equipment, while others, namely India and China, have begun purchasing Russian oil and gas at discounted prices.",
+      "short_text": "Russia continues to build partnerships with North Korea, Iran, India, and China despite international condemnation.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 69
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_48",
+          "name": "North Korea",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_49",
+          "name": "Iran",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_50",
+          "name": "India",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_51",
+          "name": "China",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 70,
+      "text": "On June 23, Putin faced a major internal challenge when Yevgeniy Prigozhin, the former leader of the Wagner Group of mercenaries, accused the Russian Ministry of Defense (MoD) of shelling his forces and announced a \u201cmarch of justice\u201d to unseat the military leadership.",
+      "short_text": "Yevgeniy Prigozhin accused the Russian Ministry of Defense of shelling his forces and announced a march of justice.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-06-23",
+        "narrative_time": 70
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_52",
+          "name": "Yevgeniy Prigozhin",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_53",
+          "name": "Russian Ministry of Defense",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["coup detat", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 71,
+      "text": "The mutiny followed months of tensions with the MoD. Wagner forces quickly occupied Rostov-on-Don, seized Russia\u2019s southern military headquarters, and subsequently advanced more than halfway to Moscow.",
+      "short_text": "Wagner forces occupied Rostov-on-Don and advanced towards Moscow after seizing the southern military headquarters.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 71
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_54",
+          "name": "Wagner forces",
+          "social_role": "public"
+        },
+        {
+          "id": "PUBLIC_55",
+          "name": "Rostov-on-Don",
+          "social_role": "public"
+        },
+        {
+          "id": "OBJECT_56",
+          "name": "Russia's southern military headquarters",
+          "social_role": "object"
+        },
+        {
+          "id": "PUBLIC_46",
+          "name": "Moscow",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "coup detat"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 72,
+      "text": "Putin declared the march \u201ctreason\u201d and offered amnesty for soldiers who stopped.",
+      "short_text": "Putin declared the march 'treason' and offered amnesty for soldiers who stopped.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 72
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_13",
+          "name": "Vladimir Putin",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 73,
+      "text": "On June 24, Belarussian President Alexander Lukashenko negotiated for Prigozhin and his Wagner soldiers to relocate to Belarus.",
+      "short_text": "Belarussian President Alexander Lukashenko negotiated for Prigozhin and his Wagner soldiers to relocate to Belarus.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-06-24",
+        "narrative_time": 73
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_57",
+          "name": "Alexander Lukashenko",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_52",
+          "name": "Yevgeniy Prigozhin",
+          "social_role": "public"
+        },
+        {
+          "id": "PUBLIC_54",
+          "name": "Wagner forces",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_20",
+          "name": "Belarus",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["diplomacy", "government"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 2
+        }
+      }
+    },
+    {
+      "index": 74,
+      "text": "Two months after the revolt, Prigozhin died in a private plane crash outside of Moscow.",
+      "short_text": "Prigozhin died in a private plane crash outside of Moscow.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 74
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_52",
+          "name": "Yevgeniy Prigozhin",
+          "social_role": "public"
+        },
+        {
+          "id": "PUBLIC_46",
+          "name": "Moscow",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "disaster and accident",
+        "sub_topic": ["transport accident"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 75,
+      "text": "U.S. officials believe an explosion ordered by Putin likely brought it down.",
+      "short_text": "U.S. officials believe an explosion ordered by Putin likely brought it down.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 75
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_13",
+          "name": "Vladimir Putin",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["act of terror", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 76,
+      "text": "In November 2023, Commander-in-Chief Valerii Zaluzhnyi said the war had reached a stalemate after Ukraine\u2019s failed counteroffensive.",
+      "short_text": "In November 2023, Commander-in-Chief Valerii Zaluzhnyi stated that the war had reached a stalemate following Ukraine's failed counteroffensive.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-11-01",
+        "narrative_time": 76
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_58",
+          "name": "Valerii Zaluzhnyi",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict", "crisis"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 77,
+      "text": "Due to strategic tensions between the president and his top military official, Zelenskyy replaced Zaluzhnyi with seasoned General Oleksandr Syrsky on February 8, 2024.",
+      "short_text": "Zelenskyy replaced Zaluzhnyi with General Oleksandr Syrsky as the top military official due to strategic tensions.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2024-02-08",
+        "narrative_time": 77
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_5",
+          "name": "President Zelenskyy",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_58",
+          "name": "Valerii Zaluzhnyi",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_59",
+          "name": "General Oleksandr Syrsky",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["defence", "government"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 2
+        }
+      }
+    },
+    {
+      "index": 78,
+      "text": "Soon after his appointment, Syrsky ordered the withdrawal of troops from Avdiivka, a strategically important town in Donetsk, where fighting was ongoing for four months.",
+      "short_text": "Syrsky ordered the withdrawal of troops from Avdiivka in Donetsk.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 78
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_59",
+          "name": "General Oleksandr Syrsky",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_60",
+          "name": "Avdiivka",
+          "social_role": "public"
+        },
+        {
+          "id": "PUBLIC_15",
+          "name": "Donetsk",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 79,
+      "text": "He argued the retreat was necessary to avoid being encircled.",
+      "short_text": "He argued the retreat was necessary to avoid being encircled.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 79
+      },
+      "entities": [],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 4
+        }
+      }
+    },
+    {
+      "index": 80,
+      "text": "The decision, however, handed Russia its most significant battlefield victory since the capture of Bakhmut in May 2023.",
+      "short_text": "Russia achieved its most significant battlefield victory since capturing Bakhmut.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-05-01",
+        "narrative_time": 80
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_43",
+          "name": "Bakhmut",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 81,
+      "text": "In early August 2024, Ukraine launched the Kursk Offensive, a surprise incursion into Russia\u2019s Kursk Oblast.",
+      "short_text": "Ukraine launched the Kursk Offensive into Russia's Kursk Oblast in early August 2024.",
+      "lead_title": "Recent Developments",
+      "temporal_anchoring": {
+        "real_time": "2024-08-01",
+        "narrative_time": 81
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_61",
+          "name": "Kursk Oblast",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 82,
+      "text": "This marked the first cross-border offensive conducted primarily by Ukrainian military forces, aiming to divert Russian troops and resources from eastern Ukraine.",
+      "short_text": "Ukrainian military forces conducted their first cross-border offensive to divert Russian troops from eastern Ukraine.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 82
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_62",
+          "name": "Russian troops",
+          "social_role": "public"
+        },
+        {
+          "id": "PUBLIC_63",
+          "name": "eastern Ukraine",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 83,
+      "text": "Ukrainian forces captured 1,250 square kilometers of Russian territory; however, progress stalled as Russia deployed over 50,000 troops to counter the attack.",
+      "short_text": "Ukrainian forces captured 1,250 square kilometers of Russian territory but progress stalled due to Russia deploying over 50,000 troops.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 83
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 84,
+      "text": "Russia claims to have recaptured roughly half of the territory lost in Kursk.",
+      "short_text": "Russia claims to have recaptured roughly half of the territory lost in Kursk.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 84
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_64",
+          "name": "Kursk",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 2
+        }
+      }
+    },
+    {
+      "index": 85,
+      "text": "In January 2025, Ukraine followed up with a second incursion, though progress remains limited due to a swift Russian response.",
+      "short_text": "In January 2025, Ukraine initiated a second incursion, facing a swift response from Russia.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2025-01-01",
+        "narrative_time": 85
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 86,
+      "text": "Over 10,000 North Korean troops joined Russian forces throughout both offensives, suffering high casualties and eventually being withdrawn in February 2025.",
+      "short_text": "Over 10,000 North Korean troops joined Russian forces in offensives, suffering high casualties and were withdrawn in February 2025.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2025-02-01",
+        "narrative_time": 86
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_48",
+          "name": "North Korea",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_39",
+          "name": "Russian forces",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 87,
+      "text": "Ukraine remains intent on applying offensive pressure on Russia through continual attacks on Russian infrastructure.",
+      "short_text": "Ukraine continues to apply offensive pressure on Russia by attacking Russian infrastructure.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 87
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 88,
+      "text": "In May 2024, Russia reported that Ukrainian drones targeted civilians in the Belgorod Oblast, killing six.",
+      "short_text": "In May 2024, Ukrainian drones targeted civilians in the Belgorod Oblast, killing six.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2024-05-01",
+        "narrative_time": 88
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_65",
+          "name": "Belgorod Oblast",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "massacre"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 89,
+      "text": "In November 2024, Ukraine launched its largest drone strike on Russian territory, attempting to target Moscow.",
+      "short_text": "In November 2024, Ukraine launched its largest drone strike on Russian territory, targeting Moscow.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2024-11-01",
+        "narrative_time": 89
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_46",
+          "name": "Moscow",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 90,
+      "text": "A month later, Ukrainian drones penetrated deep into Russian territory, reaching Kazan.",
+      "short_text": "Ukrainian drones penetrated deep into Russian territory, reaching Kazan.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 90
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 91,
+      "text": "As part of persistent attacks on Russian critical infrastructure, Ukrainian drones continue to target oil refineries, depots, and gas processing plants.",
+      "short_text": "Ukrainian drones target Russian critical infrastructure including oil refineries, depots, and gas processing plants.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 91
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_66",
+          "name": "Russian critical infrastructure",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_67",
+          "name": "oil refineries",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_68",
+          "name": "depots",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_69",
+          "name": "gas processing plants",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 92,
+      "text": "Meanwhile, Russian forces relentlessly seek to weaken the Ukrainian frontline.",
+      "short_text": "Russian forces relentlessly seek to weaken the Ukrainian frontline.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 92
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_39",
+          "name": "Russian forces",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_70",
+          "name": "Ukrainian frontline",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 93,
+      "text": "In May 2024, Russia launched an offensive on the Kharkiv region, which, despite making territorial gains, ultimately stalled.",
+      "short_text": "In May 2024, Russia launched an offensive on the Kharkiv region, which stalled despite initial territorial gains.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2024-05-01",
+        "narrative_time": 93
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_38",
+          "name": "Kharkiv region",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 94,
+      "text": "However, Russia\u2019s fall and winter campaigns pushed deeper into Ukraine\u2019s east and southeast, particularly in Donetsk, seizing over 4,000 square kilometers of Ukrainian territory.",
+      "short_text": "Russia's military campaigns during fall and winter captured over 4,000 square kilometers in eastern and southeastern Ukraine, including Donetsk.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 94
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_15",
+          "name": "Donetsk",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 95,
+      "text": "Despite some doubts among international scholars and critics, Russia remains confident in its wartime economy. Putin\u2019s veiled threats throughout the war to use nuclear weapons continue to raise fears of escalation.",
+      "short_text": "Russia remains confident in its wartime economy despite international skepticism, and Putin continues to make veiled nuclear threats.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 95
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_13",
+          "name": "Vladimir Putin",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 96,
+      "text": "In June 2023, Russia announced the move of tactical nuclear weapons into Belarus, with Belarus confirming receipt in December 2023.",
+      "short_text": "Russia moved tactical nuclear weapons into Belarus.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2023-06-01",
+        "narrative_time": 96
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_20",
+          "name": "Belarus",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 97,
+      "text": "In June 2024, both parties conducted nuclear weapons exercises.",
+      "short_text": "In June 2024, both parties conducted nuclear weapons exercises.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2024-06-01",
+        "narrative_time": 97
+      },
+      "entities": [],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 98,
+      "text": "In November 2024, Putin modified Russia\u2019s nuclear doctrine, stating that Russia would treat a conventional attack by an ally of a nuclear state as grounds for Moscow to launch a nuclear strike.",
+      "short_text": "In November 2024, Putin modified Russia's nuclear doctrine to include a conventional attack by an ally of a nuclear state as grounds for a nuclear strike.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2024-11-01",
+        "narrative_time": 98
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_13",
+          "name": "Vladimir Putin",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_46",
+          "name": "Moscow",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 99,
+      "text": "Ukraine has received consistent aid from the United States, and NATO member states continue to support its war effort.",
+      "short_text": "Ukraine has received consistent aid from the United States, and NATO member states continue to support its war effort.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 99
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_71",
+          "name": "NATO member states",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 0
+        }
+      }
+    },
+    {
+      "index": 100,
+      "text": "However, following the election of U.S. President Trump, many believe the war may end this year. Trump vowed to end the war upon taking office and has sought to broker a peace deal between Russia and Ukraine.",
+      "short_text": "President Trump vowed to end the war and brokered a peace deal between Russia and Ukraine.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 100
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_4",
+          "name": "President Trump",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "positive",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 101,
+      "text": "Zelenskyy has expressed concerns over exclusionary peace talks between the United States and Russia, fearing a disproportionate resolution and lack of security guarantees for Ukraine\u2019s future.",
+      "short_text": "Zelenskyy expressed concerns over exclusionary peace talks between the United States and Russia, fearing a disproportionate resolution and lack of security guarantees for Ukraine.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 101
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_5",
+          "name": "President Zelenskyy",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "crisis"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 102,
+      "text": "Additionally, Kyiv remains worried about freezes in military and humanitarian aid from the United States.",
+      "short_text": "Kyiv remains worried about potential freezes in military and humanitarian aid from the United States.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": null,
+        "narrative_time": 102
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_8",
+          "name": "Kyiv",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["act of terror"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 4
+        }
+      }
+    }
+  ]
+}
