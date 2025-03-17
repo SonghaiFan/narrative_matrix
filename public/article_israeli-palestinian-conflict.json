@@ -51,8 +51,8 @@
       },
       {
         "id": "israel-7",
-        "question": "What territories did Israel gain control of after the 1967 Six-Day War?",
-        "answer": "The Sinai Peninsula, Gaza Strip, West Bank, East Jerusalem, and Golan Heights",
+        "question": "Identify the pattern in duration of major conflicts between Israel and Palestinian groups from 2014 to 2025. How has the length of fighting changed over time?",
+        "answer": "The pattern shows increasingly longer conflicts: the 2014 Gaza conflict lasted about 7 weeks, the May 2021 conflict lasted 11 days, while the October 2023 conflict lasted approximately 15 months before the January 2025 ceasefire. This demonstrates an escalating pattern of longer and more sustained conflicts over time.",
         "level": "Pattern Recognition",
         "completed": false
       },
