@@ -5,7 +5,79 @@
     "topic": "Middle East Conflict",
     "author": "unknown",
     "publishDate": "2025-03-13",
-    "imageUrl": null
+    "imageUrl": null,
+    "quiz": [
+      {
+        "id": "israel-1",
+        "question": "On what date did Hamas launch its attack on Israel in 2023?",
+        "answer": "October 7, 2023",
+        "level": "Information Retrieval",
+        "completed": false
+      },
+      {
+        "id": "israel-2",
+        "question": "Name the three countries that mediated the January 15, 2025 ceasefire between Israel and Hamas.",
+        "answer": "The United States, Egypt, and Qatar",
+        "level": "Information Retrieval",
+        "completed": false
+      },
+      {
+        "id": "israel-3",
+        "question": "In what year was the State of Israel created?",
+        "answer": "1948",
+        "level": "Information Retrieval",
+        "completed": false
+      },
+      {
+        "id": "israel-4",
+        "question": "What was the name of the 1993 accords that allowed Palestinians to govern themselves in the West Bank and Gaza?",
+        "answer": "Oslo I Accords",
+        "level": "Information Retrieval",
+        "completed": false
+      },
+      {
+        "id": "israel-5",
+        "question": "Following Hamas's October 7, 2023 attack, identify two other militant groups that became involved in attacking Israel or its allies.",
+        "answer": "Hezbollah in Lebanon and Houthi rebels in Yemen",
+        "level": "Pattern Recognition",
+        "completed": false
+      },
+      {
+        "id": "israel-6",
+        "question": "Compare the 2014 and 2025 ceasefire agreements between Israel and Hamas. What was one similarity and one difference?",
+        "answer": "Similarity: Both were mediated by Egypt. Difference: The 2025 agreement included provisions for humanitarian aid and withdrawal of forces, while the 2014 agreement did not.",
+        "level": "Pattern Recognition",
+        "completed": false
+      },
+      {
+        "id": "israel-7",
+        "question": "What territories did Israel gain control of after the 1967 Six-Day War?",
+        "answer": "The Sinai Peninsula, Gaza Strip, West Bank, East Jerusalem, and Golan Heights",
+        "level": "Pattern Recognition",
+        "completed": false
+      },
+      {
+        "id": "israel-8",
+        "question": "What specific policies did Israel's coalition government implement in 2023 that increased tensions before the October 7 Hamas attack?",
+        "answer": "The government prioritized settlement expansion in the West Bank, endorsed discriminatory policies against LGBTQ+ people, and limited judicial oversight of the government in May 2023.",
+        "level": "Causal Reasoning",
+        "completed": false
+      },
+      {
+        "id": "israel-9",
+        "question": "How did the United States' threat to withhold weapons in 2024 affect Israel's military approach in Rafah?",
+        "answer": "The threat caused Israel to adopt more targeted approaches in Rafah, which the Biden administration ultimately determined were sufficiently more targeted than earlier operations.",
+        "level": "Causal Reasoning",
+        "completed": false
+      },
+      {
+        "id": "israel-10",
+        "question": "Explain one way Hamas's 2006 electoral victory led to increased conflict with Israel in the following years.",
+        "answer": "Hamas's victory led to international isolation as Western governments designated it a terrorist organization. This isolation, combined with Israel's restrictions on Gaza, created economic hardship that fueled radicalization and led to cycles of rocket attacks and military responses.",
+        "level": "Causal Reasoning",
+        "completed": false
+      }
+    ]
   },
   "events": [
     {

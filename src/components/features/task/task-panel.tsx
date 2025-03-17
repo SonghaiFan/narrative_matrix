@@ -457,7 +457,7 @@ export function TaskPanel({
           </button>
 
           <div className="flex space-x-1">
-            {!showAnswer && !currentTask.completed && (
+            {!showAnswer && !currentTask.completed && isDomainExpert && (
               <button
                 onClick={handleReveal}
                 className="flex items-center px-2 py-1 text-blue-600"

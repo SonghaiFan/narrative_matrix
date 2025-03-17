@@ -1,11 +1,83 @@
 {
   "metadata": {
     "title": "unknown",
-    "description": "A historical account of Gaza's role in the Middle East conflict",
-    "topic": "Middle East Conflict",
+    "description": "A historical account of the Russia-Ukraine conflict and its global implications",
+    "topic": "Ukraine Conflict",
     "author": "unknown",
     "publishDate": "2025-03-13",
-    "imageUrl": null
+    "imageUrl": null,
+    "quiz": [
+      {
+        "id": "ukraine-1",
+        "question": "When did Russia launch its full-scale invasion of Ukraine?",
+        "answer": "February 24, 2022",
+        "level": "Information Retrieval",
+        "completed": false
+      },
+      {
+        "id": "ukraine-2",
+        "question": "What percentage of Ukrainian territory did Russia occupy as of 2024?",
+        "answer": "20 percent",
+        "level": "Information Retrieval",
+        "completed": false
+      },
+      {
+        "id": "ukraine-3",
+        "question": "In what year did Russia annex Crimea from Ukraine?",
+        "answer": "2014",
+        "level": "Information Retrieval",
+        "completed": false
+      },
+      {
+        "id": "ukraine-4",
+        "question": "How much aid has the United States committed to Ukraine since February 24, 2022?",
+        "answer": "Over $118 billion",
+        "level": "Information Retrieval",
+        "completed": false
+      },
+      {
+        "id": "ukraine-5",
+        "question": "Identify two countries that have provided military support to Russia during the Ukraine conflict.",
+        "answer": "North Korea and Iran",
+        "level": "Pattern Recognition",
+        "completed": false
+      },
+      {
+        "id": "ukraine-6",
+        "question": "Compare Ukraine's 2023 counteroffensive with its 2024 Kursk Offensive. What was one key difference in strategy?",
+        "answer": "The 2023 counteroffensive focused on reclaiming Ukrainian territory, while the 2024 Kursk Offensive was a cross-border operation into Russian territory designed to divert Russian resources.",
+        "level": "Pattern Recognition",
+        "completed": false
+      },
+      {
+        "id": "ukraine-7",
+        "question": "What pattern emerged in Russia's territorial gains from 2022 to 2024?",
+        "answer": "After initial advances and retreats in 2022, Russia shifted to a war of attrition, making slow but steady gains in eastern Ukraine, particularly in Donetsk, capturing over 4,000 square kilometers by 2024.",
+        "level": "Pattern Recognition",
+        "completed": false
+      },
+      {
+        "id": "ukraine-8",
+        "question": "How did the collapse of the Black Sea grain deal in July 2023 affect Ukraine's export strategy?",
+        "answer": "Ukraine adapted by establishing safe shipping lanes along the coast of NATO members Romania and Bulgaria, which facilitated higher rates of grain exports compared to 2023.",
+        "level": "Causal Reasoning",
+        "completed": false
+      },
+      {
+        "id": "ukraine-9",
+        "question": "Explain how the Wagner Group's mutiny in June 2023 affected Russia's military leadership and strategy.",
+        "answer": "The mutiny exposed internal divisions in Russia's military leadership, leading to a reorganization of command structures and the elimination of Prigozhin. This temporarily disrupted Russia's military operations but ultimately strengthened Putin's control over military affairs.",
+        "level": "Causal Reasoning",
+        "completed": false
+      },
+      {
+        "id": "ukraine-10",
+        "question": "How did Russia's modification of its nuclear doctrine in November 2024 impact international support for Ukraine?",
+        "answer": "Russia's expanded nuclear doctrine, which included conventional attacks by allies of nuclear states as grounds for nuclear strikes, created hesitation among NATO countries about providing certain advanced weapons to Ukraine and influenced the Trump administration's push for ceasefire negotiations in early 2025.",
+        "level": "Causal Reasoning",
+        "completed": false
+      }
+    ]
   },
   "events": [
     {
