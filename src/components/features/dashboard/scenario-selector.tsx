@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useCenterControl } from "@/contexts/center-control-context";
 import { ProfileSection } from "./data-profile";
 import { ScenarioCard } from "./scenario-card";
-import { useAuth } from "@/contexts/auth-context";
 import { ScenarioType } from "@/types/shared/scenario";
 import { NarrativeMatrixData } from "@/types/narrative/lite";
 import {
@@ -20,7 +19,6 @@ export function ScenarioSelector() {
     setData,
     selectedScenario,
     setSelectedScenario,
-    isLoading: contextIsLoading,
     setIsLoading: setContextIsLoading,
   } = useCenterControl();
   const [isLoading, setIsLoading] = useState(true);
@@ -123,17 +121,9 @@ export function ScenarioSelector() {
     }
   };
 
-  const handleBackToDashboard = () => {
-    router.push("/dashboard");
-  };
-
   // Handle file selection change
   const handleFileSelectionChange = (file: string) => {
     setSelectedFile(file);
-  };
-
-  const navigateToScenario = (scenarioPath: string) => {
-    router.push(scenarioPath);
   };
 
   if (isLoading) {

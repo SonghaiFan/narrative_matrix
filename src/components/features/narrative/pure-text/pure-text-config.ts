@@ -4,24 +4,34 @@ import { SHARED_CONFIG } from "@/components/shared/visualization-config";
 // Merge with SHARED_CONFIG but don't override header settings
 export const PURE_TEXT_CONFIG = merge({}, SHARED_CONFIG, {
   margin: {
-    top: 20,
-    bottom: 20,
+    top: 16,
+    bottom: 16,
   },
   text: {
-    cardSpacing: 16,
-    cardPadding: 16,
-    maxWidth: 768,
+    cardSpacing: 0,
+    cardPadding: 12,
+    maxWidth: 720,
     fontSize: {
-      title: 16,
-      content: 14,
+      title: 18,
+      content: 15,
       meta: 12,
     },
     colors: {
-      mainTopic: "#1e40af",
+      mainTopic: "#1d4ed8",
       subTopic: "#4b5563",
-      selected: "#dbeafe",
-      hover: "#f9fafb",
+      selected: "#eff6ff",
+      hover: "#f8fafc",
+      entityHighlight: "#374151",
+      topicTag: {
+        background: "#1d4ed8",
+        text: "#ffffff",
+        backgroundHover: "#1e40af",
+      },
     },
-    iconSize: 16,
+    iconSize: 14,
+    topicTag: {
+      width: 70,
+      height: 22,
+    },
   },
 });
