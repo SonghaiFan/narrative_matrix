@@ -1,0 +1,235 @@
+{
+  "metadata": {
+    "title": "Ukraine Conflic",
+    "description": "A historical account of the Russia-Ukraine conflict and its global implications",
+    "topic": "Ukraine Conflict",
+    "author": "unknown",
+    "publishDate": "2025-03-13",
+    "imageUrl": null,
+    "quiz": [
+      {
+        "id": "ukraine-1",
+        "question": "When did Russia launch its full-scale invasion of Ukraine?",
+        "answer": "February 24, 2022",
+        "level": "Information Retrieval",
+        "completed": false
+      },
+      {
+        "id": "ukraine-2",
+        "question": "Identify two countries that have provided military support to Russia during the Ukraine conflict.",
+        "answer": "North Korea and Iran",
+        "level": "Pattern Recognition",
+        "completed": false
+      },
+      {
+        "id": "ukraine-3",
+        "question": "How did the collapse of the Black Sea grain deal in July 2023 affect Ukraine's export strategy?",
+        "answer": "Ukraine adapted by establishing safe shipping lanes along the coast of NATO members Romania and Bulgaria, which facilitated higher rates of grain exports compared to 2023.",
+        "level": "Causal Reasoning",
+        "completed": false
+      }
+    ]
+  },
+  "events": [
+    {
+      "index": 1,
+      "text": "Three years since Russia'\u2019's February 2022 full-scale invasion of Ukraine, Russia still occupies roughly 20 percent of the country after gaining over four thousand square kilometers of territory in 2024.",
+      "short_text": "Russia occupies roughly 20 percent of Ukraine after gaining territory in 2024.",
+      "lead_title": "Intro",
+      "temporal_anchoring": {
+        "real_time": "2024",
+        "narrative_time": 1
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 2,
+      "text": "Russia continues to bombard Ukrainian cities, while Ukraine maintains drone attacks on Russian ships and military vehicles.",
+      "short_text": "Russia bombards Ukrainian cities and Ukraine attacks Russian ships and military vehicles with drones.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2024",
+        "narrative_time": 2
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 3,
+      "text": "Since January 2022, Ukraine has received about $407 billion in aid, including over $118 billion from the United States. Fighting and air strikes have inflicted over 40,000 civilian casualties, while 4 million people are internally displaced, and 6.8 million have fled Ukraine. 14.6 million people need humanitarian assistance. As the United States works to negotiate an end to the war in Ukraine, the Trump administration\u2019s approach has escalated tensions between Kyiv and Washington.",
+      "short_text": "The United States has provided over $118 billion in aid to Ukraine since January 2022.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2022-01-01",
+        "narrative_time": 3
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 4,
+      "text": "Following a White House meeting between President Zelenskyy, President Trump, and Vice President JD Vance that descended into acrimony, Trump suspended U.S. military assistance to Ukraine.",
+      "short_text": "President Trump suspended U.S. military assistance to Ukraine following a contentious meeting with President Zelenskyy and Vice President JD Vance.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2025-02-28",
+        "narrative_time": 4
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_4",
+          "name": "President Trump",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_5",
+          "name": "President Zelenskyy",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_6",
+          "name": "Vice President JD Vance",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["defence", "diplomacy", "government"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 5,
+      "text": "On March 11, Ukraine announced it was ready to accept the Trump administration's proposal for a thirty-day interim cease-fire, contingent on Russian agreement.",
+      "short_text": "Ukraine agreed to a thirty-day interim cease-fire proposed by the Trump administration, pending Russian consent.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2025-03-11",
+        "narrative_time": 5
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_7",
+          "name": "Trump administration",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_1",
+          "name": "Russia",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 3
+        }
+      }
+    },
+    {
+      "index": 6,
+      "text": "The United States announced it would immediately lift its intelligence-sharing pause and restore military aid to Ukraine.",
+      "short_text": "The United States announced it would immediately lift its intelligence-sharing pause and restore military aid to Ukraine.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2025-03-11",
+        "narrative_time": 6
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_3",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Ukraine",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "positive",
+          "intensity": 6
+        }
+      }
+    }
+  ]
+}
