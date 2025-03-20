@@ -7,12 +7,14 @@ import { useAuth } from "@/contexts/auth-context";
 
 interface ScenarioPageFactoryProps {
   title: string;
+  is_training?: boolean;
   renderContent: (props: {
     data: any;
     user: any;
     isLoading: boolean;
     error: string | null;
     fetchData: (fileName?: string) => Promise<void>;
+    is_training?: boolean;
   }) => ReactNode;
 }
 
@@ -21,15 +23,16 @@ interface ScenarioPageFactoryProps {
  */
 export function ScenarioPageFactory({
   title,
+  is_training = false,
   renderContent,
 }: ScenarioPageFactoryProps) {
-  const { data, isLoading, error, fetchData } = useScenarioData();
+  const { data, isLoading, error, fetchData } = useScenarioData(is_training);
   const { user } = useAuth();
 
   // Show error state
   if (error) {
     return (
-      <ScenarioLayout title={title} isLoading={false}>
+      <ScenarioLayout title={title} isLoading={false} isTraining={is_training}>
         <div className="h-full flex flex-col items-center justify-center p-4">
           <div className="text-red-500 mb-2">Error:</div>
           <div className="text-gray-700 mb-4 text-center max-w-md">
@@ -49,7 +52,7 @@ export function ScenarioPageFactory({
   // If no data yet, show a placeholder
   if (!data || !data.events) {
     return (
-      <ScenarioLayout title={title} isLoading={true}>
+      <ScenarioLayout title={title} isLoading={true} isTraining={is_training}>
         <div className="h-full flex items-center justify-center">
           <div className="text-gray-500">Loading content...</div>
         </div>
@@ -59,8 +62,12 @@ export function ScenarioPageFactory({
 
   // Render the main content
   return (
-    <ScenarioLayout title={title} isLoading={isLoading}>
-      {renderContent({ data, user, isLoading, error, fetchData })}
+    <ScenarioLayout
+      title={title}
+      isLoading={isLoading}
+      isTraining={is_training}
+    >
+      {renderContent({ data, user, isLoading, error, fetchData, is_training })}
     </ScenarioLayout>
   );
 }

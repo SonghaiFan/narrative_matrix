@@ -1,107 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCenterControl } from "@/contexts/center-control-context";
 import { ProfileSection } from "./data-profile";
 import { ScenarioCard } from "./scenario-card";
 import { ScenarioType } from "@/types/shared/scenario";
-import { NarrativeMatrixData } from "@/types/narrative/lite";
-import {
-  getSelectedFileFromStorage,
-  setSelectedFileInStorage,
-} from "@/utils/data-storage";
 
 export function ScenarioSelector() {
   const router = useRouter();
-  const {
-    data,
-    setData,
-    selectedScenario,
-    setSelectedScenario,
-    setIsLoading: setContextIsLoading,
-  } = useCenterControl();
-  const [isLoading, setIsLoading] = useState(true);
-  const [availableFiles, setAvailableFiles] = useState<string[]>([]);
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
-
-  // Fetch available data files
-  useEffect(() => {
-    const fetchAvailableFiles = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch("/api/data-files");
-        if (!response.ok) {
-          throw new Error("Failed to fetch available data files");
-        }
-        const files = await response.json();
-        setAvailableFiles(files);
-
-        // Get selected file from storage
-        const storedFile = getSelectedFileFromStorage();
-
-        // If there's a stored file and it's in the available files, use it
-        if (storedFile && files.includes(storedFile)) {
-          setSelectedFile(storedFile);
-        } else if (files.length > 0) {
-          // Otherwise default to the first file
-          setSelectedFile(files[0]);
-          setSelectedFileInStorage(files[0]);
-        }
-      } catch (error) {
-        console.error("Failed to fetch available data files:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchAvailableFiles();
-  }, []);
-
-  // Update localStorage when selectedFile changes
-  useEffect(() => {
-    if (selectedFile) {
-      setSelectedFileInStorage(selectedFile);
-    }
-  }, [selectedFile]);
-
-  // Fetch initial data if not already loaded
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      if (!data && selectedFile) {
-        try {
-          setIsLoading(true);
-          setContextIsLoading(true);
-
-          // Handle paths correctly - if the file is in the archived directory
-          const filePath = selectedFile.startsWith("archived/")
-            ? selectedFile // Keep the path as is
-            : selectedFile; // No path prefix needed
-
-          const response = await fetch(`/${filePath}`);
-          if (!response.ok) {
-            throw new Error(`Failed to fetch ${selectedFile}`);
-          }
-          const narrativeMatrixData = await response.json();
-          setData(narrativeMatrixData);
-        } catch (error) {
-          console.error("Failed to load initial data:", error);
-        } finally {
-          setIsLoading(false);
-          setContextIsLoading(false);
-        }
-      } else {
-        setIsLoading(false);
-      }
-    };
-
-    fetchInitialData();
-  }, [data, setData, setContextIsLoading, selectedFile]);
-
-  // Handle data change from ProfileSection
-  const handleDataChange = (newData: NarrativeMatrixData) => {
-    setData(newData);
-  };
+  const { data, selectedScenario, setSelectedScenario } = useCenterControl();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleScenarioSelect = (scenario: ScenarioType) => {
     setSelectedScenario(scenario);
@@ -109,21 +18,16 @@ export function ScenarioSelector() {
 
   const handleContinue = () => {
     if (selectedScenario) {
-      // Map scenario types to their correct routes
+      // Map scenario types to their introduction routes
       const routeMap: Record<string, string> = {
-        "pure-text": "/pure-text",
-        "text-visual": "/text-visual",
-        "text-chat": "/text-chat",
-        mixed: "/mixed",
+        "pure-text": "/pure-text/introduction",
+        "text-visual": "/text-visual/introduction",
+        "text-chat": "/text-chat/introduction",
+        mixed: "/mixed/introduction",
       };
 
       router.push(routeMap[selectedScenario]);
     }
-  };
-
-  // Handle file selection change
-  const handleFileSelectionChange = (file: string) => {
-    setSelectedFile(file);
   };
 
   if (isLoading) {
@@ -169,9 +73,6 @@ export function ScenarioSelector() {
                 publishDate={metadata.publishDate || ""}
                 imageUrl={metadata.imageUrl}
                 events={events || []}
-                onDataChange={handleDataChange}
-                selectedFile={selectedFile || ""}
-                setSelectedFile={handleFileSelectionChange}
               />
             </div>
           </div>
@@ -220,15 +121,15 @@ export function ScenarioSelector() {
                     </span>
                   </div>
                   <ScenarioCard
-                    title="Text + AI Chat"
-                    description="Text view with an AI assistant that can answer questions about the narrative."
+                    title="Text + AI chat"
+                    description="Read text narrative with AI assistant to ask questions about the data."
                     imageSrc="/images/text-chat-preview.svg"
                     onClick={() => handleScenarioSelect("text-chat")}
                     isSelected={selectedScenario === "text-chat"}
                   />
                   <ScenarioCard
-                    title="mixed + AI Chat"
-                    description="Interactive visualizations with an AI assistant to help interpret the data."
+                    title="Complete experience"
+                    description="Combines visual analytics, narrative text and AI chat assistant."
                     imageSrc="/images/mixed-preview.svg"
                     onClick={() => handleScenarioSelect("mixed")}
                     isSelected={selectedScenario === "mixed"}
@@ -237,19 +138,20 @@ export function ScenarioSelector() {
               </div>
             </div>
 
-            <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-between">
-              <button
-                type="button"
-                className={`rounded-md px-4 py-2 text-sm font-medium text-white shadow-sm transition-all ${
-                  selectedScenario
-                    ? "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    : "bg-gray-300 cursor-not-allowed"
-                }`}
-                disabled={!selectedScenario}
-                onClick={handleContinue}
-              >
-                Continue
-              </button>
+            <div className="p-3 border-t border-gray-100">
+              <div className="flex justify-end">
+                <button
+                  onClick={handleContinue}
+                  disabled={!selectedScenario}
+                  className={`px-4 py-2 rounded text-white text-sm ${
+                    selectedScenario
+                      ? "bg-blue-600 hover:bg-blue-700"
+                      : "bg-gray-300 cursor-not-allowed"
+                  }`}
+                >
+                  Continue
+                </button>
+              </div>
             </div>
           </div>
         </div>

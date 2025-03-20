@@ -13,7 +13,7 @@ export default function Home() {
 
   // Redirect users based on role and task completion status
   useEffect(() => {
-    if (isAuthenticated && user) {
+    if (!isLoading && isAuthenticated && user) {
       // Redirect domain users to dashboard
       if (user.role === "domain") {
         router.push("/dashboard");
@@ -35,33 +35,39 @@ export default function Home() {
           }
         }
 
-        // If not completed, redirect to their default scenario
+        // If not completed, redirect to their default scenario's introduction
         if (user.defaultScenario) {
           // Map scenario types to their correct routes
-          const routeMap: Record<string, string> = {
-            "pure-text": "/pure-text",
-            "text-visual": "/text-visual",
-            "text-chat": "/text-chat",
-            mixed: "/mixed",
+          const routeMap = {
+            "pure-text": "/pure-text/introduction",
+            "text-visual": "/text-visual/introduction",
+            "text-chat": "/text-chat/introduction",
+            mixed: "/mixed/introduction",
           };
 
           const defaultScenario = user.defaultScenario || "mixed";
-          router.push(routeMap[defaultScenario] || "/");
+          router.push(routeMap[defaultScenario] || "/pure-text/introduction");
+        } else {
+          // Fallback to pure-text if no default scenario
+          router.push("/pure-text/introduction");
         }
       }
     }
-  }, [isAuthenticated, user, router]);
+  }, [isAuthenticated, isLoading, user, router]);
 
   // Show loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center">
-        <div className="w-12 h-12 border-3 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
       </div>
     );
   }
 
-  // Show login page with consent form
+  // Render login form with consent for unauthenticated users
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-6xl bg-white rounded-xl shadow-lg overflow-hidden">
@@ -174,7 +180,7 @@ export default function Home() {
 
             <div className="flex-grow flex flex-col justify-center">
               <div className="max-w-sm mx-auto w-full">
-                <LoginForm />
+                <LoginForm isDisabled={!hasConsented} />
 
                 {!hasConsented && (
                   <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-md text-center">

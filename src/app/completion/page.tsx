@@ -91,10 +91,19 @@ function CompletionContent() {
   }, [searchParams, user, router]);
 
   const handleRestart = () => {
-    // Determine which route to go back to based on study type
-    const route = pageData.studyType === "mixed" ? "/mixed" : "/pure-text";
+    // For domain users, return to dashboard
+    if (user?.role === "domain") {
+      router.push("/dashboard");
+      return;
+    }
 
-    router.push(route);
+    // For normal users, this is the end of the study
+    // They should see the completion page with no restart option
+  };
+
+  // For domain experts, provide a way to return to dashboard
+  const handleBackToDashboard = () => {
+    router.push("/dashboard");
   };
 
   // Show loading state
@@ -114,10 +123,14 @@ function CompletionContent() {
           <h1 className="text-lg font-medium text-red-600 mb-2">Error</h1>
           <p className="text-sm text-gray-700 mb-3">{error}</p>
           <button
-            onClick={() => router.push("/")}
+            onClick={() =>
+              user?.role === "domain"
+                ? router.push("/dashboard")
+                : router.push("/")
+            }
             className="w-full py-2 px-4 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
           >
-            Return Home
+            {user?.role === "domain" ? "Return to Dashboard" : "Return Home"}
           </button>
         </div>
       </div>
@@ -130,7 +143,7 @@ function CompletionContent() {
         totalTasks={pageData.totalTasks}
         userRole={user?.role as "domain" | "normal"}
         studyType={pageData.studyType}
-        onRestart={user?.role === "domain" ? handleRestart : undefined}
+        onRestart={user?.role === "domain" ? handleBackToDashboard : undefined}
       />
     </div>
   );

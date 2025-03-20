@@ -12,7 +12,11 @@ const DEMO_ACCOUNTS = [
   { name: "Mixed User", username: "vizchat", role: "normal" },
 ];
 
-export function LoginForm() {
+export interface LoginFormProps {
+  isDisabled?: boolean;
+}
+
+export function LoginForm({ isDisabled = false }: LoginFormProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -40,6 +44,11 @@ export function LoginForm() {
   };
 
   const handleQuickLogin = async (username: string) => {
+    if (isDisabled) {
+      setError("Please accept the consent form first");
+      return;
+    }
+
     try {
       await login(username, "study");
     } catch (err) {
@@ -63,8 +72,8 @@ export function LoginForm() {
             placeholder="Enter your username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            disabled={isLoading}
-            className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            disabled={isLoading || isDisabled}
+            className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
           />
         </div>
 
@@ -81,8 +90,8 @@ export function LoginForm() {
             placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            disabled={isLoading}
-            className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            disabled={isLoading || isDisabled}
+            className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
           />
         </div>
 
@@ -94,8 +103,8 @@ export function LoginForm() {
 
         <button
           type="submit"
-          className="w-full py-1.5 px-4 text-sm font-medium text-white bg-blue-600 rounded shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          disabled={isLoading}
+          className="w-full py-1.5 px-4 text-sm font-medium text-white bg-blue-600 rounded shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-blue-400 disabled:cursor-not-allowed"
+          disabled={isLoading || isDisabled}
         >
           {isLoading ? "Logging in..." : "Login"}
         </button>
@@ -118,7 +127,8 @@ export function LoginForm() {
             <button
               key={account.username}
               onClick={() => handleQuickLogin(account.username)}
-              className="py-1 px-2 text-xs text-gray-700 bg-white border border-gray-300 rounded shadow-sm hover:bg-gray-50"
+              disabled={isDisabled || isLoading}
+              className="py-1 px-2 text-xs text-gray-700 bg-white border border-gray-300 rounded shadow-sm hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed"
             >
               Login as {account.name}
             </button>

@@ -32,6 +32,7 @@ interface TaskPanelProps {
   metadata?: any;
   className?: string;
   userRole?: "domain" | "normal";
+  is_training?: boolean;
 }
 
 export function TaskPanel({
@@ -39,6 +40,7 @@ export function TaskPanel({
   metadata = {},
   className = "",
   userRole = "normal",
+  is_training = false,
 }: TaskPanelProps) {
   const router = useRouter();
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -59,8 +61,12 @@ export function TaskPanel({
         const user = JSON.parse(storedUser);
         setUserId(user.id);
 
-        // If normal user has already completed tasks, redirect to completion page
-        if (userRole === "normal" && hasCompletedTasks(user.id)) {
+        // If normal user has already completed tasks and not in training mode, redirect to completion page
+        if (
+          userRole === "normal" &&
+          hasCompletedTasks(user.id) &&
+          !is_training
+        ) {
           const studyType =
             metadata?.studyType ||
             (window.location.pathname.includes("mixed")
@@ -73,13 +79,13 @@ export function TaskPanel({
         console.error("Failed to parse stored user:", error);
       }
     }
-  }, [userRole, router]);
+  }, [userRole, router, is_training]);
 
   // Generate tasks based on events data or use quiz from metadata
   useEffect(() => {
     if (!events || events.length === 0) return;
 
-    // Check if metadata contains quiz questions
+    // For both training mode and regular mode, use quiz questions from metadata if available
     if (
       metadata?.quiz &&
       Array.isArray(metadata.quiz) &&
@@ -94,57 +100,58 @@ export function TaskPanel({
         completed: false,
       }));
       setTasks(quizTasks);
-    } else {
-      // Create auto-generated tasks based on the events data
-      const generatedTasks: Task[] = [
-        {
-          id: "1",
-          level: "Information Retrieval",
-          question: "What was the date of the first major event?",
-          answer: new Date(
-            events[0].date || events[0].temporal_anchoring?.real_time || ""
-          ).toLocaleDateString(),
-          completed: false,
-        },
-        {
-          id: "2",
-          level: "Information Retrieval",
-          question: "How many total events are in this dataset?",
-          answer: events.length.toString(),
-          completed: false,
-        },
-        {
-          id: "3",
-          level: "Information Retrieval",
-          question: "What is the main topic of this dataset?",
-          answer: metadata?.topic || events[0].topic?.main_topic || "Conflict",
-          completed: false,
-        },
-        {
-          id: "4",
-          level: "Information Retrieval",
-          question: "Name one key entity mentioned in multiple events.",
-          answer: events[0].entities?.[0]?.name || "Hamas",
-          completed: false,
-        },
-        {
-          id: "5",
-          level: "Information Retrieval",
-          question: "What is the time span covered by these events?",
-          answer: `${new Date(
-            events[0].date || events[0].temporal_anchoring?.real_time || ""
-          ).toLocaleDateString()} to ${new Date(
-            events[events.length - 1].date ||
-              events[events.length - 1].temporal_anchoring?.real_time ||
-              ""
-          ).toLocaleDateString()}`,
-          completed: false,
-        },
-      ];
-
-      setTasks(generatedTasks);
+      return;
     }
-  }, [events, metadata]);
+
+    // If no quiz questions available in metadata, create auto-generated tasks
+    const generatedTasks: Task[] = [
+      {
+        id: "1",
+        level: "Information Retrieval",
+        question: "What was the date of the first major event?",
+        answer: new Date(
+          events[0].date || events[0].temporal_anchoring?.real_time || ""
+        ).toLocaleDateString(),
+        completed: false,
+      },
+      {
+        id: "2",
+        level: "Information Retrieval",
+        question: "How many total events are in this dataset?",
+        answer: events.length.toString(),
+        completed: false,
+      },
+      {
+        id: "3",
+        level: "Information Retrieval",
+        question: "What is the main topic of this dataset?",
+        answer: metadata?.topic || events[0].topic?.main_topic || "Conflict",
+        completed: false,
+      },
+      {
+        id: "4",
+        level: "Information Retrieval",
+        question: "Name one key entity mentioned in multiple events.",
+        answer: events[0].entities?.[0]?.name || "Unknown",
+        completed: false,
+      },
+      {
+        id: "5",
+        level: "Information Retrieval",
+        question: "What is the time span covered by these events?",
+        answer: `${new Date(
+          events[0].date || events[0].temporal_anchoring?.real_time || ""
+        ).toLocaleDateString()} to ${new Date(
+          events[events.length - 1].date ||
+            events[events.length - 1].temporal_anchoring?.real_time ||
+            ""
+        ).toLocaleDateString()}`,
+        completed: false,
+      },
+    ];
+
+    setTasks(generatedTasks);
+  }, [events, metadata, is_training]);
 
   const currentTask = tasks[currentTaskIndex];
 
@@ -211,8 +218,8 @@ export function TaskPanel({
 
       setTasks(updatedTasks);
 
-      // Update progress in localStorage if we have a userId
-      if (userId) {
+      // Update progress in localStorage if we have a userId and not in training mode
+      if (userId && !is_training) {
         const completedCount = updatedTasks.filter((t) => t.completed).length;
 
         updateTaskProgress(userId, {
@@ -237,10 +244,21 @@ export function TaskPanel({
       const allCompleted = updatedTasks.every((task) => task.completed);
 
       if (allCompleted) {
-        // If all tasks are completed, navigate to completion page
-        setTimeout(() => {
-          navigateToCompletionPage();
-        }, 1000);
+        if (is_training) {
+          // For training mode, set training completion in localStorage with scenario-specific key
+          const scenarioPath = window.location.pathname.split("/")[1];
+          localStorage.setItem(`hasCompletedTraining-${scenarioPath}`, "true");
+
+          // Redirect to the main scenario page
+          const currentPath = window.location.pathname;
+          const mainPath = currentPath.replace("/training", "");
+          router.push(mainPath);
+        } else {
+          // For regular mode, navigate to completion page
+          setTimeout(() => {
+            navigateToCompletionPage();
+          }, 1000);
+        }
       } else {
         // Otherwise, move to the next task after a short delay
         setTimeout(() => {
@@ -340,14 +358,23 @@ export function TaskPanel({
       {/* Compact header with progress */}
       <div className="border-b p-2 flex flex-wrap items-center gap-2">
         <div className="flex-grow">
-          <h2 className="text-sm font-semibold">Tasks</h2>
+          <div className="flex items-center">
+            <h2 className="text-sm font-semibold">
+              {is_training ? "Training Tasks" : "Tasks"}
+            </h2>
+            {is_training && (
+              <span className="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-800 border border-amber-300">
+                Training
+              </span>
+            )}
+          </div>
           <div className="text-xs text-gray-500">
             {completedTasks} of {tasks.length} completed
           </div>
         </div>
 
-        {/* Domain expert skip button */}
-        {isDomainExpert && (
+        {/* Domain expert skip button - not shown in training mode */}
+        {isDomainExpert && !is_training && (
           <button
             onClick={navigateToCompletionPage}
             className="text-xs px-2 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 flex-shrink-0"

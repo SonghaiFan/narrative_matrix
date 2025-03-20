@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CheckCircle, Copy } from "lucide-react";
+import { CheckCircle, Copy, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { resetTaskProgress, resetAllTaskProgress } from "@/lib/task-progress";
@@ -46,11 +46,11 @@ export function CompletionPage({
   };
 
   const handleReturnHome = () => {
-    // Clear the introduction cookie
-    document.cookie =
-      "hasCompletedIntro=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-
     router.push("/");
+  };
+
+  const handleReturnToDashboard = () => {
+    router.push("/dashboard");
   };
 
   return (
@@ -60,9 +60,13 @@ export function CompletionPage({
           <CheckCircle className="h-5 w-5 text-green-600" />
         </div>
         <div className="ml-3">
-          <h1 className="text-lg font-medium text-gray-900">Thank You</h1>
+          <h1 className="text-lg font-medium text-gray-900">
+            {userRole === "domain" ? "Scenario Completed" : "Study Completed"}
+          </h1>
           <p className="text-xs text-gray-500">
-            Your participation is complete
+            {userRole === "domain"
+              ? "You can return to dashboard or explore other scenarios"
+              : "Thank you for your participation"}
           </p>
         </div>
       </div>
@@ -71,7 +75,9 @@ export function CompletionPage({
       <div className="bg-gray-50 rounded p-3 mb-4">
         <div className="flex items-center mb-2">
           <h2 className="text-sm font-medium text-gray-700">
-            Study Information
+            {userRole === "domain"
+              ? "Scenario Information"
+              : "Study Information"}
           </h2>
         </div>
 
@@ -90,40 +96,45 @@ export function CompletionPage({
         </div>
       </div>
 
-      {/* Completion Code */}
-      <div className="bg-gray-50 border border-gray-100 rounded p-3 mb-4">
-        <div className="flex justify-between items-center mb-2">
-          <h2 className="text-sm font-medium text-gray-800">Completion Code</h2>
-          {codeCopied && (
-            <span className="text-xs text-gray-600">✓ Copied</span>
-          )}
-        </div>
+      {/* Completion Code - only shown for normal users */}
+      {userRole === "normal" && (
+        <div className="bg-gray-50 border border-gray-100 rounded p-3 mb-4">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-sm font-medium text-gray-800">
+              Completion Code
+            </h2>
+            {codeCopied && (
+              <span className="text-xs text-gray-600">✓ Copied</span>
+            )}
+          </div>
 
-        <div className="flex items-center">
-          <code className="bg-white p-2 rounded border border-gray-100 font-mono text-sm flex-grow text-center">
-            {completionCode}
-          </code>
-          <button
-            onClick={handleCopyCode}
-            className="ml-2 p-1.5 bg-gray-800 text-white rounded hover:bg-gray-700 flex items-center justify-center"
-            aria-label="Copy completion code"
-          >
-            <Copy className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* Return Home button - only shown for domain users */}
-      {userRole === "domain" && (
-        <div className="space-y-2">
-          <button
-            onClick={handleReturnHome}
-            className="w-full py-2 px-4 bg-blue-600 text-white text-sm rounded hover:bg-blue-900"
-          >
-            Return Home
-          </button>
+          <div className="flex items-center">
+            <code className="bg-white p-2 rounded border border-gray-100 font-mono text-sm flex-grow text-center">
+              {completionCode}
+            </code>
+            <button
+              onClick={handleCopyCode}
+              className="ml-2 p-1.5 bg-gray-800 text-white rounded hover:bg-gray-700 flex items-center justify-center"
+              aria-label="Copy completion code"
+            >
+              <Copy className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       )}
+
+      {/* Action buttons based on user role */}
+      <div className="space-y-2">
+        {userRole === "domain" && (
+          <button
+            onClick={handleReturnToDashboard}
+            className="w-full py-2 px-4 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 flex items-center justify-center"
+          >
+            <ArrowLeft className="h-4 w-4 mr-1" />
+            Return to Dashboard
+          </button>
+        )}
+      </div>
     </div>
   );
 }

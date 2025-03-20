@@ -8,7 +8,6 @@ import { ScenarioType } from "@/types/shared/scenario";
 interface IntroductionFactoryProps {
   scenarioType: ScenarioType;
   redirectPath: string;
-  storageKey?: string;
 }
 
 /**
@@ -18,22 +17,34 @@ interface IntroductionFactoryProps {
 export function IntroductionFactory({
   scenarioType,
   redirectPath,
-  storageKey = "hasCompletedIntro",
 }: IntroductionFactoryProps) {
   const router = useRouter();
+  // Create scenario-specific storage key
+  const storageKey = `hasCompletedIntro-${scenarioType}`;
 
-  // Check if user has already completed introduction
+  // Check if user has already completed introduction for this scenario
   useEffect(() => {
     const hasCompletedIntro = localStorage.getItem(storageKey) === "true";
     if (hasCompletedIntro) {
-      router.push(redirectPath);
+      // Check if training is completed
+      const hasCompletedTraining =
+        localStorage.getItem(`hasCompletedTraining-${scenarioType}`) === "true";
+
+      if (hasCompletedTraining) {
+        // If both intro and training completed, go to main scenario
+        router.push(redirectPath);
+      } else {
+        // If only intro completed, go to training
+        router.push(`${redirectPath}/training`);
+      }
     }
-  }, [router, storageKey, redirectPath]);
+  }, [router, storageKey, redirectPath, scenarioType]);
 
   const handleComplete = () => {
-    // Store completion in localStorage
+    // Store completion in localStorage with scenario-specific key
     localStorage.setItem(storageKey, "true");
-    router.push(redirectPath);
+    // After intro completion, redirect to training
+    router.push(`${redirectPath}/training`);
   };
 
   return (

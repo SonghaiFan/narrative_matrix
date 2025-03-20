@@ -6,6 +6,7 @@ import { AuthHeader } from "@/components/features/auth/auth-header";
 import { ScenarioSelector } from "@/components/features/dashboard/scenario-selector";
 import { UserDataViewer } from "@/components/features/dashboard/local-storage-viewer";
 import { useAuth } from "@/contexts/auth-context";
+import { useScenarioData } from "@/hooks/use-scenario-data";
 
 export interface ScenarioCardProps {
   title: string;
@@ -16,23 +17,19 @@ export interface ScenarioCardProps {
 }
 
 export default function Dashboard() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
-  const [showStorageViewer, setShowStorageViewer] = useState(false);
+  const { data, isLoading: dataLoading, error } = useScenarioData(false);
 
   // Protect the dashboard page
   useEffect(() => {
-    if (!isLoading && (!user || user.role !== "domain")) {
+    if (!authLoading && (!user || user.role !== "domain")) {
       router.push("/");
     }
-  }, [user, isLoading, router]);
+  }, [user, authLoading, router]);
 
-  const handleToggleUserData = () => {
-    setShowStorageViewer(!showStorageViewer);
-  };
-
-  // Show loading state while checking authentication
-  if (isLoading || !user) {
+  // Show loading state while checking authentication or loading data
+  if (authLoading || dataLoading || !user) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
         <div className="w-10 h-10 border-3 border-neutral-300 border-t-neutral-600 rounded-full animate-spin mb-2"></div>
@@ -41,19 +38,28 @@ export default function Dashboard() {
     );
   }
 
+  // Show error state if data loading failed
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
+        <div className="text-red-500 mb-2">Error:</div>
+        <div className="text-gray-700 mb-4 text-center max-w-md">
+          {error || "Failed to load data"}
+        </div>
+      </div>
+    );
+  }
+
   // Only domain users should reach this point
   return (
     <div className="min-h-screen bg-gray-50">
-      <AuthHeader
-        title="Domain Expert Dashboard"
-        onToggleUserData={handleToggleUserData}
-        showUserData={showStorageViewer}
-      />
+      <AuthHeader title="Domain Expert Dashboard" />
 
       <div className="max-w-7xl mx-auto px-4 py-6">
-        {showStorageViewer && <UserDataViewer />}
-
-        <ScenarioSelector />
+        <UserDataViewer />
+        <div className="mt-8">
+          <ScenarioSelector />
+        </div>
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ interface AuthHeaderProps {
   children?: ReactNode;
   onToggleUserData?: () => void;
   showUserData?: boolean;
+  isTrainingMode?: boolean;
 }
 
 export function AuthHeader({
@@ -17,6 +18,7 @@ export function AuthHeader({
   children,
   onToggleUserData,
   showUserData = false,
+  isTrainingMode = false,
 }: AuthHeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -25,7 +27,9 @@ export function AuthHeader({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Check if current path is dashboard
-  const isDashboard = pathname === "/" || pathname === "/dashboard";
+  const isDashboard = pathname === "/dashboard";
+  // Check if current path is a completion page
+  const isCompletionPage = pathname.startsWith("/completion");
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -45,19 +49,27 @@ export function AuthHeader({
   }, []);
 
   const handleBackClick = () => {
-    router.push("/");
+    // Back navigation based on user role and current path
+    if (user?.role === "domain") {
+      // Domain users always go back to dashboard
+      router.push("/dashboard");
+    } else {
+      // Normal users go back to login page (they should not be able to go back)
+      router.push("/");
+    }
   };
 
   return (
     <header className="bg-white shadow-sm z-50 px-6 py-3 relative">
       <div className="max-w-full mx-auto flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          {!isDashboard && (
+          {/* Only show back button in specific situations */}
+          {!isDashboard && user?.role === "domain" && (
             <>
               <button
                 onClick={handleBackClick}
                 className="flex items-center justify-center text-gray-600 hover:text-gray-900 transition-colors focus:outline-none"
-                aria-label="Go back to home"
+                aria-label="Go back to dashboard"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -73,12 +85,25 @@ export function AuthHeader({
                 >
                   <path d="M19 12H5M12 19l-7-7 7-7" />
                 </svg>
-                <span className="text-sm font-medium">Back</span>
+                <span className="text-sm font-medium">Dashboard</span>
               </button>
               <div className="h-6 border-l border-gray-300 mx-2"></div>
             </>
           )}
-          <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
+          <div className="flex items-center">
+            <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
+
+            {/* Mode indicator badge */}
+            {isTrainingMode ? (
+              <span className="ml-3 px-2.5 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-800 border border-amber-300">
+                Training Mode
+              </span>
+            ) : (
+              <span className="ml-3 px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 border border-green-300">
+                Real Task
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center">

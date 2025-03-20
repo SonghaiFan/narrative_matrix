@@ -18,6 +18,21 @@ const PROJECT_RELATED_KEYS = [
   "studyCompleted",
   "hasCompletedIntro",
   "hasCompletedIntro_expiration",
+  "hasCompletedTraining_",
+  "hasCompletedTraining_expiration",
+  "selectedFile",
+  "selectedScenario",
+  "selectedEvents",
+  "selectedEntities",
+  "selectedTopics",
+  "selectedScenarios",
+  "studyType",
+  "completionCode",
+  "lastUpdated",
+  "totalTasks",
+  "completedTasks",
+  "correctTasks",
+  "answers",
 ];
 
 // List of cookies that are relevant to our project
@@ -210,184 +225,195 @@ export function UserDataViewer() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-medium text-gray-900">User Data Storage</h2>
-        <div className="flex space-x-2">
-          <button
-            onClick={refreshStorageItems}
-            className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded hover:bg-gray-200"
-          >
-            Refresh
-          </button>
-          <button
-            onClick={handleResetAllProgress}
-            className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-          >
-            Reset All Progress
-          </button>
-        </div>
-      </div>
-
-      <div className="mb-4 border-b border-gray-200">
-        <nav className="flex -mb-px">
-          <button
-            onClick={() => setActiveTab("all")}
-            className={`py-2 px-4 text-sm font-medium ${
-              activeTab === "all"
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
-          >
-            All Data
-          </button>
-          <button
-            onClick={() => setActiveTab("localStorage")}
-            className={`py-2 px-4 text-sm font-medium ${
-              activeTab === "localStorage"
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
-          >
-            Local Storage
-          </button>
-          <button
-            onClick={() => setActiveTab("cookies")}
-            className={`py-2 px-4 text-sm font-medium ${
-              activeTab === "cookies"
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
-          >
-            Cookies
-          </button>
-        </nav>
-      </div>
-
-      {filteredItems.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
-          No data found. Try refreshing or check browser settings.
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="border rounded-lg overflow-hidden">
-            <div className="bg-gray-50 px-4 py-2 border-b">
-              <h3 className="text-sm font-medium text-gray-700">
-                Storage Items
-              </h3>
-            </div>
-            <div className="divide-y max-h-96 overflow-y-auto">
-              {filteredItems.map((item) => (
-                <div
-                  key={`${item.source}-${item.key}`}
-                  onClick={() => handleViewItem(item)}
-                  className={`px-4 py-3 cursor-pointer hover:bg-gray-50 ${
-                    selectedItem?.key === item.key &&
-                    selectedItem?.source === item.source
-                      ? "bg-blue-50"
-                      : ""
-                  }`}
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <div className="font-medium text-sm text-gray-900 mb-1">
-                        {item.key}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {item.type} ({item.source})
-                        {item.expiration && (
-                          <span className="ml-2">
-                            Expires: {item.expiration}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleResetItem(item.key, item.source);
-                      }}
-                      className="text-xs px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200"
-                    >
-                      Reset
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+    <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
+      <div className="p-4 border-b border-gray-100">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-lg font-bold text-gray-900 mb-1">
+              User Data Storage
+            </h2>
+            <p className="text-xs text-gray-500">
+              View and manage user data and progress
+            </p>
           </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={refreshStorageItems}
+              className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded hover:bg-gray-200"
+            >
+              Refresh
+            </button>
+            <button
+              onClick={handleResetAllProgress}
+              className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+            >
+              Reset All Progress
+            </button>
+          </div>
+        </div>
+      </div>
 
-          <div className="border rounded-lg overflow-hidden">
-            <div className="bg-gray-50 px-4 py-2 border-b">
-              <h3 className="text-sm font-medium text-gray-700">
-                {selectedItem
-                  ? "Item Details"
-                  : "Select an item to view details"}
-              </h3>
-            </div>
-            <div className="p-4 max-h-96 overflow-y-auto">
-              {selectedItem ? (
-                <div>
-                  <div className="mb-4">
-                    <div className="text-xs font-medium text-gray-500 mb-1">
-                      Key
-                    </div>
-                    <div className="text-sm text-gray-900 font-mono bg-gray-50 p-2 rounded">
-                      {selectedItem.key}
+      <div className="p-4">
+        <div className="mb-4 border-b border-gray-200">
+          <nav className="flex -mb-px">
+            <button
+              onClick={() => setActiveTab("all")}
+              className={`py-2 px-4 text-sm font-medium ${
+                activeTab === "all"
+                  ? "border-b-2 border-blue-500 text-blue-600"
+                  : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              All Data
+            </button>
+            <button
+              onClick={() => setActiveTab("localStorage")}
+              className={`py-2 px-4 text-sm font-medium ${
+                activeTab === "localStorage"
+                  ? "border-b-2 border-blue-500 text-blue-600"
+                  : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              Local Storage
+            </button>
+            <button
+              onClick={() => setActiveTab("cookies")}
+              className={`py-2 px-4 text-sm font-medium ${
+                activeTab === "cookies"
+                  ? "border-b-2 border-blue-500 text-blue-600"
+                  : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              Cookies
+            </button>
+          </nav>
+        </div>
+
+        {filteredItems.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            No data found. Try refreshing or check browser settings.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="border rounded-lg overflow-hidden">
+              <div className="bg-gray-50 px-4 py-2 border-b">
+                <h3 className="text-sm font-medium text-gray-700">
+                  Storage Items
+                </h3>
+              </div>
+              <div className="divide-y max-h-96 overflow-y-auto">
+                {filteredItems.map((item) => (
+                  <div
+                    key={`${item.source}-${item.key}`}
+                    onClick={() => handleViewItem(item)}
+                    className={`px-4 py-3 cursor-pointer hover:bg-gray-50 ${
+                      selectedItem?.key === item.key &&
+                      selectedItem?.source === item.source
+                        ? "bg-blue-50"
+                        : ""
+                    }`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="font-medium text-sm text-gray-900 mb-1">
+                          {item.key}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {item.type} ({item.source})
+                          {item.expiration && (
+                            <span className="ml-2">
+                              Expires: {item.expiration}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleResetItem(item.key, item.source);
+                        }}
+                        className="text-xs px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200"
+                      >
+                        Reset
+                      </button>
                     </div>
                   </div>
+                ))}
+              </div>
+            </div>
 
-                  {selectedItem.expiration && (
+            <div className="border rounded-lg overflow-hidden">
+              <div className="bg-gray-50 px-4 py-2 border-b">
+                <h3 className="text-sm font-medium text-gray-700">
+                  {selectedItem
+                    ? "Item Details"
+                    : "Select an item to view details"}
+                </h3>
+              </div>
+              <div className="p-4 max-h-96 overflow-y-auto">
+                {selectedItem ? (
+                  <div>
                     <div className="mb-4">
                       <div className="text-xs font-medium text-gray-500 mb-1">
-                        Expiration
+                        Key
                       </div>
                       <div className="text-sm text-gray-900 font-mono bg-gray-50 p-2 rounded">
-                        {selectedItem.expiration}
+                        {selectedItem.key}
                       </div>
                     </div>
-                  )}
 
-                  <div className="mb-4">
-                    <div className="text-xs font-medium text-gray-500 mb-1">
-                      Type
+                    {selectedItem.expiration && (
+                      <div className="mb-4">
+                        <div className="text-xs font-medium text-gray-500 mb-1">
+                          Expiration
+                        </div>
+                        <div className="text-sm text-gray-900 font-mono bg-gray-50 p-2 rounded">
+                          {selectedItem.expiration}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="mb-4">
+                      <div className="text-xs font-medium text-gray-500 mb-1">
+                        Type
+                      </div>
+                      <div className="text-sm text-gray-900">
+                        {selectedItem.type}
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-900">
-                      {selectedItem.type}
+
+                    <div className="mb-4">
+                      <div className="text-xs font-medium text-gray-500 mb-1">
+                        Source
+                      </div>
+                      <div className="text-sm text-gray-900">
+                        {selectedItem.source === "localStorage"
+                          ? "Local Storage"
+                          : "Cookie"}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-xs font-medium text-gray-500 mb-1">
+                        Value
+                      </div>
+                      <pre className="text-xs text-gray-900 font-mono bg-gray-50 p-2 rounded overflow-x-auto">
+                        {typeof selectedItem.value === "object"
+                          ? JSON.stringify(selectedItem.value, null, 2)
+                          : selectedItem.value}
+                      </pre>
                     </div>
                   </div>
-
-                  <div className="mb-4">
-                    <div className="text-xs font-medium text-gray-500 mb-1">
-                      Source
-                    </div>
-                    <div className="text-sm text-gray-900">
-                      {selectedItem.source === "localStorage"
-                        ? "Local Storage"
-                        : "Cookie"}
-                    </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    Select an item from the list to view details
                   </div>
-
-                  <div>
-                    <div className="text-xs font-medium text-gray-500 mb-1">
-                      Value
-                    </div>
-                    <pre className="text-xs text-gray-900 font-mono bg-gray-50 p-2 rounded overflow-x-auto">
-                      {typeof selectedItem.value === "object"
-                        ? JSON.stringify(selectedItem.value, null, 2)
-                        : selectedItem.value}
-                    </pre>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  Select an item from the list to view details
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
