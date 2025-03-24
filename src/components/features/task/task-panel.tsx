@@ -76,6 +76,7 @@ export function TaskPanel({
   const [userAnswer, setUserAnswer] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showSkipConfirmModal, setShowSkipConfirmModal] = useState(false);
   const [userId, setUserId] = useState<string>("");
   const [showTrainingCompleteModal, setShowTrainingCompleteModal] =
     useState(false);
@@ -293,6 +294,27 @@ export function TaskPanel({
     setShowConfirmModal(false);
   };
 
+  const handleSkip = () => {
+    // Show confirmation modal before skipping
+    if (!currentTask.completed) {
+      setShowSkipConfirmModal(true);
+    }
+  };
+
+  const handleConfirmSkip = () => {
+    setShowSkipConfirmModal(false);
+
+    // Set userAnswer to indicate information not in text
+    setUserAnswer("Information not specified in the text");
+
+    // Process submission with skipped status
+    processSubmission(true);
+  };
+
+  const handleCancelSkip = () => {
+    setShowSkipConfirmModal(false);
+  };
+
   const handleSubmit = () => {
     // For non-domain users, show confirmation modal before submitting
     if (!isDomainExpert && !currentTask.completed && !showAnswer) {
@@ -304,7 +326,7 @@ export function TaskPanel({
     processSubmission();
   };
 
-  const processSubmission = () => {
+  const processSubmission = (isSkipped = false) => {
     if (!currentTask) return;
 
     setIsSubmitting(true);
@@ -318,7 +340,9 @@ export function TaskPanel({
       updatedTasks[taskIndex] = {
         ...updatedTasks[taskIndex],
         completed: true,
-        userAnswer: userAnswer,
+        userAnswer: isSkipped
+          ? "Information not specified in the text"
+          : userAnswer,
         submitTimestamp: Date.now(),
       };
 
@@ -456,6 +480,13 @@ export function TaskPanel({
   // Function to handle training completion confirmation
   const handleConfirmTrainingComplete = () => {
     setShowTrainingCompleteModal(false);
+
+    // Mark training as completed in localStorage for both completion and skipping
+    if (is_training) {
+      const scenarioPath = window.location.pathname.split("/")[1];
+      localStorage.setItem(`hasCompletedTraining-${scenarioPath}`, "true");
+    }
+
     // Redirect to the main task page
     if (pendingRedirectPath) {
       router.push(pendingRedirectPath);
@@ -468,6 +499,14 @@ export function TaskPanel({
     setPendingRedirectPath("");
     // User can review the training or take more time
     setIsSubmitting(false);
+  };
+
+  // Function to handle training skip
+  const handleSkipTraining = () => {
+    const currentPath = window.location.pathname;
+    const mainPath = currentPath.replace("/training", "");
+    setPendingRedirectPath(mainPath);
+    setShowTrainingCompleteModal(true);
   };
 
   if (!currentTask) {
@@ -506,14 +545,25 @@ export function TaskPanel({
           </div>
         </div>
 
-        {/* Domain expert skip button - not shown in training mode */}
-        {isDomainExpert && !is_training && (
-          <button
-            onClick={navigateToCompletionPage}
-            className="text-xs px-2 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 flex-shrink-0"
-          >
-            Skip to Completion
-          </button>
+        {/* Domain expert skip buttons */}
+        {isDomainExpert && (
+          <>
+            {is_training ? (
+              <button
+                onClick={handleSkipTraining}
+                className="text-xs px-2 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 flex-shrink-0"
+              >
+                Skip Training
+              </button>
+            ) : (
+              <button
+                onClick={navigateToCompletionPage}
+                className="text-xs px-2 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 flex-shrink-0"
+              >
+                Skip to Completion
+              </button>
+            )}
+          </>
         )}
 
         <div className="flex items-center space-x-1 flex-shrink-0 ml-auto">
@@ -690,13 +740,21 @@ export function TaskPanel({
             )}
 
             {!currentTask.completed && !showAnswer ? (
-              <button
-                onClick={handleSubmit}
-                disabled={!userAnswer.trim() || isSubmitting}
-                className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Submit
-              </button>
+              <>
+                <button
+                  onClick={handleSkip}
+                  className="px-2 py-1 border border-gray-300 text-gray-600 rounded hover:bg-gray-50"
+                >
+                  Skip - Not Specified or No Correct Answer
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  disabled={!userAnswer.trim() || isSubmitting}
+                  className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Submit
+                </button>
+              </>
             ) : !currentTask.completed && showAnswer ? (
               <button
                 onClick={handleSubmit}
@@ -763,7 +821,51 @@ export function TaskPanel({
         </div>
       )}
 
-      {/* Training Complete Modal */}
+      {/* Skip Confirmation Modal */}
+      {showSkipConfirmModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-4">
+            <div className="flex items-start mb-3">
+              <div className="flex-shrink-0 mr-3">
+                <AlertCircle className="h-5 w-5 text-amber-500" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-medium text-gray-900">
+                  Confirm Skip
+                </h3>
+                <p className="text-xs text-gray-500 mt-1">
+                  Are you sure you want to skip this question? If the
+                  information is not specified in the text or there is no single
+                  correct answer based on the text, you should skip. Once
+                  skipped, you won't be able to go back or change your answer.
+                </p>
+              </div>
+              <button
+                onClick={handleCancelSkip}
+                className="flex-shrink-0 ml-1 text-gray-400 hover:text-gray-500"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={handleCancelSkip}
+                className="px-3 py-1.5 text-xs border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmSkip}
+                className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                Yes, Skip
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Training Complete/Skip Modal */}
       {showTrainingCompleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-4">
@@ -773,12 +875,14 @@ export function TaskPanel({
               </div>
               <div className="flex-1">
                 <h3 className="text-sm font-medium text-gray-900">
-                  Training Complete
+                  {pendingRedirectPath
+                    ? "Proceed to Real Task"
+                    : "Training Complete"}
                 </h3>
                 <p className="text-xs text-gray-500 mt-1">
-                  You've completed the training tasks! Once you proceed to the
-                  real task, a timer will start and cannot be paused. Make sure
-                  you're ready to complete the real task without interruptions.
+                  {pendingRedirectPath
+                    ? "Are you sure you want to skip the training and proceed to the real task? Once you proceed, a timer will start and cannot be paused."
+                    : "You've completed the training tasks! Once you proceed to the real task, a timer will start and cannot be paused. Make sure you're ready to complete the real task without interruptions."}
                 </p>
               </div>
               <button
@@ -789,6 +893,12 @@ export function TaskPanel({
               </button>
             </div>
             <div className="flex justify-end space-x-2">
+              <button
+                onClick={handleCancelTrainingComplete}
+                className="px-3 py-1.5 text-xs border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
               <button
                 onClick={handleConfirmTrainingComplete}
                 className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700"

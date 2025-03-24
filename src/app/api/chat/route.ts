@@ -43,9 +43,7 @@ export async function POST(request: NextRequest) {
       }
       ${
         events && events.length > 0
-          ? `Here are the events in the narrative: ${JSON.stringify(
-              events.slice(0, 10)
-            )}...`
+          ? `Here are the events in the narrative: ${JSON.stringify(events)}...`
           : "No events are currently available."
       }
       

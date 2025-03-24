@@ -12,51 +12,62 @@
         "question": "On what date did Hamas launch its attack on Israel in 2023?",
         "answer": "October 7, 2023",
         "level": "Information Retrieval",
-        "type": "single-input",
-        "completed": false
-      },
-      {
-        "id": "israel-2",
-        "question": "Which countries mediated the January 2025 ceasefire between Israel and Hamas?",
-        "answer": "The United States, Egypt, and Qatar",
-        "level": "Information Retrieval",
         "type": "radio-options",
         "options": [
-          "The United States, Egypt, and Qatar",
-          "Russia, Turkey, and Saudi Arabia",
-          "France, Germany, and Italy",
-          "China, India, and Brazil"
+          "October 5, 2023",
+          "October 7, 2023",
+          "October 9, 2023",
+          "October 12, 2023"
         ],
         "completed": false
       },
       {
-        "id": "israel-3",
-        "question": "In what year was the State of Israel created?",
-        "answer": "1948",
-        "level": "Information Retrieval",
-        "type": "radio-options",
-        "options": ["1945", "1948", "1956", "1967"],
-        "completed": false
-      },
-      {
-        "id": "israel-4",
-        "question": "What was the name of the 1993 accords that allowed Palestinians to govern themselves in the West Bank and Gaza?",
-        "answer": "Oslo I Accords",
+        "id": "israel-2",
+        "question": "The January 2025 ceasefire between Israel and Hamas was mediated by ____, ____, and ____.",
+        "answer": "The United States, Egypt, Qatar",
         "level": "Information Retrieval",
         "type": "single-input",
         "completed": false
       },
       {
-        "id": "israel-5",
-        "question": "Following Hamas's October 7, 2023 attack, identify the militant groups that became involved in attacking Israel or its allies.",
-        "answer": "Hezbollah, Houthi rebels, Iran-backed groups",
-        "level": "Pattern Recognition",
+        "id": "israel-3",
+        "question": "List the two main Palestinian factions involved in conflict after Hamas's electoral victory in 2006.",
+        "answer": "Hamas, Fatah",
+        "level": "Information Retrieval",
         "type": "comma-separated",
         "completed": false
       },
       {
+        "id": "israel-4",
+        "question": "Which statement best describes the trend of regional conflict following Hamas's October 2023 attack?",
+        "answer": "Regional militant groups joined the conflict, increasing its scope.",
+        "level": "Pattern Recognition",
+        "type": "radio-options",
+        "options": [
+          "Conflicts subsided over time.",
+          "Only Hamas and Israel remained in conflict.",
+          "Regional militant groups joined the conflict, increasing its scope.",
+          "International peace talks quickly ended all conflicts."
+        ],
+        "completed": false
+      },
+      {
+        "id": "israel-5",
+        "question": "Arrange these historical events in chronological order according to the narrative:",
+        "answer": "1,2,3,4",
+        "level": "Pattern Recognition",
+        "type": "numbered-sequence",
+        "options": [
+          "1. Creation of the State of Israel",
+          "2. Six-Day War",
+          "3. Oslo I Accords",
+          "4. Hamas electoral victory"
+        ],
+        "completed": false
+      },
+      {
         "id": "israel-6",
-        "question": "Match the following territories with the countries they were captured from in the 1967 Six-Day War:",
+        "question": "Match the territories Israel captured during the 1967 Six-Day War with the countries they were captured from:",
         "answer": "Sinai Peninsula: Egypt, Gaza Strip: Egypt, West Bank: Jordan, East Jerusalem: Jordan, Golan Heights: Syria",
         "level": "Pattern Recognition",
         "type": "grid-matching",
@@ -74,29 +85,29 @@
       },
       {
         "id": "israel-7",
-        "question": "Arrange the following events in chronological order:",
-        "answer": "1,2,4,3",
-        "level": "Pattern Recognition",
-        "type": "numbered-sequence",
-        "options": [
-          "1. Creation of the State of Israel (1948)",
-          "2. Six-Day War (1967)",
-          "3. Hamas's electoral victory (2006)",
-          "4. Oslo I Accords (1993)"
-        ],
-        "completed": false
-      },
-      {
-        "id": "israel-8",
-        "question": "What specific policies did Israel's coalition government implement in 2023 that increased tensions before the October 7 Hamas attack?",
-        "answer": "The government prioritized settlement expansion in the West Bank, endorsed discriminatory policies against LGBTQ+ people, and limited judicial oversight of the government in May 2023.",
+        "question": "Explain one reason why Hamas's electoral victory in 2006 led to increased conflict with Israel in subsequent years.",
+        "answer": "Hamas's electoral victory led to international isolation since Western governments considered Hamas a terrorist organization. The resulting economic hardships and restrictions in Gaza increased radicalization and led to repeated cycles of violence with Israel.",
         "level": "Causal Reasoning",
         "type": "long-text",
         "completed": false
       },
       {
+        "id": "israel-8",
+        "question": "What was one major cause for Hamas's October 7, 2023 attack according to the narrative?",
+        "answer": "Israeli government policies expanding West Bank settlements and limiting judicial oversight",
+        "level": "Causal Reasoning",
+        "type": "radio-options",
+        "options": [
+          "Israeli government policies expanding West Bank settlements and limiting judicial oversight",
+          "Iran's direct military interventions",
+          "Hezbollah's incursion into Israel",
+          "U.S. mediation attempts"
+        ],
+        "completed": false
+      },
+      {
         "id": "israel-9",
-        "question": "Match these causes with their effects in the Israeli-Palestinian conflict:",
+        "question": "Match each cause with its effect:",
         "answer": "Hamas victory in 2006: International isolation, Netanyahu's far-right government: Expansion of settlements, Iranian direct attacks: Israeli counterstrikes on facilities, Oslo Accords: Palestinian self-governance",
         "level": "Causal Reasoning",
         "type": "grid-matching",
@@ -114,14 +125,6 @@
             "Palestinian self-governance"
           ]
         },
-        "completed": false
-      },
-      {
-        "id": "israel-10",
-        "question": "Explain one way Hamas's 2006 electoral victory led to increased conflict with Israel in the following years.",
-        "answer": "Hamas's victory led to international isolation as Western governments designated it a terrorist organization. This isolation, combined with Israel's restrictions on Gaza, created economic hardship that fueled radicalization and led to cycles of rocket attacks and military responses.",
-        "level": "Causal Reasoning",
-        "type": "long-text",
         "completed": false
       }
     ]

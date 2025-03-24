@@ -30,7 +30,5 @@
   <line x1="250" y1="140" x2="270" y2="100" stroke="#93c5fd" stroke-width="1.5" />
   <line x1="250" y1="140" x2="240" y2="180" stroke="#93c5fd" stroke-width="1.5" />
   
-  <!-- Visualization icon -->
-  <path d="M220 80 L225 85 L230 75 L235 90 L240 80 L245 85 L250 70 L255 80 L260 75 L265 85 L270 80 L275 85 L280 80" 
-        stroke="#3b82f6" stroke-width="2" fill="none" />
+
 </svg> 

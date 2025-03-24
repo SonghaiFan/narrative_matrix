@@ -103,18 +103,6 @@ export function ArticleParagraph({
 }: ArticleParagraphProps) {
   const { text } = PURE_TEXT_CONFIG;
 
-  // Format timestamp for display
-  const formatTimestamp = (timestamp: string | null) => {
-    if (!timestamp) return "";
-    return ` <span class="text-gray-500">(${new Date(
-      timestamp
-    ).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    })})</span>`;
-  };
-
   // Process text with entities highlighted
   const processedText = highlightEntities(event.text, event.entities);
 
@@ -149,15 +137,10 @@ export function ArticleParagraph({
     return highlightedText;
   };
 
-  // Append timestamp to the processed text
-  let textWithTimestamp = event.temporal_anchoring.real_time
-    ? processedText + formatTimestamp(event.temporal_anchoring.real_time)
+  // Apply search term highlighting without timestamp
+  const finalText = searchQuery
+    ? highlightSearchTerms(processedText, searchQuery)
     : processedText;
-
-  // Apply search term highlighting
-  if (searchQuery) {
-    textWithTimestamp = highlightSearchTerms(textWithTimestamp, searchQuery);
-  }
 
   return (
     <div
@@ -180,7 +163,7 @@ export function ArticleParagraph({
           lineHeight: "1.6",
         }}
         dangerouslySetInnerHTML={{
-          __html: textWithTimestamp,
+          __html: finalText,
         }}
       />
     </div>

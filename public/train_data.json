@@ -9,20 +9,6 @@
     "quiz": [
       {
         "id": "ukraine-ir-1",
-        "question": "When did Russia launch its full-scale invasion of Ukraine?",
-        "options": [
-          "February 24, 2022",
-          "March 1, 2022",
-          "February 20, 2022",
-          "March 5, 2022"
-        ],
-        "answer": "February 24, 2022",
-        "level": "Information Retrieval",
-        "completed": false,
-        "type": "radio-options"
-      },
-      {
-        "id": "ukraine-ir-2",
         "question": "The total number of civilian casualties in Ukraine is _____.",
         "answer": "over 40,000",
         "level": "Information Retrieval",
@@ -30,51 +16,29 @@
         "type": "single-input"
       },
       {
-        "id": "ukraine-ir-3",
+        "id": "ukraine-ir-2",
         "question": "List the two main countries involved in the military conflict.",
-        "answer": "Russia and Ukraine",
+        "answer": "Russia,Ukraine",
         "level": "Information Retrieval",
         "completed": false,
         "type": "comma-separated"
       },
       {
-        "id": "ukraine-pr-1",
-        "question": "Which statement best describes the trend in humanitarian needs in Ukraine since the conflict began?",
-        "options": [
-          "Humanitarian needs have remained consistently high with over 14.6 million people requiring assistance",
-          "Humanitarian needs have decreased as the conflict has stabilized",
-          "Humanitarian needs have fluctuated significantly with no clear pattern",
-          "Humanitarian needs peaked at the start of the conflict but have steadily declined"
-        ],
-        "answer": "Humanitarian needs have remained consistently high with over 14.6 million people requiring assistance",
-        "level": "Pattern Recognition",
+        "id": "ukraine-sanity-check",
+        "question": "Which country hosted peace negotiations between Russia and Ukraine mentioned in the article?",
+        "options": ["Turkey", "Belarus", "Germany"],
+        "answer": "The article does not specify",
+        "level": "Sanity Check",
         "completed": false,
         "type": "radio-options"
       },
       {
         "id": "ukraine-pr-2",
-        "question": "Arrange the following events in chronological order: 1) Russia's full-scale invasion, 2) Trump's suspension of military aid, 3) Ukraine's acceptance of cease-fire proposal, 4) US restoration of military aid",
-        "answer": "1, 2, 3, 4",
+        "question": "Arrange the following events in chronological order: 1) Ukraine's acceptance of cease-fire proposal, 2) US restoration of military aid, 3) Russia's full-scale invasion, 4) Trump's suspension of military aid",
+        "answer": "3, 4, 1, 2",
         "level": "Pattern Recognition",
         "completed": false,
         "type": "numbered-sequence"
-      },
-      {
-        "id": "ukraine-pr-3",
-        "question": "Match each country with its role in the conflict: Russia, Ukraine, United States, North Korea",
-        "options": {
-          "countries": ["Russia", "Ukraine", "United States", "North Korea"],
-          "roles": [
-            "Invader",
-            "Defender",
-            "Military Aid Provider",
-            "Russian Military Support"
-          ]
-        },
-        "answer": "Russia: Invader, Ukraine: Defender, United States: Military Aid Provider, North Korea: Russian Military Support",
-        "level": "Pattern Recognition",
-        "completed": false,
-        "type": "grid-matching"
       },
       {
         "id": "ukraine-cr-1",
@@ -83,20 +47,6 @@
         "level": "Causal Reasoning",
         "completed": false,
         "type": "long-text"
-      },
-      {
-        "id": "ukraine-cr-2",
-        "question": "What was the main cause of the United States' decision to restore military aid to Ukraine?",
-        "options": [
-          "Ukraine's willingness to accept a thirty-day interim cease-fire proposal",
-          "Pressure from NATO allies",
-          "A change in Russian military strategy",
-          "The article doesn't specify the main cause"
-        ],
-        "answer": "Ukraine's willingness to accept a thirty-day interim cease-fire proposal",
-        "level": "Causal Reasoning",
-        "completed": false,
-        "type": "radio-options"
       },
       {
         "id": "ukraine-cr-3",
@@ -108,9 +58,9 @@
             "Ukraine's acceptance of cease-fire proposal"
           ],
           "effects": [
+            "US restoration of military aid",
             "Massive civilian displacement and casualties",
-            "Temporary halt in US military support",
-            "US restoration of military aid"
+            "Temporary halt in US military support"
           ]
         },
         "answer": "Russia's full-scale invasion: Massive civilian displacement and casualties, Trump's suspension of military aid: Temporary halt in US military support, Ukraine's acceptance of cease-fire proposal: US restoration of military aid",
