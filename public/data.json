@@ -38,6 +38,19 @@
         "completed": false
       },
       {
+        "id": "israel-3-sanity",
+        "question": "Which neutral third-party organization supervised the January 2025 ceasefire implementation between Israel and Hamas?",
+        "answer": "This information is not specified in the text",
+        "level": "Sanity Check",
+        "type": "radio-options",
+        "options": [
+          "United Nations Peacekeeping Force",
+          "International Committee of the Red Cross",
+          "Arab League Monitoring Mission"
+        ],
+        "completed": false
+      },
+      {
         "id": "israel-4",
         "question": "Which statement best describes the trend of regional conflict following Hamas's October 2023 attack?",
         "answer": "Regional militant groups joined the conflict, increasing its scope.",
