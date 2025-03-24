@@ -26,6 +26,7 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
   const eventRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [searchResults, setSearchResults] = useState<NarrativeEvent[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const { text, margin } = PURE_TEXT_CONFIG;
 
   // Sort events by narrative time
@@ -46,6 +47,11 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
         b.temporal_anchoring.narrative_time
     );
     setSearchResults(sortedResults);
+  }, []);
+
+  // Handle search query changes for highlighting
+  const handleSearchQueryChange = useCallback((query: string) => {
+    setSearchQuery(query);
   }, []);
 
   // Effect to scroll selected event into view
@@ -141,6 +147,7 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
           <PureTextSearch
             events={sortedEvents}
             onSearchResults={handleSearchResults}
+            onSearchQueryChange={handleSearchQueryChange}
           />
         </div>
       </div>
@@ -187,6 +194,7 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
                       )
                     }
                     highlightEntities={highlightEntities}
+                    searchQuery={searchQuery}
                   />
                 </div>
               ))}

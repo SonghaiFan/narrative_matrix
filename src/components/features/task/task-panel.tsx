@@ -9,6 +9,7 @@ import {
   AlertCircle,
   X,
   Brain,
+  Timer,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
@@ -16,7 +17,16 @@ import {
   updateTaskProgress,
   markTaskAsCompleted,
   hasCompletedTasks,
+  getTaskProgress,
 } from "@/lib/task-progress";
+import {
+  RadioOptions,
+  SingleInput,
+  CommaSeparated,
+  NumberedSequence,
+  GridMatching,
+  LongText,
+} from "./quiz-types";
 
 interface Task {
   id: string;
@@ -25,6 +35,23 @@ interface Task {
   answer: string;
   completed: boolean;
   userAnswer?: string;
+  startTimestamp?: number;
+  submitTimestamp?: number;
+  type?:
+    | "radio-options"
+    | "single-input"
+    | "comma-separated"
+    | "numbered-sequence"
+    | "grid-matching"
+    | "long-text";
+  options?:
+    | string[]
+    | {
+        countries?: string[];
+        roles?: string[];
+        causes?: string[];
+        effects?: string[];
+      };
 }
 
 interface TaskPanelProps {
@@ -50,8 +77,27 @@ export function TaskPanel({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [userId, setUserId] = useState<string>("");
+  const [showTrainingCompleteModal, setShowTrainingCompleteModal] =
+    useState(false);
+  const [pendingRedirectPath, setPendingRedirectPath] = useState("");
 
   const isDomainExpert = userRole === "domain";
+
+  // Helper function to get the studyType from the URL
+  const getStudyTypeFromPath = (path: string) => {
+    // Extract the scenario name from the path (first segment after /)
+    const pathSegments = path.split("/").filter(Boolean);
+    const scenarioName = pathSegments[0] || "";
+
+    // Handle all four scenarios based on actual routes
+    if (scenarioName.includes("mixed")) return "mixed";
+    if (scenarioName.includes("pure-text")) return "pure-text";
+    if (scenarioName.includes("text-chat")) return "text-chat";
+    if (scenarioName.includes("text-visual")) return "text-visual";
+
+    // Default fallback
+    return scenarioName || "pure-text";
+  };
 
   // Get user ID from localStorage on mount
   useEffect(() => {
@@ -69,17 +115,14 @@ export function TaskPanel({
         ) {
           const studyType =
             metadata?.studyType ||
-            (window.location.pathname.includes("mixed")
-              ? "mixed"
-              : "pure-text");
-
+            getStudyTypeFromPath(window.location.pathname);
           router.push(`/completion?total=${tasks.length}&type=${studyType}`);
         }
       } catch (error) {
         console.error("Failed to parse stored user:", error);
       }
     }
-  }, [userRole, router, is_training]);
+  }, [userRole, is_training, tasks.length, router, metadata]);
 
   // Generate tasks based on events data or use quiz from metadata
   useEffect(() => {
@@ -91,12 +134,14 @@ export function TaskPanel({
       Array.isArray(metadata.quiz) &&
       metadata.quiz.length > 0
     ) {
-      // Use quiz questions from metadata
+      // Use quiz questions from metadata and ensure type is set
       const quizTasks: Task[] = metadata.quiz.map((q: any, index: number) => ({
         id: q.id || String(index + 1),
         level: q.level || "Information Retrieval",
         question: q.question,
         answer: q.answer,
+        type: q.type || "single-input", // Ensure type is set
+        options: q.options, // Include options if present
         completed: false,
       }));
       setTasks(quizTasks);
@@ -108,6 +153,7 @@ export function TaskPanel({
       {
         id: "1",
         level: "Information Retrieval",
+        type: "single-input",
         question: "What was the date of the first major event?",
         answer: new Date(
           events[0].date || events[0].temporal_anchoring?.real_time || ""
@@ -117,41 +163,100 @@ export function TaskPanel({
       {
         id: "2",
         level: "Information Retrieval",
+        type: "radio-options",
         question: "How many total events are in this dataset?",
         answer: events.length.toString(),
+        options: [
+          (events.length - 2).toString(),
+          (events.length - 1).toString(),
+          events.length.toString(),
+          (events.length + 1).toString(),
+        ],
         completed: false,
       },
       {
         id: "3",
         level: "Information Retrieval",
+        type: "radio-options",
         question: "What is the main topic of this dataset?",
         answer: metadata?.topic || events[0].topic?.main_topic || "Conflict",
+        options: [
+          metadata?.topic || events[0].topic?.main_topic || "Conflict",
+          "Politics",
+          "Economics",
+          "Technology",
+        ],
         completed: false,
       },
       {
         id: "4",
-        level: "Information Retrieval",
-        question: "Name one key entity mentioned in multiple events.",
-        answer: events[0].entities?.[0]?.name || "Unknown",
+        level: "Pattern Recognition",
+        type: "numbered-sequence",
+        question: "Arrange these events in chronological order:",
+        answer: "1,2,3,4",
+        options: events
+          .slice(0, 4)
+          .map(
+            (event, index) =>
+              `${index + 1}. ${event.short_text || event.text.slice(0, 100)}...`
+          ),
         completed: false,
       },
       {
         id: "5",
-        level: "Information Retrieval",
-        question: "What is the time span covered by these events?",
-        answer: `${new Date(
-          events[0].date || events[0].temporal_anchoring?.real_time || ""
-        ).toLocaleDateString()} to ${new Date(
-          events[events.length - 1].date ||
-            events[events.length - 1].temporal_anchoring?.real_time ||
-            ""
-        ).toLocaleDateString()}`,
+        level: "Pattern Recognition",
+        type: "grid-matching",
+        question: "Match the entities with their roles in the events:",
+        answer:
+          events[0].entities
+            ?.map((entity: any) => `${entity.name}: ${entity.social_role}`)
+            .join(", ") || "",
+        options: {
+          roles: Array.from(
+            new Set(
+              events.flatMap(
+                (event) =>
+                  event.entities?.map((entity: any) => entity.social_role) || []
+              )
+            )
+          ),
+          causes: Array.from(
+            new Set(
+              events.flatMap(
+                (event) =>
+                  event.entities?.map((entity: any) => entity.name) || []
+              )
+            )
+          ),
+        },
         completed: false,
       },
     ];
 
     setTasks(generatedTasks);
   }, [events, metadata, is_training]);
+
+  // Record start timestamp when current task changes
+  useEffect(() => {
+    if (
+      tasks.length > 0 &&
+      currentTaskIndex >= 0 &&
+      currentTaskIndex < tasks.length
+    ) {
+      // Only set start timestamp if it doesn't already exist and task is not completed
+      if (
+        !tasks[currentTaskIndex].startTimestamp &&
+        !tasks[currentTaskIndex].completed
+      ) {
+        const updatedTasks = [...tasks];
+        updatedTasks[currentTaskIndex] = {
+          ...updatedTasks[currentTaskIndex],
+          startTimestamp: Date.now(),
+        };
+        setTasks(updatedTasks);
+      }
+    }
+  }, [currentTaskIndex, tasks]);
 
   const currentTask = tasks[currentTaskIndex];
 
@@ -209,11 +314,12 @@ export function TaskPanel({
     const taskIndex = updatedTasks.findIndex((t) => t.id === currentTask.id);
 
     if (taskIndex !== -1) {
-      // Mark the task as completed and store the user's answer
+      // Mark the task as completed and store the user's answer with submission timestamp
       updatedTasks[taskIndex] = {
         ...updatedTasks[taskIndex],
         completed: true,
         userAnswer: userAnswer,
+        submitTimestamp: Date.now(),
       };
 
       setTasks(updatedTasks);
@@ -228,14 +334,18 @@ export function TaskPanel({
           correctTasks: 0,
           studyType:
             metadata?.studyType ||
-            (window.location.pathname.includes("mixed")
-              ? "mixed"
-              : "pure-text"),
+            getStudyTypeFromPath(window.location.pathname),
           answers: updatedTasks.map((task) => ({
             questionId: task.id,
             question: task.question,
             userAnswer: task.userAnswer || "",
             completed: task.completed,
+            startTimestamp: task.startTimestamp,
+            submitTimestamp: task.submitTimestamp,
+            duration:
+              task.submitTimestamp && task.startTimestamp
+                ? task.submitTimestamp - task.startTimestamp
+                : null,
           })),
         });
       }
@@ -249,10 +359,11 @@ export function TaskPanel({
           const scenarioPath = window.location.pathname.split("/")[1];
           localStorage.setItem(`hasCompletedTraining-${scenarioPath}`, "true");
 
-          // Redirect to the main scenario page
+          // Instead of immediate redirect, show confirmation modal
           const currentPath = window.location.pathname;
           const mainPath = currentPath.replace("/training", "");
-          router.push(mainPath);
+          setPendingRedirectPath(mainPath);
+          setShowTrainingCompleteModal(true);
         } else {
           // For regular mode, navigate to completion page
           setTimeout(() => {
@@ -278,6 +389,8 @@ export function TaskPanel({
         ...task,
         completed: false,
         userAnswer: undefined,
+        startTimestamp: undefined,
+        submitTimestamp: undefined,
       }))
     );
     setCurrentTaskIndex(0);
@@ -296,8 +409,6 @@ export function TaskPanel({
         return "bg-green-100 text-green-700";
       case "Causal Reasoning":
         return "bg-purple-100 text-purple-700";
-      case "Bias Analysis":
-        return "bg-amber-100 text-amber-700";
       default:
         return "bg-gray-100 text-gray-600";
     }
@@ -308,8 +419,7 @@ export function TaskPanel({
     if (!userId) return;
 
     const studyType =
-      metadata?.studyType ||
-      (window.location.pathname.includes("mixed") ? "mixed" : "pure-text");
+      metadata?.studyType || getStudyTypeFromPath(window.location.pathname);
 
     // Save final progress to localStorage
     saveTaskProgress(userId, {
@@ -323,6 +433,12 @@ export function TaskPanel({
         question: task.question,
         userAnswer: task.userAnswer || "",
         completed: task.completed,
+        startTimestamp: task.startTimestamp,
+        submitTimestamp: task.submitTimestamp,
+        duration:
+          task.submitTimestamp && task.startTimestamp
+            ? task.submitTimestamp - task.startTimestamp
+            : null,
       })),
     });
 
@@ -335,6 +451,23 @@ export function TaskPanel({
 
     // Use router for navigation
     router.push(`/completion?total=${tasks.length}&type=${studyType}`);
+  };
+
+  // Function to handle training completion confirmation
+  const handleConfirmTrainingComplete = () => {
+    setShowTrainingCompleteModal(false);
+    // Redirect to the main task page
+    if (pendingRedirectPath) {
+      router.push(pendingRedirectPath);
+    }
+  };
+
+  const handleCancelTrainingComplete = () => {
+    setShowTrainingCompleteModal(false);
+    // Reset the pending path
+    setPendingRedirectPath("");
+    // User can review the training or take more time
+    setIsSubmitting(false);
   };
 
   if (!currentTask) {
@@ -432,24 +565,86 @@ export function TaskPanel({
         </div>
         <div className="bg-gray-50 p-2 rounded text-sm mb-2">
           {currentTask.question}
+          <div className="mt-2 text-xs text-amber-600 flex items-center">
+            <AlertCircle className="h-3 w-3 mr-1 flex-shrink-0" />
+            Please answer based ONLY on the text you have read, not your prior
+            knowledge. Some details may differ from real-world events.
+          </div>
         </div>
 
         {/* Answer input or result */}
         {!currentTask.completed ? (
           <div className="mb-2">
-            <textarea
-              className="w-full p-2 border rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-              rows={
-                currentTask.level &&
-                currentTask.level !== "Information Retrieval"
-                  ? 4
-                  : 2
+            {(() => {
+              switch (currentTask.type) {
+                case "radio-options":
+                  return (
+                    <RadioOptions
+                      options={currentTask.options as string[]}
+                      value={userAnswer}
+                      onChange={setUserAnswer}
+                      disabled={showAnswer}
+                    />
+                  );
+                case "single-input":
+                  return (
+                    <SingleInput
+                      value={userAnswer}
+                      onChange={setUserAnswer}
+                      disabled={showAnswer}
+                    />
+                  );
+                case "comma-separated":
+                  return (
+                    <CommaSeparated
+                      value={userAnswer}
+                      onChange={setUserAnswer}
+                      disabled={showAnswer}
+                    />
+                  );
+                case "numbered-sequence":
+                  return (
+                    <NumberedSequence
+                      options={(currentTask.options as string[]) || []}
+                      value={userAnswer}
+                      onChange={setUserAnswer}
+                      disabled={showAnswer}
+                    />
+                  );
+                case "grid-matching":
+                  return (
+                    <GridMatching
+                      options={
+                        currentTask.options as {
+                          countries?: string[];
+                          roles?: string[];
+                          causes?: string[];
+                          effects?: string[];
+                        }
+                      }
+                      value={userAnswer}
+                      onChange={setUserAnswer}
+                      disabled={showAnswer}
+                    />
+                  );
+                case "long-text":
+                  return (
+                    <LongText
+                      value={userAnswer}
+                      onChange={setUserAnswer}
+                      disabled={showAnswer}
+                    />
+                  );
+                default:
+                  return (
+                    <SingleInput
+                      value={userAnswer}
+                      onChange={setUserAnswer}
+                      disabled={showAnswer}
+                    />
+                  );
               }
-              placeholder="Enter your answer..."
-              value={userAnswer}
-              onChange={(e) => setUserAnswer(e.target.value)}
-              disabled={showAnswer}
-            ></textarea>
+            })()}
           </div>
         ) : (
           <div className="p-2 mb-2 rounded text-xs flex items-start bg-blue-50 text-blue-800">
@@ -562,6 +757,43 @@ export function TaskPanel({
                 className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
                 Yes, Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Training Complete Modal */}
+      {showTrainingCompleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-4">
+            <div className="flex items-start mb-3">
+              <div className="flex-shrink-0 mr-3">
+                <Timer className="h-5 w-5 text-blue-500" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-medium text-gray-900">
+                  Training Complete
+                </h3>
+                <p className="text-xs text-gray-500 mt-1">
+                  You've completed the training tasks! Once you proceed to the
+                  real task, a timer will start and cannot be paused. Make sure
+                  you're ready to complete the real task without interruptions.
+                </p>
+              </div>
+              <button
+                onClick={handleCancelTrainingComplete}
+                className="flex-shrink-0 ml-1 text-gray-400 hover:text-gray-500"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={handleConfirmTrainingComplete}
+                className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                I'm Ready
               </button>
             </div>
           </div>

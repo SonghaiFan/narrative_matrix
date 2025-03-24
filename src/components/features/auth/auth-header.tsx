@@ -11,6 +11,7 @@ interface AuthHeaderProps {
   onToggleUserData?: () => void;
   showUserData?: boolean;
   isTrainingMode?: boolean;
+  countdownDuration?: number; // in seconds
 }
 
 export function AuthHeader({
@@ -19,12 +20,14 @@ export function AuthHeader({
   onToggleUserData,
   showUserData = false,
   isTrainingMode = false,
+  countdownDuration = 300, // default 5 minutes
 }: AuthHeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [countdown, setCountdown] = useState(countdownDuration);
 
   // Check if current path is dashboard
   const isDashboard = pathname === "/dashboard";
@@ -48,6 +51,27 @@ export function AuthHeader({
     };
   }, []);
 
+  // Reset countdown when route changes
+  useEffect(() => {
+    setCountdown(countdownDuration);
+  }, [pathname, countdownDuration]);
+
+  // Update countdown every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCountdown((prevCountdown) => {
+        if (prevCountdown <= 0) {
+          return 0;
+        }
+        return prevCountdown - 1;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
   const handleBackClick = () => {
     // Back navigation based on user role and current path
     if (user?.role === "domain") {
@@ -57,6 +81,15 @@ export function AuthHeader({
       // Normal users go back to login page (they should not be able to go back)
       router.push("/");
     }
+  };
+
+  // Format countdown as MM:SS
+  const formatCountdown = () => {
+    const minutes = Math.floor(countdown / 60);
+    const seconds = countdown % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   return (
@@ -103,6 +136,34 @@ export function AuthHeader({
                 Real Task
               </span>
             )}
+          </div>
+        </div>
+
+        {/* Countdown timer - Centered */}
+        <div className="flex-1 flex justify-center">
+          <div
+            className={`flex items-center px-3 py-1.5 rounded-full shadow-sm ${
+              countdown < 60
+                ? "bg-red-50 text-red-600"
+                : "bg-gray-50 text-gray-600"
+            }`}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mr-1.5"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span className="text-sm font-medium">{formatCountdown()}</span>
           </div>
         </div>
 

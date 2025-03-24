@@ -250,140 +250,145 @@ export function EntityVisual({ events, selectedAttribute }: EntityVisualProps) {
       .attr("text-anchor", "middle")
       .text("Narrative Time");
 
-    // Draw event nodes
+    // Draw event nodes and connectors
     events.forEach((event) => {
-      // First collect all relevant entities for this event
-      const {
-        entities: relevantEntities,
-        hasNoEntities,
-        hasNoVisibleEntities,
-      } = getRelevantEntities(event, visibleEntities, selectedAttribute);
-
       const y = yScale(event.temporal_anchoring.narrative_time);
+      const relevantEntities = getRelevantEntities(
+        event,
+        visibleEntities,
+        selectedAttribute
+      );
 
-      if (hasNoEntities || hasNoVisibleEntities) {
-        // Draw a single dashed node at x=0 for events with no entities or no visible entities
+      if (
+        relevantEntities.hasNoEntities ||
+        relevantEntities.hasNoVisibleEntities
+      ) {
+        // Draw a single dashed node for events with no entities or no visible entities
         g.append("circle")
           .attr("class", "event-node")
+          .attr("data-event-index", event.index)
           .attr("cx", 0)
           .attr("cy", y)
           .attr("r", ENTITY_CONFIG.event.nodeRadius)
           .attr("fill", "white")
-          .attr("stroke", hasNoEntities ? "#94a3b8" : "#64748b") // lighter gray for no entities
+          .attr(
+            "stroke",
+            relevantEntities.hasNoEntities ? "#94a3b8" : "#64748b"
+          )
           .attr("stroke-width", ENTITY_CONFIG.event.nodeStrokeWidth)
           .attr("stroke-dasharray", "3,3")
-          .attr("data-event-index", event.index)
           .style("cursor", "pointer")
-          .on("mouseover", function (e) {
+          .on("mouseenter", function (e) {
             d3.select(this)
               .transition()
-              .duration(150)
+              .duration(200)
               .attr("r", ENTITY_CONFIG.event.nodeRadius * 1.5);
 
             showTooltip(event, e.pageX, e.pageY, "entity");
+            updatePosition(e.pageX, e.pageY);
           })
           .on("mousemove", function (e) {
             updatePosition(e.pageX, e.pageY);
           })
-          .on("mouseout", function () {
+          .on("mouseleave", function () {
             d3.select(this)
               .transition()
-              .duration(150)
+              .duration(200)
               .attr("r", ENTITY_CONFIG.event.nodeRadius);
-
             hideTooltip();
           })
           .on("click", function () {
             setSelectedEventId(
-              event.index === selectedEventId ? null : event.index
+              selectedEventId === event.index ? null : event.index
             );
           });
-      } else if (relevantEntities.length > 0) {
-        // Draw connector line if multiple entities
-        if (relevantEntities.length > 1) {
-          const { minX, maxX } = calculateConnectorPoints(
-            relevantEntities,
-            xScale,
-            selectedAttribute
-          );
+      } else if (relevantEntities.entities.length > 0) {
+        const connectorPoints = calculateConnectorPoints(
+          relevantEntities.entities,
+          xScale,
+          selectedAttribute
+        );
 
-          // 1. First draw the outer black connector
-          g.append("line")
-            .attr("class", "connector-outer")
-            .attr("x1", minX)
-            .attr("y1", y)
-            .attr("x2", maxX)
-            .attr("y2", y)
-            .attr("stroke", "#000")
-            .attr(
-              "stroke-width",
-              ENTITY_CONFIG.event.connectorStrokeWidth +
-                ENTITY_CONFIG.event.nodeStrokeWidth * 1.25
-            )
-            .attr("stroke-linecap", "round");
-        }
+        if (connectorPoints.length > 0) {
+          // Create a single curved connector path
+          const connectorGroup = g
+            .append("g")
+            .attr("class", "connector-group")
+            .attr("transform", `translate(0, ${y})`);
 
-        // Draw nodes for each relevant entity
-        relevantEntities.forEach((entity) => {
-          const x = xScale(entity.id)! + xScale.bandwidth() / 2;
-
-          // Add event node
-          g.append("circle")
-            .attr("class", "event-node")
-            .attr("cx", x)
-            .attr("cy", y)
-            .attr("r", ENTITY_CONFIG.event.nodeRadius)
-            .attr("fill", "white")
-            .attr("stroke", "black")
-            .attr("stroke-width", ENTITY_CONFIG.event.nodeStrokeWidth)
-            .attr("data-event-index", event.index)
-            .style("cursor", "pointer")
-            .on("mouseover", function (e) {
-              d3.select(this)
-                .transition()
-                .duration(150)
-                .attr("r", ENTITY_CONFIG.event.nodeRadius * 1.5);
-
-              showTooltip(event, e.pageX, e.pageY, "entity");
-            })
-            .on("mousemove", function (e) {
-              updatePosition(e.pageX, e.pageY);
-            })
-            .on("mouseout", function () {
-              d3.select(this)
-                .transition()
-                .duration(150)
-                .attr("r", ENTITY_CONFIG.event.nodeRadius);
-
-              hideTooltip();
-            })
-            .on("click", function () {
-              setSelectedEventId(
-                event.index === selectedEventId ? null : event.index
-              );
+          if (connectorPoints.length > 1) {
+            // Create curved path for multiple points
+            const path = d3.path();
+            connectorPoints.forEach((point, i) => {
+              if (i === 0) {
+                path.moveTo(point.x, 0);
+              } else {
+                const prevPoint = connectorPoints[i - 1];
+                const midX = (prevPoint.x + point.x) / 2;
+                path.bezierCurveTo(
+                  midX,
+                  0, // Control point 1
+                  midX,
+                  0, // Control point 2
+                  point.x,
+                  0 // End point
+                );
+              }
             });
-        });
 
-        // Draw inner white connector on top if multiple entities
-        if (relevantEntities.length > 1) {
-          const { minX, maxX } = calculateConnectorPoints(
-            relevantEntities,
-            xScale,
-            selectedAttribute
-          );
+            connectorGroup
+              .append("path")
+              .attr("d", path.toString())
+              .attr("fill", "none")
+              .attr("stroke", "#94a3b8")
+              .attr("stroke-width", 2)
+              .attr("opacity", 0.6);
+          }
 
-          g.append("line")
-            .attr("class", "connector-inner")
-            .attr("x1", minX)
-            .attr("y1", y)
-            .attr("x2", maxX)
-            .attr("y2", y)
-            .attr("stroke", "#fff")
-            .attr(
-              "stroke-width",
-              ENTITY_CONFIG.event.connectorStrokeWidth * 0.85
-            )
-            .attr("stroke-linecap", "round");
+          // Draw nodes on top of the connector
+          connectorPoints.forEach((point) => {
+            const node = connectorGroup
+              .append("circle")
+              .attr("class", "event-node")
+              .attr("data-event-index", event.index)
+              .attr("cx", point.x)
+              .attr("cy", 0)
+              .attr("r", ENTITY_CONFIG.event.nodeRadius)
+              .attr("fill", "white")
+              .attr(
+                "stroke",
+                selectedEventId === event.index ? "#3b82f6" : "black"
+              )
+              .attr("stroke-width", ENTITY_CONFIG.event.nodeStrokeWidth)
+              .style("cursor", "pointer");
+
+            // Add event handlers
+            node
+              .on("mouseenter", function (e) {
+                d3.select(this)
+                  .transition()
+                  .duration(200)
+                  .attr("r", ENTITY_CONFIG.event.nodeRadius * 1.5);
+
+                showTooltip(event, e.pageX, e.pageY, "entity");
+                updatePosition(e.pageX, e.pageY);
+              })
+              .on("mousemove", function (e) {
+                updatePosition(e.pageX, e.pageY);
+              })
+              .on("mouseleave", function () {
+                d3.select(this)
+                  .transition()
+                  .duration(200)
+                  .attr("r", ENTITY_CONFIG.event.nodeRadius);
+                hideTooltip();
+              })
+              .on("click", function () {
+                setSelectedEventId(
+                  selectedEventId === event.index ? null : event.index
+                );
+              });
+          });
         }
       }
     });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import Fuse from "fuse.js";
 import { NarrativeEvent } from "@/types/narrative/lite";
 import { PURE_TEXT_CONFIG } from "./pure-text-config";
@@ -8,14 +8,17 @@ import { PURE_TEXT_CONFIG } from "./pure-text-config";
 interface PureTextSearchProps {
   events: NarrativeEvent[];
   onSearchResults: (results: NarrativeEvent[]) => void;
+  onSearchQueryChange: (query: string) => void;
 }
 
 export function PureTextSearch({
   events,
   onSearchResults,
+  onSearchQueryChange,
 }: PureTextSearchProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const { text } = PURE_TEXT_CONFIG;
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Prepare events with timestamp included in the searchable content
   const eventsWithFormattedTimestamps = useMemo(() => {
@@ -55,10 +58,34 @@ export function PureTextSearch({
     });
   }, [eventsWithFormattedTimestamps]);
 
+  // Override browser default search with our custom search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Check for Ctrl+F or Cmd+F (browser search shortcut)
+      if ((e.ctrlKey || e.metaKey) && e.key === "f") {
+        e.preventDefault(); // Prevent default browser search
+
+        // Focus on our search input
+        if (searchInputRef.current) {
+          searchInputRef.current.focus();
+        }
+      }
+    };
+
+    // Add the event listener
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Clean up on unmount
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   // Handle search
   useEffect(() => {
     if (searchQuery.trim() === "") {
       onSearchResults(events);
+      onSearchQueryChange("");
     } else {
       const results = fuse.search(searchQuery.trim());
       // Map back to original events since we only added searchableText for searching
@@ -68,11 +95,16 @@ export function PureTextSearch({
           return originalEvent as NarrativeEvent;
         })
       );
+      onSearchQueryChange(searchQuery.trim());
     }
-  }, [searchQuery, events, fuse, onSearchResults]);
+  }, [searchQuery, events, fuse, onSearchResults, onSearchQueryChange]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
 
   return (
-    <div className="relative flex-1 max-w-md">
+    <div className="relative flex-1 max-w-xl">
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
         <svg
           className="h-4 w-4 text-gray-400"
@@ -89,12 +121,13 @@ export function PureTextSearch({
         </svg>
       </div>
       <input
+        ref={searchInputRef}
         type="text"
         className="block w-full pl-10 pr-3 py-1.5 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
         style={{ fontSize: `${text.fontSize.meta}px` }}
         placeholder="Search article content, timestamps, entities, or topics..."
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={handleInputChange}
       />
       {searchQuery && (
         <button

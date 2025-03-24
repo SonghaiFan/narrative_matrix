@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "title": "Ukraine Conflic",
+    "title": "Ukraine Conflict",
     "description": "A historical account of the Russia-Ukraine conflict and its global implications",
     "topic": "Ukraine Conflict",
     "author": "unknown",
@@ -8,25 +8,115 @@
     "imageUrl": null,
     "quiz": [
       {
-        "id": "ukraine-1",
+        "id": "ukraine-ir-1",
         "question": "When did Russia launch its full-scale invasion of Ukraine?",
+        "options": [
+          "February 24, 2022",
+          "March 1, 2022",
+          "February 20, 2022",
+          "March 5, 2022"
+        ],
         "answer": "February 24, 2022",
         "level": "Information Retrieval",
-        "completed": false
+        "completed": false,
+        "type": "radio-options"
       },
       {
-        "id": "ukraine-2",
-        "question": "Identify two countries that have provided military support to Russia during the Ukraine conflict.",
-        "answer": "North Korea and Iran",
+        "id": "ukraine-ir-2",
+        "question": "The total number of civilian casualties in Ukraine is _____.",
+        "answer": "over 40,000",
+        "level": "Information Retrieval",
+        "completed": false,
+        "type": "single-input"
+      },
+      {
+        "id": "ukraine-ir-3",
+        "question": "List the two main countries involved in the military conflict.",
+        "answer": "Russia and Ukraine",
+        "level": "Information Retrieval",
+        "completed": false,
+        "type": "comma-separated"
+      },
+      {
+        "id": "ukraine-pr-1",
+        "question": "Which statement best describes the trend in humanitarian needs in Ukraine since the conflict began?",
+        "options": [
+          "Humanitarian needs have remained consistently high with over 14.6 million people requiring assistance",
+          "Humanitarian needs have decreased as the conflict has stabilized",
+          "Humanitarian needs have fluctuated significantly with no clear pattern",
+          "Humanitarian needs peaked at the start of the conflict but have steadily declined"
+        ],
+        "answer": "Humanitarian needs have remained consistently high with over 14.6 million people requiring assistance",
         "level": "Pattern Recognition",
-        "completed": false
+        "completed": false,
+        "type": "radio-options"
       },
       {
-        "id": "ukraine-3",
-        "question": "How did the collapse of the Black Sea grain deal in July 2023 affect Ukraine's export strategy?",
-        "answer": "Ukraine adapted by establishing safe shipping lanes along the coast of NATO members Romania and Bulgaria, which facilitated higher rates of grain exports compared to 2023.",
+        "id": "ukraine-pr-2",
+        "question": "Arrange the following events in chronological order: 1) Russia's full-scale invasion, 2) Trump's suspension of military aid, 3) Ukraine's acceptance of cease-fire proposal, 4) US restoration of military aid",
+        "answer": "1, 2, 3, 4",
+        "level": "Pattern Recognition",
+        "completed": false,
+        "type": "numbered-sequence"
+      },
+      {
+        "id": "ukraine-pr-3",
+        "question": "Match each country with its role in the conflict: Russia, Ukraine, United States, North Korea",
+        "options": {
+          "countries": ["Russia", "Ukraine", "United States", "North Korea"],
+          "roles": [
+            "Invader",
+            "Defender",
+            "Military Aid Provider",
+            "Russian Military Support"
+          ]
+        },
+        "answer": "Russia: Invader, Ukraine: Defender, United States: Military Aid Provider, North Korea: Russian Military Support",
+        "level": "Pattern Recognition",
+        "completed": false,
+        "type": "grid-matching"
+      },
+      {
+        "id": "ukraine-cr-1",
+        "question": "Why did the Trump administration suspend military assistance to Ukraine?",
+        "answer": "Following a contentious White House meeting between President Zelenskyy, President Trump, and Vice President JD Vance that descended into acrimony",
         "level": "Causal Reasoning",
-        "completed": false
+        "completed": false,
+        "type": "long-text"
+      },
+      {
+        "id": "ukraine-cr-2",
+        "question": "What was the main cause of the United States' decision to restore military aid to Ukraine?",
+        "options": [
+          "Ukraine's willingness to accept a thirty-day interim cease-fire proposal",
+          "Pressure from NATO allies",
+          "A change in Russian military strategy",
+          "The article doesn't specify the main cause"
+        ],
+        "answer": "Ukraine's willingness to accept a thirty-day interim cease-fire proposal",
+        "level": "Causal Reasoning",
+        "completed": false,
+        "type": "radio-options"
+      },
+      {
+        "id": "ukraine-cr-3",
+        "question": "Match each cause with its effect in the conflict:",
+        "options": {
+          "causes": [
+            "Russia's full-scale invasion",
+            "Trump's suspension of military aid",
+            "Ukraine's acceptance of cease-fire proposal"
+          ],
+          "effects": [
+            "Massive civilian displacement and casualties",
+            "Temporary halt in US military support",
+            "US restoration of military aid"
+          ]
+        },
+        "answer": "Russia's full-scale invasion: Massive civilian displacement and casualties, Trump's suspension of military aid: Temporary halt in US military support, Ukraine's acceptance of cease-fire proposal: US restoration of military aid",
+        "level": "Causal Reasoning",
+        "completed": false,
+        "type": "grid-matching"
       }
     ]
   },

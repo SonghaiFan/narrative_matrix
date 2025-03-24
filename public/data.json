@@ -12,13 +12,21 @@
         "question": "On what date did Hamas launch its attack on Israel in 2023?",
         "answer": "October 7, 2023",
         "level": "Information Retrieval",
+        "type": "single-input",
         "completed": false
       },
       {
         "id": "israel-2",
-        "question": "Name the three countries that mediated the January 15, 2025 ceasefire between Israel and Hamas.",
+        "question": "Which countries mediated the January 2025 ceasefire between Israel and Hamas?",
         "answer": "The United States, Egypt, and Qatar",
         "level": "Information Retrieval",
+        "type": "radio-options",
+        "options": [
+          "The United States, Egypt, and Qatar",
+          "Russia, Turkey, and Saudi Arabia",
+          "France, Germany, and Italy",
+          "China, India, and Brazil"
+        ],
         "completed": false
       },
       {
@@ -26,6 +34,8 @@
         "question": "In what year was the State of Israel created?",
         "answer": "1948",
         "level": "Information Retrieval",
+        "type": "radio-options",
+        "options": ["1945", "1948", "1956", "1967"],
         "completed": false
       },
       {
@@ -33,27 +43,47 @@
         "question": "What was the name of the 1993 accords that allowed Palestinians to govern themselves in the West Bank and Gaza?",
         "answer": "Oslo I Accords",
         "level": "Information Retrieval",
+        "type": "single-input",
         "completed": false
       },
       {
         "id": "israel-5",
-        "question": "Following Hamas's October 7, 2023 attack, identify two other militant groups that became involved in attacking Israel or its allies.",
-        "answer": "Hezbollah in Lebanon and Houthi rebels in Yemen",
+        "question": "Following Hamas's October 7, 2023 attack, identify the militant groups that became involved in attacking Israel or its allies.",
+        "answer": "Hezbollah, Houthi rebels, Iran-backed groups",
         "level": "Pattern Recognition",
+        "type": "comma-separated",
         "completed": false
       },
       {
         "id": "israel-6",
-        "question": "Compare the 2014 and 2025 ceasefire agreements between Israel and Hamas. What was one similarity and one difference?",
-        "answer": "Similarity: Both were mediated by Egypt. Difference: The 2025 agreement included provisions for humanitarian aid and withdrawal of forces, while the 2014 agreement did not.",
+        "question": "Match the following territories with the countries they were captured from in the 1967 Six-Day War:",
+        "answer": "Sinai Peninsula: Egypt, Gaza Strip: Egypt, West Bank: Jordan, East Jerusalem: Jordan, Golan Heights: Syria",
         "level": "Pattern Recognition",
+        "type": "grid-matching",
+        "options": {
+          "countries": ["Egypt", "Jordan", "Syria"],
+          "roles": [
+            "Sinai Peninsula",
+            "Gaza Strip",
+            "West Bank",
+            "East Jerusalem",
+            "Golan Heights"
+          ]
+        },
         "completed": false
       },
       {
         "id": "israel-7",
-        "question": "Identify the pattern in duration of major conflicts between Israel and Palestinian groups from 2014 to 2025. How has the length of fighting changed over time?",
-        "answer": "The pattern shows increasingly longer conflicts: the 2014 Gaza conflict lasted about 7 weeks, the May 2021 conflict lasted 11 days, while the October 2023 conflict lasted approximately 15 months before the January 2025 ceasefire. This demonstrates an escalating pattern of longer and more sustained conflicts over time.",
+        "question": "Arrange the following events in chronological order:",
+        "answer": "1,2,4,3",
         "level": "Pattern Recognition",
+        "type": "numbered-sequence",
+        "options": [
+          "1. Creation of the State of Israel (1948)",
+          "2. Six-Day War (1967)",
+          "3. Hamas's electoral victory (2006)",
+          "4. Oslo I Accords (1993)"
+        ],
         "completed": false
       },
       {
@@ -61,13 +91,29 @@
         "question": "What specific policies did Israel's coalition government implement in 2023 that increased tensions before the October 7 Hamas attack?",
         "answer": "The government prioritized settlement expansion in the West Bank, endorsed discriminatory policies against LGBTQ+ people, and limited judicial oversight of the government in May 2023.",
         "level": "Causal Reasoning",
+        "type": "long-text",
         "completed": false
       },
       {
         "id": "israel-9",
-        "question": "How did the United States' threat to withhold weapons in 2024 affect Israel's military approach in Rafah?",
-        "answer": "The threat caused Israel to adopt more targeted approaches in Rafah, which the Biden administration ultimately determined were sufficiently more targeted than earlier operations.",
+        "question": "Match these causes with their effects in the Israeli-Palestinian conflict:",
+        "answer": "Hamas victory in 2006: International isolation, Netanyahu's far-right government: Expansion of settlements, Iranian direct attacks: Israeli counterstrikes on facilities, Oslo Accords: Palestinian self-governance",
         "level": "Causal Reasoning",
+        "type": "grid-matching",
+        "options": {
+          "causes": [
+            "Hamas victory in 2006",
+            "Netanyahu's far-right government",
+            "Iranian direct attacks",
+            "Oslo Accords"
+          ],
+          "effects": [
+            "International isolation",
+            "Expansion of settlements",
+            "Israeli counterstrikes on facilities",
+            "Palestinian self-governance"
+          ]
+        },
         "completed": false
       },
       {
@@ -75,6 +121,7 @@
         "question": "Explain one way Hamas's 2006 electoral victory led to increased conflict with Israel in the following years.",
         "answer": "Hamas's victory led to international isolation as Western governments designated it a terrorist organization. This isolation, combined with Israel's restrictions on Gaza, created economic hardship that fueled radicalization and led to cycles of rocket attacks and military responses.",
         "level": "Causal Reasoning",
+        "type": "long-text",
         "completed": false
       }
     ]
@@ -101,13 +148,8 @@
           "social_role": "government"
         },
         {
-          "id": "GOVERNMENT_3",
-          "name": "Israel Defense Forces",
-          "social_role": "government"
-        },
-        {
-          "id": "OBJECT_4",
-          "name": "Gaza Strip",
+          "id": "OBJECT_8",
+          "name": "Gaza",
           "social_role": "object"
         }
       ],
@@ -296,8 +338,8 @@
       },
       "entities": [
         {
-          "id": "GOVERNMENT_3",
-          "name": "Israel Defense Forces",
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
           "social_role": "government"
         },
         {
@@ -501,8 +543,8 @@
           "social_role": "object"
         },
         {
-          "id": "OBJECT_4",
-          "name": "Gaza Strip",
+          "id": "OBJECT_8",
+          "name": "Gaza",
           "social_role": "object"
         }
       ],
@@ -621,8 +663,8 @@
           "social_role": "object"
         },
         {
-          "id": "OBJECT_4",
-          "name": "Gaza Strip",
+          "id": "OBJECT_8",
+          "name": "Gaza",
           "social_role": "object"
         },
         {
@@ -796,8 +838,8 @@
           "social_role": "object"
         },
         {
-          "id": "OBJECT_4",
-          "name": "Gaza Strip",
+          "id": "OBJECT_8",
+          "name": "Gaza",
           "social_role": "object"
         },
         {
@@ -1026,8 +1068,8 @@
           "social_role": "activist"
         },
         {
-          "id": "OBJECT_4",
-          "name": "Gaza Strip",
+          "id": "OBJECT_8",
+          "name": "Gaza",
           "social_role": "object"
         }
       ],
@@ -1165,8 +1207,8 @@
           "social_role": "activist"
         },
         {
-          "id": "GOVERNMENT_3",
-          "name": "Israel Defense Forces",
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
           "social_role": "government"
         },
         {
@@ -1270,8 +1312,8 @@
       },
       "entities": [
         {
-          "id": "GOVERNMENT_3",
-          "name": "Israel Defense Forces",
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
           "social_role": "government"
         },
         {
@@ -1280,8 +1322,8 @@
           "social_role": "public"
         },
         {
-          "id": "OBJECT_4",
-          "name": "Gaza Strip",
+          "id": "OBJECT_8",
+          "name": "Gaza",
           "social_role": "object"
         }
       ],
@@ -1365,8 +1407,8 @@
           "social_role": "object"
         },
         {
-          "id": "OBJECT_4",
-          "name": "Gaza Strip",
+          "id": "OBJECT_8",
+          "name": "Gaza",
           "social_role": "object"
         }
       ],
@@ -1716,901 +1758,6 @@
         "sentiment": {
           "polarity": "negative",
           "intensity": 7
-        }
-      }
-    },
-    {
-      "index": 47,
-      "text": "In early October 2023, Hamas fighters fired rockets into Israel and stormed southern Israeli cities and towns across the border of the Gaza Strip in a surprise attack, killing more than 1,300 Israelis, injuring 3,300, and taking hundreds of hostages.",
-      "short_text": "In early October 2023, Hamas fighters attacked southern Israeli cities from the Gaza Strip, killing over 1,300 Israelis, injuring 3,300, and taking hundreds hostage.",
-      "lead_title": "Recent Developments",
-      "temporal_anchoring": {
-        "real_time": "2023-10-01",
-        "narrative_time": 47
-      },
-      "entities": [
-        {
-          "id": "ACTIVIST_1",
-          "name": "Hamas",
-          "social_role": "activist"
-        },
-        {
-          "id": "GOVERNMENT_2",
-          "name": "Israel",
-          "social_role": "government"
-        },
-        {
-          "id": "OBJECT_4",
-          "name": "Gaza Strip",
-          "social_role": "object"
-        },
-        {
-          "id": "PUBLIC_45",
-          "name": "Israelis",
-          "social_role": "public"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["act of terror", "armed conflict", "massacre"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 10
-        }
-      }
-    },
-    {
-      "index": 48,
-      "text": "One day after the October 7 attack, the Israeli cabinet formally declared war against Hamas, followed by a directive from the defense minister to the Israel Defense Forces (IDF) to carry out a \u201ccomplete siege\u201d of Gaza.",
-      "short_text": "The Israeli cabinet declared war against Hamas and directed the IDF to siege Gaza.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": "2023-10-08",
-        "narrative_time": 48
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_49",
-          "name": "Israeli cabinet",
-          "social_role": "government"
-        },
-        {
-          "id": "ACTIVIST_1",
-          "name": "Hamas",
-          "social_role": "activist"
-        },
-        {
-          "id": "GOVERNMENT_3",
-          "name": "Israel Defense Forces",
-          "social_role": "government"
-        },
-        {
-          "id": "OBJECT_8",
-          "name": "Gaza",
-          "social_role": "object"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "armed conflict"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 8
-        }
-      }
-    },
-    {
-      "index": 49,
-      "text": "It is the most significant escalation of the Israeli-Palestinian conflict in several decades. Israel ordered over one million Palestinian civilians in northern Gaza to evacuate ahead of a ground invasion that commenced on October 27 in conjunction with Israel\u2019s continued aerial assault.",
-      "short_text": "Israel ordered over one million Palestinian civilians in northern Gaza to evacuate ahead of a ground invasion that commenced on October 27 in conjunction with Israel's continued aerial assault.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": "2023-10-27",
-        "narrative_time": 49
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_2",
-          "name": "Israel",
-          "social_role": "government"
-        },
-        {
-          "id": "PUBLIC_50",
-          "name": "Palestinian civilians",
-          "social_role": "public"
-        },
-        {
-          "id": "OBJECT_51",
-          "name": "northern Gaza",
-          "social_role": "object"
-        },
-        {
-          "id": "OBJECT_52",
-          "name": "ground invasion",
-          "social_role": "object"
-        },
-        {
-          "id": "OBJECT_53",
-          "name": "aerial assault",
-          "social_role": "object"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "war", "civil unrest"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 9
-        }
-      }
-    },
-    {
-      "index": 50,
-      "text": "From November 24 to November 30, 2023, a temporary truce facilitated the exchange of certain Israeli hostages for Palestinian prisoners held in Israeli jails, as well as a surge in humanitarian aid to the Strip.",
-      "short_text": "A temporary truce facilitated the exchange of Israeli hostages for Palestinian prisoners and increased humanitarian aid to Gaza Strip.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": "2023-11-24",
-        "narrative_time": 50
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_2",
-          "name": "Israel",
-          "social_role": "government"
-        },
-        {
-          "id": "PUBLIC_21",
-          "name": "Palestinians",
-          "social_role": "public"
-        },
-        {
-          "id": "OBJECT_4",
-          "name": "Gaza Strip",
-          "social_role": "object"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict"],
-        "sentiment": {
-          "polarity": "neutral",
-          "intensity": 2
-        }
-      }
-    },
-    {
-      "index": 51,
-      "text": "However, hostilities resumed following reports of violations by both Israeli and Hamas forces. In January 2024, under pressure from its principal ally, the United States, and amid global scrutiny both over the humanitarian crisis in Gaza and doubts about the feasibility of completely eradicating Hamas, Israel signaled its intent to shift to lower-intensity operations in Gaza.",
-      "short_text": "In January 2024, Israel, under pressure from the United States, signaled a shift to lower-intensity operations in Gaza amid global scrutiny and a humanitarian crisis.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": "2024-01",
-        "narrative_time": 51
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_2",
-          "name": "Israel",
-          "social_role": "government"
-        },
-        {
-          "id": "GOVERNMENT_5",
-          "name": "United States",
-          "social_role": "government"
-        },
-        {
-          "id": "OBJECT_8",
-          "name": "Gaza",
-          "social_role": "object"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "crisis", "war"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 7
-        }
-      }
-    },
-    {
-      "index": 52,
-      "text": "The IDF also started to shift its focus from northern Gaza to prepare for a campaign in southern Gaza, including in the city of Rafah.",
-      "short_text": "The IDF shifted its focus from northern Gaza to prepare for a campaign in southern Gaza, including Rafah.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": null,
-        "narrative_time": 52
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_3",
-          "name": "Israel Defense Forces",
-          "social_role": "government"
-        },
-        {
-          "id": "OBJECT_51",
-          "name": "northern Gaza",
-          "social_role": "object"
-        },
-        {
-          "id": "OBJECT_54",
-          "name": "southern Gaza",
-          "social_role": "object"
-        },
-        {
-          "id": "OBJECT_55",
-          "name": "Rafah",
-          "social_role": "object"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "war"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 6
-        }
-      }
-    },
-    {
-      "index": 53,
-      "text": "Israel\u2019s push for a Rafah operation prompted a public backlash from the Biden administration.",
-      "short_text": "Israel's push for a Rafah operation prompted a public backlash from the Biden administration.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": null,
-        "narrative_time": 53
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_2",
-          "name": "Israel",
-          "social_role": "government"
-        },
-        {
-          "id": "OBJECT_55",
-          "name": "Rafah",
-          "social_role": "object"
-        },
-        {
-          "id": "GOVERNMENT_56",
-          "name": "Biden administration",
-          "social_role": "government"
-        }
-      ],
-      "topic": {
-        "main_topic": "politics",
-        "sub_topic": ["diplomacy", "government", "foreign aid"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 4
-        }
-      }
-    },
-    {
-      "index": 54,
-      "text": "In May 2024, news outlets broke that the United States had paused a shipment of bombs to Israel.",
-      "short_text": "The United States paused a shipment of bombs to Israel in May 2024.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": "2024-05-01",
-        "narrative_time": 54
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_5",
-          "name": "United States",
-          "social_role": "government"
-        },
-        {
-          "id": "GOVERNMENT_2",
-          "name": "Israel",
-          "social_role": "government"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["weaponry"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 5
-        }
-      }
-    },
-    {
-      "index": 55,
-      "text": "Administration officials cited concerns that the weapons\u2014primarily 2,000-pound bombs\u2014could cause an unacceptable number of civilian casualties if used in Rafah\u2019s dense, urban environment, where over a million Gazan civilians were sheltering at the time.",
-      "short_text": "Administration officials expressed concerns about the potential for high civilian casualties from using 2,000-pound bombs in Rafah's densely populated area.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": null,
-        "narrative_time": 55
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_56",
-          "name": "Biden administration",
-          "social_role": "government"
-        },
-        {
-          "id": "OBJECT_57",
-          "name": "2,000-pound bombs",
-          "social_role": "object"
-        },
-        {
-          "id": "OBJECT_55",
-          "name": "Rafah",
-          "social_role": "object"
-        },
-        {
-          "id": "PUBLIC_58",
-          "name": "Gazan civilians",
-          "social_role": "public"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["civil unrest", "weaponry"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 7
-        }
-      }
-    },
-    {
-      "index": 56,
-      "text": "A week later, President Biden publicly stated that he had warned Netanyahu the United States would withhold certain offensive weapons, including bombs and artillery shells, if the Israeli military launched an operation Rafah.",
-      "short_text": "President Biden warned Netanyahu that the US would withhold offensive weapons if Israel launched an operation in Rafah.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": "2024-05-07",
-        "narrative_time": 56
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_56",
-          "name": "Biden administration",
-          "social_role": "government"
-        },
-        {
-          "id": "GOVERNMENT_9",
-          "name": "Benjamin Netanyahu",
-          "social_role": "government"
-        },
-        {
-          "id": "GOVERNMENT_5",
-          "name": "United States",
-          "social_role": "government"
-        },
-        {
-          "id": "GOVERNMENT_2",
-          "name": "Israel",
-          "social_role": "government"
-        },
-        {
-          "id": "OBJECT_55",
-          "name": "Rafah",
-          "social_role": "object"
-        }
-      ],
-      "topic": {
-        "main_topic": "politics",
-        "sub_topic": ["defence", "diplomacy", "international organisation"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 6
-        }
-      }
-    },
-    {
-      "index": 57,
-      "text": "The Biden administration ultimately did not act on this threat as it determined Israel\u2019s campaign in Rafah was sufficiently more targeted than its earlier operations during the war.",
-      "short_text": "The Biden administration did not act on a threat as it found Israel's operations in Rafah to be more targeted.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": "2024-05-09",
-        "narrative_time": 57
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_56",
-          "name": "Biden administration",
-          "social_role": "government"
-        },
-        {
-          "id": "GOVERNMENT_2",
-          "name": "Israel",
-          "social_role": "government"
-        },
-        {
-          "id": "OBJECT_55",
-          "name": "Rafah",
-          "social_role": "object"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war"],
-        "sentiment": {
-          "polarity": "neutral",
-          "intensity": 0
-        }
-      }
-    },
-    {
-      "index": 58,
-      "text": "In the fall of 2024, while continuing operations in southern and central Gaza, the IDF launched a renewed offensive in northern Gaza, specifically around the Jabalia refugee camp.",
-      "short_text": "In the fall of 2024, the IDF launched a renewed offensive in northern Gaza around the Jabalia refugee camp while continuing operations in southern and central Gaza.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": "2024-10",
-        "narrative_time": 58
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_3",
-          "name": "Israel Defense Forces",
-          "social_role": "government"
-        },
-        {
-          "id": "OBJECT_51",
-          "name": "northern Gaza",
-          "social_role": "object"
-        },
-        {
-          "id": "OBJECT_54",
-          "name": "southern Gaza",
-          "social_role": "object"
-        },
-        {
-          "id": "OBJECT_59",
-          "name": "central Gaza",
-          "social_role": "object"
-        },
-        {
-          "id": "OBJECT_60",
-          "name": "Jabalia refugee camp",
-          "social_role": "object"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "war"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 7
-        }
-      }
-    },
-    {
-      "index": 59,
-      "text": "The stated goal was to eliminate Hamas militants who had begun regrouping in the area and filling the vacuum left after the Israeli military\u2019s earlier operations.",
-      "short_text": "The goal was to eliminate Hamas militants regrouping in the area after Israeli military operations.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": null,
-        "narrative_time": 59
-      },
-      "entities": [
-        {
-          "id": "ACTIVIST_1",
-          "name": "Hamas",
-          "social_role": "activist"
-        },
-        {
-          "id": "GOVERNMENT_61",
-          "name": "Israeli military",
-          "social_role": "government"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "war"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 6
-        }
-      }
-    },
-    {
-      "index": 60,
-      "text": "The IDF\u2019s operations in Jabalia raised concerns among experts that Israel might be planning to implement the controversial \u201cGenerals\u2019 Plan,\u201d which advocates for a total siege of the area, including the withholding of humanitarian aid, to force the surrender of remaining Hamas militants.",
-      "short_text": "The IDF's operations in Jabalia raised concerns about a potential implementation of the 'Generals' Plan' by Israel.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": null,
-        "narrative_time": 60
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_3",
-          "name": "Israel Defense Forces",
-          "social_role": "government"
-        },
-        {
-          "id": "OBJECT_62",
-          "name": "Jabalia",
-          "social_role": "object"
-        },
-        {
-          "id": "GOVERNMENT_2",
-          "name": "Israel",
-          "social_role": "government"
-        },
-        {
-          "id": "OBJECT_63",
-          "name": "Generals' Plan",
-          "social_role": "object"
-        },
-        {
-          "id": "ACTIVIST_1",
-          "name": "Hamas",
-          "social_role": "activist"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "war", "crisis"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 7
-        }
-      }
-    },
-    {
-      "index": 61,
-      "text": "Between October 6 and December 31, 2024, the UN attempted to reach the besieged area 165 times.",
-      "short_text": "The UN attempted to reach the besieged area 165 times between October 6 and December 31, 2024.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": "2024-10-06",
-        "narrative_time": 61
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_18",
-          "name": "United Nations",
-          "social_role": "government"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "conflict (general)"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 7
-        }
-      }
-    },
-    {
-      "index": 62,
-      "text": "Of those attempts, Israeli authorities denied 149, while the remaining 16 faced impediments. The war has raised humanitarian concerns beyond northern Gaza. Since the start of Israeli operations in 2023, multiple reports have documented the targeting of journalists, schools, and Israeli-designated humanitarian zones.",
-      "short_text": "Israeli authorities denied 149 attempts, while 16 faced impediments during the operations in northern Gaza in 2023.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": "2024-12-31",
-        "narrative_time": 62
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_2",
-          "name": "Israel",
-          "social_role": "government"
-        },
-        {
-          "id": "OBJECT_51",
-          "name": "northern Gaza",
-          "social_role": "object"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "armed conflict"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 8
-        }
-      }
-    },
-    {
-      "index": 63,
-      "text": "Repeated Israeli attacks on medical sites, including hospitals and critical infrastructure, have led to a surge in diseases such as polio throughout the Strip.",
-      "short_text": "Repeated Israeli attacks on medical sites in Gaza Strip led to a surge in diseases like polio.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": null,
-        "narrative_time": 63
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_2",
-          "name": "Israel",
-          "social_role": "government"
-        },
-        {
-          "id": "OBJECT_4",
-          "name": "Gaza Strip",
-          "social_role": "object"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "armed conflict"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 8
-        }
-      }
-    },
-    {
-      "index": 64,
-      "text": "Violence against humanitarian workers has further exacerbated the crisis. In April 2024, an Israeli airstrike killed seven employees of the World Central Kitchen, and World Food Programme workers were shot in August of that year.",
-      "short_text": "In April 2024, an Israeli airstrike killed seven employees of the World Central Kitchen, and in August 2024, World Food Programme workers were shot.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": "2024-06",
-        "narrative_time": 64
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_2",
-          "name": "Israel",
-          "social_role": "government"
-        },
-        {
-          "id": "ACTIVIST_64",
-          "name": "World Central Kitchen",
-          "social_role": "activist"
-        },
-        {
-          "id": "ACTIVIST_65",
-          "name": "World Food Programme",
-          "social_role": "activist"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "war", "massacre"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 9
-        }
-      }
-    },
-    {
-      "index": 65,
-      "text": "These incidents have created a chilling effect on humanitarian agencies operating in Gaza, with many suspending or limiting their operations until they can better ensure their employees\u2019 safety.",
-      "short_text": "Humanitarian agencies in Gaza suspend or limit operations due to safety concerns.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": null,
-        "narrative_time": 65
-      },
-      "entities": [
-        {
-          "id": "OBJECT_8",
-          "name": "Gaza",
-          "social_role": "object"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["crisis"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 6
-        }
-      }
-    },
-    {
-      "index": 66,
-      "text": "Additionally, Israel\u2019s ban on many dual-use items in Gaza has hindered humanitarian aid operations. In its efforts to prevent items with potential military applications from reaching Hamas, Israeli inspectors have rejected critical supplies, such as chlorine tablets for water purification, brought in by humanitarian organizations.",
-      "short_text": "Israel's ban on dual-use items in Gaza hinders humanitarian aid operations.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": null,
-        "narrative_time": 66
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_2",
-          "name": "Israel",
-          "social_role": "government"
-        },
-        {
-          "id": "OBJECT_8",
-          "name": "Gaza",
-          "social_role": "object"
-        },
-        {
-          "id": "ACTIVIST_1",
-          "name": "Hamas",
-          "social_role": "activist"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["act of terror"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 7
-        }
-      }
-    },
-    {
-      "index": 67,
-      "text": "As of January 2025, 1.9 million Gazans\u2014about 90 percent of Gaza\u2019s population\u2014have been displaced and are categorized as facing acute or catastrophic food insecurity.",
-      "short_text": "As of January 2025, 1.9 million Gazans are displaced and facing acute or catastrophic food insecurity.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": "2025-01-01",
-        "narrative_time": 67
-      },
-      "entities": [
-        {
-          "id": "PUBLIC_66",
-          "name": "Gazans",
-          "social_role": "public"
-        },
-        {
-          "id": "OBJECT_8",
-          "name": "Gaza",
-          "social_role": "object"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "massacre", "crisis"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 9
-        }
-      }
-    },
-    {
-      "index": 68,
-      "text": "There are currently no functioning hospitals in Gaza.",
-      "short_text": "There are currently no functioning hospitals in Gaza.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": null,
-        "narrative_time": 68
-      },
-      "entities": [
-        {
-          "id": "OBJECT_8",
-          "name": "Gaza",
-          "social_role": "object"
-        }
-      ],
-      "topic": {
-        "main_topic": "health",
-        "sub_topic": ["hospital and clinic"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 8
-        }
-      }
-    },
-    {
-      "index": 69,
-      "text": "The war has led to over 46,000 Gazan deaths, of which the Israeli military estimates 17,000 were Hamas militants.",
-      "short_text": "The war has led to over 46,000 Gazan deaths, of which the Israeli military estimates 17,000 were Hamas militants.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": null,
-        "narrative_time": 69
-      },
-      "entities": [
-        {
-          "id": "PUBLIC_66",
-          "name": "Gazans",
-          "social_role": "public"
-        },
-        {
-          "id": "GOVERNMENT_61",
-          "name": "Israeli military",
-          "social_role": "government"
-        },
-        {
-          "id": "ACTIVIST_1",
-          "name": "Hamas",
-          "social_role": "activist"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "massacre", "armed conflict"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 9
-        }
-      }
-    },
-    {
-      "index": 70,
-      "text": "Israel has argued in many cases that its actions were necessary because Hamas\u2019s guerilla warfare tactics often involve fighters embedding themselves in civilian areas. The military has also cited military successes, including the June 2024 rescue of four living hostages in central Gaza and the elimination of Hamas\u2019s top leadership, including the group\u2019s leader Yahya Sinwar, military chief Mohammed Deif, and Deif\u2019s deputy Marwan Issa.",
-      "short_text": "Israel's military successfully rescued four hostages and eliminated top Hamas leadership in central Gaza in June 2024.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": "2024-06",
-        "narrative_time": 70
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_2",
-          "name": "Israel",
-          "social_role": "government"
-        },
-        {
-          "id": "ACTIVIST_1",
-          "name": "Hamas",
-          "social_role": "activist"
-        },
-        {
-          "id": "OBJECT_59",
-          "name": "central Gaza",
-          "social_role": "object"
-        },
-        {
-          "id": "PUBLIC_67",
-          "name": "Yahya Sinwar",
-          "social_role": "public"
-        },
-        {
-          "id": "PUBLIC_68",
-          "name": "Mohammed Deif",
-          "social_role": "public"
-        },
-        {
-          "id": "PUBLIC_69",
-          "name": "Marwan Issa",
-          "social_role": "public"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "guerrilla activity", "war"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 7
-        }
-      }
-    },
-    {
-      "index": 71,
-      "text": "However, the United States has cautioned that it assesses Hamas has been able to recruit replacements for nearly all the fighters that it has lost so far due to the war\u2019s radicalizing effects on Gazans.",
-      "short_text": "The United States assesses that Hamas has recruited replacements for nearly all fighters lost in the war.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": null,
-        "narrative_time": 71
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_5",
-          "name": "United States",
-          "social_role": "government"
-        },
-        {
-          "id": "ACTIVIST_1",
-          "name": "Hamas",
-          "social_role": "activist"
-        },
-        {
-          "id": "PUBLIC_66",
-          "name": "Gazans",
-          "social_role": "public"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "armed conflict"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 6
         }
       }
     }

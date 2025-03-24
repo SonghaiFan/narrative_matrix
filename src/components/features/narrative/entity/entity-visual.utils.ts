@@ -305,32 +305,23 @@ export function calculateConnectorPoints(
   xScale: d3.ScaleBand<string>,
   selectedAttribute: string
 ) {
-  // If no entities, return default values
-  if (!relevantEntities || relevantEntities.length === 0) {
-    return { xPoints: [], minX: 0, maxX: 0 };
-  }
+  if (!relevantEntities.length) return [];
 
-  // Filter entities that have the selected attribute
-  const entitiesWithAttribute = relevantEntities.filter(
-    (entity) =>
-      entity[selectedAttribute] !== undefined &&
-      entity[selectedAttribute] !== null &&
-      entity[selectedAttribute] !== ""
-  );
+  // Sort entities by x position to optimize connector layout
+  const sortedEntities = [...relevantEntities].sort((a, b) => {
+    const xA = xScale(a.id)! + xScale.bandwidth() / 2;
+    const xB = xScale(b.id)! + xScale.bandwidth() / 2;
+    return xA - xB;
+  });
 
-  // If no entities have the attribute, use a default position
-  if (entitiesWithAttribute.length === 0) {
-    const defaultX = xScale.range()[0] + xScale.bandwidth() / 2;
-    return { xPoints: [defaultX], minX: defaultX, maxX: defaultX };
-  }
-
-  // Use entity IDs for positioning
-  const xPoints = entitiesWithAttribute.map(
-    (entity) => xScale(entity.id)! + xScale.bandwidth() / 2
-  );
-
-  const minX = Math.min(...xPoints);
-  const maxX = Math.max(...xPoints);
-
-  return { xPoints, minX, maxX };
+  // Calculate points for a single curved connector
+  return sortedEntities.map((entity, i) => {
+    const x = xScale(entity.id)! + xScale.bandwidth() / 2;
+    return {
+      x,
+      entity,
+      isFirst: i === 0,
+      isLast: i === sortedEntities.length - 1,
+    };
+  });
 }

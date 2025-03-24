@@ -5,6 +5,9 @@ interface TaskAnswer {
   question: string;
   userAnswer: string;
   completed: boolean;
+  startTimestamp?: number;
+  submitTimestamp?: number;
+  duration?: number | null;
 }
 
 interface TaskProgress {

@@ -105,7 +105,7 @@ export function ScenarioSelector() {
                     isSelected={selectedScenario === "pure-text"}
                   />
                   <ScenarioCard
-                    title="Text + visual"
+                    title="Text + Visual"
                     description="Interactive mixed with topic flow, entity relationships, and timeline views."
                     imageSrc="/images/visualization-preview.svg"
                     onClick={() => handleScenarioSelect("text-visual")}
@@ -128,7 +128,7 @@ export function ScenarioSelector() {
                     isSelected={selectedScenario === "text-chat"}
                   />
                   <ScenarioCard
-                    title="Complete experience"
+                    title="Hybrid"
                     description="Combines visual analytics, narrative text and AI chat assistant."
                     imageSrc="/images/mixed-preview.svg"
                     onClick={() => handleScenarioSelect("mixed")}
