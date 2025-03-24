@@ -162,10 +162,16 @@ export function ArticleParagraph({
           fontSize: `${text.fontSize.content}px`,
           lineHeight: "1.6",
         }}
-        dangerouslySetInnerHTML={{
-          __html: finalText,
-        }}
-      />
+      >
+        <span className="inline-block font-bold text-blue-600 mr-2">
+          #{event.index}
+        </span>
+        <span
+          dangerouslySetInnerHTML={{
+            __html: finalText,
+          }}
+        />
+      </div>
     </div>
   );
 }
