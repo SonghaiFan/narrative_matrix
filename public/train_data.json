@@ -34,7 +34,7 @@
       },
       {
         "id": "ukraine-pr-2",
-        "question": "Arrange the following events in chronological order: 1) Ukraine's acceptance of cease-fire proposal, 2) US restoration of military aid, 3) Russia's full-scale invasion, 4) Trump's suspension of military aid",
+        "question": "Arrange the following events in chronological order:",
         "options": {
           "events": [
             { "id": 1, "text": "Ukraine's acceptance of cease-fire proposal" },

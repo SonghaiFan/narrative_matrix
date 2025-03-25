@@ -527,8 +527,8 @@ export function TaskPanel({
 
   return (
     <div className={`flex flex-col h-full bg-white ${className}`}>
-      {/* Compact header with progress */}
-      <div className="border-b p-2 flex flex-wrap items-center gap-2">
+      {/* Fixed header with progress */}
+      <div className="border-b p-2 flex flex-wrap items-center gap-2 bg-white sticky top-0 z-10">
         <div className="flex-grow">
           <div className="flex items-center">
             <h2 className="text-sm font-semibold">
@@ -594,135 +594,157 @@ export function TaskPanel({
         </div>
       </div>
 
-      {/* Question card */}
-      <div className="flex-1 p-2 flex flex-col overflow-hidden">
-        {/* Cognitive level badge */}
-        {currentTask.level && (
-          <div className="flex items-center mb-1">
-            <div
-              className={`text-[10px] px-1.5 py-0.5 rounded-full flex items-center ${getLevelColor(
-                currentTask.level
-              )}`}
-            >
-              <Brain className="h-2.5 w-2.5 mr-0.5" />
-              <span>{currentTask.level}</span>
+      {/* Scrollable content area */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-2 flex flex-col min-h-full">
+          {/* Question content */}
+          <div className="flex-1">
+            {/* Cognitive level badge */}
+            {currentTask.level && (
+              <div className="flex items-center mb-1">
+                <div
+                  className={`text-[10px] px-1.5 py-0.5 rounded-full flex items-center ${getLevelColor(
+                    currentTask.level
+                  )}`}
+                >
+                  <Brain className="h-2.5 w-2.5 mr-0.5" />
+                  <span>{currentTask.level}</span>
+                </div>
+              </div>
+            )}
+
+            <div className="text-xs text-gray-500 mb-1">
+              Question {currentTaskIndex + 1}:
+            </div>
+
+            {/* Question card and answer components */}
+            <div className="space-y-2">
+              <div className="bg-gray-50 p-2 rounded text-sm">
+                {currentTask.question}
+                <div className="mt-2 space-y-1.5">
+                  <div className="text-xs text-amber-600 flex items-center">
+                    <AlertCircle className="h-3 w-3 mr-1 flex-shrink-0" />
+                    Please answer based ONLY on the text you have read, not your
+                    prior knowledge. Some details may differ from real-world
+                    events.
+                  </div>
+                  <div className="text-xs text-blue-600 flex items-center">
+                    <HelpCircle className="h-3 w-3 mr-1 flex-shrink-0" />
+                    Tip: If you cannot find the specific information in the
+                    text, use the "Skip" button.
+                  </div>
+                </div>
+              </div>
+
+              {/* Answer input section */}
+              {!currentTask.completed ? (
+                <div>
+                  {(() => {
+                    switch (currentTask.type) {
+                      case "radio-options":
+                        return (
+                          <RadioOptions
+                            options={currentTask.options as string[]}
+                            value={userAnswer}
+                            onChange={setUserAnswer}
+                            disabled={showAnswer}
+                          />
+                        );
+                      case "single-input":
+                        return (
+                          <SingleInput
+                            value={userAnswer}
+                            onChange={setUserAnswer}
+                            disabled={showAnswer}
+                          />
+                        );
+                      case "comma-separated":
+                        return (
+                          <CommaSeparated
+                            value={userAnswer}
+                            onChange={setUserAnswer}
+                            disabled={showAnswer}
+                          />
+                        );
+                      case "numbered-sequence":
+                        return (
+                          <NumberedSequence
+                            options={
+                              currentTask.type === "numbered-sequence" &&
+                              currentTask.options &&
+                              "events" in currentTask.options
+                                ? (currentTask.options as {
+                                    events: Array<{ id: number; text: string }>;
+                                  })
+                                : []
+                            }
+                            value={userAnswer}
+                            onChange={setUserAnswer}
+                            disabled={showAnswer}
+                          />
+                        );
+                      case "grid-matching":
+                        return (
+                          <GridMatching
+                            options={
+                              currentTask.options as {
+                                countries?: string[];
+                                roles?: string[];
+                                causes?: string[];
+                                effects?: string[];
+                              }
+                            }
+                            value={userAnswer}
+                            onChange={setUserAnswer}
+                            disabled={showAnswer}
+                          />
+                        );
+                      case "long-text":
+                        return (
+                          <LongText
+                            value={userAnswer}
+                            onChange={setUserAnswer}
+                            disabled={showAnswer}
+                          />
+                        );
+                      default:
+                        return (
+                          <SingleInput
+                            value={userAnswer}
+                            onChange={setUserAnswer}
+                            disabled={showAnswer}
+                          />
+                        );
+                    }
+                  })()}
+                </div>
+              ) : (
+                <div className="p-2 rounded text-xs flex items-start bg-blue-50 text-blue-800">
+                  <CheckCircle className="h-3 w-3 mr-1 flex-shrink-0 text-blue-500" />
+                  <div>
+                    <p className="font-medium">Answer Submitted</p>
+                    <p className="mt-0.5">
+                      Your answer: {currentTask.userAnswer}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Answer reveal */}
+              {showAnswer && (
+                <div className="bg-blue-50 p-2 rounded text-xs overflow-auto max-h-40">
+                  <p className="font-medium text-blue-800">Answer:</p>
+                  <p className="text-blue-700">{currentTask.answer}</p>
+                </div>
+              )}
             </div>
           </div>
-        )}
-
-        <div className="text-xs text-gray-500 mb-1">
-          Question {currentTaskIndex + 1}:
         </div>
-        <div className="bg-gray-50 p-2 rounded text-sm mb-2">
-          {currentTask.question}
-          <div className="mt-2 text-xs text-amber-600 flex items-center">
-            <AlertCircle className="h-3 w-3 mr-1 flex-shrink-0" />
-            Please answer based ONLY on the text you have read, not your prior
-            knowledge. Some details may differ from real-world events.
-          </div>
-        </div>
+      </div>
 
-        {/* Answer input or result */}
-        {!currentTask.completed ? (
-          <div className="mb-2">
-            {(() => {
-              switch (currentTask.type) {
-                case "radio-options":
-                  return (
-                    <RadioOptions
-                      options={currentTask.options as string[]}
-                      value={userAnswer}
-                      onChange={setUserAnswer}
-                      disabled={showAnswer}
-                    />
-                  );
-                case "single-input":
-                  return (
-                    <SingleInput
-                      value={userAnswer}
-                      onChange={setUserAnswer}
-                      disabled={showAnswer}
-                    />
-                  );
-                case "comma-separated":
-                  return (
-                    <CommaSeparated
-                      value={userAnswer}
-                      onChange={setUserAnswer}
-                      disabled={showAnswer}
-                    />
-                  );
-                case "numbered-sequence":
-                  return (
-                    <NumberedSequence
-                      options={{
-                        events: (currentTask.options as string[]).map(
-                          (text, index) => ({
-                            id: index + 1,
-                            text: text.replace(/^\d+\.\s*/, ""), // Remove the numbering prefix if present
-                          })
-                        ),
-                      }}
-                      value={userAnswer}
-                      onChange={setUserAnswer}
-                      disabled={showAnswer}
-                    />
-                  );
-                case "grid-matching":
-                  return (
-                    <GridMatching
-                      options={
-                        currentTask.options as {
-                          countries?: string[];
-                          roles?: string[];
-                          causes?: string[];
-                          effects?: string[];
-                        }
-                      }
-                      value={userAnswer}
-                      onChange={setUserAnswer}
-                      disabled={showAnswer}
-                    />
-                  );
-                case "long-text":
-                  return (
-                    <LongText
-                      value={userAnswer}
-                      onChange={setUserAnswer}
-                      disabled={showAnswer}
-                    />
-                  );
-                default:
-                  return (
-                    <SingleInput
-                      value={userAnswer}
-                      onChange={setUserAnswer}
-                      disabled={showAnswer}
-                    />
-                  );
-              }
-            })()}
-          </div>
-        ) : (
-          <div className="p-2 mb-2 rounded text-xs flex items-start bg-blue-50 text-blue-800">
-            <CheckCircle className="h-3 w-3 mr-1 flex-shrink-0 text-blue-500" />
-            <div>
-              <p className="font-medium">Answer Submitted</p>
-              <p className="mt-0.5">Your answer: {currentTask.userAnswer}</p>
-            </div>
-          </div>
-        )}
-
-        {/* Answer reveal */}
-        {showAnswer && (
-          <div className="bg-blue-50 p-2 rounded text-xs mb-2 overflow-auto max-h-40">
-            <p className="font-medium text-blue-800">Answer:</p>
-            <p className="text-blue-700">{currentTask.answer}</p>
-          </div>
-        )}
-
-        {/* Compact controls */}
-        <div className="flex justify-between mt-auto pt-1 text-xs">
+      {/* Fixed bottom controls */}
+      <div className="border-t bg-white sticky bottom-0 p-2 z-10">
+        <div className="flex justify-between items-center text-xs">
           <button
             onClick={handlePrevious}
             disabled={
@@ -750,14 +772,15 @@ export function TaskPanel({
               <>
                 <button
                   onClick={handleSkip}
-                  className="px-2 py-1 border border-gray-300 text-gray-600 rounded hover:bg-gray-50"
+                  className="px-3 py-1.5 border-2 border-dashed border-blue-300 bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 hover:border-blue-400 flex items-center gap-1.5 font-medium"
                 >
-                  Skip - Not Specified or No Correct Answer
+                  <HelpCircle className="h-3.5 w-3.5" />
+                  Skip - Not Found in Text
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={!userAnswer.trim() || isSubmitting}
-                  className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Submit
                 </button>

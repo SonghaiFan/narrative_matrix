@@ -15,9 +15,7 @@ interface Event {
 }
 
 interface NumberedSequenceProps {
-  options: {
-    events: Event[];
-  };
+  options: string[] | { events: Event[] };
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
@@ -34,10 +32,16 @@ export function NumberedSequence({
   disabled = false,
 }: NumberedSequenceProps) {
   // Initialize events with their current positions
-  const initialEvents: DraggableEvent[] = options.events.map((event) => ({
-    ...event,
-    currentPosition: event.id,
-  }));
+  const initialEvents: DraggableEvent[] = Array.isArray(options)
+    ? options.map((text, index) => ({
+        id: index + 1,
+        text: text.replace(/^\d+\.\s*/, ""), // Remove the numbering prefix if present
+        currentPosition: index + 1,
+      }))
+    : options.events.map((event) => ({
+        ...event,
+        currentPosition: event.id,
+      }));
 
   const [events, setEvents] = useState<DraggableEvent[]>(initialEvents);
   const [isDragging, setIsDragging] = useState(false);
@@ -67,7 +71,7 @@ export function NumberedSequence({
         console.error("Error parsing value:", e);
       }
     }
-  }, [value, options.events]);
+  }, [value, options]);
 
   const handleDragStart = () => {
     setIsDragging(true);
