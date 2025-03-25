@@ -21,7 +21,7 @@ interface TopicDisplayProps {
 type TopicViewMode = "main" | "sub";
 
 export function TopicDisplay({ events }: TopicDisplayProps) {
-  const [viewMode, setViewMode] = useState<TopicViewMode>("main");
+  const [viewMode] = useState<TopicViewMode>("sub");
 
   return (
     <VisualizationDisplay
@@ -32,7 +32,7 @@ export function TopicDisplay({ events }: TopicDisplayProps) {
           className="flex items-center gap-2"
           style={{ height: `${SHARED_CONFIG.header.height * 0.8}px` }}
         >
-          <Select
+          {/* <Select
             value={viewMode}
             onValueChange={(value: TopicViewMode) => setViewMode(value)}
           >
@@ -50,7 +50,7 @@ export function TopicDisplay({ events }: TopicDisplayProps) {
                 Subtopics
               </SelectItem>
             </SelectContent>
-          </Select>
+          </Select> */}
 
           {/* Sentiment Legend */}
           <div className="flex items-center ml-4 text-xs">

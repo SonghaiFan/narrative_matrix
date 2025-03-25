@@ -22,10 +22,9 @@ import {
 
 export interface EntityVisualProps {
   events: NarrativeEvent[];
-  selectedAttribute: string;
 }
 
-export function EntityVisual({ events, selectedAttribute }: EntityVisualProps) {
+export function EntityVisual({ events }: EntityVisualProps) {
   const { selectedEventId, setSelectedEventId } = useCenterControl();
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -100,7 +99,7 @@ export function EntityVisual({ events, selectedAttribute }: EntityVisualProps) {
       calculateDimensions(containerRef.current.clientWidth, events.length);
 
     // Get entity mentions and calculate visible entities
-    const entityMentions = getEntityMentions(events, selectedAttribute);
+    const entityMentions = getEntityMentions(events, "name");
 
     // console.log(entityMentions);
     const maxEntities = calculateMaxEntities(
@@ -139,8 +138,6 @@ export function EntityVisual({ events, selectedAttribute }: EntityVisualProps) {
 
     // Create entity labels in the fixed header
     visibleEntities.forEach((entity) => {
-      const attrValue = getEntityAttributeValue(entity, selectedAttribute);
-      // Use entity ID for positioning instead of attribute value
       const x = xScale(entity.id)!;
       const labelContainer = headerContent
         .append("div")
@@ -150,56 +147,33 @@ export function EntityVisual({ events, selectedAttribute }: EntityVisualProps) {
         .style("cursor", "pointer")
         .style("max-width", `${xScale.bandwidth()}px`)
         .on("mouseenter", function () {
-          // Use entity ID for guide line selection
           g.select(`.guide-line-${entity.id.replace(/\s+/g, "-")}`)
             .attr("opacity", 0.8)
             .attr("stroke-width", ENTITY_CONFIG.entity.lineStrokeWidth);
         })
         .on("mouseleave", function () {
-          // Use entity ID for guide line selection
           g.select(`.guide-line-${entity.id.replace(/\s+/g, "-")}`)
             .attr("opacity", 0.3)
             .attr("stroke-width", ENTITY_CONFIG.entity.lineStrokeWidth);
         });
 
-      // Always show the entity name as the main label if available
-      // If name is not available, use the selected attribute value
-      const primaryLabel = entity.name || attrValue;
+      // Show only the entity name with text wrapping
       labelContainer
         .append("div")
         .style("font-weight", "600")
         .style("font-size", "12px")
         .style("color", "#374151")
-        .style("white-space", "nowrap")
+        .style("text-align", "center")
+        .style("word-wrap", "break-word")
+        .style("white-space", "normal")
+        .style("line-height", "1.2")
+        .style("max-height", "2.4em")
         .style("overflow", "hidden")
-        .style("text-overflow", "ellipsis")
-        .attr("title", primaryLabel)
-        .text(primaryLabel);
-
-      // If the selected attribute is not "name" and entity has a name, show attribute as secondary label
-      if (selectedAttribute !== "name" && entity.name) {
-        labelContainer
-          .append("div")
-          .style("font-size", "12px")
-          .style("color", "#6B7280")
-          .style("margin-top", "2px")
-          .style("white-space", "nowrap")
-          .style("overflow", "hidden")
-          .style("text-overflow", "ellipsis")
-          .attr("title", attrValue)
-          .text(attrValue);
-      } else if (entity.social_role) {
-        // If selected attribute is "name" or entity doesn't have a name but has social_role, show it
-        labelContainer
-          .append("div")
-          .style("font-size", "12px")
-          .style("color", "#6B7280")
-          .style("margin-top", "2px")
-          .style("white-space", "nowrap")
-          .style("overflow", "hidden")
-          .style("text-overflow", "ellipsis")
-          .text(entity.social_role);
-      }
+        .style("display", "-webkit-box")
+        .style("-webkit-line-clamp", "2")
+        .style("-webkit-box-orient", "vertical")
+        .attr("title", entity.name)
+        .text(entity.name);
     });
 
     // Create SVG
@@ -256,7 +230,7 @@ export function EntityVisual({ events, selectedAttribute }: EntityVisualProps) {
       const relevantEntities = getRelevantEntities(
         event,
         visibleEntities,
-        selectedAttribute
+        "name"
       );
 
       if (
@@ -306,7 +280,7 @@ export function EntityVisual({ events, selectedAttribute }: EntityVisualProps) {
         const connectorPoints = calculateConnectorPoints(
           relevantEntities.entities,
           xScale,
-          selectedAttribute
+          "name"
         );
 
         if (connectorPoints.length > 0) {
@@ -397,14 +371,7 @@ export function EntityVisual({ events, selectedAttribute }: EntityVisualProps) {
     if (selectedEventId !== null && selectedEventId !== undefined) {
       updateSelectedEventStyles(selectedEventId);
     }
-  }, [
-    events,
-    selectedAttribute,
-    showTooltip,
-    hideTooltip,
-    updatePosition,
-    setSelectedEventId,
-  ]);
+  }, [events, showTooltip, hideTooltip, updatePosition, setSelectedEventId]);
 
   // Initial setup and cleanup
   useEffect(() => {

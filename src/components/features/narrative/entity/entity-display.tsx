@@ -101,7 +101,7 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
           className="flex items-center gap-2"
           style={{ height: `${SHARED_CONFIG.header.height * 0.8}px` }}
         >
-          <Select
+          {/* <Select
             value={selectedAttribute}
             onValueChange={setSelectedAttribute}
           >
@@ -118,11 +118,11 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </Select> */}
         </div>
       }
     >
-      <EntityVisual events={events} selectedAttribute={selectedAttribute} />
+      <EntityVisual events={events} />
     </VisualizationDisplay>
   );
 }
