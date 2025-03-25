@@ -10,6 +10,15 @@ interface TaskAnswer {
   duration?: number | null;
 }
 
+// Survey data structure
+export interface SurveyData {
+  userId: string;
+  tlxRatings: Record<string, number>;
+  susRatings: number[];
+  feedback: string;
+  timestamp: string;
+}
+
 interface TaskProgress {
   userId: string;
   totalTasks: number;
@@ -19,6 +28,7 @@ interface TaskProgress {
   lastUpdated: string;
   isCompleted: boolean;
   answers?: TaskAnswer[];
+  surveyData?: SurveyData;
 }
 
 // Helper functions to handle localStorage safely (with SSR support)

@@ -655,7 +655,14 @@ export function TaskPanel({
                 case "numbered-sequence":
                   return (
                     <NumberedSequence
-                      options={(currentTask.options as string[]) || []}
+                      options={{
+                        events: (currentTask.options as string[]).map(
+                          (text, index) => ({
+                            id: index + 1,
+                            text: text.replace(/^\d+\.\s*/, ""), // Remove the numbering prefix if present
+                          })
+                        ),
+                      }}
                       value={userAnswer}
                       onChange={setUserAnswer}
                       disabled={showAnswer}

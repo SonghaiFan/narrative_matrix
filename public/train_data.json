@@ -25,8 +25,8 @@
       },
       {
         "id": "ukraine-sanity-check",
-        "question": "Which country hosted peace negotiations between Russia and Ukraine mentioned in the article?",
-        "options": ["Turkey", "Belarus", "Germany"],
+        "question": "Which country sent military troops to support Russia in the Ukraine conflict?",
+        "options": ["China", "Belarus", "Germany"],
         "answer": "The article does not specify",
         "level": "Sanity Check",
         "completed": false,
@@ -35,6 +35,14 @@
       {
         "id": "ukraine-pr-2",
         "question": "Arrange the following events in chronological order: 1) Ukraine's acceptance of cease-fire proposal, 2) US restoration of military aid, 3) Russia's full-scale invasion, 4) Trump's suspension of military aid",
+        "options": {
+          "events": [
+            { "id": 1, "text": "Ukraine's acceptance of cease-fire proposal" },
+            { "id": 2, "text": "US restoration of military aid" },
+            { "id": 3, "text": "Russia's full-scale invasion" },
+            { "id": 4, "text": "Trump's suspension of military aid" }
+          ]
+        },
         "answer": "3, 4, 1, 2",
         "level": "Pattern Recognition",
         "completed": false,
@@ -133,7 +141,7 @@
     },
     {
       "index": 3,
-      "text": "Since January 2022, Ukraine has received about $407 billion in aid, including over $118 billion from the United States. Fighting and air strikes have inflicted over 40,000 civilian casualties, while 4 million people are internally displaced, and 6.8 million have fled Ukraine. 14.6 million people need humanitarian assistance. As the United States works to negotiate an end to the war in Ukraine, the Trump administration\u2019s approach has escalated tensions between Kyiv and Washington.",
+      "text": "Since January 2022, Ukraine has received about $407 billion in aid, including over $118 billion from the United States. Fighting and air strikes have inflicted over 40,000 civilian casualties, while 4 million people are internally displaced, and 6.8 million have fled Ukraine. 14.6 million people need humanitarian assistance. ",
       "short_text": "The United States has provided over $118 billion in aid to Ukraine since January 2022.",
       "lead_title": null,
       "temporal_anchoring": {
@@ -163,7 +171,7 @@
     },
     {
       "index": 4,
-      "text": "Following a White House meeting between President Zelenskyy, President Trump, and Vice President JD Vance that descended into acrimony, Trump suspended U.S. military assistance to Ukraine.",
+      "text": "As the United States works to negotiate an end to the war in Ukraine, the Trump administration\u2019s approach has escalated tensions between Kyiv and Washington. Following a White House meeting between President Zelenskyy, President Trump, and Vice President JD Vance that descended into acrimony, Trump suspended U.S. military assistance to Ukraine.",
       "short_text": "President Trump suspended U.S. military assistance to Ukraine following a contentious meeting with President Zelenskyy and Vice President JD Vance.",
       "lead_title": null,
       "temporal_anchoring": {
