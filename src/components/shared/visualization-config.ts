@@ -3,7 +3,7 @@ export const SHARED_CONFIG = {
     top: 30,
     right: 40,
     bottom: 20,
-    left: 180,
+    left: 120,
   },
   axis: {
     tickSize: 5,

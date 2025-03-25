@@ -143,13 +143,43 @@ export function getScales(
     .range([0, height])
     .padding(0.3);
 
-  const xScale = d3
+  // Create a time scale first to get proper time ticks
+  const timeScale = d3
     .scaleTime()
     .domain(d3.extent(dataPoints, (d) => d.realTime) as [Date, Date])
-    .range([0, width])
-    .nice();
+    .range([0, width]);
 
-  return { xScale, yScale };
+  // Create a power scale to transform the linear time scale into a logarithmic one
+  const xScale = d3
+    .scalePow()
+    .exponent(2) // Use a larger exponent to give more space to recent dates
+    .domain([0, width])
+    .range([0, width]);
+
+  // Create a composite scale function
+  const compositeScale = (date: Date) => xScale(timeScale(date));
+
+  // Add necessary scale methods to make it work with d3
+  const finalScale = Object.assign(compositeScale, {
+    domain: timeScale.domain,
+    range: xScale.range,
+    ticks: timeScale.ticks,
+    tickFormat: timeScale.tickFormat,
+    copy: function () {
+      const newTimeScale = timeScale.copy();
+      const newXScale = xScale.copy();
+      const newCompositeScale = (date: Date) => newXScale(newTimeScale(date));
+      return Object.assign(newCompositeScale, {
+        domain: newTimeScale.domain,
+        range: newXScale.range,
+        ticks: newTimeScale.ticks,
+        tickFormat: newTimeScale.tickFormat,
+        copy: this.copy,
+      });
+    },
+  });
+
+  return { xScale: finalScale, yScale };
 }
 
 // Calculate dimensions based on container and config
@@ -177,10 +207,10 @@ export function calculateDimensions(
 
 // Create axes for the visualization
 export function createAxes(
-  xScale: d3.ScaleTime<number, number>,
+  xScale: any, // Using any since we have a custom composite scale
   yScale: d3.ScaleBand<string>
 ) {
-  const xAxis = d3.axisTop(xScale).tickSize(5).tickPadding(10);
+  const xAxis = d3.axisTop(xScale).tickSize(5).tickPadding(10).ticks(5); // Limit number of ticks for better readability
 
   const yAxis = d3.axisLeft(yScale).tickSize(5).tickPadding(5);
 
@@ -244,7 +274,7 @@ export function createEdges(
 // Group overlapping points
 export function groupOverlappingPoints(
   dataPoints: DataPoint[],
-  xScale: d3.ScaleTime<number, number>,
+  xScale: any, // Using any since we have a custom composite scale
   yScale: d3.ScaleBand<string>,
   viewMode: "main" | "sub" = "main"
 ): GroupedPoint[] {
