@@ -55,23 +55,25 @@ export function NumberedSequence({
           sequence.length === events.length &&
           sequence.every((n) => !isNaN(n))
         ) {
-          const newEvents = [...initialEvents];
-          sequence.forEach((originalId, newPosition) => {
-            const eventToMove = initialEvents.find((e) => e.id === originalId);
-            if (eventToMove) {
-              newEvents[newPosition] = {
-                ...eventToMove,
-                currentPosition: newPosition + 1,
-              };
-            }
+          const newEvents = [...events];
+          // Create a mapping of id to position
+          const positionMap = new Map(
+            sequence.map((id, index) => [id, index + 1])
+          );
+          // Update positions while keeping original IDs
+          newEvents.forEach((event) => {
+            event.currentPosition =
+              positionMap.get(event.id) || event.currentPosition;
           });
+          // Sort events by current position
+          newEvents.sort((a, b) => a.currentPosition - b.currentPosition);
           setEvents(newEvents);
         }
       } catch (e) {
         console.error("Error parsing value:", e);
       }
     }
-  }, [value, options]);
+  }, [value]);
 
   const handleDragStart = () => {
     setIsDragging(true);
@@ -85,7 +87,7 @@ export function NumberedSequence({
     const [reorderedEvent] = newEvents.splice(result.source.index, 1);
     newEvents.splice(result.destination.index, 0, reorderedEvent);
 
-    // Update positions based on new order
+    // Update only positions based on new order, keeping original IDs
     const reorderedEvents = newEvents.map((event, index) => ({
       ...event,
       currentPosition: index + 1,
@@ -93,7 +95,7 @@ export function NumberedSequence({
 
     setEvents(reorderedEvents);
 
-    // Generate the value string based on original event IDs in new order
+    // Generate value string using the original IDs in their new order
     const valueString = reorderedEvents.map((event) => event.id).join(",");
     onChange(valueString);
   };
@@ -133,7 +135,7 @@ export function NumberedSequence({
                     >
                       <div className="flex items-center gap-2">
                         <div className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 text-blue-700 font-medium text-sm">
-                          {event.currentPosition}
+                          {event.id}
                         </div>
                         <span className="text-sm flex-1">{event.text}</span>
                         {!disabled && (

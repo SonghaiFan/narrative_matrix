@@ -19,7 +19,8 @@
           "October 9, 2023",
           "October 12, 2023"
         ],
-        "completed": false
+        "completed": false,
+        "event_reference": 1
       },
       {
         "id": "israel-2",
@@ -27,7 +28,8 @@
         "answer": "The United States, Egypt, Qatar",
         "level": "Information Retrieval",
         "type": "single-input",
-        "completed": false
+        "completed": false,
+        "event_reference": 2
       },
       {
         "id": "israel-3",
@@ -35,7 +37,8 @@
         "answer": "Hamas, Fatah",
         "level": "Information Retrieval",
         "type": "comma-separated",
-        "completed": false
+        "completed": false,
+        "event_reference": 25
       },
       {
         "id": "israel-3-sanity",
@@ -48,7 +51,8 @@
           "International Committee of the Red Cross",
           "Arab League Monitoring Mission"
         ],
-        "completed": false
+        "completed": false,
+        "event_reference": null
       },
       {
         "id": "israel-4",
@@ -62,7 +66,8 @@
           "Regional militant groups joined the conflict, increasing its scope.",
           "International peace talks quickly ended all conflicts."
         ],
-        "completed": false
+        "completed": false,
+        "event_reference": [7, 8, 9]
       },
       {
         "id": "israel-5",
@@ -70,39 +75,48 @@
         "answer": "1,2,3,4",
         "level": "Pattern Recognition",
         "type": "numbered-sequence",
-        "options": [
-          "1. Creation of the State of Israel",
-          "2. Six-Day War",
-          "3. Oslo I Accords",
-          "4. Hamas electoral victory"
-        ],
-        "completed": false
+        "options": {
+          "events": [
+            { "id": 1, "text": "Creation of the State of Israel" },
+            { "id": 2, "text": "Six-Day War" },
+            { "id": 3, "text": "Oslo I Accords" },
+            { "id": 4, "text": "Hamas electoral victory" }
+          ]
+        },
+        "completed": false,
+        "event_reference": [12, 15, 21, 25]
       },
       {
         "id": "israel-6",
-        "question": "Match the territories Israel captured during the 1967 Six-Day War with the countries they were captured from:",
-        "answer": "Sinai Peninsula: Egypt, Gaza Strip: Egypt, West Bank: Jordan, East Jerusalem: Jordan, Golan Heights: Syria",
-        "level": "Pattern Recognition",
-        "type": "grid-matching",
-        "options": {
-          "countries": ["Egypt", "Jordan", "Syria"],
-          "roles": [
-            "Sinai Peninsula",
-            "Gaza Strip",
-            "West Bank",
-            "East Jerusalem",
-            "Golan Heights"
-          ]
-        },
-        "completed": false
+        "question": "Which territories were captured by Israel during the 1967 Six-Day War? (Select all that apply)",
+        "answer": "Sinai Peninsula,Gaza Strip,West Bank,East Jerusalem,Golan Heights",
+        "level": "Information Retrieval",
+        "type": "multiple-select",
+        "options": [
+          "Sinai Peninsula",
+          "Gaza Strip",
+          "West Bank",
+          "East Jerusalem",
+          "Golan Heights",
+          "Lebanon"
+        ],
+        "completed": false,
+        "event_reference": 16
       },
       {
         "id": "israel-7",
         "question": "Explain one reason why Hamas's electoral victory in 2006 led to increased conflict with Israel in subsequent years.",
-        "answer": "d",
+        "answer": "Western nations refused to recognize Hamas due to its terrorist designation",
         "level": "Causal Reasoning",
-        "type": "long-text",
-        "completed": false
+        "type": "radio-options",
+        "options": [
+          "Western nations refused to recognize Hamas due to its terrorist designation",
+          "Internal power struggles between Palestinian factions",
+          "Expansion of settlements in disputed territories",
+          "Changes in regional military alliances"
+        ],
+        "completed": false,
+        "event_reference": 27
       },
       {
         "id": "israel-8",
@@ -116,7 +130,8 @@
           "Hezbollah's incursion into Israel",
           "U.S. mediation attempts"
         ],
-        "completed": false
+        "completed": false,
+        "event_reference": 46
       },
       {
         "id": "israel-9",
@@ -138,7 +153,8 @@
             "Palestinian self-governance"
           ]
         },
-        "completed": false
+        "completed": false,
+        "event_reference": [25, 27, 45, 46, 9, 21]
       }
     ]
   },

@@ -8,6 +8,7 @@ import {
   DropResult,
 } from "@hello-pangea/dnd";
 import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
 
 interface GridMatchingProps {
   options: {
@@ -79,12 +80,12 @@ export function GridMatching({
       );
 
       if (effectItem) {
-        // Check if either item is already matched
-        const isItemsAlreadyMatched = matchedPairs.some(
-          (pair) => pair.cause === causeItem || pair.effect === effectItem
+        // Allow multiple matches - only check if this exact pair already exists
+        const isExactPairMatched = matchedPairs.some(
+          (pair) => pair.cause === causeItem && pair.effect === effectItem
         );
 
-        if (!isItemsAlreadyMatched) {
+        if (!isExactPairMatched) {
           const newPairs = [
             ...matchedPairs,
             { cause: causeItem, effect: effectItem },
@@ -104,7 +105,10 @@ export function GridMatching({
   const removePair = (pairToRemove: MatchedPair) => {
     const newPairs = matchedPairs.filter(
       (pair) =>
-        pair.cause !== pairToRemove.cause && pair.effect !== pairToRemove.effect
+        !(
+          pair.cause === pairToRemove.cause &&
+          pair.effect === pairToRemove.effect
+        )
     );
     setMatchedPairs(newPairs);
     const formattedValue = newPairs
@@ -117,12 +121,11 @@ export function GridMatching({
     <div className="space-y-2">
       <div className="flex gap-2 text-xs font-medium text-gray-700">
         <span className="flex-1">{leftLabel}</span>
-        <span className="w-24 text-center">Matches</span>
         <span className="flex-1 text-right">{rightLabel}</span>
       </div>
 
       <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <div className="flex gap-2">
+        <div className="flex gap-4">
           {/* Left Column */}
           <div className="flex-1">
             <Droppable droppableId="left">
@@ -138,19 +141,17 @@ export function GridMatching({
                   )}
                 >
                   {leftItems.map((item, index) => {
-                    const isMatched = matchedPairs.some(
+                    const matchesForItem = matchedPairs.filter(
                       (pair) => pair.cause === item
                     );
-                    const matchedEffect = matchedPairs.find(
-                      (pair) => pair.cause === item
-                    )?.effect;
+                    const hasMatches = matchesForItem.length > 0;
 
                     return (
                       <Draggable
                         key={item}
                         draggableId={`left-${item}`}
                         index={index}
-                        isDragDisabled={disabled || isMatched}
+                        isDragDisabled={disabled}
                       >
                         {(provided, snapshot) => (
                           <div
@@ -161,38 +162,50 @@ export function GridMatching({
                               "p-2 mb-1 last:mb-0 rounded-md shadow-sm border transition-all group",
                               snapshot.isDragging
                                 ? "shadow-md border-blue-500 ring-2 ring-blue-500 bg-white"
-                                : isMatched
+                                : hasMatches
                                 ? "bg-green-50 border-green-200"
                                 : "bg-white border-gray-200 hover:border-gray-300",
                               disabled && "opacity-50 cursor-not-allowed"
                             )}
                           >
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm flex-1">{item}</span>
-                              {isMatched && (
-                                <button
-                                  onClick={() =>
-                                    removePair({
-                                      cause: item,
-                                      effect: matchedEffect!,
-                                    })
-                                  }
-                                  className="opacity-0 group-hover:opacity-100 p-1 hover:bg-green-100 rounded transition-opacity"
-                                >
-                                  <svg
-                                    className="w-3 h-3 text-gray-500"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={2}
-                                      d="M6 18L18 6M6 6l12 12"
-                                    />
-                                  </svg>
-                                </button>
+                            <div className="flex flex-col gap-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm flex-1">{item}</span>
+                                {!disabled && !snapshot.isDragging && (
+                                  <div className="text-gray-400 hover:text-gray-600">
+                                    <svg
+                                      className="w-4 h-4"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M4 6h16M4 12h16M4 18h16"
+                                      />
+                                    </svg>
+                                  </div>
+                                )}
+                              </div>
+                              {hasMatches && (
+                                <div className="flex flex-wrap gap-1">
+                                  {matchesForItem.map((match, idx) => (
+                                    <div
+                                      key={`${match.cause}-${match.effect}-${idx}`}
+                                      className="flex items-center gap-1 bg-green-100 text-green-700 rounded px-1.5 py-0.5 text-xs"
+                                    >
+                                      {match.effect}
+                                      <button
+                                        onClick={() => removePair(match)}
+                                        className="hover:text-green-800"
+                                      >
+                                        <X className="h-3 w-3" />
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
                               )}
                             </div>
                           </div>
@@ -206,42 +219,14 @@ export function GridMatching({
             </Droppable>
           </div>
 
-          {/* Middle Column - Connection Lines */}
-          <div className="w-24 relative">
-            {matchedPairs.map((pair, index) => {
-              const leftIndex = leftItems.indexOf(pair.cause);
-              const rightIndex = rightItems.indexOf(pair.effect);
-              const yOffset = 20; // Base offset for the line
-              const leftY = leftIndex * 40 + yOffset;
-              const rightY = rightIndex * 40 + yOffset;
-
-              return (
-                <svg
-                  key={index}
-                  className="absolute inset-0 w-full h-full pointer-events-none"
-                  style={{ overflow: "visible" }}
-                >
-                  <line
-                    x1="0"
-                    y1={leftY}
-                    x2="100%"
-                    y2={rightY}
-                    stroke="#10B981"
-                    strokeWidth="2"
-                    strokeDasharray="4"
-                  />
-                </svg>
-              );
-            })}
-          </div>
-
           {/* Right Column */}
           <div className="flex-1">
             <div className="grid grid-cols-1 gap-1">
               {rightItems.map((item, index) => {
-                const isMatched = matchedPairs.some(
+                const matchesForItem = matchedPairs.filter(
                   (pair) => pair.effect === item
                 );
+                const hasMatches = matchesForItem.length > 0;
                 const isBeingDraggedOver =
                   draggedOverId === `droppable-right-${index}`;
 
@@ -262,16 +247,36 @@ export function GridMatching({
                           isDragging && setDraggedOverId(null)
                         }
                         className={cn(
-                          "p-2 rounded-md border transition-all",
+                          "p-2 rounded-md border transition-all min-h-[44px]",
                           isBeingDraggedOver
                             ? "border-blue-500 ring-2 ring-blue-500 bg-blue-50"
-                            : isMatched
+                            : hasMatches
                             ? "bg-green-50 border-green-200"
                             : "bg-white border-gray-200",
                           disabled && "opacity-50 cursor-not-allowed"
                         )}
                       >
-                        <span className="text-sm">{item}</span>
+                        <div className="flex flex-col gap-1">
+                          <span className="text-sm">{item}</span>
+                          {hasMatches && (
+                            <div className="flex flex-wrap gap-1">
+                              {matchesForItem.map((match, idx) => (
+                                <div
+                                  key={`${match.cause}-${match.effect}-${idx}`}
+                                  className="flex items-center gap-1 bg-green-100 text-green-700 rounded px-1.5 py-0.5 text-xs"
+                                >
+                                  {match.cause}
+                                  <button
+                                    onClick={() => removePair(match)}
+                                    className="hover:text-green-800"
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                         {provided.placeholder}
                       </div>
                     )}
@@ -283,7 +288,7 @@ export function GridMatching({
         </div>
       </DragDropContext>
 
-      <div className="text-xs text-gray-500 mt-2">
+      <div className="text-xs text-gray-500">
         Drag items from {leftLabel} to {rightLabel} to create matches, or enter
         them manually below
       </div>

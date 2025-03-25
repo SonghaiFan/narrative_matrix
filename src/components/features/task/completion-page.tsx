@@ -80,7 +80,7 @@ export function CompletionPage({
   const [userId, setUserId] = useState<string>("");
   const [currentStep, setCurrentStep] = useState<
     "main" | "tlx" | "sus" | "feedback"
-  >(userRole === "domain" ? "main" : "main");
+  >("main");
 
   // NASA-TLX state
   const [tlxRatings, setTlxRatings] = useState<Record<string, number>>(
@@ -147,13 +147,8 @@ export function CompletionPage({
     setFeedback(e.target.value);
   };
 
-  // Move to the next step - domain users never proceed to surveys
+  // Move to the next step
   const handleNext = () => {
-    // Domain users never see the assessment forms
-    if (userRole === "domain") {
-      return;
-    }
-
     if (currentStep === "main") {
       setCurrentStep("tlx");
     } else if (currentStep === "tlx") {
@@ -167,7 +162,7 @@ export function CompletionPage({
 
   // Submit all data
   const handleSubmitAll = async () => {
-    if (!userId || userRole === "domain") return;
+    if (!userId) return;
 
     setIsSubmitting(true);
 
@@ -367,7 +362,7 @@ export function CompletionPage({
           </h1>
           <p className="text-xs text-gray-500">
             {userRole === "domain"
-              ? "You can return to dashboard or explore other scenarios"
+              ? "Please complete the following surveys to finish"
               : "Thank you for your participation"}
           </p>
         </div>
@@ -398,51 +393,14 @@ export function CompletionPage({
         </div>
       </div>
 
-      {/* Completion Code - only shown for normal users */}
-      {userRole === "normal" && (
-        <div className="bg-gray-50 border border-gray-100 rounded p-3 mb-4">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-sm font-medium text-gray-800">
-              Completion Code
-            </h2>
-            {codeCopied && (
-              <span className="text-xs text-gray-600">✓ Copied</span>
-            )}
-          </div>
-
-          <div className="flex items-center">
-            <code className="bg-white p-2 rounded border border-gray-100 font-mono text-sm flex-grow text-center">
-              {completionCode}
-            </code>
-            <button
-              onClick={handleCopyCode}
-              className="ml-2 p-1.5 bg-gray-800 text-white rounded hover:bg-gray-700 flex items-center justify-center"
-              aria-label="Copy completion code"
-            >
-              <Copy className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Action buttons based on user role */}
+      {/* Action buttons */}
       <div className="space-y-2">
-        {userRole === "domain" ? (
-          <button
-            onClick={handleReturnToDashboard}
-            className="w-full py-2 px-4 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 flex items-center justify-center"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Return to Dashboard
-          </button>
-        ) : (
-          <button
-            onClick={handleNext}
-            className="w-full py-2 px-4 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 flex items-center justify-center"
-          >
-            Continue to Survey
-          </button>
-        )}
+        <button
+          onClick={handleNext}
+          className="w-full py-2 px-4 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 flex items-center justify-center"
+        >
+          Continue to Survey
+        </button>
       </div>
     </>
   );
@@ -458,22 +416,38 @@ export function CompletionPage({
         Your feedback has been submitted successfully.
       </p>
 
-      {/* Show completion code again */}
+      {/* Show completion code */}
       <div className="bg-gray-50 border border-gray-100 rounded p-3 mb-6 mx-auto max-w-xs">
-        <h3 className="text-sm font-medium text-gray-800 mb-2">
-          Your Completion Code
-        </h3>
-        <code className="block bg-white p-2 rounded border border-gray-100 font-mono text-sm text-center">
-          {completionCode}
-        </code>
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-sm font-medium text-gray-800">
+            Your Completion Code
+          </h3>
+          {codeCopied && (
+            <span className="text-xs text-gray-600">✓ Copied</span>
+          )}
+        </div>
+        <div className="flex items-center">
+          <code className="bg-white p-2 rounded border border-gray-100 font-mono text-sm flex-grow text-center">
+            {completionCode}
+          </code>
+          <button
+            onClick={handleCopyCode}
+            className="ml-2 p-1.5 bg-gray-800 text-white rounded hover:bg-gray-700 flex items-center justify-center"
+            aria-label="Copy completion code"
+          >
+            <Copy className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       <button
-        onClick={handleReturnHome}
+        onClick={
+          userRole === "domain" ? handleReturnToDashboard : handleReturnHome
+        }
         className="py-2 px-4 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 inline-flex items-center"
       >
         <ArrowLeft className="h-4 w-4 mr-1" />
-        Return to Home
+        {userRole === "domain" ? "Return to Dashboard" : "Return to Home"}
       </button>
     </div>
   );
@@ -484,10 +458,7 @@ export function CompletionPage({
         currentStep === "main" ? "max-w-md" : "max-w-lg"
       } w-full`}
     >
-      {/* Domain users only ever see the main content */}
-      {userRole === "domain"
-        ? renderMainContent()
-        : isComplete
+      {isComplete
         ? renderSuccessContent()
         : currentStep === "main"
         ? renderMainContent()

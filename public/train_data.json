@@ -13,7 +13,8 @@
         "answer": "over 40,000",
         "level": "Information Retrieval",
         "completed": false,
-        "type": "single-input"
+        "type": "single-input",
+        "event_reference": 3
       },
       {
         "id": "ukraine-ir-2",
@@ -21,7 +22,8 @@
         "answer": "Russia,Ukraine",
         "level": "Information Retrieval",
         "completed": false,
-        "type": "comma-separated"
+        "type": "comma-separated",
+        "event_reference": 1
       },
       {
         "id": "ukraine-sanity-check",
@@ -30,7 +32,8 @@
         "answer": "The article does not specify",
         "level": "Sanity Check",
         "completed": false,
-        "type": "radio-options"
+        "type": "radio-options",
+        "event_reference": null
       },
       {
         "id": "ukraine-pr-2",
@@ -46,7 +49,8 @@
         "answer": "3, 4, 1, 2",
         "level": "Pattern Recognition",
         "completed": false,
-        "type": "numbered-sequence"
+        "type": "numbered-sequence",
+        "event_reference": [1, 4, 5, 6]
       },
       {
         "id": "ukraine-cr-1",
@@ -54,7 +58,8 @@
         "answer": "Following a contentious White House meeting between President Zelenskyy, President Trump, and Vice President JD Vance that descended into acrimony",
         "level": "Causal Reasoning",
         "completed": false,
-        "type": "long-text"
+        "type": "long-text",
+        "event_reference": 4
       },
       {
         "id": "ukraine-cr-3",
@@ -74,7 +79,8 @@
         "answer": "Russia's full-scale invasion: Massive civilian displacement and casualties, Trump's suspension of military aid: Temporary halt in US military support, Ukraine's acceptance of cease-fire proposal: US restoration of military aid",
         "level": "Causal Reasoning",
         "completed": false,
-        "type": "grid-matching"
+        "type": "grid-matching",
+        "event_reference": [1, 3, 4, 5, 6]
       }
     ]
   },

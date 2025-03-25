@@ -69,9 +69,9 @@ export default function Dashboard() {
       <AuthHeader title="Domain Expert Dashboard" />
 
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <UserDataViewer />
+        <ScenarioSelector />
         <div className="mt-8">
-          <ScenarioSelector />
+          <UserDataViewer />
         </div>
       </div>
     </div>

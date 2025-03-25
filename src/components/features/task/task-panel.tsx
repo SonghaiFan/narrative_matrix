@@ -26,7 +26,10 @@ import {
   NumberedSequence,
   GridMatching,
   LongText,
+  MultipleSelect,
 } from "./quiz-types";
+import { useCenterControl } from "@/contexts/center-control-context";
+import React from "react";
 
 interface Task {
   id: string;
@@ -37,16 +40,19 @@ interface Task {
   userAnswer?: string;
   startTimestamp?: number;
   submitTimestamp?: number;
+  event_reference?: number | number[] | null;
   type?:
     | "radio-options"
     | "single-input"
     | "comma-separated"
     | "numbered-sequence"
     | "grid-matching"
-    | "long-text";
+    | "long-text"
+    | "multiple-select";
   options?:
     | string[]
     | {
+        events?: Array<{ id: number; text: string }>;
         countries?: string[];
         roles?: string[];
         causes?: string[];
@@ -70,6 +76,7 @@ export function TaskPanel({
   is_training = false,
 }: TaskPanelProps) {
   const router = useRouter();
+  const { setSelectedEventId } = useCenterControl();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -141,8 +148,9 @@ export function TaskPanel({
         level: q.level || "Information Retrieval",
         question: q.question,
         answer: q.answer,
-        type: q.type || "single-input", // Ensure type is set
-        options: q.options, // Include options if present
+        type: q.type || "single-input",
+        options: q.options,
+        event_reference: q.event_reference || null,
         completed: false,
       }));
       setTasks(quizTasks);
@@ -509,6 +517,29 @@ export function TaskPanel({
     setShowTrainingCompleteModal(true);
   };
 
+  // Add this new function to handle event reference clicks
+  const handleEventReferenceClick = (eventId: number) => {
+    setSelectedEventId(eventId);
+  };
+
+  // Add this function to render event references as clickable links
+  const renderEventReferences = (eventRef: number | number[] | null) => {
+    if (!eventRef) return null;
+
+    const refs = Array.isArray(eventRef) ? eventRef : [eventRef];
+    return refs.map((id, index) => (
+      <React.Fragment key={`event-${id}`}>
+        {index > 0 && ", "}
+        <button
+          onClick={() => handleEventReferenceClick(id)}
+          className="text-blue-600 hover:underline font-medium px-1 py-0.5 rounded bg-blue-50 hover:bg-blue-100 transition-colors"
+        >
+          [Event #{id}]
+        </button>
+      </React.Fragment>
+    ));
+  };
+
   if (!currentTask) {
     return (
       <div className={`flex flex-col h-full bg-white p-2 ${className}`}>
@@ -650,6 +681,15 @@ export function TaskPanel({
                             disabled={showAnswer}
                           />
                         );
+                      case "multiple-select":
+                        return (
+                          <MultipleSelect
+                            options={currentTask.options as string[]}
+                            value={userAnswer}
+                            onChange={setUserAnswer}
+                            disabled={showAnswer}
+                          />
+                        );
                       case "single-input":
                         return (
                           <SingleInput
@@ -733,8 +773,23 @@ export function TaskPanel({
               {/* Answer reveal */}
               {showAnswer && (
                 <div className="bg-blue-50 p-2 rounded text-xs overflow-auto max-h-40">
-                  <p className="font-medium text-blue-800">Answer:</p>
-                  <p className="text-blue-700">{currentTask.answer}</p>
+                  <div className="space-y-2">
+                    <div>
+                      <p className="font-medium text-blue-800">Answer:</p>
+                      <p className="text-blue-700">{currentTask.answer}</p>
+                    </div>
+                    {currentTask.event_reference !== undefined &&
+                      currentTask.event_reference !== null && (
+                        <div className="border-t border-blue-200 pt-2">
+                          <p className="text-blue-600">
+                            <span className="font-medium">
+                              Reference Event(s):
+                            </span>{" "}
+                            {renderEventReferences(currentTask.event_reference)}
+                          </p>
+                        </div>
+                      )}
+                  </div>
                 </div>
               )}
             </div>
