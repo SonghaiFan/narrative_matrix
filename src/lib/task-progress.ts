@@ -16,6 +16,7 @@ export interface SurveyData {
   tlxRatings: Record<string, number>;
   susRatings: number[];
   feedback: string;
+  recallAnswers?: Record<string, string>;
   timestamp: string;
 }
 

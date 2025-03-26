@@ -10,12 +10,18 @@ import {
   updateTaskProgress,
   SurveyData,
 } from "@/lib/task-progress";
+import {
+  RadioOptions,
+  GridMatching,
+} from "@/components/features/task/quiz-types";
 
 interface CompletionPageProps {
   totalTasks: number;
   userRole?: "domain" | "normal";
   studyType?: string;
   onRestart?: () => void;
+  showRecall?: boolean;
+  recallData?: any;
 }
 
 // Define NASA-TLX categories
@@ -74,12 +80,14 @@ export function CompletionPage({
   userRole = "normal",
   studyType = "visualization",
   onRestart,
+  showRecall = false,
+  recallData = null,
 }: CompletionPageProps) {
   const router = useRouter();
   const [codeCopied, setCodeCopied] = useState(false);
-  const [userId, setUserId] = useState<string>("");
+  const [userId, setUserId] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState<
-    "main" | "tlx" | "sus" | "feedback"
+    "main" | "recall" | "tlx" | "sus" | "feedback"
   >("main");
 
   // NASA-TLX state
@@ -92,6 +100,11 @@ export function CompletionPage({
 
   // Feedback state
   const [feedback, setFeedback] = useState("");
+
+  // Recall state
+  const [recallAnswers, setRecallAnswers] = useState<Record<string, string>>(
+    {}
+  );
 
   // Submission state
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -147,9 +160,19 @@ export function CompletionPage({
     setFeedback(e.target.value);
   };
 
-  // Move to the next step
+  // Handle recall answer change
+  const handleRecallAnswerChange = (questionId: string, value: string) => {
+    setRecallAnswers((prev) => ({
+      ...prev,
+      [questionId]: value,
+    }));
+  };
+
+  // Handle next step
   const handleNext = () => {
     if (currentStep === "main") {
+      setCurrentStep(showRecall ? "recall" : "tlx");
+    } else if (currentStep === "recall") {
       setCurrentStep("tlx");
     } else if (currentStep === "tlx") {
       setCurrentStep("sus");
@@ -173,6 +196,7 @@ export function CompletionPage({
         tlxRatings,
         susRatings,
         feedback,
+        recallAnswers,
         timestamp: new Date().toISOString(),
       };
 
@@ -349,6 +373,47 @@ export function CompletionPage({
     </div>
   );
 
+  // Render recall section
+  const renderRecallSection = () => (
+    <div className="space-y-6">
+      <div className="text-center mb-4">
+        <h2 className="text-lg font-medium text-gray-900">Recall Assessment</h2>
+        <p className="text-sm text-gray-500">
+          Please answer the following questions to test your understanding:
+        </p>
+      </div>
+
+      {recallData?.map((question: any, index: number) => (
+        <div key={question.id} className="space-y-4">
+          <p className="text-sm text-gray-700">
+            {index + 1}. {question.question}
+          </p>
+          {question.type === "radio-options" && (
+            <RadioOptions
+              options={question.options}
+              value={recallAnswers[question.id] || ""}
+              onChange={(value) => handleRecallAnswerChange(question.id, value)}
+            />
+          )}
+          {question.type === "grid-matching" && (
+            <GridMatching
+              options={question.options}
+              value={recallAnswers[question.id] || ""}
+              onChange={(value) => handleRecallAnswerChange(question.id, value)}
+            />
+          )}
+        </div>
+      ))}
+
+      <button
+        onClick={handleNext}
+        className="w-full py-2 px-4 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 flex items-center justify-center mt-6"
+      >
+        Continue
+      </button>
+    </div>
+  );
+
   // Main completion page content
   const renderMainContent = () => (
     <>
@@ -462,6 +527,8 @@ export function CompletionPage({
         ? renderSuccessContent()
         : currentStep === "main"
         ? renderMainContent()
+        : currentStep === "recall"
+        ? renderRecallSection()
         : currentStep === "tlx"
         ? renderTlxSection()
         : currentStep === "sus"

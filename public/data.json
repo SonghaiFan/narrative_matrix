@@ -6,6 +6,51 @@
     "author": "unknown",
     "publishDate": "2025-03-13",
     "imageUrl": null,
+    "quiz_recall": [
+      {
+        "id": "israel-recall-1",
+        "question": "What is the total number of Palestinian and Israeli casualties from the May 2021 conflict?",
+        "answer": "over 250 Palestinians and at least 13 Israelis",
+        "level": "Information Retrieval",
+        "completed": false,
+        "type": "radio-options",
+        "options": [
+          "over 250 Palestinians and at least 13 Israelis",
+          "under 100 total casualties",
+          "between 100 and 200 total casualties",
+          "over 500 total casualties",
+          "exact numbers are unknown"
+        ],
+        "event_reference": 44
+      },
+      {
+        "id": "israel-recall-2",
+        "question": "Match each event with its corresponding stage in the narrative arc:",
+        "options": {
+          "leftItems": [
+            "Creation of the State of Israel",
+            "Hamas electoral victory",
+            "Hamas attack on Israel",
+            "Regional escalation with Iran and Hezbollah",
+            "US-mediated ceasefire"
+          ],
+          "rightItems": [
+            "Exposition",
+            "Rising Action",
+            "Climax",
+            "Falling Action",
+            "Resolution"
+          ],
+          "leftLabel": "Events",
+          "rightLabel": "Narrative Stages"
+        },
+        "answer": "Creation of State of Israel: Exposition, Hamas electoral victory: Rising Action, Hamas attack on Israel: Climax, Regional escalation with Iran and Hezbollah: Falling Action, US-mediated ceasefire: Resolution",
+        "level": "Pattern Recognition",
+        "completed": false,
+        "type": "grid-matching",
+        "event_reference": [12, 25, 1, 7, 2]
+      }
+    ],
     "quiz": [
       {
         "id": "israel-1",

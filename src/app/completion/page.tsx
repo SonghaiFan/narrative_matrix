@@ -17,6 +17,8 @@ function CompletionContent() {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showRecall, setShowRecall] = useState(false);
+  const [recallData, setRecallData] = useState<any>(null);
 
   useEffect(() => {
     // If user is not authenticated, redirect to login
@@ -88,6 +90,20 @@ function CompletionContent() {
       setError("Missing required parameters");
       setLoading(false);
     }
+
+    // Fetch recall quiz data
+    const fetchRecallData = async () => {
+      try {
+        const response = await fetch("/data.json");
+        const data = await response.json();
+        setRecallData(data.metadata.quiz_recall);
+        setShowRecall(true);
+      } catch (err) {
+        console.error("Error fetching recall data:", err);
+      }
+    };
+
+    fetchRecallData();
   }, [searchParams, user, router]);
 
   const handleRestart = () => {
@@ -144,6 +160,8 @@ function CompletionContent() {
         userRole={user?.role as "domain" | "normal"}
         studyType={pageData.studyType}
         onRestart={user?.role === "domain" ? handleBackToDashboard : undefined}
+        showRecall={showRecall}
+        recallData={recallData}
       />
     </div>
   );
