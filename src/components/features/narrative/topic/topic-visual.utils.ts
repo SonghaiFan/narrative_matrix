@@ -29,45 +29,6 @@ export interface GroupedPoint {
   isExpanded: boolean;
 }
 
-// Get color based on sentiment polarity and intensity
-export function getSentimentColor(
-  polarity: "positive" | "negative" | "neutral",
-  intensity: number
-): string {
-  // Normalize intensity to a value between 0 and 1
-  const normalizedIntensity = Math.min(Math.max(intensity / 10, 0), 1);
-
-  // Create color scales for different polarities
-  const positiveColorScale = d3
-    .scaleLinear<string>()
-    .domain([0, 1])
-    .range(["#ffffff", "#38a169"]) // White to green
-    .interpolate(d3.interpolateRgb.gamma(2.2));
-
-  const negativeColorScale = d3
-    .scaleLinear<string>()
-    .domain([0, 1])
-    .range(["#ffffff", "#e53e3e"]) // White to red
-    .interpolate(d3.interpolateRgb.gamma(2.2));
-
-  const neutralColorScale = d3
-    .scaleLinear<string>()
-    .domain([0, 1])
-    .range(["#ffffff", "#718096"]) // White to gray
-    .interpolate(d3.interpolateRgb.gamma(2.2));
-
-  // Return color based on polarity
-  switch (polarity) {
-    case "positive":
-      return positiveColorScale(normalizedIntensity);
-    case "negative":
-      return negativeColorScale(normalizedIntensity);
-    case "neutral":
-    default:
-      return neutralColorScale(normalizedIntensity);
-  }
-}
-
 // Process events into data points
 export function processEvents(
   events: NarrativeEvent[],

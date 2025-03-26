@@ -17,6 +17,7 @@ import {
   createAxes,
   createLineGenerator,
 } from "./time-visual.utils";
+import { getSentimentColor } from "@/components/shared/color-utils";
 
 interface TimeVisualProps {
   events: NarrativeEvent[];
@@ -418,7 +419,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       .attr("cx", (d) => (d.hasRealTime ? xScale(d.realTime!) : publishX))
       .attr("cy", (d) => yScale(d.narrativeTime))
       .attr("r", TIME_CONFIG.point.radius)
-      .attr("fill", "white")
+      .attr("fill", (d) => getSentimentColor(d.event.topic.sentiment.polarity))
       .attr("stroke", "black")
       .attr("stroke-width", TIME_CONFIG.point.strokeWidth)
       .attr("stroke-dasharray", (d) => (d.hasRealTime ? "none" : "2,2"))

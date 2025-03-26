@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select/select";
 import { SHARED_CONFIG } from "@/components/shared/visualization-config";
-import { getSentimentColor } from "./topic-visual.utils";
+import { getSentimentColor } from "@/components/shared/color-utils";
 
 interface TopicDisplayProps {
   events: NarrativeEvent[];
@@ -58,21 +58,21 @@ export function TopicDisplay({ events }: TopicDisplayProps) {
             <div className="flex items-center mr-3">
               <div
                 className="w-3 h-3 rounded-full mr-1"
-                style={{ backgroundColor: getSentimentColor("positive", 8) }}
+                style={{ backgroundColor: getSentimentColor("positive") }}
               />
               <span>Positive</span>
             </div>
             <div className="flex items-center mr-3">
               <div
                 className="w-3 h-3 rounded-full mr-1"
-                style={{ backgroundColor: getSentimentColor("negative", 8) }}
+                style={{ backgroundColor: getSentimentColor("negative") }}
               />
               <span>Negative</span>
             </div>
             <div className="flex items-center">
               <div
                 className="w-3 h-3 rounded-full mr-1"
-                style={{ backgroundColor: getSentimentColor("neutral", 8) }}
+                style={{ backgroundColor: getSentimentColor("neutral") }}
               />
               <span>Neutral</span>
             </div>

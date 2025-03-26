@@ -6,6 +6,7 @@ import * as d3 from "d3";
 import { TOPIC_CONFIG } from "./topic-config";
 import { useTooltip } from "@/contexts/tooltip-context";
 import { useCenterControl } from "@/contexts/center-control-context";
+import { getSentimentColor } from "@/components/shared/color-utils";
 import {
   processEvents,
   getTopicCounts,
@@ -14,7 +15,6 @@ import {
   createAxes,
   groupOverlappingPoints,
   calculateExpandedPositions,
-  getSentimentColor,
   type DataPoint,
   type GroupedPoint,
 } from "./topic-visual.utils";
@@ -73,7 +73,12 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         // Try to find and highlight the parent node first
         const parentNode = d3
           .select(svgRef.current)
-          .select(`.parent-point[data-event-index="${newSelectedId}"]`);
+          .selectAll(".parent-point")
+          .filter(function () {
+            return (
+              d3.select(this).attr("data-event-index") === String(newSelectedId)
+            );
+          });
 
         if (!parentNode.empty()) {
           // Only change stroke for selection, not fill (to preserve sentiment color)
@@ -85,7 +90,12 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         // Try to find and highlight the child node
         const childNode = d3
           .select(svgRef.current)
-          .select(`#${getChildNodeId(newSelectedId)}`);
+          .selectAll(".child-point-circle")
+          .filter(function () {
+            return (
+              d3.select(this).attr("data-event-index") === String(newSelectedId)
+            );
+          });
 
         if (!childNode.empty()) {
           // Highlight the child node - only change stroke, not fill (to preserve sentiment color)
@@ -190,70 +200,6 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .attr("viewBox", `0 0 ${containerWidth} ${containerHeight}`)
       .attr("preserveAspectRatio", "xMinYMin meet")
       .style("overflow", "visible");
-
-    // Add background rect to handle clicks outside nodes
-    svg
-      .append("rect")
-      .attr("width", containerWidth)
-      .attr("height", containerHeight)
-      .attr("fill", "transparent")
-      .on("click", () => {
-        // Close all expanded groups when clicking on the background
-        const groupedPoints = groupOverlappingPoints(
-          dataPoints,
-          xScale,
-          yScale,
-          viewMode
-        );
-
-        // Reset all groups to default z-order
-        pointsGroup.selectAll(".point-group").sort((a, b) => {
-          // Sort by y-position to maintain a consistent layering
-          return (a as GroupedPoint).y - (b as GroupedPoint).y;
-        });
-
-        groupedPoints.forEach((point) => {
-          if (point.isExpanded) {
-            point.isExpanded = false;
-            pointStatesRef.current.set(point.key, {
-              x: point.x,
-              y: point.y,
-              isExpanded: false,
-            });
-
-            // Find the parent node and collapse it
-            const parentId = getParentNodeId(point.key);
-            const parentGroup = d3.select(`#${parentId}`);
-
-            if (!parentGroup.empty()) {
-              const parentCircle = parentGroup.select("circle");
-              const countText = parentGroup.select("text");
-              const children = parentGroup.selectAll(".child-point");
-
-              // Collapse animation
-              parentCircle
-                .transition()
-                .duration(200)
-                .attr(
-                  "r",
-                  point.points.length > 1
-                    ? TOPIC_CONFIG.point.radius * 1.2
-                    : TOPIC_CONFIG.point.radius
-                )
-                .style("opacity", 1)
-                .style("cursor", "pointer");
-
-              countText.style("opacity", 1);
-
-              children
-                .transition()
-                .duration(200)
-                .style("opacity", 0)
-                .style("pointer-events", "none");
-            }
-          }
-        });
-      });
 
     // Create main group with proper margins
     const g = svg
@@ -365,13 +311,10 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             dominantPolarity = "negative";
           }
 
-          return getSentimentColor(dominantPolarity, avgIntensity);
+          return getSentimentColor(dominantPolarity);
         } else {
           // For single points, use the point's sentiment
-          return getSentimentColor(
-            d.points[0].sentimentPolarity,
-            d.points[0].sentiment
-          );
+          return getSentimentColor(d.points[0].sentimentPolarity);
         }
       })
       .attr("stroke", "black")
@@ -446,9 +389,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         return positions[d.index].y;
       })
       .attr("r", TOPIC_CONFIG.point.radius)
-      .attr("fill", (d: ChildPoint) =>
-        getSentimentColor(d.sentimentPolarity, d.sentiment)
-      )
+      .attr("fill", (d: ChildPoint) => getSentimentColor(d.sentimentPolarity))
       .attr("stroke", "black")
       .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth)
       .style("cursor", "pointer")

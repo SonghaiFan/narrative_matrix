@@ -4,6 +4,7 @@ import { Entity, NarrativeEvent } from "@/types/narrative/lite";
 import { useEffect, useRef, useState } from "react";
 import { formatDate } from "@/lib/utils";
 import { TooltipPosition, VisualizationType } from "@/contexts/tooltip-context";
+import { getSentimentColor } from "@/components/shared/color-utils";
 
 interface NarrativeTooltipProps {
   event: NarrativeEvent | null;
@@ -68,16 +69,21 @@ export function NarrativeTooltip({
   // Check if source_name exists on the event object
   const hasSourceName = event && "source_name" in event;
 
+  // Get sentiment color for background
+  const sentimentColor = getSentimentColor(event.topic.sentiment.polarity);
+
   return (
     <div
       ref={tooltipRef}
-      className="fixed z-50 bg-white rounded-md shadow-lg p-3 max-w-xs border border-gray-200 text-sm"
-      style={tooltipStyle}
+      className="fixed z-50 rounded-md shadow-lg p-3 max-w-xs border border-gray-200 text-sm"
+      style={{
+        ...tooltipStyle,
+        backgroundColor: sentimentColor,
+        borderColor: sentimentColor === "#ffffff" ? "#e5e7eb" : "transparent",
+      }}
     >
       {/* Event text - guaranteed to exist */}
-      <div className="font-medium text-gray-900">
-        {event.short_text || event.text.substring(0, 50) + "..."}
-      </div>
+      <div className="font-medium text-gray-900">{event.text}</div>
 
       {/* Temporal information - optional field */}
       {event.temporal_anchoring?.real_time && (
@@ -86,48 +92,49 @@ export function NarrativeTooltip({
         </div>
       )}
 
-      {/* Event text - guaranteed to exist */}
-      <div className="text-gray-700 mt-2 text-xs line-clamp-3">
-        {event.text}
-      </div>
-
       {/* Topic information - guaranteed to exist */}
       {event.topic && (
-        <div className="mt-2 flex flex-wrap gap-1">
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-            {event.topic.main_topic}
-          </span>
-          {/* Sub-topics - may be empty array */}
-          {event.topic.sub_topic &&
-            event.topic.sub_topic.length > 0 &&
-            event.topic.sub_topic.map((subTopic, i) => (
-              <span
-                key={i}
-                className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700"
-              >
-                {subTopic}
-              </span>
-            ))}
+        <div className="mt-3">
+          <div className="text-xs font-medium text-gray-500 mb-1">Topics</div>
+          <div className="flex flex-wrap gap-1">
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-white/90 text-gray-900 border border-gray-200 shadow-sm">
+              {event.topic.main_topic}
+            </span>
+            {/* Sub-topics - may be empty array */}
+            {event.topic.sub_topic &&
+              event.topic.sub_topic.length > 0 &&
+              event.topic.sub_topic.map((subTopic, i) => (
+                <span
+                  key={i}
+                  className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-white/70 text-gray-700 border border-gray-200"
+                >
+                  {subTopic}
+                </span>
+              ))}
+          </div>
         </div>
       )}
 
       {/* Entity information - guaranteed to exist but may be empty array */}
       {event.entities && event.entities.length > 0 && (
-        <div className="mt-2 flex flex-wrap gap-1">
-          {event.entities.map((entity, i) => (
-            <span
-              key={i}
-              className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800"
-            >
-              {entity.name}
-              {/* Social role - optional field */}
-              {entity.social_role && (
-                <span className="ml-1 text-xs text-green-600">
-                  ({entity.social_role})
-                </span>
-              )}
-            </span>
-          ))}
+        <div className="mt-2">
+          <div className="text-xs font-medium text-gray-500 mb-1">Entities</div>
+          <div className="flex flex-wrap gap-1">
+            {event.entities.map((entity, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-white/80 text-gray-900 border border-gray-200"
+              >
+                {entity.name}
+                {/* Social role - optional field */}
+                {entity.social_role && (
+                  <span className="ml-1 text-xs text-gray-600">
+                    ({entity.social_role})
+                  </span>
+                )}
+              </span>
+            ))}
+          </div>
         </div>
       )}
 

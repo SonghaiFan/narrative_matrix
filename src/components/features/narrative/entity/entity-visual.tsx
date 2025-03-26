@@ -7,7 +7,6 @@ import { ENTITY_CONFIG } from "./entity-config";
 import { useTooltip } from "@/contexts/tooltip-context";
 import { useCenterControl } from "@/contexts/center-control-context";
 import {
-  getEntityAttributeValue,
   calculateDimensions,
   calculateMaxEntities,
   getEntityMentions,
@@ -19,6 +18,7 @@ import {
   getRelevantEntities,
   calculateConnectorPoints,
 } from "./entity-visual.utils";
+import { getSentimentColor } from "@/components/shared/color-utils";
 
 export interface EntityVisualProps {
   events: NarrativeEvent[];
@@ -244,7 +244,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
           .attr("cx", 0)
           .attr("cy", y)
           .attr("r", ENTITY_CONFIG.event.nodeRadius)
-          .attr("fill", "white")
+          .attr("fill", getSentimentColor(event.topic.sentiment.polarity))
           .attr(
             "stroke",
             relevantEntities.hasNoEntities ? "#94a3b8" : "#64748b"
@@ -328,7 +328,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
               .attr("cx", point.x)
               .attr("cy", 0)
               .attr("r", ENTITY_CONFIG.event.nodeRadius)
-              .attr("fill", "white")
+              .attr("fill", getSentimentColor(event.topic.sentiment.polarity))
               .attr(
                 "stroke",
                 selectedEventId === event.index ? "#3b82f6" : "black"
