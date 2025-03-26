@@ -135,28 +135,30 @@
       },
       {
         "id": "israel-9",
-        "question": "Match each cause with its effect:",
-        "answer": "Hamas victory in 2006: International isolation, Netanyahu's far-right government: Expansion of settlements, Iranian direct attacks: Israeli counterstrikes on facilities, Oslo Accords: Palestinian self-governance",
+        "question": "Match each event with its corresponding stage in the narrative arc:",
+        "answer": "Creation of State of Israel: Exposition, Hamas electoral victory: Rising Action, Hamas attack on Israel: Climax, Regional escalation with Iran and Hezbollah: Falling Action, US-mediated ceasefire: Resolution",
         "level": "Causal Reasoning",
         "type": "grid-matching",
         "options": {
           "leftItems": [
-            "Hamas victory in 2006",
-            "Netanyahu's far-right government",
-            "Iranian direct attacks",
-            "Oslo Accords"
+            "Creation of State of Israel",
+            "Hamas electoral victory",
+            "Hamas attack on Israel",
+            "Regional escalation with Iran and Hezbollah",
+            "US-mediated ceasefire"
           ],
           "rightItems": [
-            "International isolation",
-            "Expansion of settlements",
-            "Israeli counterstrikes on facilities",
-            "Palestinian self-governance"
+            "Exposition",
+            "Rising Action",
+            "Climax",
+            "Falling Action",
+            "Resolution"
           ],
-          "leftLabel": "Causes",
-          "rightLabel": "Effects"
+          "leftLabel": "Events",
+          "rightLabel": "Narrative Stages"
         },
         "completed": false,
-        "event_reference": [25, 27, 45, 46, 9, 21]
+        "event_reference": [12, 25, 1, 7, 2]
       }
     ]
   },
