@@ -18,11 +18,12 @@
       },
       {
         "id": "ukraine-ir-2",
-        "question": "List the two main countries involved in the military conflict.",
+        "question": "Select the two main countries involved in the military conflict.",
+        "options": ["Russia", "Ukraine", "Belarus", "Poland"],
         "answer": "Russia,Ukraine",
         "level": "Information Retrieval",
         "completed": false,
-        "type": "comma-separated",
+        "type": "multiple-select",
         "event_reference": 1
       },
       {
@@ -54,27 +55,47 @@
       },
       {
         "id": "ukraine-cr-1",
-        "question": "Why did the Trump administration suspend military assistance to Ukraine?",
-        "answer": "Following a contentious White House meeting between President Zelenskyy, President Trump, and Vice President JD Vance that descended into acrimony",
+        "question": "Match each event with its corresponding stage in the narrative arc:",
+        "options": {
+          "leftItems": [
+            "Russia occupies 20% of Ukraine",
+            "Ongoing bombardment and drone warfare",
+            "Trump suspends military aid after contentious meeting",
+            "Ukraine accepts cease-fire proposal",
+            "US restores military aid"
+          ],
+          "rightItems": [
+            "Exposition",
+            "Rising Action",
+            "Climax",
+            "Falling Action",
+            "Resolution"
+          ],
+          "leftLabel": "Events",
+          "rightLabel": "Narrative Stages"
+        },
+        "answer": "Russia occupies 20% of Ukraine: Exposition, Ongoing bombardment and drone warfare: Rising Action, Trump suspends military aid after contentious meeting: Climax, Ukraine accepts cease-fire proposal: Falling Action, US restores military aid: Resolution",
         "level": "Causal Reasoning",
         "completed": false,
-        "type": "long-text",
-        "event_reference": 4
+        "type": "grid-matching",
+        "event_reference": [1, 2, 4, 5, 6]
       },
       {
         "id": "ukraine-cr-3",
         "question": "Match each cause with its effect in the conflict:",
         "options": {
-          "causes": [
+          "leftItems": [
             "Russia's full-scale invasion",
             "Trump's suspension of military aid",
             "Ukraine's acceptance of cease-fire proposal"
           ],
-          "effects": [
+          "rightItems": [
             "US restoration of military aid",
             "Massive civilian displacement and casualties",
             "Temporary halt in US military support"
-          ]
+          ],
+          "leftLabel": "Causes",
+          "rightLabel": "Effects"
         },
         "answer": "Russia's full-scale invasion: Massive civilian displacement and casualties, Trump's suspension of military aid: Temporary halt in US military support, Ukraine's acceptance of cease-fire proposal: US restoration of military aid",
         "level": "Causal Reasoning",

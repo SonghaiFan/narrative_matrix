@@ -9,22 +9,20 @@ import {
 } from "@hello-pangea/dnd";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
+import type { GridMatchingQuiz } from "@/types/quiz";
+
+type GridMatchingOptions = GridMatchingQuiz["options"];
 
 interface GridMatchingProps {
-  options: {
-    countries?: string[];
-    roles?: string[];
-    causes?: string[];
-    effects?: string[];
-  };
+  options: GridMatchingOptions;
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
 }
 
 interface MatchedPair {
-  cause: string;
-  effect: string;
+  left: string;
+  right: string;
 }
 
 export function GridMatching({
@@ -33,11 +31,16 @@ export function GridMatching({
   onChange,
   disabled = false,
 }: GridMatchingProps) {
-  const isCountryRole = options.countries && options.roles;
-  const leftItems = options.countries || options.causes || [];
-  const rightItems = options.roles || options.effects || [];
-  const leftLabel = options.countries ? "Countries" : "Causes";
-  const rightLabel = options.roles ? "Roles" : "Effects";
+  const {
+    leftItems = [],
+    rightItems = [],
+    leftLabel = "Items",
+    rightLabel = "Categories",
+  } = options;
+
+  // Ensure arrays are not undefined
+  const safeLeftItems = leftItems ?? [];
+  const safeRightItems = rightItems ?? [];
 
   const [matchedPairs, setMatchedPairs] = useState<MatchedPair[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -48,8 +51,8 @@ export function GridMatching({
     if (value) {
       try {
         const pairs = value.split(",").map((pair) => {
-          const [cause, effect] = pair.split(":").map((s) => s.trim());
-          return { cause, effect };
+          const [left, right] = pair.split(":").map((s) => s.trim());
+          return { left, right };
         });
         setMatchedPairs(pairs);
       } catch (e) {
@@ -67,34 +70,33 @@ export function GridMatching({
     setDraggedOverId(null);
     if (!result.destination) return;
 
-    const { source, destination, draggableId } = result;
+    const { source, destination } = result;
     const sourceId = source.droppableId;
-    const destId = destination.droppableId;
 
     // Only allow dragging from left to right
     if (sourceId === "left") {
-      const causeItem = leftItems[source.index];
-      const effectItem = rightItems.find(
+      const leftItem = safeLeftItems[source.index];
+      const rightItem = safeRightItems.find(
         (_, index) =>
           `right-${index}` === draggedOverId?.replace("droppable-", "")
       );
 
-      if (effectItem) {
+      if (rightItem) {
         // Allow multiple matches - only check if this exact pair already exists
         const isExactPairMatched = matchedPairs.some(
-          (pair) => pair.cause === causeItem && pair.effect === effectItem
+          (pair) => pair.left === leftItem && pair.right === rightItem
         );
 
         if (!isExactPairMatched) {
           const newPairs = [
             ...matchedPairs,
-            { cause: causeItem, effect: effectItem },
+            { left: leftItem, right: rightItem },
           ];
           setMatchedPairs(newPairs);
 
           // Update the textarea value
           const formattedValue = newPairs
-            .map((pair) => `${pair.cause}: ${pair.effect}`)
+            .map((pair) => `${pair.left}: ${pair.right}`)
             .join(", ");
           onChange(formattedValue);
         }
@@ -105,17 +107,23 @@ export function GridMatching({
   const removePair = (pairToRemove: MatchedPair) => {
     const newPairs = matchedPairs.filter(
       (pair) =>
-        !(
-          pair.cause === pairToRemove.cause &&
-          pair.effect === pairToRemove.effect
-        )
+        !(pair.left === pairToRemove.left && pair.right === pairToRemove.right)
     );
     setMatchedPairs(newPairs);
     const formattedValue = newPairs
-      .map((pair) => `${pair.cause}: ${pair.effect}`)
+      .map((pair) => `${pair.left}: ${pair.right}`)
       .join(", ");
     onChange(formattedValue);
   };
+
+  // Early return if no items provided
+  if (!safeLeftItems.length || !safeRightItems.length) {
+    return (
+      <div className="p-4 text-sm text-gray-500">
+        Please provide items for both columns to enable matching.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-2">
@@ -140,9 +148,9 @@ export function GridMatching({
                       : "border-gray-200"
                   )}
                 >
-                  {leftItems.map((item, index) => {
+                  {safeLeftItems.map((item, index) => {
                     const matchesForItem = matchedPairs.filter(
-                      (pair) => pair.cause === item
+                      (pair) => pair.left === item
                     );
                     const hasMatches = matchesForItem.length > 0;
 
@@ -193,10 +201,10 @@ export function GridMatching({
                                 <div className="flex flex-wrap gap-1">
                                   {matchesForItem.map((match, idx) => (
                                     <div
-                                      key={`${match.cause}-${match.effect}-${idx}`}
+                                      key={`${match.left}-${match.right}-${idx}`}
                                       className="flex items-center gap-1 bg-green-100 text-green-700 rounded px-1.5 py-0.5 text-xs"
                                     >
-                                      {match.effect}
+                                      {match.right}
                                       <button
                                         onClick={() => removePair(match)}
                                         className="hover:text-green-800"
@@ -222,9 +230,9 @@ export function GridMatching({
           {/* Right Column */}
           <div className="flex-1">
             <div className="grid grid-cols-1 gap-1">
-              {rightItems.map((item, index) => {
+              {safeRightItems.map((item, index) => {
                 const matchesForItem = matchedPairs.filter(
-                  (pair) => pair.effect === item
+                  (pair) => pair.right === item
                 );
                 const hasMatches = matchesForItem.length > 0;
                 const isBeingDraggedOver =
@@ -262,10 +270,10 @@ export function GridMatching({
                             <div className="flex flex-wrap gap-1">
                               {matchesForItem.map((match, idx) => (
                                 <div
-                                  key={`${match.cause}-${match.effect}-${idx}`}
+                                  key={`${match.left}-${match.right}-${idx}`}
                                   className="flex items-center gap-1 bg-green-100 text-green-700 rounded px-1.5 py-0.5 text-xs"
                                 >
-                                  {match.cause}
+                                  {match.left}
                                   <button
                                     onClick={() => removePair(match)}
                                     className="hover:text-green-800"
@@ -296,11 +304,7 @@ export function GridMatching({
       <textarea
         className="w-full p-2 border rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
         rows={2}
-        placeholder={`Enter matches in format: ${
-          isCountryRole
-            ? "country1: role1, country2: role2"
-            : "cause1: effect1, cause2: effect2"
-        }...`}
+        placeholder={`Enter matches in format: item1: category1, item2: category2...`}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}

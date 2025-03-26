@@ -798,28 +798,44 @@ export function TaskPanel({
       </div>
 
       {/* Fixed bottom controls */}
-      <div className="border-t bg-white sticky bottom-0 p-2 z-10">
-        <div className="flex justify-between items-center text-xs">
-          <button
-            onClick={handlePrevious}
-            disabled={
-              currentTaskIndex === 0 ||
-              (!isDomainExpert && tasks[currentTaskIndex].completed)
-            }
-            className="flex items-center px-2 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <ChevronLeft className="h-3 w-3 mr-0.5" />
-            Prev
-          </button>
+      <div className="border-t bg-white sticky bottom-0 p-3 z-10">
+        <div className="flex justify-between items-center gap-2">
+          {/* Navigation buttons */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handlePrevious}
+              disabled={
+                currentTaskIndex === 0 ||
+                (!isDomainExpert && tasks[currentTaskIndex].completed)
+              }
+              className="p-2 rounded-full border border-gray-200 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 transition-colors"
+              aria-label="Previous question"
+            >
+              <ChevronLeft className="h-4 w-4 text-gray-600" />
+            </button>
 
-          <div className="flex space-x-1">
+            <button
+              onClick={handleNext}
+              disabled={
+                currentTaskIndex === tasks.length - 1 ||
+                (!isDomainExpert && !tasks[currentTaskIndex].completed)
+              }
+              className="p-2 rounded-full border border-gray-200 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 transition-colors"
+              aria-label="Next question"
+            >
+              <ChevronRight className="h-4 w-4 text-gray-600" />
+            </button>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex items-center gap-2">
             {!showAnswer && !currentTask.completed && isDomainExpert && (
               <button
                 onClick={handleReveal}
-                className="flex items-center px-2 py-1 text-blue-600"
+                className="flex items-center gap-1.5 px-3 py-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors"
               >
-                <HelpCircle className="h-3 w-3 mr-0.5" />
-                Hint
+                <HelpCircle className="h-4 w-4" />
+                <span className="text-sm font-medium">Hint</span>
               </button>
             )}
 
@@ -827,40 +843,30 @@ export function TaskPanel({
               <>
                 <button
                   onClick={handleSkip}
-                  className="px-3 py-1.5 border-2 border-dashed border-blue-300 bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 hover:border-blue-400 flex items-center gap-1.5 font-medium"
+                  className="flex items-center gap-1.5 px-4 py-2 border-2 border-amber-300 bg-amber-50 text-amber-700 rounded-md hover:bg-amber-100 hover:border-amber-400 transition-colors"
                 >
-                  <HelpCircle className="h-3.5 w-3.5" />
-                  Skip - Not Found in Text
+                  <HelpCircle className="h-4 w-4" />
+                  <span className="text-sm font-medium">Skip</span>
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={!userAnswer.trim() || isSubmitting}
-                  className="px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  Submit
+                  <CheckCircle className="h-4 w-4" />
+                  <span className="text-sm font-medium">Submit</span>
                 </button>
               </>
             ) : !currentTask.completed && showAnswer ? (
               <button
                 onClick={handleSubmit}
-                className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
-                Submit
+                <CheckCircle className="h-4 w-4" />
+                <span className="text-sm font-medium">Submit</span>
               </button>
             ) : null}
           </div>
-
-          <button
-            onClick={handleNext}
-            disabled={
-              currentTaskIndex === tasks.length - 1 ||
-              (!isDomainExpert && !tasks[currentTaskIndex].completed)
-            }
-            className="flex items-center px-2 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Next
-            <ChevronRight className="h-3 w-3 ml-0.5" />
-          </button>
         </div>
       </div>
 

@@ -140,18 +140,20 @@
         "level": "Causal Reasoning",
         "type": "grid-matching",
         "options": {
-          "causes": [
+          "leftItems": [
             "Hamas victory in 2006",
             "Netanyahu's far-right government",
             "Iranian direct attacks",
             "Oslo Accords"
           ],
-          "effects": [
+          "rightItems": [
             "International isolation",
             "Expansion of settlements",
             "Israeli counterstrikes on facilities",
             "Palestinian self-governance"
-          ]
+          ],
+          "leftLabel": "Causes",
+          "rightLabel": "Effects"
         },
         "completed": false,
         "event_reference": [25, 27, 45, 46, 9, 21]
