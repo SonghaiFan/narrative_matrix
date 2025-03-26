@@ -6,6 +6,51 @@
     "author": "unknown",
     "publishDate": "2025-03-13",
     "imageUrl": null,
+    "quiz_recall": [
+      {
+        "id": "ukraine-recall-1",
+        "question": "What is the total number of civilian casualties in Ukraine?",
+        "answer": "over 40,000",
+        "level": "Information Retrieval",
+        "completed": false,
+        "type": "radio-options",
+        "options": [
+          "over 40,000",
+          "under 20,000",
+          "between 20,000 and 30,000",
+          "between 30,000 and 40,000",
+          "over 50,000"
+        ],
+        "event_reference": 3
+      },
+      {
+        "id": "ukraine-recall-2",
+        "question": "Match each event with its corresponding stage in the narrative arc:",
+        "options": {
+          "leftItems": [
+            "Russia occupies 20% of Ukraine",
+            "Ongoing bombardment and drone warfare",
+            "Trump suspends military aid after contentious meeting",
+            "Ukraine accepts cease-fire proposal",
+            "US restores military aid"
+          ],
+          "rightItems": [
+            "Exposition",
+            "Rising Action",
+            "Climax",
+            "Falling Action",
+            "Resolution"
+          ],
+          "leftLabel": "Events",
+          "rightLabel": "Narrative Stages"
+        },
+        "answer": "Russia occupies 20% of Ukraine: Exposition, Ongoing bombardment and drone warfare: Rising Action, Trump suspends military aid after contentious meeting: Climax, Ukraine accepts cease-fire proposal: Falling Action, US restores military aid: Resolution",
+        "level": "Pattern Recognition",
+        "completed": false,
+        "type": "grid-matching",
+        "event_reference": [1, 2, 4, 5, 6]
+      }
+    ],
     "quiz": [
       {
         "id": "ukraine-1",
