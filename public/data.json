@@ -56,7 +56,7 @@
         "event_reference": 25
       },
       {
-        "id": "israel-3-sanity",
+        "id": "israel-4",
         "question": "Which neutral third-party organization supervised the January 2025 ceasefire implementation between Israel and Hamas?",
         "answer": "This information is not specified in the text",
         "level": "Sanity Check",
@@ -70,7 +70,7 @@
         "event_reference": null
       },
       {
-        "id": "israel-4",
+        "id": "israel-5",
         "question": "Which statement best describes the trend of regional conflict following Hamas's October 2023 attack?",
         "answer": "Regional militant groups joined the conflict, increasing its scope.",
         "level": "Pattern Recognition",
@@ -85,7 +85,7 @@
         "event_reference": [7, 8, 9]
       },
       {
-        "id": "israel-5",
+        "id": "israel-6",
         "question": "Arrange these historical events in chronological order according to the narrative:",
         "answer": "1,2,3,4",
         "level": "Pattern Recognition",
@@ -102,7 +102,7 @@
         "event_reference": [12, 15, 21, 25]
       },
       {
-        "id": "israel-6",
+        "id": "israel-7",
         "question": "Which territories were captured by Israel during the 1967 Six-Day War? (Select all that apply)",
         "answer": "Sinai Peninsula,Gaza Strip,West Bank,East Jerusalem,Golan Heights",
         "level": "Information Retrieval",
@@ -119,7 +119,7 @@
         "event_reference": 16
       },
       {
-        "id": "israel-7",
+        "id": "israel-8",
         "question": "Explain one reason why Hamas's electoral victory in 2006 led to increased conflict with Israel in subsequent years.",
         "answer": "Western nations refused to recognize Hamas due to its terrorist designation",
         "level": "Causal Reasoning",
@@ -134,7 +134,7 @@
         "event_reference": 27
       },
       {
-        "id": "israel-8",
+        "id": "israel-9",
         "question": "What was one major cause for Hamas's October 7, 2023 attack according to the narrative?",
         "answer": "Israeli government policies expanding West Bank settlements and limiting judicial oversight",
         "level": "Causal Reasoning",
@@ -149,10 +149,10 @@
         "event_reference": 46
       },
       {
-        "id": "israel-9",
+        "id": "israel-10",
         "question": "Match each event with its corresponding stage in the narrative arc:",
         "answer": "Creation of State of Israel: Exposition, Hamas electoral victory: Rising Action, Hamas attack on Israel: Climax, Regional escalation with Iran and Hezbollah: Falling Action, US-mediated ceasefire: Resolution",
-        "level": "Causal Reasoning",
+        "level": "Pattern Recognition",
         "type": "grid-matching",
         "options": {
           "leftItems": [

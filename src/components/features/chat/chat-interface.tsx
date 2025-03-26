@@ -301,7 +301,7 @@ export function ChatInterface({ events, className = "" }: ChatInterfaceProps) {
                 <Info className="w-3.5 h-3.5 mr-1.5 text-blue-500" />
                 <span className="font-medium">Current Selection:</span>
               </div>
-              <div className="pl-5 mt-1 text-blue-600">
+              <div className="pl-5 mt-1 text-blue-600 line-clamp-2">
                 {messages.filter((msg) => msg.role === "system").pop()?.content}
               </div>
             </div>
