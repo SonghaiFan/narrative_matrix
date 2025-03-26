@@ -9,11 +9,18 @@
     "quiz": [
       {
         "id": "ukraine-ir-1",
-        "question": "The total number of civilian casualties in Ukraine is _____.",
+        "question": "What is the total number of civilian casualties in Ukraine?",
         "answer": "over 40,000",
         "level": "Information Retrieval",
         "completed": false,
-        "type": "single-input",
+        "type": "radio-options",
+        "options": [
+          "over 40,000",
+          "under 20,000",
+          "between 20,000 and 30,000",
+          "between 30,000 and 40,000",
+          "over 50,000"
+        ],
         "event_reference": 3
       },
       {

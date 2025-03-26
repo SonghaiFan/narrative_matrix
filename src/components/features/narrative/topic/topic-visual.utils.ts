@@ -107,7 +107,7 @@ export function getScales(
     .padding(0.3);
 
   const timeDomain = d3.extent(dataPoints, (d) => d.realTime) as [Date, Date];
-  const xScale = createTimeScale(width, timeDomain, currentTime);
+  const xScale = createTimeScale(width, timeDomain);
 
   return { xScale, yScale };
 }

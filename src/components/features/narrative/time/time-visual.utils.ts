@@ -88,7 +88,7 @@ export function getScales(
 ) {
   const timePoints = dataPoints.filter((d) => d.hasRealTime);
   const timeDomain = d3.extent(timePoints, (d) => d.realTime) as [Date, Date];
-  const xScale = createTimeScale(width, timeDomain, currentTime);
+  const xScale = createTimeScale(width, timeDomain);
 
   const maxNarrativeTime = Math.max(...dataPoints.map((d) => d.narrativeTime));
   const yScale = d3

@@ -724,16 +724,63 @@ export function TaskPanel({
                           />
                         );
                       case "grid-matching":
+                        const options = currentTask.options as {
+                          countries?: string[];
+                          roles?: string[];
+                          causes?: string[];
+                          effects?: string[];
+                          leftItems?: string[];
+                          rightItems?: string[];
+                          leftLabel?: string;
+                          rightLabel?: string;
+                        };
+
+                        // If leftItems and rightItems are already provided, use them directly
+                        if (options.leftItems && options.rightItems) {
+                          return (
+                            <GridMatching
+                              options={{
+                                leftItems: options.leftItems,
+                                rightItems: options.rightItems,
+                                leftLabel: options.leftLabel,
+                                rightLabel: options.rightLabel,
+                              }}
+                              value={userAnswer}
+                              onChange={setUserAnswer}
+                              disabled={showAnswer}
+                            />
+                          );
+                        }
+
+                        // Otherwise, transform the options into the correct shape
+                        let transformedOptions;
+                        if (options.countries && options.roles) {
+                          transformedOptions = {
+                            leftItems: options.countries,
+                            rightItems: options.roles,
+                            leftLabel: "Countries",
+                            rightLabel: "Roles",
+                          };
+                        } else if (options.causes && options.effects) {
+                          transformedOptions = {
+                            leftItems: options.causes,
+                            rightItems: options.effects,
+                            leftLabel: "Causes",
+                            rightLabel: "Effects",
+                          };
+                        } else {
+                          // Fallback to empty arrays if no valid options are provided
+                          transformedOptions = {
+                            leftItems: [],
+                            rightItems: [],
+                            leftLabel: "Items",
+                            rightLabel: "Categories",
+                          };
+                        }
+
                         return (
                           <GridMatching
-                            options={
-                              currentTask.options as {
-                                countries?: string[];
-                                roles?: string[];
-                                causes?: string[];
-                                effects?: string[];
-                              }
-                            }
+                            options={transformedOptions}
                             value={userAnswer}
                             onChange={setUserAnswer}
                             disabled={showAnswer}

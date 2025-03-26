@@ -24,19 +24,34 @@
       },
       {
         "id": "israel-2",
-        "question": "The January 2025 ceasefire between Israel and Hamas was mediated by ____, ____, and ____.",
-        "answer": "The United States, Egypt, Qatar",
+        "question": "Which countries mediated the January 2025 ceasefire between Israel and Hamas? (Select all that apply)",
+        "answer": "The United States,Egypt,Qatar",
         "level": "Information Retrieval",
-        "type": "single-input",
+        "type": "multiple-select",
+        "options": [
+          "The United States",
+          "Egypt",
+          "Qatar",
+          "Jordan",
+          "Saudi Arabia",
+          "Turkey"
+        ],
         "completed": false,
         "event_reference": 2
       },
       {
         "id": "israel-3",
-        "question": "List the two main Palestinian factions involved in conflict after Hamas's electoral victory in 2006.",
-        "answer": "Hamas, Fatah",
+        "question": "Which Palestinian factions were involved in conflict after Hamas's electoral victory in 2006? (Select all that apply)",
+        "answer": "Hamas,Fatah",
         "level": "Information Retrieval",
-        "type": "comma-separated",
+        "type": "multiple-select",
+        "options": [
+          "Hamas",
+          "Fatah",
+          "Islamic Jihad",
+          "PFLP",
+          "Palestinian Authority"
+        ],
         "completed": false,
         "event_reference": 25
       },
