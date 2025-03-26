@@ -30,7 +30,9 @@ function MixedTrainingScenario() {
               <div className="h-full w-full overflow-hidden relative">
                 <ResizableGrid
                   topLeft={renderPanel(<PureTextDisplay events={events} />)}
-                  topRight={renderPanel(<TopicDisplay events={events} />)}
+                  topRight={renderPanel(
+                    <TopicDisplay events={events} metadata={metadata} />
+                  )}
                   bottomLeft={renderPanel(<EntityDisplay events={events} />)}
                   bottomRight={renderPanel(
                     <TimeDisplay events={events} metadata={metadata} />

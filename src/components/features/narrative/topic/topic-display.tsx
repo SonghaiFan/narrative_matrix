@@ -16,11 +16,14 @@ import { getSentimentColor } from "@/components/shared/color-utils";
 
 interface TopicDisplayProps {
   events: NarrativeEvent[];
+  metadata: {
+    publishDate: string;
+  };
 }
 
 type TopicViewMode = "main" | "sub";
 
-export function TopicDisplay({ events }: TopicDisplayProps) {
+export function TopicDisplay({ events, metadata }: TopicDisplayProps) {
   const [viewMode] = useState<TopicViewMode>("sub");
 
   return (
@@ -80,7 +83,11 @@ export function TopicDisplay({ events }: TopicDisplayProps) {
         </div>
       }
     >
-      <NarrativeTopicVisual events={events} viewMode={viewMode} />
+      <NarrativeTopicVisual
+        events={events}
+        viewMode={viewMode}
+        metadata={metadata}
+      />
     </VisualizationDisplay>
   );
 }

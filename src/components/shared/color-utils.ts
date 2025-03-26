@@ -1,12 +1,18 @@
 type SentimentPolarity = "positive" | "negative" | "neutral";
 
-export function getSentimentColor(polarity: SentimentPolarity): string {
-  // Use colorblind-friendly colors that match the blue theme
-  const colors = {
-    positive: "#4ade80", // Soft green
-    negative: "#fdba74", // Soft orange
-    neutral: "#ffffff", // White
-  };
+// Define color constants with accessibility considerations
+export const HIGHLIGHT_COLOR = "#3b82f6"; // Blue highlight color - accessible for most color vision types
 
-  return colors[polarity];
+const ACCESSIBLE_COLORS = {
+  positive: "#4ade80", // Green - for positive sentiment
+  negative: "#fbbf24", // Yellow - for negative sentiment
+  neutral: "#EEEEEE", // Light gray - works for all vision types
+} as const;
+
+export function getSentimentColor(polarity: SentimentPolarity): string {
+  return ACCESSIBLE_COLORS[polarity];
+}
+
+export function getHighlightColor(): string {
+  return HIGHLIGHT_COLOR;
 }

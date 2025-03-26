@@ -17,7 +17,10 @@ import {
   createAxes,
   createLineGenerator,
 } from "./time-visual.utils";
-import { getSentimentColor } from "@/components/shared/color-utils";
+import {
+  getSentimentColor,
+  getHighlightColor,
+} from "@/components/shared/color-utils";
 
 interface TimeVisualProps {
   events: NarrativeEvent[];
@@ -46,14 +49,15 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         .selectAll(".point")
         .each(function () {
           const point = d3.select(this);
-
-          // Only reset the stroke color, not the radius
           point
             .attr("stroke", "black")
             .attr("stroke-width", TIME_CONFIG.point.strokeWidth);
         });
 
-      // If we have a selected event, highlight it
+      // Get guide lines group
+      const guideLines = d3.select(svgRef.current).select(".guide-lines");
+
+      // If we have a selected event, highlight it and show guide lines
       if (newSelectedId !== null && newSelectedId !== undefined) {
         // Use attribute selector to find all points with matching event index
         const selectedPoints = d3
@@ -61,11 +65,25 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
           .selectAll(`.point[data-event-index="${newSelectedId}"]`);
 
         if (!selectedPoints.empty()) {
-          // Only change the stroke color for selection, not the radius
-          selectedPoints.attr("stroke", "#3b82f6"); // Blue highlight for selected event
+          // Update point style
+          selectedPoints.attr("stroke", getHighlightColor());
+
+          // Get the selected point's position
+          const selectedPoint = selectedPoints.node() as SVGCircleElement;
+          const cx = parseFloat(selectedPoint.getAttribute("cx") || "0");
+          const cy = parseFloat(selectedPoint.getAttribute("cy") || "0");
+
+          // Update guide lines position
+          guideLines
+            .style("display", "block")
+            .select(".horizontal")
+            .attr("y1", cy)
+            .attr("y2", cy);
+
+          guideLines.select(".vertical").attr("x1", cx).attr("x2", cx);
 
           // Store the selected node in the ref
-          selectedNodeRef.current = selectedPoints.node() as SVGCircleElement;
+          selectedNodeRef.current = selectedPoint;
 
           // Scroll the selected node into view
           if (selectedNodeRef.current) {
@@ -75,6 +93,9 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
             });
           }
         }
+      } else {
+        // Hide guide lines when no point is selected
+        guideLines.style("display", "none");
       }
     },
     []
@@ -103,7 +124,13 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       calculateDimensions(containerRef.current.clientWidth, events.length);
 
     // Create scales
-    const { xScale, yScale } = getScales(dataPoints, width, height);
+    const publishDate = new Date(metadata.publishDate);
+    const { xScale, yScale } = getScales(
+      dataPoints,
+      width,
+      height,
+      publishDate
+    );
 
     // Create fixed header for x-axis
     const headerContainer = d3
@@ -152,7 +179,6 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       );
 
     // Add vertical line for published date
-    const publishDate = new Date(metadata.publishDate);
     const publishX = xScale(publishDate);
 
     g.append("line")
@@ -165,6 +191,30 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       .attr("stroke-width", 1)
       .attr("stroke-dasharray", "4,4")
       .attr("opacity", 0.6);
+
+    // Add guide lines group first (so it's underneath everything)
+    const guideLines = g
+      .append("g")
+      .attr("class", "guide-lines")
+      .style("display", "none");
+
+    // Add horizontal guide line
+    guideLines
+      .append("line")
+      .attr("class", "guide-line horizontal")
+      .attr("x1", -TIME_CONFIG.margin.left)
+      .attr("x2", width + TIME_CONFIG.margin.right)
+      .attr("stroke", "#3b82f6")
+      .attr("stroke-width", 2);
+
+    // Add vertical guide line
+    guideLines
+      .append("line")
+      .attr("class", "guide-line vertical")
+      .attr("y1", -TIME_CONFIG.margin.top)
+      .attr("y2", height + TIME_CONFIG.margin.bottom + 1000)
+      .attr("stroke", "#3b82f6")
+      .attr("stroke-width", 2);
 
     g.append("text")
       .attr("class", "publish-date-label")
@@ -182,14 +232,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       .style("font-size", `${TIME_CONFIG.axis.fontSize}px`)
       .call((g) => g.select(".domain").remove())
       .call((g) => g.selectAll(".tick line").attr("stroke", "#94a3b8"));
-    // .append("text")
-    // .attr("class", "axis-label")
-    // .attr("transform", "rotate(-90)")
-    // .attr("x", -height / 2)
-    // .attr("y", -TIME_CONFIG.axis.labelOffset)
-    // .attr("fill", "#64748b")
-    // .attr("text-anchor", "middle")
-    // .text("Narrative Time");
+
     // Add lead titles
     const leadTitles = g
       .append("g")

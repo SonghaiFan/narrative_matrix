@@ -6,7 +6,10 @@ import * as d3 from "d3";
 import { TOPIC_CONFIG } from "./topic-config";
 import { useTooltip } from "@/contexts/tooltip-context";
 import { useCenterControl } from "@/contexts/center-control-context";
-import { getSentimentColor } from "@/components/shared/color-utils";
+import {
+  getSentimentColor,
+  getHighlightColor,
+} from "@/components/shared/color-utils";
 import {
   processEvents,
   getTopicCounts,
@@ -18,11 +21,13 @@ import {
   type DataPoint,
   type GroupedPoint,
 } from "./topic-visual.utils";
-import { debounce } from "lodash";
 
 interface TopicVisualProps {
   events: NarrativeEvent[];
   viewMode: "main" | "sub";
+  metadata: {
+    publishDate: string;
+  };
 }
 
 interface PointState {
@@ -37,7 +42,11 @@ interface ChildPoint extends DataPoint {
   total: number;
 }
 
-export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
+export function NarrativeTopicVisual({
+  events,
+  viewMode,
+  metadata,
+}: TopicVisualProps) {
   const { selectedEventId, setSelectedEventId } = useCenterControl();
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -68,6 +77,9 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         .attr("stroke", "black")
         .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth);
 
+      // Get guide line group
+      const guideLine = d3.select(svgRef.current).select(".guide-lines");
+
       // If we have a selected event, highlight it
       if (newSelectedId !== null) {
         // Try to find and highlight the parent node first
@@ -81,10 +93,18 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           });
 
         if (!parentNode.empty()) {
-          // Only change stroke for selection, not fill (to preserve sentiment color)
-          parentNode
-            .attr("stroke", "#3b82f6")
-            .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth * 1.5);
+          // Update node style
+          parentNode.attr("stroke", getHighlightColor());
+
+          // Get the parent node's position
+          const cx = parseFloat(parentNode.attr("cx") || "0");
+
+          // Update guide line position and show it
+          guideLine
+            .style("display", "block")
+            .select(".vertical")
+            .attr("x1", cx)
+            .attr("x2", cx);
         }
 
         // Try to find and highlight the child node
@@ -98,24 +118,35 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           });
 
         if (!childNode.empty()) {
-          // Highlight the child node - only change stroke, not fill (to preserve sentiment color)
+          // Highlight the child node
           childNode
-            .attr("stroke", "#3b82f6")
+            .attr("stroke", getHighlightColor())
             .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth * 1.5);
 
-          // Also highlight its parent node - only change stroke, not fill
+          // Also highlight its parent node
           const parentKey = childNode.attr("data-parent-key");
           if (parentKey) {
             const parentNodeId = getParentNodeId(parentKey);
-            d3.select(`#${parentNodeId}`)
-              .select("circle")
-              .attr("stroke", "#3b82f6")
-              .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth * 1.5);
+            const parentCircle = d3.select(`#${parentNodeId}`).select("circle");
+            parentCircle.attr("stroke", getHighlightColor());
+
+            // Get the parent node's position
+            const cx = parseFloat(parentCircle.attr("cx") || "0");
+
+            // Update guide line position and show it
+            guideLine
+              .style("display", "block")
+              .select(".vertical")
+              .attr("x1", cx)
+              .attr("x2", cx);
           }
         }
+      } else {
+        // Hide guide line when no node is selected
+        guideLine.style("display", "none");
       }
     },
-    [getChildNodeId, getParentNodeId]
+    [getParentNodeId]
   );
 
   // Function to update the visualization
@@ -152,12 +183,14 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     );
 
     // Create scales with the actual available height
+    const publishDate = new Date(metadata.publishDate);
     const { xScale, yScale } = getScales(
       dataPoints,
       topTopics,
       width,
       height,
-      viewMode
+      viewMode,
+      publishDate
     );
 
     // Create axes
@@ -195,10 +228,9 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     // Create SVG with responsive dimensions
     const svg = d3
       .select(svgRef.current)
-      .attr("width", "100%")
-      .attr("height", "100%")
-      .attr("viewBox", `0 0 ${containerWidth} ${containerHeight}`)
-      .attr("preserveAspectRatio", "xMinYMin meet")
+      .attr("width", containerWidth)
+      .attr("height", containerHeight)
+      .style("display", "block")
       .style("overflow", "visible");
 
     // Create main group with proper margins
@@ -208,6 +240,21 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         "transform",
         `translate(${TOPIC_CONFIG.margin.left},${TOPIC_CONFIG.margin.top})`
       );
+
+    // Add guide line group first (so it's underneath everything)
+    const guideLine = g
+      .append("g")
+      .attr("class", "guide-lines")
+      .style("display", "none");
+
+    // Add vertical guide line
+    guideLine
+      .append("line")
+      .attr("class", "guide-line vertical")
+      .attr("y1", -TOPIC_CONFIG.margin.top)
+      .attr("y2", height + TOPIC_CONFIG.margin.bottom + 1000)
+      .attr("stroke", "#3b82f6")
+      .attr("stroke-width", 2);
 
     // Add y-axis
     g.append("g")
@@ -713,14 +760,19 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div
-        ref={headerRef}
-        className="flex-none bg-white sticky top-0 z-10 shadow-sm"
-        style={{ height: `${TOPIC_CONFIG.header.height}px` }}
-      />
-
-      <div ref={containerRef} className="flex-1 relative overflow-hidden">
-        <svg ref={svgRef} className="w-full h-full" />
+      <div className="flex-none bg-white sticky top-0 z-10 shadow-sm">
+        <div
+          ref={headerRef}
+          style={{ height: `${TOPIC_CONFIG.header.height}px` }}
+        />
+      </div>
+      <div ref={containerRef} className="flex-1 relative">
+        <svg
+          ref={svgRef}
+          className="w-full h-full"
+          style={{ display: "block" }}
+          preserveAspectRatio="xMinYMin meet"
+        />
       </div>
     </div>
   );

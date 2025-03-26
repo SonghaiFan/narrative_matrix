@@ -18,7 +18,10 @@ import {
   getRelevantEntities,
   calculateConnectorPoints,
 } from "./entity-visual.utils";
-import { getSentimentColor } from "@/components/shared/color-utils";
+import {
+  getSentimentColor,
+  getHighlightColor,
+} from "@/components/shared/color-utils";
 
 export interface EntityVisualProps {
   events: NarrativeEvent[];
@@ -43,22 +46,49 @@ export function EntityVisual({ events }: EntityVisualProps) {
         .selectAll(".event-node")
         .each(function () {
           const node = d3.select(this);
-          // Only reset the stroke color, not the radius
           node.attr("stroke", "black");
         });
 
-      // If we have a selected event, highlight it
+      // Get guide lines group
+      const guideLine = d3.select(svgRef.current).select(".guide-lines");
+
+      // If we have a selected event, highlight it and show guide line
       if (newSelectedId !== null) {
         const selectedNodes = d3
           .select(svgRef.current)
           .selectAll(`.event-node[data-event-index="${newSelectedId}"]`);
 
         if (!selectedNodes.empty()) {
-          // Only change the stroke color for selection, not the radius
-          selectedNodes.attr("stroke", "#3b82f6"); // Blue highlight for selected event
+          // Update node style
+          selectedNodes.attr("stroke", getHighlightColor());
+
+          // Get the selected node
+          const node = selectedNodes.node() as SVGCircleElement;
+          let y = 0;
+
+          // Find the parent connector group if it exists
+          const parentGroup = d3.select(node.parentElement);
+          if (parentGroup.classed("connector-group")) {
+            // Get the transform attribute which contains the y position
+            const transform = parentGroup.attr("transform");
+            const match = transform.match(/translate\(0,\s*([^)]+)\)/);
+            if (match) {
+              y = parseFloat(match[1]);
+            }
+          } else {
+            // For nodes without connector groups (e.g., nodes with no entities)
+            y = parseFloat(node.getAttribute("cy") || "0");
+          }
+
+          // Update guide line position and show it
+          guideLine
+            .style("display", "block")
+            .select(".horizontal")
+            .attr("y1", y)
+            .attr("y2", y);
 
           // Store the first selected node in the ref
-          selectedNodeRef.current = selectedNodes.node() as SVGCircleElement;
+          selectedNodeRef.current = node;
 
           // Scroll the selected node into view
           if (selectedNodeRef.current) {
@@ -68,17 +98,13 @@ export function EntityVisual({ events }: EntityVisualProps) {
             });
           }
         }
+      } else {
+        // Hide guide line when no node is selected
+        guideLine.style("display", "none");
       }
     },
     []
   );
-
-  // Effect to handle selectedEventId changes without full re-render
-  useEffect(() => {
-    if (svgRef.current) {
-      updateSelectedEventStyles(selectedEventId || null);
-    }
-  }, [selectedEventId, updateSelectedEventStyles]);
 
   // Function to update the visualization
   const updateVisualization = useCallback(() => {
@@ -190,6 +216,21 @@ export function EntityVisual({ events }: EntityVisualProps) {
         "transform",
         `translate(${leftOffset},${ENTITY_CONFIG.margin.top})`
       );
+
+    // Add horizontal guide line (hidden by default)
+    const guideLine = g
+      .append("g")
+      .attr("class", "guide-lines")
+      .style("display", "none");
+
+    // Add horizontal guide line
+    guideLine
+      .append("line")
+      .attr("class", "guide-line horizontal")
+      .attr("x1", -leftOffset)
+      .attr("x2", totalColumnsWidth + ENTITY_CONFIG.margin.right)
+      .attr("stroke", "#3b82f6")
+      .attr("stroke-width", 2);
 
     // Draw entity columns
     visibleEntities.forEach((entity) => {
@@ -331,7 +372,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
               .attr("fill", getSentimentColor(event.topic.sentiment.polarity))
               .attr(
                 "stroke",
-                selectedEventId === event.index ? "#3b82f6" : "black"
+                selectedEventId === event.index ? getHighlightColor() : "black"
               )
               .attr("stroke-width", ENTITY_CONFIG.event.nodeStrokeWidth)
               .style("cursor", "pointer");
@@ -377,10 +418,17 @@ export function EntityVisual({ events }: EntityVisualProps) {
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Create ResizeObserver
-    const resizeObserver = new ResizeObserver(() => {
-      // Use requestAnimationFrame to throttle updates
-      window.requestAnimationFrame(updateVisualization);
+    // Create ResizeObserver to detect both width and height changes
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.target === containerRef.current) {
+          // Use requestAnimationFrame to throttle updates
+          window.requestAnimationFrame(() => {
+            // Force a complete redraw when container size changes
+            updateVisualization();
+          });
+        }
+      }
     });
 
     // Start observing
@@ -397,6 +445,16 @@ export function EntityVisual({ events }: EntityVisualProps) {
       }
     };
   }, [updateVisualization]);
+
+  // Keep the separate effect for selectedEventId changes
+  useEffect(() => {
+    if (svgRef.current) {
+      // Use setTimeout to ensure this runs after the visualization is fully rendered
+      setTimeout(() => {
+        updateSelectedEventStyles(selectedEventId ?? null);
+      }, 0);
+    }
+  }, [selectedEventId, updateSelectedEventStyles]);
 
   return (
     <div className="w-full h-full flex flex-col overflow-auto">

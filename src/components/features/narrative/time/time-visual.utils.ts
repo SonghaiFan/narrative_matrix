@@ -1,6 +1,7 @@
 import { NarrativeEvent } from "@/types/narrative/lite";
 import { TIME_CONFIG } from "./time-config";
 import * as d3 from "d3";
+import { createTimeScale } from "@/components/shared/visualization-utils";
 
 export interface DataPoint {
   event: NarrativeEvent;
@@ -82,45 +83,12 @@ export function getSortedPoints(dataPoints: DataPoint[]): DataPoint[] {
 export function getScales(
   dataPoints: DataPoint[],
   width: number,
-  height: number
+  height: number,
+  currentTime?: Date
 ) {
   const timePoints = dataPoints.filter((d) => d.hasRealTime);
-
-  // Create a time scale first to get proper time ticks
-  const timeScale = d3
-    .scaleTime()
-    .domain(d3.extent(timePoints, (d) => d.realTime) as [Date, Date])
-    .range([0, width]);
-
-  // Create a power scale to transform the linear time scale into a logarithmic one
-  const xScale = d3
-    .scalePow()
-    .exponent(2) // Use a larger exponent to give more space to recent dates
-    .domain([0, width])
-    .range([0, width]);
-
-  // Create a composite scale function
-  const compositeScale = (date: Date) => xScale(timeScale(date));
-
-  // Add necessary scale methods to make it work with d3
-  const finalScale = Object.assign(compositeScale, {
-    domain: timeScale.domain,
-    range: xScale.range,
-    ticks: timeScale.ticks,
-    tickFormat: timeScale.tickFormat,
-    copy: function () {
-      const newTimeScale = timeScale.copy();
-      const newXScale = xScale.copy();
-      const newCompositeScale = (date: Date) => newXScale(newTimeScale(date));
-      return Object.assign(newCompositeScale, {
-        domain: newTimeScale.domain,
-        range: newXScale.range,
-        ticks: newTimeScale.ticks,
-        tickFormat: newTimeScale.tickFormat,
-        copy: this.copy,
-      });
-    },
-  });
+  const timeDomain = d3.extent(timePoints, (d) => d.realTime) as [Date, Date];
+  const xScale = createTimeScale(width, timeDomain, currentTime);
 
   const maxNarrativeTime = Math.max(...dataPoints.map((d) => d.narrativeTime));
   const yScale = d3
@@ -129,7 +97,7 @@ export function getScales(
     .range([0, height])
     .nice();
 
-  return { xScale: finalScale, yScale };
+  return { xScale, yScale };
 }
 
 // Create label data for force layout (only for points with real time)

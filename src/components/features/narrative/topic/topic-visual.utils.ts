@@ -1,6 +1,7 @@
 import { NarrativeEvent } from "@/types/narrative/lite";
 import * as d3 from "d3";
 import { TOPIC_CONFIG } from "./topic-config";
+import { createTimeScale } from "@/components/shared/visualization-utils";
 
 export interface DataPoint {
   event: NarrativeEvent;
@@ -96,7 +97,8 @@ export function getScales(
   topTopics: string[],
   width: number,
   height: number,
-  viewMode: "main" | "sub" = "main"
+  viewMode: "main" | "sub" = "main",
+  currentTime?: Date
 ) {
   const yScale = d3
     .scaleBand()
@@ -104,43 +106,10 @@ export function getScales(
     .range([0, height])
     .padding(0.3);
 
-  // Create a time scale first to get proper time ticks
-  const timeScale = d3
-    .scaleTime()
-    .domain(d3.extent(dataPoints, (d) => d.realTime) as [Date, Date])
-    .range([0, width]);
+  const timeDomain = d3.extent(dataPoints, (d) => d.realTime) as [Date, Date];
+  const xScale = createTimeScale(width, timeDomain, currentTime);
 
-  // Create a power scale to transform the linear time scale into a logarithmic one
-  const xScale = d3
-    .scalePow()
-    .exponent(2) // Use a larger exponent to give more space to recent dates
-    .domain([0, width])
-    .range([0, width]);
-
-  // Create a composite scale function
-  const compositeScale = (date: Date) => xScale(timeScale(date));
-
-  // Add necessary scale methods to make it work with d3
-  const finalScale = Object.assign(compositeScale, {
-    domain: timeScale.domain,
-    range: xScale.range,
-    ticks: timeScale.ticks,
-    tickFormat: timeScale.tickFormat,
-    copy: function () {
-      const newTimeScale = timeScale.copy();
-      const newXScale = xScale.copy();
-      const newCompositeScale = (date: Date) => newXScale(newTimeScale(date));
-      return Object.assign(newCompositeScale, {
-        domain: newTimeScale.domain,
-        range: newXScale.range,
-        ticks: newTimeScale.ticks,
-        tickFormat: newTimeScale.tickFormat,
-        copy: this.copy,
-      });
-    },
-  });
-
-  return { xScale: finalScale, yScale };
+  return { xScale, yScale };
 }
 
 // Calculate dimensions based on container and config

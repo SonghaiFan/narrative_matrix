@@ -26,7 +26,9 @@ function VisualizationScenario() {
             <div className="md:col-span-3 h-full">
               <ResizableGrid
                 topLeft={renderPanel(<PureTextDisplay events={events} />)}
-                topRight={renderPanel(<TopicDisplay events={events} />)}
+                topRight={renderPanel(
+                  <TopicDisplay events={events} metadata={metadata} />
+                )}
                 bottomLeft={renderPanel(<EntityDisplay events={events} />)}
                 bottomRight={renderPanel(
                   <TimeDisplay events={events} metadata={metadata} />
