@@ -119,7 +119,7 @@
       "short_text": "Russia occupies roughly 20 percent of Ukraine after gaining territory in 2024.",
       "lead_title": "Intro",
       "temporal_anchoring": {
-        "real_time": ["2022-02-01", "2024-12-31"],
+        "real_time": "2022-02-24",
         "narrative_time": 1
       },
       "entities": [
@@ -254,7 +254,7 @@
       "short_text": "Ukraine agreed to a thirty-day interim cease-fire proposed by the Trump administration, pending Russian consent.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": ["2025-03-11", "2025-04-10"],
+        "real_time": "2025-03-11",
         "narrative_time": 5
       },
       "entities": [
