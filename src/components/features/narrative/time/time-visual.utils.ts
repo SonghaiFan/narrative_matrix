@@ -197,23 +197,16 @@ export function createAxes(
   xScale: any, // Using any since we have a custom composite scale
   yScale: d3.ScaleLinear<number, number>
 ) {
-  const [startDate, endDate] = xScale.domain();
-
   const xAxis = d3
     .axisTop(xScale)
     .tickSize(TIME_CONFIG.axis.tickSize)
     .tickPadding(TIME_CONFIG.axis.tickPadding)
-    .tickValues(generateTimeTicks(startDate, endDate))
-    .tickFormat((d: any) => {
-      if (!(d instanceof Date)) return "";
-      return d3.timeFormat("%Y")(d);
-    });
+    .tickFormat(xScale.tickFormat());
 
   const yAxis = d3
     .axisLeft(yScale)
     .tickSize(TIME_CONFIG.axis.tickSize)
     .tickPadding(TIME_CONFIG.axis.tickPadding)
-    .ticks(Math.ceil(yScale.domain()[1]))
     .tickFormat(d3.format("d"));
 
   return { xAxis, yAxis };
