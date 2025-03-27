@@ -13,6 +13,7 @@ import {
   calculateDimensions,
   createAxes,
   createLineGenerator,
+  DataPoint,
 } from "./time-visual.utils";
 import {
   getSentimentColor,
@@ -32,8 +33,8 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
-  const selectedNodeRef = useRef<SVGCircleElement | null>(null);
-  const { showTooltip, hideTooltip } = useTooltip();
+  const selectedNodeRef = useRef<SVGRectElement | null>(null);
+  const { showTooltip, hideTooltip, updatePosition } = useTooltip();
 
   // Function to update node styles based on selectedEventId
   const updateSelectedEventStyles = useCallback(() => {
@@ -60,18 +61,31 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         selectedPoints.attr("stroke", getHighlightColor());
 
         // Get the selected point's position
-        const selectedPoint = selectedPoints.node() as SVGCircleElement;
-        const cx = parseFloat(selectedPoint.getAttribute("cx") || "0");
-        const cy = parseFloat(selectedPoint.getAttribute("cy") || "0");
+        const selectedPoint = selectedPoints.node() as SVGRectElement;
+        const x = parseFloat(selectedPoint.getAttribute("x") || "0");
+        const width = parseFloat(selectedPoint.getAttribute("width") || "0");
+        const y = parseFloat(selectedPoint.getAttribute("y") || "0");
+        const height = parseFloat(selectedPoint.getAttribute("height") || "0");
+
+        // Find the center of the rect for horizontal guide and right edge for vertical guide
+        const centerY = y + height / 2;
+        // For date ranges, use the right edge (excluding the end cap)
+        const isDateRange = width > TIME_CONFIG.point.radius * 2 + 2; // Add small epsilon for rounding
+        const rightEdgeX = isDateRange
+          ? x + width - TIME_CONFIG.point.radius // For date ranges, use position just before the end cap
+          : x + width / 2; // For single points, use the center
 
         // Update guide lines position
         guideLines
           .style("display", "block")
           .select(".horizontal")
-          .attr("y1", cy)
-          .attr("y2", cy);
+          .attr("y1", centerY)
+          .attr("y2", centerY);
 
-        guideLines.select(".vertical").attr("x1", cx).attr("x2", cx);
+        guideLines
+          .select(".vertical")
+          .attr("x1", rightEdgeX)
+          .attr("x2", rightEdgeX);
 
         // Store and scroll the selected node into view
         selectedNodeRef.current = selectedPoint;
@@ -204,49 +218,88 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
   const handlePointInteractions = useCallback(
     (
       pointsGroup: d3.Selection<SVGGElement, unknown, null, undefined>,
-      dataPoints: any[],
+      dataPoints: DataPoint[],
       labelsGroup: d3.Selection<SVGGElement, unknown, null, undefined>,
       xScale: any,
       yScale: d3.ScaleLinear<number, number>,
       publishX: number
     ) => {
-      pointsGroup
-        .selectAll(".point")
-        .data(dataPoints)
-        .enter()
-        .append("circle")
-        .attr("class", (d) => `point point-${d.index}`)
-        .attr("cx", (d) => {
-          if (d.hasRealTime) {
-            if (Array.isArray(d.realTime)) {
-              return xScale(d.realTime[0]);
-            }
-            return xScale(d.realTime!);
+      // Define node interaction handlers
+      const handleNodeInteraction = {
+        // Mouse enter handler
+        mouseEnter(this: any, event: MouseEvent, d: any) {
+          const node = d3.select(this);
+          const currentHeight = TIME_CONFIG.point.hoverRadius * 2;
+          const currentWidth = node.attr("width");
+          const originalWidth = parseFloat(currentWidth);
+
+          // Calculate the increase factor and new width
+          const scaleFactor =
+            TIME_CONFIG.point.hoverRadius / TIME_CONFIG.point.radius;
+          let newWidth = originalWidth;
+
+          // For date ranges, only scale the caps while preserving the time span
+          if (d.hasRealTime && Array.isArray(d.realTime)) {
+            // Only increase the caps (add additional radius to both sides)
+            const timeSpanWidth = xScale(d.realTime[1]) - xScale(d.realTime[0]);
+            newWidth = timeSpanWidth + TIME_CONFIG.point.hoverRadius * 2;
+          } else {
+            // For single points, scale the entire width
+            newWidth = TIME_CONFIG.point.hoverRadius * 2;
           }
-          return publishX;
-        })
-        .attr("cy", (d) => yScale(d.narrativeTime))
-        .attr("r", TIME_CONFIG.point.radius)
-        .attr("fill", (d) =>
-          getSentimentColor(d.event.topic.sentiment.polarity)
-        )
-        .attr("stroke", "black")
-        .attr("stroke-width", TIME_CONFIG.point.strokeWidth)
-        .attr("stroke-dasharray", (d) => (d.hasRealTime ? "none" : "2,2"))
-        .style("cursor", "pointer")
-        .attr("data-event-index", (d) => d.event.index)
-        .attr("data-has-real-time", (d) => d.hasRealTime)
-        .on("mouseover", function (event, d) {
-          d3.select(this)
+
+          // Calculate new x position to maintain center alignment
+          const originalX = parseFloat(node.attr("x"));
+          const originalCenterX = originalX + originalWidth / 2;
+          const newX = originalCenterX - newWidth / 2;
+
+          node
+            .raise() // Bring to front
             .transition()
             .duration(150)
-            .attr("r", TIME_CONFIG.point.hoverRadius);
+            .attr("height", currentHeight)
+            .attr("width", newWidth)
+            .attr("x", newX)
+            .attr("y", yScale(d.narrativeTime) - TIME_CONFIG.point.hoverRadius)
+            .attr("rx", TIME_CONFIG.point.hoverRadius)
+            .attr("ry", TIME_CONFIG.point.hoverRadius);
 
           showTooltip(d.event, event.pageX, event.pageY, "time");
-        })
-        .on("mouseout", function (event, d) {
-          const point = d3.select(this);
-          point.transition().duration(150).attr("r", TIME_CONFIG.point.radius);
+        },
+
+        // Mouse move handler for smooth tooltip following
+        mouseMove(this: any, event: MouseEvent, d: any) {
+          updatePosition(event.pageX, event.pageY);
+        },
+
+        // Mouse leave handler
+        mouseLeave(this: any, event: MouseEvent, d: any) {
+          const node = d3.select(this);
+          const originalWidth =
+            d.hasRealTime && Array.isArray(d.realTime)
+              ? Math.max(
+                  xScale(d.realTime[1]) -
+                    xScale(d.realTime[0]) +
+                    TIME_CONFIG.point.radius * 2,
+                  TIME_CONFIG.point.radius * 2
+                )
+              : TIME_CONFIG.point.radius * 2;
+
+          // Calculate proper x position to maintain center alignment
+          const hoverX = parseFloat(node.attr("x"));
+          const hoverWidth = parseFloat(node.attr("width"));
+          const centerX = hoverX + hoverWidth / 2;
+          const newX = centerX - originalWidth / 2;
+
+          node
+            .transition()
+            .duration(150)
+            .attr("height", TIME_CONFIG.point.radius * 2)
+            .attr("width", originalWidth)
+            .attr("x", newX)
+            .attr("y", yScale(d.narrativeTime) - TIME_CONFIG.point.radius)
+            .attr("rx", TIME_CONFIG.point.radius)
+            .attr("ry", TIME_CONFIG.point.radius);
 
           if (d.hasRealTime) {
             const label = labelsGroup.select(`.label-container-${d.index}`);
@@ -268,14 +321,72 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
           }
 
           hideTooltip();
-        })
-        .on("click", function (_, d) {
+        },
+
+        // Click handler
+        click(this: any, event: MouseEvent, d: any) {
           setSelectedEventId(
             d.event.index === selectedEventId ? null : d.event.index
           );
-        });
+        },
+      };
+
+      pointsGroup
+        .selectAll(".point")
+        .data(dataPoints)
+        .enter()
+        .append("rect")
+        .attr("class", (d) => `point point-${d.index}`)
+        .attr("x", (d) => {
+          if (d.hasRealTime) {
+            if (Array.isArray(d.realTime)) {
+              // For date ranges: Position at the start date
+              return xScale(d.realTime[0]) - TIME_CONFIG.point.radius;
+            }
+            // For single date: Center the rectangle on the point
+            return xScale(d.realTime!) - TIME_CONFIG.point.radius;
+          }
+          // For no dates: Center the rectangle on the publish line
+          return publishX - TIME_CONFIG.point.radius;
+        })
+        .attr("y", (d) => yScale(d.narrativeTime) - TIME_CONFIG.point.radius)
+        .attr("width", (d) => {
+          if (d.hasRealTime && Array.isArray(d.realTime)) {
+            // For date ranges: Calculate width + add radius on both ends to create circular caps
+            return Math.max(
+              xScale(d.realTime[1]) -
+                xScale(d.realTime[0]) +
+                TIME_CONFIG.point.radius * 2,
+              TIME_CONFIG.point.radius * 2 // Minimum size
+            );
+          }
+          // For single dates or no dates, use constant size
+          return TIME_CONFIG.point.radius * 2;
+        })
+        .attr("height", TIME_CONFIG.point.radius * 2)
+        .attr("rx", TIME_CONFIG.point.radius)
+        .attr("ry", TIME_CONFIG.point.radius)
+        .attr("fill", (d) =>
+          getSentimentColor(d.event.topic.sentiment.polarity)
+        )
+        .attr("stroke", "black")
+        .attr("stroke-width", TIME_CONFIG.point.strokeWidth)
+        .attr("stroke-dasharray", (d) => (d.hasRealTime ? "none" : "2,2"))
+        .style("cursor", "pointer")
+        .attr("data-event-index", (d) => d.event.index)
+        .attr("data-has-real-time", (d) => d.hasRealTime)
+        .on("mouseenter", handleNodeInteraction.mouseEnter)
+        .on("mousemove", handleNodeInteraction.mouseMove)
+        .on("mouseleave", handleNodeInteraction.mouseLeave)
+        .on("click", handleNodeInteraction.click);
     },
-    [selectedEventId, setSelectedEventId, showTooltip, hideTooltip]
+    [
+      selectedEventId,
+      setSelectedEventId,
+      showTooltip,
+      hideTooltip,
+      updatePosition,
+    ]
   );
 
   // Function to update the visualization
@@ -386,7 +497,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     // Create line generator
     const smoothLine = createLineGenerator(xScale, yScale);
 
-    // Add main line
+    // Add main line connecting to the right edge of rectangles
     g.append("g")
       .attr("class", "line-group")
       .append("path")

@@ -180,5 +180,10 @@ export function getXPosition(
   date: Date | [Date, Date] | null
 ): number {
   if (!date) return 0;
-  return xScale(getDateFromRange(date));
+  // For date ranges, use the end date (right edge) for connections
+  if (Array.isArray(date)) {
+    return xScale(date[1]); // Return position of the end date without radius adjustment
+    // (radius adjustment happens in the main component)
+  }
+  return xScale(date);
 }
