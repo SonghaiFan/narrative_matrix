@@ -4,7 +4,7 @@ import { Entity, NarrativeEvent } from "@/types/narrative/lite";
 import { useEffect, useRef, useState } from "react";
 import { formatDate } from "@/lib/utils";
 import { TooltipPosition, VisualizationType } from "@/contexts/tooltip-context";
-import { getSentimentColor } from "@/components/shared/color-utils";
+import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
 
 interface NarrativeTooltipProps {
   event: NarrativeEvent | null;

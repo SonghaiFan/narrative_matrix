@@ -8,7 +8,7 @@ import {
 import { useMemo, useRef, useEffect, useState, useCallback } from "react";
 import { PURE_TEXT_CONFIG } from "./pure-text-config";
 import { useCenterControl } from "@/contexts/center-control-context";
-import { SHARED_CONFIG } from "@/components/shared/visualization-config";
+import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
 import { PureTextSearch } from "./pure-text-search";
 import {
   ArticleLayout,

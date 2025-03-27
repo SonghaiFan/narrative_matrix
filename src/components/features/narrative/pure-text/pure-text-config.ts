@@ -1,5 +1,5 @@
 import { merge } from "lodash";
-import { SHARED_CONFIG } from "@/components/shared/visualization-config";
+import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
 
 // Merge with SHARED_CONFIG but don't override header settings
 export const PURE_TEXT_CONFIG = merge({}, SHARED_CONFIG, {

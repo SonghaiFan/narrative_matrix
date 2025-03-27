@@ -4,8 +4,8 @@ import * as d3 from "d3";
 import {
   createTimeScale,
   generateTimeTicks,
-} from "@/components/shared/visualization-utils";
-import { SHARED_CONFIG } from "@/components/shared/visualization-config";
+} from "@/components/features/narrative/shared/visualization-utils";
+import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
 
 export interface DataPoint {
   event: NarrativeEvent;

@@ -4,8 +4,8 @@ import { TOPIC_CONFIG } from "./topic-config";
 import {
   createTimeScale,
   generateTimeTicks,
-} from "@/components/shared/visualization-utils";
-import { SHARED_CONFIG } from "@/components/shared/visualization-config";
+} from "@/components/features/narrative/shared/visualization-utils";
+import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
 
 export interface DataPoint {
   event: NarrativeEvent;
@@ -121,19 +121,31 @@ export function calculateDimensions(
   containerWidth: number,
   containerHeight: number
 ) {
-  // Calculate usable dimensions
+  const { responsive } = SHARED_CONFIG;
+
+  // Ensure container dimensions are within bounds
+  const boundedWidth = Math.min(
+    Math.max(containerWidth, responsive.container.minWidth),
+    responsive.container.maxWidth
+  );
+  const boundedHeight = Math.min(
+    Math.max(containerHeight, responsive.container.minHeight),
+    responsive.container.maxHeight
+  );
+
+  // Calculate usable dimensions accounting for margins
   const width = Math.max(
     0,
-    containerWidth - TOPIC_CONFIG.margin.left - TOPIC_CONFIG.margin.right
+    boundedWidth - TOPIC_CONFIG.margin.left - TOPIC_CONFIG.margin.right
   );
   const height = Math.max(
     0,
-    containerHeight - TOPIC_CONFIG.margin.top - TOPIC_CONFIG.margin.bottom
+    boundedHeight - TOPIC_CONFIG.margin.top - TOPIC_CONFIG.margin.bottom
   );
 
   return {
-    containerWidth,
-    containerHeight,
+    containerWidth: boundedWidth,
+    containerHeight: boundedHeight,
     width,
     height,
   };

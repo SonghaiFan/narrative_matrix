@@ -1,5 +1,5 @@
 import { merge } from "lodash";
-import { SHARED_CONFIG } from "@/components/shared/visualization-config";
+import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
 
 export const TIME_CONFIG = merge({}, SHARED_CONFIG, {
   axis: {

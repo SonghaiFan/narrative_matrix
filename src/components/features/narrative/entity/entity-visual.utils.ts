@@ -104,7 +104,7 @@ export function getEntityMentions(
   return entityMentions;
 }
 
-// Get top 10 entities by mention count
+// Get top entities by mention count
 export function getVisibleEntities(
   entityMentions: Map<string, EntityMention>
 ): Entity[] {
@@ -113,33 +113,27 @@ export function getVisibleEntities(
     return [];
   }
 
-  return Array.from(entityMentions.values())
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 10)
-    .map((item) => item.entity);
+  return (
+    Array.from(entityMentions.values())
+      .sort((a, b) => b.count - a.count)
+      // .slice(0, 10)
+      .map((item) => item.entity)
+  );
 }
 
 // Calculate column layout dimensions
-export function calculateColumnLayout(
-  width: number,
-  visibleEntities: Entity[]
-) {
-  const columnGap = ENTITY_CONFIG.entity.columnGap;
-  const columnWidth = ENTITY_CONFIG.entity.columnWidth; // Use fixed width
-  const totalGapWidth = (visibleEntities.length - 1) * columnGap;
+export function calculateColumnLayout(width: number, entities: Entity[]) {
+  const { entity } = ENTITY_CONFIG;
 
-  // Calculate total width including gaps
+  // Calculate total width needed for all entities
   const totalColumnsWidth =
-    columnWidth * visibleEntities.length + totalGapWidth;
-
-  // Center the visualization
-  const leftOffset =
-    ENTITY_CONFIG.margin.left + (width - totalColumnsWidth) / 2;
+    entities.length * entity.columnWidth +
+    (entities.length - 1) * entity.columnGap;
 
   return {
-    columnWidth,
     totalColumnsWidth,
-    leftOffset,
+    columnWidth: entity.columnWidth,
+    columnGap: entity.columnGap,
   };
 }
 

@@ -20,7 +20,7 @@ import {
 import {
   getSentimentColor,
   getHighlightColor,
-} from "@/components/shared/color-utils";
+} from "@/components/features/narrative/shared/color-utils";
 
 interface TimeVisualProps {
   events: NarrativeEvent[];
@@ -386,44 +386,31 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         );
       });
 
-    // Apply initial highlighting for selected event
-    if (selectedEventId !== null && selectedEventId !== undefined) {
-      updateSelectedEventStyles(selectedEventId);
-    }
-  }, [
-    events,
-    showTooltip,
-    hideTooltip,
-    updatePosition,
-    setSelectedEventId,
-    updateSelectedEventStyles,
-  ]);
+    // Do NOT reapply selection here - it will be handled by the separate effect
+  }, [events, metadata.publishDate]);
 
-  // Effect to handle selectedEventId changes without full re-render
+  // Keep selection handling in a separate effect
   useEffect(() => {
-    if (svgRef.current) {
-      updateSelectedEventStyles(selectedEventId || null);
+    if (svgRef.current && selectedEventId !== undefined) {
+      updateSelectedEventStyles(selectedEventId);
     }
   }, [selectedEventId, updateSelectedEventStyles]);
 
-  // Initial setup and cleanup
+  // Initial setup and cleanup with resize observer
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Create ResizeObserver
     const resizeObserver = new ResizeObserver(() => {
-      // Use requestAnimationFrame to throttle updates
-      window.requestAnimationFrame(updateVisualization);
+      window.requestAnimationFrame(() => {
+        updateVisualization();
+      });
     });
 
-    // Start observing
     resizeObserver.observe(containerRef.current);
     resizeObserverRef.current = resizeObserver;
 
-    // Initial render
     updateVisualization();
 
-    // Cleanup
     return () => {
       if (resizeObserverRef.current) {
         resizeObserverRef.current.disconnect();

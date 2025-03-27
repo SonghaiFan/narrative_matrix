@@ -20,7 +20,7 @@ import {
 import {
   getSentimentColor,
   getHighlightColor,
-} from "@/components/shared/color-utils";
+} from "@/components/features/narrative/shared/color-utils";
 
 export interface EntityVisualProps {
   events: NarrativeEvent[];
@@ -130,10 +130,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
     const allEntities = getVisibleEntities(entityMentions);
 
     // Calculate layout dimensions for all entities
-    const { totalColumnsWidth, leftOffset } = calculateColumnLayout(
-      width,
-      allEntities
-    );
+    const { totalColumnsWidth } = calculateColumnLayout(width, allEntities);
 
     // Create scales
     const xScale = createXScale(allEntities, totalColumnsWidth);
@@ -157,11 +154,11 @@ export function EntityVisual({ events }: EntityVisualProps) {
       .style("top", "0")
       .style("z-index", "10");
 
-    // Create header content container with centered alignment
+    // Create header content container with proper margin
     const headerContent = headerContainer
       .append("div")
       .style("position", "relative")
-      .style("margin-left", `${leftOffset}px`)
+      .style("margin-left", `${ENTITY_CONFIG.margin.left}px`)
       .style("width", `${totalColumnsWidth}px`);
 
     // Create entity labels in the fixed header
@@ -204,18 +201,24 @@ export function EntityVisual({ events }: EntityVisualProps) {
         .text(entity.name);
     });
 
-    // Create SVG with horizontal scroll
+    // Create SVG with proper dimensions
     const svg = d3
       .select(svgRef.current)
-      .attr("width", "100%")
-      .attr("height", containerHeight);
+      .attr(
+        "width",
+        totalColumnsWidth +
+          ENTITY_CONFIG.margin.left +
+          ENTITY_CONFIG.margin.right
+      )
+      .attr("height", containerHeight)
+      .style("overflow", "visible");
 
-    // Create main group with centered alignment
+    // Create main group with proper margin
     const g = svg
       .append("g")
       .attr(
         "transform",
-        `translate(${leftOffset},${ENTITY_CONFIG.margin.top})`
+        `translate(${ENTITY_CONFIG.margin.left},${ENTITY_CONFIG.margin.top})`
       );
 
     // Add horizontal guide line (hidden by default)
@@ -224,12 +227,12 @@ export function EntityVisual({ events }: EntityVisualProps) {
       .attr("class", "guide-lines")
       .style("display", "none");
 
-    // Add horizontal guide line
+    // Add horizontal guide line with proper width
     guideLine
       .append("line")
       .attr("class", "guide-line horizontal")
-      .attr("x1", -leftOffset)
-      .attr("x2", totalColumnsWidth + ENTITY_CONFIG.margin.right)
+      .attr("x1", 0)
+      .attr("x2", totalColumnsWidth)
       .attr("stroke", "#3b82f6")
       .attr("stroke-width", 2);
 
@@ -404,53 +407,41 @@ export function EntityVisual({ events }: EntityVisualProps) {
       }
     });
 
-    // Apply initial highlighting for selected event
-    if (selectedEventId !== null && selectedEventId !== undefined) {
-      updateSelectedEventStyles(selectedEventId);
-    }
+    // Do NOT reapply selection here - it will be handled by the separate effect
   }, [events, showTooltip, hideTooltip, updatePosition, setSelectedEventId]);
 
-  // Initial setup and cleanup
+  // Keep selection handling in a separate effect
+  useEffect(() => {
+    if (svgRef.current && selectedEventId !== undefined) {
+      updateSelectedEventStyles(selectedEventId);
+    }
+  }, [selectedEventId, updateSelectedEventStyles]);
+
+  // Initial setup and cleanup with resize observer
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Create ResizeObserver to detect both width and height changes
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         if (entry.target === containerRef.current) {
-          // Use requestAnimationFrame to throttle updates
           window.requestAnimationFrame(() => {
-            // Force a complete redraw when container size changes
             updateVisualization();
           });
         }
       }
     });
 
-    // Start observing
     resizeObserver.observe(containerRef.current);
     resizeObserverRef.current = resizeObserver;
 
-    // Initial render
     updateVisualization();
 
-    // Cleanup
     return () => {
       if (resizeObserverRef.current) {
         resizeObserverRef.current.disconnect();
       }
     };
   }, [updateVisualization]);
-
-  // Keep the separate effect for selectedEventId changes
-  useEffect(() => {
-    if (svgRef.current) {
-      // Use setTimeout to ensure this runs after the visualization is fully rendered
-      setTimeout(() => {
-        updateSelectedEventStyles(selectedEventId ?? null);
-      }, 0);
-    }
-  }, [selectedEventId, updateSelectedEventStyles]);
 
   return (
     <div className="w-full h-full flex flex-col overflow-auto">
@@ -460,8 +451,8 @@ export function EntityVisual({ events }: EntityVisualProps) {
           style={{ height: `${ENTITY_CONFIG.header.height}px` }}
         />
       </div>
-      <div ref={containerRef} className="flex-1 relative ">
-        <svg ref={svgRef} className="h-full" />
+      <div ref={containerRef} className="flex-1 relative">
+        <svg ref={svgRef} className="h-full w-auto" />
       </div>
     </div>
   );

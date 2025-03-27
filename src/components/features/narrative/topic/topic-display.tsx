@@ -1,7 +1,7 @@
 "use client";
 
 import { NarrativeEvent } from "@/types/narrative/lite";
-import { VisualizationDisplay } from "@/components/shared/visualization-display";
+import { VisualizationDisplay } from "@/components/features/narrative/shared/visualization-display";
 import { NarrativeTopicVisual } from "./topic-visual";
 import { useState } from "react";
 import {
@@ -11,8 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select/select";
-import { SHARED_CONFIG } from "@/components/shared/visualization-config";
-import { getSentimentColor } from "@/components/shared/color-utils";
+import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
+import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
 
 interface TopicDisplayProps {
   events: NarrativeEvent[];

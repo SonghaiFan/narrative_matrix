@@ -9,7 +9,7 @@ import { useCenterControl } from "@/contexts/center-control-context";
 import {
   getSentimentColor,
   getHighlightColor,
-} from "@/components/shared/color-utils";
+} from "@/components/features/narrative/shared/color-utils";
 import {
   processEvents,
   getTopicCounts,
@@ -158,6 +158,9 @@ export function NarrativeTopicVisual({
       !headerRef.current
     )
       return;
+
+    // Store current expanded states before clearing
+    const currentExpandedStates = new Map(pointStatesRef.current);
 
     // Clear previous content
     d3.select(svgRef.current).selectAll("*").remove();
@@ -702,61 +705,68 @@ export function NarrativeTopicVisual({
       .on("mousemove", handleNodeInteraction.mouseMove)
       .on("click", handleNodeInteraction.childClick);
 
-    // After visualization is complete, apply any selected event styling
-    if (selectedEventId !== null && selectedEventId !== undefined) {
-      // Use setTimeout to ensure this runs after the visualization is fully rendered
-      setTimeout(() => {
-        updateSelectedEventStyles(selectedEventId);
-      }, 0);
-    }
-  }, [
-    events,
-    getParentNodeId,
-    getChildNodeId,
-    viewMode,
-    showTooltip,
-    hideTooltip,
-    updatePosition,
-  ]);
+    // After visualization is complete, restore expanded states
+    currentExpandedStates.forEach((state, key) => {
+      if (state.isExpanded) {
+        const parentNode = d3.select(`#${getParentNodeId(key)}`);
+        if (!parentNode.empty()) {
+          const parent = parentNode.datum() as GroupedPoint;
+          parent.isExpanded = true;
+          pointStatesRef.current.set(key, state);
 
-  // Initial setup and cleanup
+          // Restore expanded state visually
+          const parentCircle = parentNode.select("circle");
+          const countText = parentNode.select("text");
+          const children = parentNode.selectAll(".child-point");
+
+          parentCircle
+            .attr("r", TOPIC_CONFIG.point.radius * 0.8)
+            .style("opacity", 0.5);
+
+          if (countText.node()) {
+            countText.style("opacity", 0);
+          }
+
+          children.style("opacity", 1).style("pointer-events", "all");
+        }
+      }
+    });
+
+    // Do NOT reapply selection here - it will be handled by the separate effect
+  }, [events, getParentNodeId, viewMode]);
+
+  // Keep selection handling in a separate effect
+  useEffect(() => {
+    if (svgRef.current && selectedEventId !== undefined) {
+      updateSelectedEventStyles(selectedEventId);
+    }
+  }, [selectedEventId, updateSelectedEventStyles]);
+
+  // Initial setup and cleanup with resize observer
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Create ResizeObserver to detect both width and height changes
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         if (entry.target === containerRef.current) {
-          // Use requestAnimationFrame to throttle updates
           window.requestAnimationFrame(() => {
-            // Force a complete redraw when container size changes
             updateVisualization();
           });
         }
       }
     });
 
-    // Start observing
     resizeObserver.observe(containerRef.current);
     resizeObserverRef.current = resizeObserver;
 
-    // Initial render
     updateVisualization();
 
-    // Cleanup
     return () => {
       if (resizeObserverRef.current) {
         resizeObserverRef.current.disconnect();
       }
     };
   }, [updateVisualization]);
-
-  // Keep the separate effect for selectedEventId changes
-  useEffect(() => {
-    if (svgRef.current) {
-      updateSelectedEventStyles(selectedEventId ?? null);
-    }
-  }, [selectedEventId, updateSelectedEventStyles]);
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -766,12 +776,25 @@ export function NarrativeTopicVisual({
           style={{ height: `${TOPIC_CONFIG.header.height}px` }}
         />
       </div>
-      <div ref={containerRef} className="flex-1 relative">
+      <div
+        ref={containerRef}
+        className="flex-1 relative"
+        style={{
+          overflowX: "hidden",
+          overflowY: "scroll", // Always show vertical scrollbar
+          scrollbarGutter: "stable", // Reserves space for the scrollbar
+        }}
+      >
         <svg
           ref={svgRef}
-          className="w-full h-full"
-          style={{ display: "block" }}
-          preserveAspectRatio="xMinYMin meet"
+          className="absolute inset-0"
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "block",
+            overflow: "visible",
+            minWidth: "100%", // Ensures scrollbar shows even when content fits
+          }}
         />
       </div>
     </div>

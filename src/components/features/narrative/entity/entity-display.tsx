@@ -2,7 +2,7 @@
 
 import { NarrativeEvent } from "@/types/narrative/lite";
 import { useState, useCallback, useEffect, useMemo } from "react";
-import { VisualizationDisplay } from "../../../shared/visualization-display";
+import { VisualizationDisplay } from "../shared/visualization-display";
 import { EntityVisual } from "./entity-visual";
 import {
   Select,
@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select/select";
-import { SHARED_CONFIG } from "../../../shared/visualization-config";
+import { SHARED_CONFIG } from "../shared/visualization-config";
 
 // Helper function to format attribute labels
 const formatAttributeLabel = (attr: string): string => {
