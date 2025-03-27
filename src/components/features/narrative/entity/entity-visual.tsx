@@ -43,13 +43,13 @@ export function EntityVisual({ events }: EntityVisualProps) {
       // Reset all nodes to default style
       d3.select(svgRef.current)
         .selectAll(".event-node")
-        .each(function () {
-          const node = d3.select(this);
-          node.attr("stroke", "black");
-        });
+        .attr("stroke", "black");
 
       // Get guide lines group
       const guideLine = d3.select(svgRef.current).select(".guide-lines");
+
+      // Hide guide line by default
+      guideLine.style("display", "none");
 
       // If we have a selected event, highlight it and show guide line
       if (newSelectedId !== null) {
@@ -86,20 +86,13 @@ export function EntityVisual({ events }: EntityVisualProps) {
             .attr("y1", y)
             .attr("y2", y);
 
-          // Store the first selected node in the ref
+          // Store the selected node in the ref and scroll into view
           selectedNodeRef.current = node;
-
-          // Scroll the selected node into view
-          if (selectedNodeRef.current) {
-            selectedNodeRef.current.scrollIntoView({
-              behavior: "smooth",
-              block: "center",
-            });
-          }
+          selectedNodeRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
         }
-      } else {
-        // Hide guide line when no node is selected
-        guideLine.style("display", "none");
       }
     },
     []
@@ -123,7 +116,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
     d3.select(headerRef.current).selectAll("*").remove();
 
     // Setup dimensions first
-    const { width, containerHeight, height } = calculateDimensions(
+    const { containerHeight, height } = calculateDimensions(
       containerRef.current.clientWidth,
       events.length
     );
@@ -144,21 +137,14 @@ export function EntityVisual({ events }: EntityVisualProps) {
     const yAxis = createYAxis(yScale);
 
     // Create fixed header for entity labels
+    const headerWidth =
+      totalColumnsWidth +
+      ENTITY_CONFIG.margin.left +
+      ENTITY_CONFIG.margin.right;
+
     const headerContainer = d3
       .select(headerRef.current)
-      .style(
-        "width",
-        `${
-          totalColumnsWidth +
-          ENTITY_CONFIG.margin.left +
-          ENTITY_CONFIG.margin.right
-        }px`
-      )
-      .style("margin-left", "0")
-      .style("background-color", "white")
-      .style("position", "sticky")
-      .style("top", "0")
-      .style("z-index", "10");
+      .style("width", `${headerWidth}px`);
 
     // Create header content container with proper margin
     const headerContent = headerContainer
@@ -169,21 +155,23 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
     // Create entity labels in the fixed header
     allEntities.forEach((entity) => {
-      const x = xScale(entity.id)!;
+      const x = xScale(entity.id)! + xScale.bandwidth() / 2;
+      const entitySlug = entity.id.replace(/\s+/g, "-");
+
       const labelContainer = headerContent
         .append("div")
         .style("position", "absolute")
-        .style("left", `${x + xScale.bandwidth() / 2}px`)
+        .style("left", `${x}px`)
         .style("transform", "translateX(-50%)")
         .style("cursor", "pointer")
         .style("max-width", `${xScale.bandwidth()}px`)
-        .on("mouseenter", function () {
-          g.select(`.guide-line-${entity.id.replace(/\s+/g, "-")}`)
+        .on("mouseenter", () => {
+          g.select(`.guide-line-${entitySlug}`)
             .attr("opacity", 0.8)
             .attr("stroke-width", ENTITY_CONFIG.entity.lineStrokeWidth);
         })
-        .on("mouseleave", function () {
-          g.select(`.guide-line-${entity.id.replace(/\s+/g, "-")}`)
+        .on("mouseleave", () => {
+          g.select(`.guide-line-${entitySlug}`)
             .attr("opacity", 0.3)
             .attr("stroke-width", ENTITY_CONFIG.entity.lineStrokeWidth);
         });
@@ -210,12 +198,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
     // Create SVG with proper dimensions
     const svg = d3
       .select(svgRef.current)
-      .attr(
-        "width",
-        totalColumnsWidth +
-          ENTITY_CONFIG.margin.left +
-          ENTITY_CONFIG.margin.right
-      )
+      .attr("width", headerWidth)
       .attr("height", containerHeight)
       .style("overflow", "visible");
 
@@ -244,16 +227,16 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
     // Draw entity columns
     allEntities.forEach((entity) => {
-      const x = xScale(entity.id)!;
-      const entityColor = "#94a3b8";
+      const x = xScale(entity.id)! + xScale.bandwidth() / 2;
+      const entitySlug = entity.id.replace(/\s+/g, "-");
 
       g.append("line")
-        .attr("class", `guide-line-${entity.id.replace(/\s+/g, "-")}`)
-        .attr("x1", x + xScale.bandwidth() / 2)
+        .attr("class", `guide-line-${entitySlug}`)
+        .attr("x1", x)
         .attr("y1", 0)
-        .attr("x2", x + xScale.bandwidth() / 2)
+        .attr("x2", x)
         .attr("y2", height)
-        .attr("stroke", entityColor)
+        .attr("stroke", "#94a3b8")
         .attr("stroke-width", ENTITY_CONFIG.entity.lineStrokeWidth)
         .attr("opacity", 0.3);
     });
@@ -274,6 +257,59 @@ export function EntityVisual({ events }: EntityVisualProps) {
       .attr("text-anchor", "middle")
       .text("Narrative Time");
 
+    // Helper function to create event node with event handlers
+    const createEventNode = (
+      parent: d3.Selection<any, unknown, null, undefined>,
+      cx: number,
+      cy: number,
+      event: NarrativeEvent,
+      isConnector = false
+    ) => {
+      const node = parent
+        .append("circle")
+        .attr("class", "event-node")
+        .attr("data-event-index", event.index)
+        .attr("cx", cx)
+        .attr("cy", cy)
+        .attr("r", ENTITY_CONFIG.event.nodeRadius)
+        .attr("fill", getSentimentColor(event.topic.sentiment.polarity))
+        .attr(
+          "stroke",
+          selectedEventId === event.index ? getHighlightColor() : "black"
+        )
+        .attr("stroke-width", ENTITY_CONFIG.event.nodeStrokeWidth)
+        .style("cursor", "pointer");
+
+      // Add event handlers
+      node
+        .on("mouseenter", function (this: SVGCircleElement, e: MouseEvent) {
+          d3.select(this)
+            .transition()
+            .duration(200)
+            .attr("r", ENTITY_CONFIG.event.nodeRadius * 1.5);
+
+          showTooltip(event, e.pageX, e.pageY, "entity");
+          updatePosition(e.pageX, e.pageY);
+        })
+        .on("mousemove", function (e: MouseEvent) {
+          updatePosition(e.pageX, e.pageY);
+        })
+        .on("mouseleave", function (this: SVGCircleElement) {
+          d3.select(this)
+            .transition()
+            .duration(200)
+            .attr("r", ENTITY_CONFIG.event.nodeRadius);
+          hideTooltip();
+        })
+        .on("click", function () {
+          setSelectedEventId(
+            selectedEventId === event.index ? null : event.index
+          );
+        });
+
+      return node;
+    };
+
     // Draw event nodes and connectors
     events.forEach((event) => {
       const y = yScale(event.temporal_anchoring.narrative_time);
@@ -284,49 +320,16 @@ export function EntityVisual({ events }: EntityVisualProps) {
         relevantEntities.hasNoVisibleEntities
       ) {
         // Draw a single dashed node for events with no entities or no visible entities
-        g.append("circle")
-          .attr("class", "event-node")
-          .attr("data-event-index", event.index)
-          .attr("cx", 0)
-          .attr("cy", y)
-          .attr("r", ENTITY_CONFIG.event.nodeRadius)
-          .attr("fill", getSentimentColor(event.topic.sentiment.polarity))
+        createEventNode(g, 0, y, event)
           .attr(
             "stroke",
             relevantEntities.hasNoEntities ? "#94a3b8" : "#64748b"
           )
-          .attr("stroke-width", ENTITY_CONFIG.event.nodeStrokeWidth)
-          .attr("stroke-dasharray", "3,3")
-          .style("cursor", "pointer")
-          .on("mouseenter", function (e) {
-            d3.select(this)
-              .transition()
-              .duration(200)
-              .attr("r", ENTITY_CONFIG.event.nodeRadius * 1.5);
-
-            showTooltip(event, e.pageX, e.pageY, "entity");
-            updatePosition(e.pageX, e.pageY);
-          })
-          .on("mousemove", function (e) {
-            updatePosition(e.pageX, e.pageY);
-          })
-          .on("mouseleave", function () {
-            d3.select(this)
-              .transition()
-              .duration(200)
-              .attr("r", ENTITY_CONFIG.event.nodeRadius);
-            hideTooltip();
-          })
-          .on("click", function () {
-            setSelectedEventId(
-              selectedEventId === event.index ? null : event.index
-            );
-          });
+          .attr("stroke-dasharray", "3,3");
       } else if (relevantEntities.entities.length > 0) {
         const connectorPoints = calculateConnectorPoints(
           relevantEntities.entities,
-          xScale,
-          "name"
+          xScale
         );
 
         if (connectorPoints.length > 0) {
@@ -367,47 +370,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
           // Draw nodes on top of the connector
           connectorPoints.forEach((point) => {
-            const node = connectorGroup
-              .append("circle")
-              .attr("class", "event-node")
-              .attr("data-event-index", event.index)
-              .attr("cx", point.x)
-              .attr("cy", 0)
-              .attr("r", ENTITY_CONFIG.event.nodeRadius)
-              .attr("fill", getSentimentColor(event.topic.sentiment.polarity))
-              .attr(
-                "stroke",
-                selectedEventId === event.index ? getHighlightColor() : "black"
-              )
-              .attr("stroke-width", ENTITY_CONFIG.event.nodeStrokeWidth)
-              .style("cursor", "pointer");
-
-            // Add event handlers
-            node
-              .on("mouseenter", function (e) {
-                d3.select(this)
-                  .transition()
-                  .duration(200)
-                  .attr("r", ENTITY_CONFIG.event.nodeRadius * 1.5);
-
-                showTooltip(event, e.pageX, e.pageY, "entity");
-                updatePosition(e.pageX, e.pageY);
-              })
-              .on("mousemove", function (e) {
-                updatePosition(e.pageX, e.pageY);
-              })
-              .on("mouseleave", function () {
-                d3.select(this)
-                  .transition()
-                  .duration(200)
-                  .attr("r", ENTITY_CONFIG.event.nodeRadius);
-                hideTooltip();
-              })
-              .on("click", function () {
-                setSelectedEventId(
-                  selectedEventId === event.index ? null : event.index
-                );
-              });
+            createEventNode(connectorGroup, point.x, 0, event, true);
           });
         }
       }
@@ -438,14 +401,8 @@ export function EntityVisual({ events }: EntityVisualProps) {
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.target === containerRef.current) {
-          window.requestAnimationFrame(() => {
-            updateVisualization();
-          });
-        }
-      }
+    const resizeObserver = new ResizeObserver(() => {
+      window.requestAnimationFrame(updateVisualization);
     });
 
     resizeObserver.observe(containerRef.current);
@@ -461,16 +418,16 @@ export function EntityVisual({ events }: EntityVisualProps) {
   }, [updateVisualization]);
 
   return (
-    <div className="w-full h-full flex flex-col overflow-auto">
-      <div className="flex-none bg-white sticky top-0 z-10 shadow-sm ">
+    <>
+      <div className="flex-none bg-white sticky top-0 z-10 shadow-sm">
         <div
           ref={headerRef}
           style={{ height: `${ENTITY_CONFIG.header.height}px` }}
         />
       </div>
       <div ref={containerRef} className="flex-1 relative">
-        <svg ref={svgRef} className="h-full w-auto" />
+        <svg ref={svgRef} className="w-auto" />
       </div>
-    </div>
+    </>
   );
 }

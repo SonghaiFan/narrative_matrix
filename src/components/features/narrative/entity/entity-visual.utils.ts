@@ -262,8 +262,7 @@ export function getRelevantEntities(
 // Calculate connector line points for entities
 export function calculateConnectorPoints(
   relevantEntities: Entity[],
-  xScale: d3.ScaleBand<string>,
-  selectedAttribute: string
+  xScale: d3.ScaleBand<string>
 ) {
   if (!relevantEntities.length) return [];
 
