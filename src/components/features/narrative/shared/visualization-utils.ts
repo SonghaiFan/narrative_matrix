@@ -135,3 +135,22 @@ export function generateTimeTicks(startDate: Date, endDate: Date): Date[] {
   // Return empty array to ensure backward compatibility
   return [];
 }
+
+// Create y-axis with integer ticks for narrative time
+export function createNarrativeYAxis(yScale: d3.ScaleLinear<number, number>) {
+  return d3
+    .axisLeft(yScale)
+    .tickSize(5)
+    .tickPadding(5)
+    .ticks(Math.ceil(yScale.domain()[1]))
+    .tickFormat(d3.format("d"));
+}
+
+// Create x-axis for time scale
+export function createTimeXAxis(xScale: any, config: any) {
+  return d3
+    .axisTop(xScale)
+    .tickSize(config.axis.tickSize)
+    .tickPadding(config.axis.tickPadding)
+    .tickFormat(xScale.tickFormat());
+}

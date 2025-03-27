@@ -331,7 +331,15 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       .enter()
       .append("circle")
       .attr("class", (d) => `point point-${d.index}`)
-      .attr("cx", (d) => (d.hasRealTime ? xScale(d.realTime!) : publishX))
+      .attr("cx", (d) => {
+        if (d.hasRealTime) {
+          if (Array.isArray(d.realTime)) {
+            return xScale(d.realTime[0]);
+          }
+          return xScale(d.realTime!);
+        }
+        return publishX;
+      })
       .attr("cy", (d) => yScale(d.narrativeTime))
       .attr("r", TIME_CONFIG.point.radius)
       .attr("fill", (d) => getSentimentColor(d.event.topic.sentiment.polarity))

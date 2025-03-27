@@ -4,6 +4,7 @@ import { TOPIC_CONFIG } from "./topic-config";
 import {
   createTimeScale,
   generateTimeTicks,
+  createTimeXAxis,
 } from "@/components/features/narrative/shared/visualization-utils";
 import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
 
@@ -15,7 +16,7 @@ export interface DataPoint {
   sentiment: number;
   sentimentPolarity: "positive" | "negative" | "neutral";
   text: string;
-  realTime: Date;
+  realTime: Date | [Date, Date];
   index: number;
 }
 
@@ -48,7 +49,12 @@ export function processEvents(
     sentiment: event.topic.sentiment.intensity,
     sentimentPolarity: event.topic.sentiment.polarity,
     text: event.text,
-    realTime: new Date(event.temporal_anchoring.real_time!),
+    realTime: Array.isArray(event.temporal_anchoring.real_time)
+      ? ([
+          new Date(event.temporal_anchoring.real_time[0]),
+          new Date(event.temporal_anchoring.real_time[1]),
+        ] as [Date, Date])
+      : new Date(event.temporal_anchoring.real_time as string),
     index,
   }));
 }
@@ -110,7 +116,12 @@ export function getScales(
     .range([0, height])
     .padding(0.3);
 
-  const timeDomain = d3.extent(dataPoints, (d) => d.realTime) as [Date, Date];
+  const timeDomain = d3.extent(dataPoints, (d) => {
+    if (Array.isArray(d.realTime)) {
+      return d.realTime[0];
+    }
+    return d.realTime;
+  }) as [Date, Date];
   const xScale = createTimeScale(width, timeDomain);
 
   return { xScale, yScale };
@@ -156,12 +167,7 @@ export function createAxes(
   xScale: any, // Using any since we have a custom composite scale
   yScale: d3.ScaleBand<string>
 ) {
-  const xAxis = d3
-    .axisTop(xScale)
-    .tickSize(TOPIC_CONFIG.axis.tickSize)
-    .tickPadding(TOPIC_CONFIG.axis.tickPadding)
-    .tickFormat(xScale.tickFormat());
-
+  const xAxis = createTimeXAxis(xScale, TOPIC_CONFIG);
   const yAxis = d3.axisLeft(yScale).tickSize(5).tickPadding(5);
 
   return { xAxis, yAxis };

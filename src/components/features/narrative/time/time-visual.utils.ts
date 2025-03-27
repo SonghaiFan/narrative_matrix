@@ -4,12 +4,14 @@ import * as d3 from "d3";
 import {
   createTimeScale,
   generateTimeTicks,
+  createNarrativeYAxis,
+  createTimeXAxis,
 } from "@/components/features/narrative/shared/visualization-utils";
 import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
 
 export interface DataPoint {
   event: NarrativeEvent;
-  realTime: Date | null;
+  realTime: Date | [Date, Date] | null;
   narrativeTime: number;
   index: number;
   hasRealTime: boolean;
@@ -50,7 +52,14 @@ export function processEvents(events: NarrativeEvent[]): {
     .filter((e) => e.temporal_anchoring.real_time)
     .map((event, i) => ({
       event,
-      realTime: new Date(event.temporal_anchoring.real_time!),
+      realTime: event.temporal_anchoring.real_time
+        ? Array.isArray(event.temporal_anchoring.real_time)
+          ? ([
+              new Date(event.temporal_anchoring.real_time[0]),
+              new Date(event.temporal_anchoring.real_time[1]),
+            ] as [Date, Date])
+          : new Date(event.temporal_anchoring.real_time)
+        : null,
       narrativeTime: event.temporal_anchoring.narrative_time,
       index: i,
       hasRealTime: true,
@@ -79,7 +88,11 @@ export function getSortedPoints(dataPoints: DataPoint[]): DataPoint[] {
     .sort((a, b) => {
       const timeCompare = a.narrativeTime - b.narrativeTime;
       if (timeCompare !== 0) return timeCompare;
-      return a.realTime!.getTime() - b.realTime!.getTime();
+
+      // Handle both single date and date range
+      const aTime = Array.isArray(a.realTime) ? a.realTime[0] : a.realTime;
+      const bTime = Array.isArray(b.realTime) ? b.realTime[0] : b.realTime;
+      return aTime!.getTime() - bTime!.getTime();
     });
 }
 
@@ -91,7 +104,12 @@ export function getScales(
   currentTime?: Date
 ) {
   const timePoints = dataPoints.filter((d) => d.hasRealTime);
-  const timeDomain = d3.extent(timePoints, (d) => d.realTime) as [Date, Date];
+  const timeDomain = d3.extent(timePoints, (d) => {
+    if (Array.isArray(d.realTime)) {
+      return d.realTime[0];
+    }
+    return d.realTime;
+  }) as [Date, Date];
   const xScale = createTimeScale(width, timeDomain);
 
   const maxNarrativeTime = Math.max(...dataPoints.map((d) => d.narrativeTime));
@@ -114,16 +132,19 @@ export function createLabelData(
     .filter((d) => d.hasRealTime)
     .map((d, i) => {
       const displayText = d.event.short_text || d.event.text;
+      const xPos = Array.isArray(d.realTime)
+        ? xScale(d.realTime[0])
+        : xScale(d.realTime!);
       return {
         id: i,
-        x: xScale(d.realTime!),
+        x: xPos,
         y: yScale(d.narrativeTime) - 30,
         text:
           displayText.length > 30
             ? displayText.slice(0, 27) + "..."
             : displayText,
         point: {
-          x: xScale(d.realTime!),
+          x: xPos,
           y: yScale(d.narrativeTime),
         },
         width: 0,
@@ -197,17 +218,8 @@ export function createAxes(
   xScale: any, // Using any since we have a custom composite scale
   yScale: d3.ScaleLinear<number, number>
 ) {
-  const xAxis = d3
-    .axisTop(xScale)
-    .tickSize(TIME_CONFIG.axis.tickSize)
-    .tickPadding(TIME_CONFIG.axis.tickPadding)
-    .tickFormat(xScale.tickFormat());
-
-  const yAxis = d3
-    .axisLeft(yScale)
-    .tickSize(TIME_CONFIG.axis.tickSize)
-    .tickPadding(TIME_CONFIG.axis.tickPadding)
-    .tickFormat(d3.format("d"));
+  const xAxis = createTimeXAxis(xScale, TIME_CONFIG);
+  const yAxis = createNarrativeYAxis(yScale);
 
   return { xAxis, yAxis };
 }
@@ -220,7 +232,12 @@ export function createLineGenerator(
   return d3
     .line<DataPoint>()
     .defined((d) => d.hasRealTime)
-    .x((d) => xScale(d.realTime!))
+    .x((d) => {
+      if (Array.isArray(d.realTime)) {
+        return xScale(d.realTime[0]);
+      }
+      return xScale(d.realTime!);
+    })
     .y((d) => yScale(d.narrativeTime))
     .curve(d3.curveLinear);
 }

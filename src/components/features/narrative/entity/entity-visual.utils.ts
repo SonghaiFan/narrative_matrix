@@ -1,6 +1,7 @@
 import { Entity, NarrativeEvent } from "@/types/narrative/lite";
 import * as d3 from "d3";
 import { ENTITY_CONFIG } from "./entity-config";
+import { createNarrativeYAxis } from "@/components/features/narrative/shared/visualization-utils";
 
 export type EntityAttribute = string;
 
@@ -203,12 +204,7 @@ export function createYScale(events: NarrativeEvent[], height: number) {
 
 // Create y-axis with integer ticks
 export function createYAxis(yScale: d3.ScaleLinear<number, number>) {
-  return d3
-    .axisLeft(yScale)
-    .tickSize(5)
-    .tickPadding(5)
-    .ticks(Math.ceil(yScale.domain()[1]))
-    .tickFormat(d3.format("d"));
+  return createNarrativeYAxis(yScale);
 }
 
 // Filter relevant entities for an event
