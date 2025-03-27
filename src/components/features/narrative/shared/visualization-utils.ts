@@ -154,3 +154,31 @@ export function createTimeXAxis(xScale: any, config: any) {
     .tickPadding(config.axis.tickPadding)
     .tickFormat(xScale.tickFormat());
 }
+
+// Shared utility for getting date from date range or single date
+export function getDateFromRange(
+  date: Date | [Date, Date] | null
+): Date | null {
+  if (!date) return null;
+  return Array.isArray(date) ? date[0] : date;
+}
+
+// Shared utility for getting time domain from data points
+export function getTimeDomain<
+  T extends { realTime: Date | [Date, Date] | null }
+>(dataPoints: T[]): [Date, Date] {
+  const timePoints = dataPoints.filter((d) => d.realTime);
+  return d3.extent(timePoints, (d) => getDateFromRange(d.realTime)) as [
+    Date,
+    Date
+  ];
+}
+
+// Shared utility for getting x position from date range or single date
+export function getXPosition(
+  xScale: any,
+  date: Date | [Date, Date] | null
+): number {
+  if (!date) return 0;
+  return xScale(getDateFromRange(date));
+}

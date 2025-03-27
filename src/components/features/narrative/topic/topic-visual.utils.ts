@@ -5,6 +5,9 @@ import {
   createTimeScale,
   generateTimeTicks,
   createTimeXAxis,
+  getDateFromRange,
+  getTimeDomain,
+  getXPosition,
 } from "@/components/features/narrative/shared/visualization-utils";
 import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
 
@@ -106,9 +109,7 @@ export function getScales(
   dataPoints: DataPoint[],
   topTopics: string[],
   width: number,
-  height: number,
-  viewMode: "main" | "sub" = "main",
-  currentTime?: Date
+  height: number
 ) {
   const yScale = d3
     .scaleBand()
@@ -116,12 +117,7 @@ export function getScales(
     .range([0, height])
     .padding(0.3);
 
-  const timeDomain = d3.extent(dataPoints, (d) => {
-    if (Array.isArray(d.realTime)) {
-      return d.realTime[0];
-    }
-    return d.realTime;
-  }) as [Date, Date];
+  const timeDomain = getTimeDomain(dataPoints);
   const xScale = createTimeScale(width, timeDomain);
 
   return { xScale, yScale };
@@ -244,7 +240,7 @@ export function groupOverlappingPoints(
       : dataPoints;
 
   filteredDataPoints.forEach((point) => {
-    const x = xScale(point.realTime);
+    const x = getXPosition(xScale, point.realTime);
     const topic = viewMode === "main" ? point.mainTopic : point.subTopics[0]; // Only use first subtopic
 
     // Skip if topic is undefined or not in yScale domain (could happen if we filtered out some topics)

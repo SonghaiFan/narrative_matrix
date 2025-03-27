@@ -7,12 +7,9 @@ import { TIME_CONFIG } from "./time-config";
 import { useTooltip } from "@/contexts/tooltip-context";
 import { useCenterControl } from "@/contexts/center-control-context";
 import {
-  LabelDatum,
   processEvents,
   getSortedPoints,
   getScales,
-  createLabelData,
-  createForceSimulation,
   calculateDimensions,
   createAxes,
   createLineGenerator,
@@ -110,6 +107,9 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     )
       return;
 
+    // Store current selection before clearing
+    const currentSelection = selectedEventId;
+
     // Clear previous content
     d3.select(svgRef.current).selectAll("*").remove();
     d3.select(headerRef.current).selectAll("*").remove();
@@ -124,12 +124,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
 
     // Create scales
     const publishDate = new Date(metadata.publishDate);
-    const { xScale, yScale } = getScales(
-      dataPoints,
-      width,
-      height,
-      publishDate
-    );
+    const { xScale, yScale } = getScales(dataPoints, width, height);
 
     // Create fixed header for x-axis
     const headerContainer = d3
@@ -394,8 +389,11 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         );
       });
 
-    // Do NOT reapply selection here - it will be handled by the separate effect
-  }, [events, metadata.publishDate]);
+    // After visualization is complete, reapply selection if it exists
+    if (currentSelection !== null && currentSelection !== undefined) {
+      updateSelectedEventStyles(currentSelection);
+    }
+  }, [events, selectedEventId, updateSelectedEventStyles]);
 
   // Keep selection handling in a separate effect
   useEffect(() => {

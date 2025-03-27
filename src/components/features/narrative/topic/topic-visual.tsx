@@ -159,6 +159,9 @@ export function NarrativeTopicVisual({
     )
       return;
 
+    // Store current selection before clearing
+    const currentSelection = selectedEventId;
+
     // Store current expanded states before clearing
     const currentExpandedStates = new Map(pointStatesRef.current);
 
@@ -187,14 +190,7 @@ export function NarrativeTopicVisual({
 
     // Create scales with the actual available height
     const publishDate = new Date(metadata.publishDate);
-    const { xScale, yScale } = getScales(
-      dataPoints,
-      topTopics,
-      width,
-      height,
-      viewMode,
-      publishDate
-    );
+    const { xScale, yScale } = getScales(dataPoints, topTopics, width, height);
 
     // Create axes
     const { xAxis, yAxis } = createAxes(xScale, yScale);
@@ -732,8 +728,17 @@ export function NarrativeTopicVisual({
       }
     });
 
-    // Do NOT reapply selection here - it will be handled by the separate effect
-  }, [events, getParentNodeId, viewMode]);
+    // After visualization is complete, reapply selection if it exists
+    if (currentSelection !== null && currentSelection !== undefined) {
+      updateSelectedEventStyles(currentSelection);
+    }
+  }, [
+    events,
+    getParentNodeId,
+    viewMode,
+    selectedEventId,
+    updateSelectedEventStyles,
+  ]);
 
   // Keep selection handling in a separate effect
   useEffect(() => {

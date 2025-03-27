@@ -6,6 +6,9 @@ import {
   generateTimeTicks,
   createNarrativeYAxis,
   createTimeXAxis,
+  getDateFromRange,
+  getTimeDomain,
+  getXPosition,
 } from "@/components/features/narrative/shared/visualization-utils";
 import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
 
@@ -89,9 +92,8 @@ export function getSortedPoints(dataPoints: DataPoint[]): DataPoint[] {
       const timeCompare = a.narrativeTime - b.narrativeTime;
       if (timeCompare !== 0) return timeCompare;
 
-      // Handle both single date and date range
-      const aTime = Array.isArray(a.realTime) ? a.realTime[0] : a.realTime;
-      const bTime = Array.isArray(b.realTime) ? b.realTime[0] : b.realTime;
+      const aTime = getDateFromRange(a.realTime);
+      const bTime = getDateFromRange(b.realTime);
       return aTime!.getTime() - bTime!.getTime();
     });
 }
@@ -100,16 +102,10 @@ export function getSortedPoints(dataPoints: DataPoint[]): DataPoint[] {
 export function getScales(
   dataPoints: DataPoint[],
   width: number,
-  height: number,
-  currentTime?: Date
+  height: number
 ) {
   const timePoints = dataPoints.filter((d) => d.hasRealTime);
-  const timeDomain = d3.extent(timePoints, (d) => {
-    if (Array.isArray(d.realTime)) {
-      return d.realTime[0];
-    }
-    return d.realTime;
-  }) as [Date, Date];
+  const timeDomain = getTimeDomain(timePoints);
   const xScale = createTimeScale(width, timeDomain);
 
   const maxNarrativeTime = Math.max(...dataPoints.map((d) => d.narrativeTime));
@@ -120,76 +116,6 @@ export function getScales(
     .nice();
 
   return { xScale, yScale };
-}
-
-// Create label data for force layout (only for points with real time)
-export function createLabelData(
-  dataPoints: DataPoint[],
-  xScale: any, // Using any since we have a custom composite scale
-  yScale: d3.ScaleLinear<number, number>
-): LabelDatum[] {
-  return dataPoints
-    .filter((d) => d.hasRealTime)
-    .map((d, i) => {
-      const displayText = d.event.short_text || d.event.text;
-      const xPos = Array.isArray(d.realTime)
-        ? xScale(d.realTime[0])
-        : xScale(d.realTime!);
-      return {
-        id: i,
-        x: xPos,
-        y: yScale(d.narrativeTime) - 30,
-        text:
-          displayText.length > 30
-            ? displayText.slice(0, 27) + "..."
-            : displayText,
-        point: {
-          x: xPos,
-          y: yScale(d.narrativeTime),
-        },
-        width: 0,
-        height: 0,
-        fx: undefined,
-        fy: undefined,
-        index: d.index,
-      };
-    });
-}
-
-// Create force simulation for labels
-export function createForceSimulation(
-  labelData: LabelDatum[],
-  width: number,
-  height: number
-) {
-  return d3
-    .forceSimulation<LabelDatum>(labelData)
-    .force(
-      "collision",
-      d3
-        .forceCollide<LabelDatum>()
-        .radius((d) => Math.sqrt(d.width / 2 + d.height / 2))
-        .strength(0.5)
-    )
-    .force(
-      "y",
-      d3
-        .forceY<LabelDatum>()
-        .y((d) => d.point.y - 30)
-        .strength(0.15)
-    )
-    .force("boundary", () => {
-      for (let node of labelData) {
-        node.x = Math.max(
-          node.width / 2,
-          Math.min(width - node.width / 2, node.point.x)
-        );
-        node.y = Math.max(
-          node.height / 2 - 2,
-          Math.min(height - node.height / 2 + 2, node.y)
-        );
-      }
-    });
 }
 
 // Calculate dimensions based on container and config
@@ -232,12 +158,7 @@ export function createLineGenerator(
   return d3
     .line<DataPoint>()
     .defined((d) => d.hasRealTime)
-    .x((d) => {
-      if (Array.isArray(d.realTime)) {
-        return xScale(d.realTime[0]);
-      }
-      return xScale(d.realTime!);
-    })
+    .x((d) => getXPosition(xScale, d.realTime))
     .y((d) => yScale(d.narrativeTime))
     .curve(d3.curveLinear);
 }

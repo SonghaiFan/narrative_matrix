@@ -115,6 +115,9 @@ export function EntityVisual({ events }: EntityVisualProps) {
     )
       return;
 
+    // Store current selection before clearing
+    const currentSelection = selectedEventId;
+
     // Clear previous content
     d3.select(svgRef.current).selectAll("*").remove();
     d3.select(headerRef.current).selectAll("*").remove();
@@ -410,8 +413,19 @@ export function EntityVisual({ events }: EntityVisualProps) {
       }
     });
 
-    // Do NOT reapply selection here - it will be handled by the separate effect
-  }, [events, showTooltip, hideTooltip, updatePosition, setSelectedEventId]);
+    // After visualization is complete, reapply selection if it exists
+    if (currentSelection !== null && currentSelection !== undefined) {
+      updateSelectedEventStyles(currentSelection);
+    }
+  }, [
+    events,
+    showTooltip,
+    hideTooltip,
+    updatePosition,
+    setSelectedEventId,
+    selectedEventId,
+    updateSelectedEventStyles,
+  ]);
 
   // Keep selection handling in a separate effect
   useEffect(() => {
