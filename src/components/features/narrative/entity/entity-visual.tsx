@@ -130,7 +130,10 @@ export function EntityVisual({ events }: EntityVisualProps) {
     const allEntities = getVisibleEntities(entityMentions);
 
     // Calculate layout dimensions for all entities
-    const { totalColumnsWidth } = calculateColumnLayout(width, allEntities);
+    const { totalColumnsWidth } = calculateColumnLayout(
+      containerRef.current.clientWidth,
+      allEntities
+    );
 
     // Create scales
     const xScale = createXScale(allEntities, totalColumnsWidth);

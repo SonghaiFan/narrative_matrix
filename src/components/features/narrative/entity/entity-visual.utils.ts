@@ -125,15 +125,44 @@ export function getVisibleEntities(
 export function calculateColumnLayout(width: number, entities: Entity[]) {
   const { entity } = ENTITY_CONFIG;
 
-  // Calculate total width needed for all entities
-  const totalColumnsWidth =
-    entities.length * entity.columnWidth +
-    (entities.length - 1) * entity.columnGap;
+  // Calculate minimum width based on container
+  const minWidth =
+    width - ENTITY_CONFIG.margin.left - ENTITY_CONFIG.margin.right;
 
+  // Calculate base width with default config values
+  const baseColumnsWidth = entities.length * entity.columnWidth;
+  const baseGapWidth = (entities.length - 1) * entity.columnGap;
+  const baseTotalWidth = baseColumnsWidth + baseGapWidth;
+
+  // If we have no entities, return minimum width
+  if (entities.length === 0) {
+    return {
+      totalColumnsWidth: minWidth,
+      columnWidth: entity.columnWidth,
+      columnGap: entity.columnGap,
+      columnPadding: entity.columnPadding,
+    };
+  }
+
+  // If base width is less than minimum width, adjust gap to fill space
+  if (baseTotalWidth < minWidth) {
+    const extraSpace = minWidth - baseColumnsWidth;
+    const newGap = extraSpace / (entities.length - 1 || 1);
+
+    return {
+      totalColumnsWidth: minWidth,
+      columnWidth: entity.columnWidth,
+      columnGap: newGap,
+      columnPadding: entity.columnPadding,
+    };
+  }
+
+  // If base width is greater than minimum width, use default values
   return {
-    totalColumnsWidth,
+    totalColumnsWidth: baseTotalWidth,
     columnWidth: entity.columnWidth,
     columnGap: entity.columnGap,
+    columnPadding: entity.columnPadding,
   };
 }
 
