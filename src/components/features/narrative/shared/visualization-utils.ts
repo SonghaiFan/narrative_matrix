@@ -56,7 +56,7 @@ export function createTimeScale(width: number, domain: [Date, Date]) {
   } else if (years <= 5) {
     // For spans less than 5 years, show half years
     tickInterval = d3.timeYear.every(1)!;
-    tickFormat = d3.timeFormat("%b %Y");
+    tickFormat = d3.timeFormat("%Y");
   } else if (years <= 10) {
     // For spans less than 10 years, show years
     tickInterval = d3.timeYear.every(2)!;
