@@ -1,7 +1,11 @@
 import { NarrativeEvent } from "@/types/narrative/lite";
 import { TIME_CONFIG } from "./time-config";
 import * as d3 from "d3";
-import { createTimeScale } from "@/components/shared/visualization-utils";
+import {
+  createTimeScale,
+  generateTimeTicks,
+} from "@/components/shared/visualization-utils";
+import { SHARED_CONFIG } from "@/components/shared/visualization-config";
 
 export interface DataPoint {
   event: NarrativeEvent;
@@ -193,11 +197,17 @@ export function createAxes(
   xScale: any, // Using any since we have a custom composite scale
   yScale: d3.ScaleLinear<number, number>
 ) {
+  const [startDate, endDate] = xScale.domain();
+
   const xAxis = d3
     .axisTop(xScale)
     .tickSize(TIME_CONFIG.axis.tickSize)
     .tickPadding(TIME_CONFIG.axis.tickPadding)
-    .ticks(5); // Limit number of ticks for better readability
+    .tickValues(generateTimeTicks(startDate, endDate))
+    .tickFormat((d: any) => {
+      if (!(d instanceof Date)) return "";
+      return d3.timeFormat("%Y")(d);
+    });
 
   const yAxis = d3
     .axisLeft(yScale)

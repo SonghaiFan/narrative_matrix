@@ -8,15 +8,14 @@ import { useTooltip } from "@/contexts/tooltip-context";
 import { useCenterControl } from "@/contexts/center-control-context";
 import {
   calculateDimensions,
-  calculateMaxEntities,
   getEntityMentions,
-  getVisibleEntities,
   calculateColumnLayout,
   createXScale,
   createYScale,
   createYAxis,
   getRelevantEntities,
   calculateConnectorPoints,
+  getVisibleEntities,
 } from "./entity-visual.utils";
 import {
   getSentimentColor,
@@ -121,39 +120,42 @@ export function EntityVisual({ events }: EntityVisualProps) {
     d3.select(headerRef.current).selectAll("*").remove();
 
     // Setup dimensions first
-    const { containerWidth, width, containerHeight, height } =
-      calculateDimensions(containerRef.current.clientWidth, events.length);
-
-    // Get entity mentions and calculate visible entities
-    const entityMentions = getEntityMentions(events, "name");
-
-    // console.log(entityMentions);
-    const maxEntities = calculateMaxEntities(
-      width,
-      ENTITY_CONFIG.entity.minColumnWidth,
-      ENTITY_CONFIG.entity.columnGap
+    const { width, containerHeight, height } = calculateDimensions(
+      containerRef.current.clientWidth,
+      events.length
     );
-    const visibleEntities = getVisibleEntities(entityMentions, maxEntities);
 
-    // console.log(visibleEntities);
+    // Get all entity mentions
+    const entityMentions = getEntityMentions(events, "name");
+    const allEntities = getVisibleEntities(entityMentions);
 
-    // Calculate layout dimensions
+    // Calculate layout dimensions for all entities
     const { totalColumnsWidth, leftOffset } = calculateColumnLayout(
       width,
-      visibleEntities
+      allEntities
     );
 
     // Create scales
-    const xScale = createXScale(visibleEntities, totalColumnsWidth);
+    const xScale = createXScale(allEntities, totalColumnsWidth);
     const yScale = createYScale(events, height);
     const yAxis = createYAxis(yScale);
 
     // Create fixed header for entity labels
     const headerContainer = d3
       .select(headerRef.current)
-      .style("width", `${containerWidth}px`)
+      .style(
+        "width",
+        `${
+          totalColumnsWidth +
+          ENTITY_CONFIG.margin.left +
+          ENTITY_CONFIG.margin.right
+        }px`
+      )
       .style("margin-left", "0")
-      .style("background-color", "white");
+      .style("background-color", "white")
+      .style("position", "sticky")
+      .style("top", "0")
+      .style("z-index", "10");
 
     // Create header content container with centered alignment
     const headerContent = headerContainer
@@ -163,7 +165,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
       .style("width", `${totalColumnsWidth}px`);
 
     // Create entity labels in the fixed header
-    visibleEntities.forEach((entity) => {
+    allEntities.forEach((entity) => {
       const x = xScale(entity.id)!;
       const labelContainer = headerContent
         .append("div")
@@ -202,12 +204,11 @@ export function EntityVisual({ events }: EntityVisualProps) {
         .text(entity.name);
     });
 
-    // Create SVG
+    // Create SVG with horizontal scroll
     const svg = d3
       .select(svgRef.current)
-      .attr("width", containerWidth)
-      .attr("height", containerHeight)
-      .style("max-width", "100%");
+      .attr("width", "100%")
+      .attr("height", containerHeight);
 
     // Create main group with centered alignment
     const g = svg
@@ -233,8 +234,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
       .attr("stroke-width", 2);
 
     // Draw entity columns
-    visibleEntities.forEach((entity) => {
-      // Use entity ID for positioning instead of attribute value
+    allEntities.forEach((entity) => {
       const x = xScale(entity.id)!;
       const entityColor = "#94a3b8";
 
@@ -268,11 +268,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
     // Draw event nodes and connectors
     events.forEach((event) => {
       const y = yScale(event.temporal_anchoring.narrative_time);
-      const relevantEntities = getRelevantEntities(
-        event,
-        visibleEntities,
-        "name"
-      );
+      const relevantEntities = getRelevantEntities(event, allEntities, "name");
 
       if (
         relevantEntities.hasNoEntities ||
@@ -458,14 +454,14 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
   return (
     <div className="w-full h-full flex flex-col overflow-auto">
-      <div className="flex-none bg-white sticky top-0 z-10 shadow-sm">
+      <div className="flex-none bg-white sticky top-0 z-10 shadow-sm ">
         <div
           ref={headerRef}
           style={{ height: `${ENTITY_CONFIG.header.height}px` }}
         />
       </div>
-      <div ref={containerRef} className="flex-1 relative">
-        <svg ref={svgRef} className="w-full h-full" />
+      <div ref={containerRef} className="flex-1 relative ">
+        <svg ref={svgRef} className="h-full" />
       </div>
     </div>
   );

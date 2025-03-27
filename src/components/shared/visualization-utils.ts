@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { SHARED_CONFIG } from "./visualization-config";
 
 export function createTimeScale(width: number, domain: [Date, Date]) {
   // Create a time scale first to get proper time ticks
@@ -7,7 +8,7 @@ export function createTimeScale(width: number, domain: [Date, Date]) {
   // Create a power scale to transform the linear time scale into a logarithmic one
   const xScale = d3
     .scalePow()
-    .exponent(2) // Use a larger exponent to give more space to recent dates
+    .exponent(SHARED_CONFIG.scale.timeExponent)
     .domain([0, width])
     .range([0, width]);
 
@@ -35,4 +36,23 @@ export function createTimeScale(width: number, domain: [Date, Date]) {
   });
 
   return finalScale;
+}
+
+// Generate ticks for time axis based on power scale
+export function generateTimeTicks(startDate: Date, endDate: Date): Date[] {
+  const ticks: Date[] = [];
+  const baseYear = startDate.getFullYear();
+  const endYear = endDate.getFullYear();
+  const totalYears = endYear - baseYear;
+
+  // Use the power scale exponent from config to determine intervals
+  for (let i = 0; i <= 10; i++) {
+    // Apply inverse power scale to get non-linear distribution
+    const progress = Math.pow(i / 10, 1 / SHARED_CONFIG.scale.timeExponent);
+    const year = Math.floor(baseYear + progress * totalYears);
+    if (year <= endYear) {
+      ticks.push(new Date(year, 0, 1));
+    }
+  }
+  return ticks;
 }

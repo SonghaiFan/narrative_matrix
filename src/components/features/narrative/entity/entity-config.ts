@@ -1,5 +1,5 @@
 import { merge } from "lodash";
-import { SHARED_CONFIG } from "../../../shared/visualization-config";
+import { SHARED_CONFIG } from "@/components/shared/visualization-config";
 
 export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
   margin: {
@@ -10,9 +10,8 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     labelFontSize: 14,
     lineStrokeWidth: 6,
     columnPadding: 0.2,
-    minColumnWidth: 50,
-    maxColumnWidth: 200,
-    columnGap: 20,
+    columnWidth: 40,
+    columnGap: 10,
   },
   event: {
     nodeRadius: 6,

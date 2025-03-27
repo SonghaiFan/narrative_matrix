@@ -49,25 +49,6 @@ export function calculateDimensions(
   return { containerWidth, width, containerHeight, height };
 }
 
-// Calculate how many entities can fit based on available width
-export function calculateMaxEntities(
-  availableWidth: number,
-  minColumnWidth: number,
-  columnGap: number
-): number {
-  // Calculate how many entities would fit with the minimum column width
-  const entitiesFit = Math.floor(
-    (availableWidth + columnGap) / (minColumnWidth + columnGap)
-  );
-
-  // Always show at least 5 entities if there's enough width for at least 3
-  if (entitiesFit >= 3 && entitiesFit < 5) {
-    return 5;
-  }
-
-  return Math.max(entitiesFit, 1); // Always show at least 1 entity
-}
-
 // Get entity mentions count from events
 export function getEntityMentions(
   events: NarrativeEvent[],
@@ -82,30 +63,7 @@ export function getEntityMentions(
 
   // First, collect all unique entities by ID
   const uniqueEntitiesById = new Map<string, Entity>();
-
-  events.forEach((event) => {
-    event.entities.forEach((entity) => {
-      // Skip entities that don't have the selected attribute
-      if (
-        entity[selectedAttribute] === undefined ||
-        entity[selectedAttribute] === null ||
-        entity[selectedAttribute] === ""
-      ) {
-        return;
-      }
-
-      // Use ID as the primary key for uniqueness
-      if (!uniqueEntitiesById.has(entity.id)) {
-        uniqueEntitiesById.set(entity.id, entity);
-      }
-    });
-  });
-
-  // Initialize count map for each unique entity
   const entityCounts = new Map<string, number>();
-  uniqueEntitiesById.forEach((_, id) => {
-    entityCounts.set(id, 0);
-  });
 
   // Count occurrences of each entity across all events
   events.forEach((event) => {
@@ -120,6 +78,12 @@ export function getEntityMentions(
         entity[selectedAttribute] === ""
       ) {
         return;
+      }
+
+      // Store unique entity
+      if (!uniqueEntitiesById.has(entity.id)) {
+        uniqueEntitiesById.set(entity.id, entity);
+        entityCounts.set(entity.id, 0);
       }
 
       // Only count each unique entity once per event
@@ -140,10 +104,9 @@ export function getEntityMentions(
   return entityMentions;
 }
 
-// Get visible entities based on available space
+// Get top 10 entities by mention count
 export function getVisibleEntities(
-  entityMentions: Map<string, EntityMention>,
-  maxEntities: number
+  entityMentions: Map<string, EntityMention>
 ): Entity[] {
   // If no entity mentions, return empty array
   if (entityMentions.size === 0) {
@@ -152,50 +115,28 @@ export function getVisibleEntities(
 
   return Array.from(entityMentions.values())
     .sort((a, b) => b.count - a.count)
-    .slice(0, maxEntities)
+    .slice(0, 10)
     .map((item) => item.entity);
 }
 
-// Calculate column width and layout dimensions
+// Calculate column layout dimensions
 export function calculateColumnLayout(
   width: number,
   visibleEntities: Entity[]
 ) {
-  // Calculate responsive column width
-  const totalGapWidth =
-    (visibleEntities.length - 1) * ENTITY_CONFIG.entity.columnGap;
-  const availableWidth = width - totalGapWidth;
-
-  // Calculate column width based on number of entities
-  let columnWidth = Math.min(
-    ENTITY_CONFIG.entity.maxColumnWidth,
-    Math.max(
-      ENTITY_CONFIG.entity.minColumnWidth,
-      availableWidth / visibleEntities.length
-    )
-  );
-
-  // If we have more entities than would normally fit (forced by calculateMaxEntities),
-  // we need to reduce the column width below the minimum to make them fit
-  if (
-    availableWidth / visibleEntities.length <
-    ENTITY_CONFIG.entity.minColumnWidth
-  ) {
-    // Use a smaller column width, but ensure it's at least 30px
-    columnWidth = Math.max(30, availableWidth / visibleEntities.length);
-  }
+  const columnGap = ENTITY_CONFIG.entity.columnGap;
+  const columnWidth = ENTITY_CONFIG.entity.columnWidth; // Use fixed width
+  const totalGapWidth = (visibleEntities.length - 1) * columnGap;
 
   // Calculate total width including gaps
   const totalColumnsWidth =
     columnWidth * visibleEntities.length + totalGapWidth;
 
-  // Center the visualization if total width is less than available width
+  // Center the visualization
   const leftOffset =
     ENTITY_CONFIG.margin.left + (width - totalColumnsWidth) / 2;
 
   return {
-    totalGapWidth,
-    availableWidth,
     columnWidth,
     totalColumnsWidth,
     leftOffset,

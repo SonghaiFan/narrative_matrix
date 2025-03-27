@@ -29,4 +29,7 @@ export const SHARED_CONFIG = {
     opacity: 0.4,
     dashArray: "4,4",
   },
+  scale: {
+    timeExponent: 3.6, // Power scale exponent for time distribution
+  },
 };

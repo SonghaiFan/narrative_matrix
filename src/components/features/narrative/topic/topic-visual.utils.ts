@@ -1,7 +1,11 @@
 import { NarrativeEvent } from "@/types/narrative/lite";
 import * as d3 from "d3";
 import { TOPIC_CONFIG } from "./topic-config";
-import { createTimeScale } from "@/components/shared/visualization-utils";
+import {
+  createTimeScale,
+  generateTimeTicks,
+} from "@/components/shared/visualization-utils";
+import { SHARED_CONFIG } from "@/components/shared/visualization-config";
 
 export interface DataPoint {
   event: NarrativeEvent;
@@ -140,7 +144,17 @@ export function createAxes(
   xScale: any, // Using any since we have a custom composite scale
   yScale: d3.ScaleBand<string>
 ) {
-  const xAxis = d3.axisTop(xScale).tickSize(5).tickPadding(10).ticks(5); // Limit number of ticks for better readability
+  const [startDate, endDate] = xScale.domain();
+
+  const xAxis = d3
+    .axisTop(xScale)
+    .tickSize(TOPIC_CONFIG.axis.tickSize)
+    .tickPadding(TOPIC_CONFIG.axis.tickPadding)
+    .tickValues(generateTimeTicks(startDate, endDate))
+    .tickFormat((d: any) => {
+      if (!(d instanceof Date)) return "";
+      return d3.timeFormat("%Y")(d);
+    });
 
   const yAxis = d3.axisLeft(yScale).tickSize(5).tickPadding(5);
 
@@ -150,7 +164,7 @@ export function createAxes(
 // Create edges between events based on narrative time
 export function createEdges(
   dataPoints: DataPoint[],
-  viewMode: "main" | "sub" = "main"
+  viewMode: "main" | "sub" = "sub"
 ): Edge[] {
   const edges: Edge[] = [];
 
