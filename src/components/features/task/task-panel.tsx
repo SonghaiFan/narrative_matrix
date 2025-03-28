@@ -653,13 +653,13 @@ export function TaskPanel({
               <div className="bg-gray-50 p-2 rounded text-sm">
                 {currentTask.question}
                 <div className="mt-2 space-y-1.5">
-                  <div className="text-xs text-amber-600 flex items-center">
+                  <div className="text-xs text-red-600 flex items-center">
                     <AlertCircle className="h-3 w-3 mr-1 flex-shrink-0" />
                     Please answer based ONLY on the text you have read, not your
                     prior knowledge. Some details may differ from real-world
                     events.
                   </div>
-                  <div className="text-xs text-blue-600 flex items-center">
+                  <div className="text-xs text-amber-600 flex items-center">
                     <HelpCircle className="h-3 w-3 mr-1 flex-shrink-0" />
                     Tip: If you cannot find the specific information in the
                     text, use the "Skip" button.
@@ -890,7 +890,7 @@ export function TaskPanel({
               <>
                 <button
                   onClick={handleSkip}
-                  className="flex items-center gap-1.5 px-4 py-2 border-2 border-amber-300 bg-amber-50 text-amber-700 rounded-md hover:bg-amber-100 hover:border-amber-400 transition-colors"
+                  className="flex items-center gap-1.5 px-4 py-2 border-2 border-amber-300 bg-amber-50 text-amber-600 rounded-md hover:bg-amber-100 hover:border-amber-400 transition-colors"
                 >
                   <HelpCircle className="h-4 w-4" />
                   <span className="text-sm font-medium">Skip</span>
@@ -965,7 +965,7 @@ export function TaskPanel({
           <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-4">
             <div className="flex items-start mb-3">
               <div className="flex-shrink-0 mr-3">
-                <AlertCircle className="h-5 w-5 text-amber-500" />
+                <AlertCircle className="h-5 w-5 text-red-500" />
               </div>
               <div className="flex-1">
                 <h3 className="text-sm font-medium text-gray-900">
