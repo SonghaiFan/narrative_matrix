@@ -137,10 +137,22 @@
         "type": "numbered-sequence",
         "options": {
           "events": [
-            { "id": 1, "text": "Creation of the State of Israel" },
-            { "id": 2, "text": "Six-Day War" },
-            { "id": 3, "text": "Oslo I Accords" },
-            { "id": 4, "text": "Hamas electoral victory" }
+            {
+              "id": 1,
+              "text": "Creation of the State of Israel"
+            },
+            {
+              "id": 2,
+              "text": "Six-Day War"
+            },
+            {
+              "id": 3,
+              "text": "Oslo I Accords"
+            },
+            {
+              "id": 4,
+              "text": "Hamas electoral victory"
+            }
           ]
         },
         "completed": false,
@@ -549,13 +561,13 @@
       }
     },
     {
-      "index": 11,
+      "index": 10,
       "text": "The\u202fIsraeli-Palestinian conflict\u202fdates back to the end of the nineteenth century. In 1947, the United Nations adopted\u202fResolution 181, known as the Partition Plan, which sought to divide the British Mandate of Palestine into Arab and Jewish states.",
       "short_text": "In 1947, the United Nations adopted Resolution 181, the Partition Plan, to divide the British Mandate of Palestine into Arab and Jewish states.",
       "lead_title": "Background",
       "temporal_anchoring": {
         "real_time": ["1947-01-01", "1947-12-31"],
-        "narrative_time": 11
+        "narrative_time": 10
       },
       "entities": [
         {
@@ -584,13 +596,13 @@
       }
     },
     {
-      "index": 12,
+      "index": 11,
       "text": "On May 14, 1948, the State of Israel was created, sparking the first Arab-Israeli War.",
       "short_text": "The State of Israel was created, sparking the first Arab-Israeli War.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": "1948-05-14",
-        "narrative_time": 12
+        "narrative_time": 11
       },
       "entities": [
         {
@@ -609,13 +621,13 @@
       }
     },
     {
-      "index": 13,
+      "index": 12,
       "text": "The war ended in 1949 with Israel\u2019s victory, but 750,000 Palestinians were displaced, and the territory was divided into 3 parts: the State of Israel, the West Bank (of the Jordan River), and the Gaza Strip.",
       "short_text": "The war ended in 1949 with Israel's victory, leading to the displacement of 750,000 Palestinians and the division of the territory into the State of Israel, the West Bank, and the Gaza Strip.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["1949-01-01", "1949-12-31"],
-        "narrative_time": 13
+        "narrative_time": 12
       },
       "entities": [
         {
@@ -654,13 +666,13 @@
       }
     },
     {
-      "index": 14,
+      "index": 13,
       "text": "Over the following years, tensions rose in the region, particularly between Israel and Egypt, Jordan, and Syria. Following the\u202f1956 Suez Crisis\u202fand Israel\u2019s invasion of the Sinai Peninsula, Egypt, Jordan, and Syria signed mutual defense pacts in anticipation of a possible mobilization of Israeli troops.",
       "short_text": "Following the 1956 Suez Crisis, Egypt, Jordan, and Syria signed mutual defense pacts in response to Israel's invasion of the Sinai Peninsula.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["1956-10-29", "1956-12-31"],
-        "narrative_time": 14
+        "narrative_time": 13
       },
       "entities": [
         {
@@ -704,13 +716,13 @@
       }
     },
     {
-      "index": 15,
+      "index": 14,
       "text": "In June 1967, following\u202fa series of maneuvers\u202fby Egyptian President Abdel Gamal Nasser, Israel preemptively attacked Egyptian and Syrian air forces, starting the Six-Day War.",
       "short_text": "In June 1967, Israel preemptively attacked Egyptian and Syrian air forces, initiating the Six-Day War.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["1967-06-01", "1967-06-10"],
-        "narrative_time": 15
+        "narrative_time": 14
       },
       "entities": [
         {
@@ -739,13 +751,13 @@
       }
     },
     {
-      "index": 16,
+      "index": 15,
       "text": "After the war, Israel gained territorial control over the Sinai Peninsula and Gaza Strip from Egypt; the West Bank and East Jerusalem from Jordan; and the Golan Heights from Syria.",
       "short_text": "After the war, Israel gained territorial control over the Sinai Peninsula, Gaza Strip, West Bank, East Jerusalem, and Golan Heights from Egypt, Jordan, and Syria respectively.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": "1967-06-10",
-        "narrative_time": 16
+        "narrative_time": 15
       },
       "entities": [
         {
@@ -804,13 +816,13 @@
       }
     },
     {
-      "index": 17,
+      "index": 16,
       "text": "Six years later, in what is referred to as the Yom Kippur War or the October War, Egypt and Syria launched\u202fa surprise two-front attack\u202fon Israel to regain their lost territory; the conflict did not result in significant gains for Egypt, Israel, or Syria, but Egyptian President Anwar al-Sadat declared the war a victory for Egypt as it allowed Egypt and Syria to\u202fnegotiate over previously ceded territory.",
       "short_text": "In the Yom Kippur War, Egypt and Syria launched a surprise attack on Israel to regain lost territory.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["1973-10-06", "1973-10-25"],
-        "narrative_time": 17
+        "narrative_time": 16
       },
       "entities": [
         {
@@ -844,13 +856,13 @@
       }
     },
     {
-      "index": 18,
+      "index": 17,
       "text": "Finally, in 1979, following a series of cease-fires and peace negotiations, representatives from Egypt and Israel signed the\u202fCamp David Accords,\u202fa peace treaty that ended the thirty-year conflict between Egypt and Israel.",
       "short_text": "In 1979, representatives from Egypt and Israel signed the Camp David Accords, ending the thirty-year conflict between the two nations.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": "1979-01-01",
-        "narrative_time": 18
+        "narrative_time": 17
       },
       "entities": [
         {
@@ -879,13 +891,13 @@
       }
     },
     {
-      "index": 19,
+      "index": 18,
       "text": "Even though the Camp David Accords improved relations between Israel and its neighbors, the question of Palestinian self-determination and self-governance remained unresolved.",
       "short_text": "The Camp David Accords improved relations between Israel and its neighbors but did not resolve Palestinian self-determination issues.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["1978-9-17", "1982"],
-        "narrative_time": 19
+        "narrative_time": 18
       },
       "entities": [
         {
@@ -914,13 +926,13 @@
       }
     },
     {
-      "index": 20,
+      "index": 19,
       "text": "In 1987, hundreds of thousands of Palestinians living in the West Bank and Gaza Strip rose up against the Israeli government in what is known as the first intifada.",
       "short_text": "In 1987, hundreds of thousands of Palestinians in the West Bank and Gaza Strip rose up against the Israeli government in the first intifada.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["1987-01-01", "1993-09-13"],
-        "narrative_time": 20
+        "narrative_time": 19
       },
       "entities": [
         {
@@ -954,13 +966,13 @@
       }
     },
     {
-      "index": 21,
+      "index": 20,
       "text": "The 1993\u202fOslo I Accords\u202fmediated the conflict, setting up a framework for the Palestinians to govern themselves in the West Bank and Gaza, and enabled mutual recognition between the newly established Palestinian Authority and Israel\u2019s government.",
       "short_text": "The 1993 Oslo I Accords mediated the conflict, enabling mutual recognition between the Palestinian Authority and Israel's government.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["1993-01-01", "1993-09-13"],
-        "narrative_time": 21
+        "narrative_time": 20
       },
       "entities": [
         {
@@ -1004,13 +1016,13 @@
       }
     },
     {
-      "index": 22,
+      "index": 21,
       "text": "In 1995, the\u202fOslo II\u202fAccords expanded on the first agreement, adding provisions that mandated the complete withdrawal of Israel from 6 cities and 450 towns in the West Bank.",
       "short_text": "In 1995, the Oslo II Accords mandated Israel's withdrawal from 6 cities and 450 towns in the West Bank.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["1995-01-01", "1995-12-31"],
-        "narrative_time": 22
+        "narrative_time": 21
       },
       "entities": [
         {
@@ -1039,13 +1051,13 @@
       }
     },
     {
-      "index": 23,
+      "index": 22,
       "text": "In 2000, sparked in part by Palestinian grievances over Israel\u2019s control over the West Bank, a stagnating peace process, and former Israeli Prime Minister Ariel Sharon\u2019s\u202fvisit\u202fto the al-Aqsa mosque\u2014the third holiest site in Islam\u2014in September 2000, Palestinians\u202flaunched\u202fthe second intifada, which would last until 2005.",
       "short_text": "In 2000, Palestinians launched the second intifada due to grievances over Israel's control of the West Bank, a stagnating peace process, and Ariel Sharon's visit to the al-Aqsa mosque.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["2000-09-01", "2005-12-31"],
-        "narrative_time": 23
+        "narrative_time": 22
       },
       "entities": [
         {
@@ -1084,13 +1096,13 @@
       }
     },
     {
-      "index": 24,
+      "index": 23,
       "text": "In response, the Israeli government approved the\u202fconstruction of a barrier wall\u202faround the West Bank in 2002, despite\u202fopposition\u202ffrom the International Court of Justice and the International Criminal Court.",
       "short_text": "In 2002, the Israeli government approved the construction of a barrier wall around the West Bank.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["2002-01-01", "2002-12-31"],
-        "narrative_time": 24
+        "narrative_time": 23
       },
       "entities": [
         {
@@ -1114,13 +1126,13 @@
       }
     },
     {
-      "index": 25,
+      "index": 24,
       "text": "Factionalism among the Palestinians flared up when Hamas won the Palestinian Authority\u2019s parliamentary elections in 2006, deposing longtime majority party Fatah. This gave Hamas, a political and militant movement inspired by the Palestinian Muslim Brotherhood, control of the Gaza Strip.",
       "short_text": "Hamas won the Palestinian Authority\u2019s parliamentary elections in 2006, deposing Fatah. Hamas gained control of the Gaza Strip.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["2006-01-25", "2006-12-31"],
-        "narrative_time": 25
+        "narrative_time": 24
       },
       "entities": [
         {
@@ -1154,13 +1166,13 @@
       }
     },
     {
-      "index": 27,
+      "index": 25,
       "text": "Gaza is a small piece of land on the Mediterranean Sea that borders Egypt to the south and has been under the rule of the semi-autonomous Palestinian Authority since 1993. The United States and European Union, among others, did not acknowledge Hamas\u2019 electoral victory, as the group has been considered a terrorist organization by western governments since the late 1990s.",
       "short_text": "The United States and European Union did not recognize Hamas' electoral victory due to its designation as a terrorist organization by Western governments.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["1993-01-01", "2006-12-31"],
-        "narrative_time": 27
+        "narrative_time": 25
       },
       "entities": [
         {
@@ -1184,13 +1196,13 @@
       }
     },
     {
-      "index": 28,
+      "index": 26,
       "text": "Following Hamas\u2019 seizure of control, violence broke out between Hamas and Fatah.",
       "short_text": "Violence erupted between Hamas and Fatah following Hamas' control seizure.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["2006-01-25", "2006-12-31"],
-        "narrative_time": 28
+        "narrative_time": 26
       },
       "entities": [
         {
@@ -1214,13 +1226,13 @@
       }
     },
     {
-      "index": 29,
+      "index": 27,
       "text": "Between 2006 and 2011, a series of failed peace talks and deadly confrontations culminated in an agreement to reconcile.",
       "short_text": "Between 2006 and 2011, failed peace talks and deadly confrontations led to an agreement to reconcile.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["2006-01-01", "2011-12-31"],
-        "narrative_time": 29
+        "narrative_time": 27
       },
       "entities": [
         {
@@ -1244,13 +1256,13 @@
       }
     },
     {
-      "index": 30,
+      "index": 28,
       "text": "Fatah entered into a unity government with Hamas in 2014.",
       "short_text": "Fatah entered into a unity government with Hamas in 2014.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["2014-01-01", "2014-06-30"],
-        "narrative_time": 30
+        "narrative_time": 28
       },
       "entities": [
         {
@@ -1274,13 +1286,13 @@
       }
     },
     {
-      "index": 31,
+      "index": 29,
       "text": "In the summer of 2014,\u202fclashes\u202fin the Palestinian territories precipitated a\u202fmilitary confrontation\u202fbetween the Israeli military and Hamas in which Hamas fired nearly three thousand rockets at Israel, and Israel retaliated with a major offensive in Gaza.",
       "short_text": "In the summer of 2014, clashes in the Palestinian territories led to a military confrontation between the Israeli military and Hamas, involving rocket attacks by Hamas and a major Israeli offensive in Gaza.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["2014-06-01", "2014-08-26"],
-        "narrative_time": 31
+        "narrative_time": 29
       },
       "entities": [
         {
@@ -1309,13 +1321,13 @@
       }
     },
     {
-      "index": 32,
+      "index": 30,
       "text": "The skirmish ended in late August 2014 with a\u202fcease-fire\u202fdeal brokered by Egypt, but only after 73\u202fIsraelis and 2,251\u202fPalestinians were\u202fkilled.",
       "short_text": "The skirmish ended in late August 2014 with a cease-fire deal brokered by Egypt, resulting in 73 Israelis and 2,251 Palestinians killed.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": "2014-08-31",
-        "narrative_time": 32
+        "narrative_time": 30
       },
       "entities": [
         {
@@ -1344,13 +1356,13 @@
       }
     },
     {
-      "index": 33,
+      "index": 31,
       "text": "After a wave of violence between Israelis and Palestinians in 2015, Palestinian President Mahmoud Abbas of Fatah\u202fannounced\u202fthat Palestinians would no longer be bound by the territorial divisions created by the\u202fOslo Accords.",
       "short_text": "Palestinian President Mahmoud Abbas announced that Palestinians would no longer adhere to the Oslo Accords territorial divisions after violence in 2015.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": "2015-09-30",
-        "narrative_time": 33
+        "narrative_time": 31
       },
       "entities": [
         {
@@ -1384,13 +1396,13 @@
       }
     },
     {
-      "index": 34,
+      "index": 32,
       "text": "In March of 2018, Israeli troops killed 183 Palestinians and wounded 6,000 others after some Palestinians stormed the perimeter fence between the Gaza Strip and Israel and threw rocks during an otherwise peaceful demonstration.",
       "short_text": "In March of 2018, Israeli troops killed 183 Palestinians and wounded 6,000 others during a demonstration.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["2018-03-01", "2018-03-31"],
-        "narrative_time": 34
+        "narrative_time": 32
       },
       "entities": [
         {
@@ -1419,13 +1431,13 @@
       }
     },
     {
-      "index": 35,
+      "index": 33,
       "text": "Just months later, Hamas militants fired over one hundred rockets into Israel, and Israel\u202fresponded\u202fwith strikes on more than fifty targets in Gaza during a twenty-four-hour\u202fflare-up.",
       "short_text": "Hamas militants fired over one hundred rockets into Israel, which responded with strikes on more than fifty targets in Gaza during a twenty-four-hour flare-up.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": "2019-05-29",
-        "narrative_time": 35
+        "narrative_time": 33
       },
       "entities": [
         {
@@ -1454,13 +1466,13 @@
       }
     },
     {
-      "index": 36,
+      "index": 34,
       "text": "The tense political atmosphere resulted in a return to disunity between Fatah and Hamas, with Mahmoud Abbas\u2019 Fatah party controlling the Palestinian Authority from the West Bank and Hamas de facto ruling the Gaza Strip.",
       "short_text": "The political tension led to disunity between Fatah and Hamas, with Fatah controlling the Palestinian Authority in the West Bank and Hamas ruling the Gaza Strip.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["2017-09-21", "2018-01-31"],
-        "narrative_time": 36
+        "narrative_time": 34
       },
       "entities": [
         {
@@ -1504,13 +1516,13 @@
       }
     },
     {
-      "index": 37,
+      "index": 35,
       "text": "The Donald J. Trump administration reversed longstanding U.S. policy by\u202fcanceling\u202ffunding for the UN Relief and Works Agency, which provides aid to Palestinian refugees, and\u202frelocating\u202fthe U.S.",
       "short_text": "The Trump administration canceled funding for the UN Relief and Works Agency and relocated the U.S. embassy.embassy from Tel Aviv to Jerusalem. ",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["2018-08-30", "2018-12-31"],
-        "narrative_time": 37
+        "narrative_time": 35
       },
       "entities": [
         {
@@ -1539,13 +1551,13 @@
       }
     },
     {
-      "index": 38,
+      "index": 36,
       "text": "The Trump administration also helped broker the\u202fAbraham Accords, under which Bahrain and the United Arab Emirates normalized relations with Israel, becoming only the third and fourth countries in the region\u2014following Egypt in 1979 and Jordan in 1994\u2014to do so.",
       "short_text": "The Trump administration facilitated the Abraham Accords, normalizing relations between Israel, Bahrain, and the United Arab Emirates.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": "2020-09-15",
-        "narrative_time": 38
+        "narrative_time": 36
       },
       "entities": [
         {
@@ -1579,13 +1591,13 @@
       }
     },
     {
-      "index": 39,
+      "index": 37,
       "text": "Similar deals followed with Morocco and Sudan. Palestinian leader Mahmoud Abbas of Fatah\u202frejected\u202fthe accords, as did Hamas.",
       "short_text": "Palestinian leader Mahmoud Abbas of Fatah and Hamas rejected the accords.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": "2020-10-23",
-        "narrative_time": 39
+        "narrative_time": 37
       },
       "entities": [
         {
@@ -1614,13 +1626,13 @@
       }
     },
     {
-      "index": 40,
+      "index": 38,
       "text": "In early May 2021, after a court\u202fruled\u202fin favor of the eviction of several Palestinian families from East Jerusalem properties, protests erupted, with Israeli police\u202femploying\u202fforce against demonstrators.",
       "short_text": "In early May 2021, Israeli police used force against demonstrators protesting the court-ordered eviction of Palestinian families from East Jerusalem.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["2021-05-06", "2021-05-09"],
-        "narrative_time": 40
+        "narrative_time": 38
       },
       "entities": [
         {
@@ -1649,13 +1661,13 @@
       }
     },
     {
-      "index": 41,
+      "index": 39,
       "text": "After several consecutive days of violence, Hamas, the militant group that governs Gaza, and other Palestinian\u202fmilitant groups\u202flaunched\u202fhundreds of\u202frockets\u202finto Israeli territory.",
       "short_text": "Hamas and other Palestinian militant groups launched hundreds of rockets into Israeli territory.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": "2021-05-10",
-        "narrative_time": 41
+        "narrative_time": 39
       },
       "entities": [
         {
@@ -1679,13 +1691,13 @@
       }
     },
     {
-      "index": 42,
+      "index": 40,
       "text": "Israel responded with artillery bombardments and airstrikes, killing more than twenty Palestinians and hitting both military and non-military infrastructure,\u202fincluding residential buildings,\u202fmedia headquarters, and\u202frefugee\u202fand\u202fhealthcare facilities.",
       "short_text": "Israel conducted artillery bombardments and airstrikes, resulting in over twenty Palestinian deaths and damage to various infrastructures.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["2021-05-17", "2021-05-20"],
-        "narrative_time": 42
+        "narrative_time": 40
       },
       "entities": [
         {
@@ -1709,13 +1721,13 @@
       }
     },
     {
-      "index": 43,
+      "index": 41,
       "text": "After eleven days, Israel and Hamas agreed to a\u202fcease-fire, with both sides claiming victory.",
       "short_text": "Israel and Hamas agreed to a cease-fire after eleven days of conflict, with both sides claiming victory.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": "2021-05-21",
-        "narrative_time": 43
+        "narrative_time": 41
       },
       "entities": [
         {
@@ -1739,13 +1751,13 @@
       }
     },
     {
-      "index": 44,
+      "index": 42,
       "text": "The fighting killed more than 250 Palestinians and at least 13 Israelis, wounded nearly 2,000 others, and displaced 72,000 Palestinians.",
       "short_text": "The fighting resulted in over 250 Palestinian and 13 Israeli deaths, nearly 2,000 injuries, and the displacement of 72,000 Palestinians.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": "2021-05-21",
-        "narrative_time": 44
+        "narrative_time": 42
       },
       "entities": [
         {
@@ -1769,13 +1781,13 @@
       }
     },
     {
-      "index": 45,
+      "index": 43,
       "text": "The\u202fmost far-right and religious government\u202fin Israel\u2019s history, led by Benjamin \u2018Bibi\u2019 Netanyahu and his Likud party and comprising two ultra-Orthodox parties and three far-right parties, was inaugurated in late December 2022.",
       "short_text": "The most far-right and religious government in Israel's history was inaugurated in late December 2022.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": ["2022-12-21", "2022-12-31"],
-        "narrative_time": 45
+        "narrative_time": 43
       },
       "entities": [
         {
@@ -1814,13 +1826,13 @@
       }
     },
     {
-      "index": 46,
+      "index": 44,
       "text": "The coalition government prioritized the expansion and development of Israeli settlements in the occupied West Bank, endorsed discrimination against LGBTQ+ people on religious grounds, and voted to limit judicial oversight of the government in May 2023 after a delay due to nationwide protests in March.",
       "short_text": "In May 2023, the coalition government of Israel endorsed policies on settlements, discrimination against LGBTQ+ people, and limiting judicial oversight.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": "2023-05-01",
-        "narrative_time": 46
+        "narrative_time": 44
       },
       "entities": [
         {

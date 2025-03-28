@@ -418,7 +418,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
   }, [updateVisualization]);
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex flex-col overflow-x-hidden">
       <div className="flex-none bg-white sticky top-0 z-10 shadow-sm">
         <div
           ref={headerRef}
@@ -427,10 +427,10 @@ export function EntityVisual({ events }: EntityVisualProps) {
       </div>
       <div
         ref={containerRef}
-        className="flex-1 relative"
+        className="flex-1 relative  overflow-x-scroll"
         style={{ scrollbarGutter: "stable" }}
       >
-        <svg ref={svgRef} className="w-auto" />
+        <svg ref={svgRef} className="min-w-full" />
       </div>
     </div>
   );
