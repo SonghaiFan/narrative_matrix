@@ -251,7 +251,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "war", "act of terror"],
+        "sub_topic": ["armed conflict", "act of terror"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 8
@@ -300,8 +300,8 @@
         }
       ],
       "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict"],
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
         "sentiment": {
           "polarity": "positive",
           "intensity": 6
@@ -326,7 +326,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "crisis"],
+        "sub_topic": ["human rights"],
         "sentiment": {
           "polarity": "positive",
           "intensity": 4
@@ -356,7 +356,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict"],
+        "sub_topic": ["human rights"],
         "sentiment": {
           "polarity": "neutral",
           "intensity": 3
@@ -386,7 +386,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "crisis"],
+        "sub_topic": ["human rights"],
         "sentiment": {
           "polarity": "positive",
           "intensity": 4
@@ -416,7 +416,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "armed conflict", "crisis"],
+        "sub_topic": ["war", "peace negotiations"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 6
@@ -456,7 +456,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sub_topic": ["armed conflict", "weaponry"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 8
@@ -511,7 +511,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "act of terror", "weaponry"],
+        "sub_topic": ["armed conflict"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 8
@@ -541,7 +541,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sub_topic": ["war", "weaponry"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 8
@@ -575,8 +575,8 @@
         }
       ],
       "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "armed conflict", "conflict (general)"],
+        "main_topic": "politics",
+        "sub_topic": ["international relations"],
         "sentiment": {
           "polarity": "neutral",
           "intensity": 0
@@ -601,7 +601,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "armed conflict"],
+        "sub_topic": ["war"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 7
@@ -646,7 +646,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "armed conflict", "massacre"],
+        "sub_topic": ["war"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 8
@@ -696,7 +696,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "crisis", "war"],
+        "sub_topic": ["war"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 7
@@ -731,7 +731,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "armed conflict"],
+        "sub_topic": ["war"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 7
@@ -796,7 +796,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "armed conflict"],
+        "sub_topic": ["war"],
         "sentiment": {
           "polarity": "neutral",
           "intensity": 0
@@ -836,7 +836,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "armed conflict"],
+        "sub_topic": ["war"],
         "sentiment": {
           "polarity": "neutral",
           "intensity": 3
@@ -870,8 +870,8 @@
         }
       ],
       "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict"],
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
         "sentiment": {
           "polarity": "positive",
           "intensity": 7
@@ -905,8 +905,8 @@
         }
       ],
       "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict"],
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
         "sentiment": {
           "polarity": "neutral",
           "intensity": 2
@@ -995,8 +995,8 @@
         }
       ],
       "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict"],
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
         "sentiment": {
           "polarity": "neutral",
           "intensity": 2
@@ -1030,8 +1030,8 @@
         }
       ],
       "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict"],
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
         "sentiment": {
           "polarity": "neutral",
           "intensity": 0
@@ -1076,7 +1076,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "civil unrest"],
+        "sub_topic": ["civil unrest"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 7
@@ -1105,8 +1105,8 @@
         }
       ],
       "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "war"],
+        "main_topic": "politics",
+        "sub_topic": ["national government"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 6
@@ -1145,8 +1145,8 @@
         }
       ],
       "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "civil unrest"],
+        "main_topic": "politics",
+        "sub_topic": ["parties and movements"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 6
@@ -1175,8 +1175,8 @@
         }
       ],
       "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "civil unrest"],
+        "main_topic": "politics",
+        "sub_topic": ["parties and movements"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 6
@@ -1206,7 +1206,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict"],
+        "sub_topic": ["civil unrest"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 7
@@ -1235,8 +1235,8 @@
         }
       ],
       "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict"],
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 6
@@ -1266,7 +1266,7 @@
       ],
       "topic": {
         "main_topic": "politics",
-        "sub_topic": ["government", "parties and movements", "diplomacy"],
+        "sub_topic": ["peace negotiations", "parties and movements"],
         "sentiment": {
           "polarity": "neutral",
           "intensity": 0
@@ -1301,7 +1301,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sub_topic": ["armed conflict"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 8
@@ -1336,7 +1336,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "war"],
+        "sub_topic": ["war"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 8
@@ -1375,8 +1375,8 @@
         }
       ],
       "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict"],
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 7
@@ -1411,7 +1411,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["demonstration", "armed conflict", "massacre"],
+        "sub_topic": ["armed conflict"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 9
@@ -1446,7 +1446,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sub_topic": ["armed conflict"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 8
@@ -1495,8 +1495,8 @@
         }
       ],
       "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "civil unrest"],
+        "main_topic": "politics",
+        "sub_topic": ["parties and movements"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 6
@@ -1531,7 +1531,7 @@
       ],
       "topic": {
         "main_topic": "politics",
-        "sub_topic": ["diplomacy", "foreign aid", "refugee"],
+        "sub_topic": ["international relations"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 7
@@ -1571,7 +1571,7 @@
       ],
       "topic": {
         "main_topic": "politics",
-        "sub_topic": ["diplomacy", "treaty", "international organisation"],
+        "sub_topic": ["international relations", "peace negotiations"],
         "sentiment": {
           "polarity": "positive",
           "intensity": 6
@@ -1606,7 +1606,7 @@
       ],
       "topic": {
         "main_topic": "politics",
-        "sub_topic": ["diplomacy", "treaty", "international organisation"],
+        "sub_topic": ["international relations", "political dissent"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 4
@@ -1641,7 +1641,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["demonstration", "civil unrest"],
+        "sub_topic": ["civil unrest", "political dissent"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 7
@@ -1671,7 +1671,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "act of terror", "weaponry"],
+        "sub_topic": ["armed conflict"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 8
@@ -1701,7 +1701,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "war", "massacre"],
+        "sub_topic": ["armed conflict", "massacre"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 9
@@ -1730,8 +1730,8 @@
         }
       ],
       "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict"],
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
         "sentiment": {
           "polarity": "neutral",
           "intensity": 2
@@ -1761,7 +1761,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "massacre", "war"],
+        "sub_topic": ["armed conflict", "massacre", "refugee"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 9
@@ -1806,7 +1806,7 @@
       ],
       "topic": {
         "main_topic": "politics",
-        "sub_topic": ["government", "parties and movements", "election"],
+        "sub_topic": ["national government", "parties and movements"],
         "sentiment": {
           "polarity": "neutral",
           "intensity": 0
@@ -1836,7 +1836,7 @@
       ],
       "topic": {
         "main_topic": "politics",
-        "sub_topic": ["government", "human rights"],
+        "sub_topic": ["human rights"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 7

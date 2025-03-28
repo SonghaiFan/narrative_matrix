@@ -1,0 +1,643 @@
+{
+  "subj:16000000": {
+    "name": "unrest, conflicts and war",
+    "level": 1,
+    "description": "Acts of socially or politically motivated protest and/or violence. ",
+    "subcategories": {
+      "subj:16001000": {
+        "name": "act of terror",
+        "level": 2,
+        "description": "Act of violence, often deadly, designed to raise fear and anxiety in a population ",
+        "subcategories": {}
+      },
+      "subj:16002000": {
+        "name": "armed conflict",
+        "level": 2,
+        "description": "Disputes between opposing groups involving the use of weaponry, but not formally declared a war ",
+        "subcategories": {}
+      },
+      "subj:16003000": {
+        "name": "civil unrest",
+        "level": 2,
+        "description": "Dissatisfaction among the general population as evidenced by rallies, strikes, demonstrations or sabotage ",
+        "subcategories": {
+          "subj:16003001": {
+            "name": "revolutions",
+            "level": 3,
+            "description": "An often violent change in a nation's system of government by internal forces that results in systematic social change. ",
+            "subcategories": {}
+          },
+          "subj:16003002": {
+            "name": "rebellions",
+            "level": 3,
+            "description": "Armed uprising by citizens of a nation with the intent to overthrow the government, without necessarily achieving social change ",
+            "subcategories": {}
+          },
+          "subj:16003003": {
+            "name": "political dissent",
+            "level": 3,
+            "description": "Disagreement between political groups, usually organized and sometimes resulting in imprisonment of the dissenters ",
+            "subcategories": {}
+          },
+          "subj:16003004": {
+            "name": "religious conflict",
+            "level": 3,
+            "description": "Conflicts involving religious differences ",
+            "subcategories": {}
+          },
+          "subj:16003005": {
+            "name": "social conflict",
+            "level": 3,
+            "description": "Conflicts involving social differences ",
+            "subcategories": {}
+          }
+        }
+      },
+      "subj:16004000": {
+        "name": "coup d'etat",
+        "level": 2,
+        "description": "The overthrow of an established government by an organized group, often the military or a political party ",
+        "subcategories": {}
+      },
+      "subj:16005000": {
+        "name": "guerrilla activity",
+        "level": 2,
+        "description": "Anti-government actions by clandestine groups using hit-and-run techniques or sabotage, kidnapping and the like ",
+        "subcategories": {
+          "subj:16005001": {
+            "name": "bioterrorism",
+            "level": 3,
+            "description": "Use of biological agent to raise the level of fear within a population, whether deaths occur or not. ",
+            "subcategories": {}
+          },
+          "subj:16005002": {
+            "name": "bombings",
+            "level": 3,
+            "description": "Use of explosive devices against people, buildings or structures ",
+            "subcategories": {}
+          }
+        }
+      },
+      "subj:16006000": {
+        "name": "massacre",
+        "level": 2,
+        "description": "The death of a large group of people over a brief period of time ",
+        "subcategories": {
+          "subj:16006001": {
+            "name": "genocide",
+            "level": 3,
+            "description": "Systematic killing of one clan, tribe or ethnic type by another ",
+            "subcategories": {}
+          }
+        }
+      },
+      "subj:16007000": {
+        "name": "riots",
+        "level": 2,
+        "description": "Violent, destructive demonstrations often involving injury to individuals and destruction of property ",
+        "subcategories": {}
+      },
+      "subj:16008000": {
+        "name": "demonstration",
+        "level": 2,
+        "description": "A public show of feeling or opinion, as by a mass meeting or parade ",
+        "subcategories": {}
+      },
+      "subj:16009000": {
+        "name": "war",
+        "level": 2,
+        "description": "A formal declaration of hostilities by one country against another ",
+        "subcategories": {
+          "subj:16009001": {
+            "name": "civil war",
+            "level": 3,
+            "description": "Armed conflict between members of the same nation or geographical region, in some cases with a desire to divide the nation or region. ",
+            "subcategories": {}
+          },
+          "subj:16009002": {
+            "name": "international military intervention",
+            "level": 3,
+            "description": "Temporary use of international forces by invitation or by a decision of an outside body in another country or region for the purpose of resolving a crisis. ",
+            "subcategories": {}
+          },
+          "subj:16009003": {
+            "name": "prisoners and detainees",
+            "level": 3,
+            "description": "People captured and imprisoned by their enemy during war or armed conflict ",
+            "subcategories": {}
+          }
+        }
+      },
+      "subj:16010000": {
+        "name": "conflict (general)",
+        "level": 2,
+        "description": "A dispute which can be at several levels, ",
+        "subcategories": {
+          "subj:16010001": {
+            "name": "peacekeeping force",
+            "level": 3,
+            "description": "Varied national military forces under unified international command to maintain order in disputed areas. ",
+            "subcategories": {}
+          }
+        }
+      },
+      "subj:16011000": {
+        "name": "crisis",
+        "level": 2,
+        "description": "Conflict of all kinds that rises to a level where, depending on events, governments can fall, war be declared or stock markets crash, or not ",
+        "subcategories": {}
+      },
+      "subj:16012000": {
+        "name": "weaponry",
+        "level": 2,
+        "description": "Armaments of all types used to conduct war ",
+        "subcategories": {}
+      }
+    }
+  },
+  "subj:11000000": {
+    "name": "politics",
+    "level": 1,
+    "description": "Local, regional, national and international exercise of power, or struggle for power, and the relationships between governing bodies and states. ",
+    "subcategories": {
+      "subj:11001000": {
+        "name": "defence",
+        "level": 2,
+        "description": "Anything involving the defence of one's own country ",
+        "subcategories": {
+          "subj:11001001": {
+            "name": "veterans affairs",
+            "level": 3,
+            "description": "Care and provision for those who served in the military ",
+            "subcategories": {}
+          },
+          "subj:11001002": {
+            "name": "national security",
+            "level": 3,
+            "description": "The philosophy of securing a nation and its borders, as well as the well being of its citizens ",
+            "subcategories": {}
+          },
+          "subj:11001003": {
+            "name": "security measures",
+            "level": 3,
+            "description": "Means of making a nation, a state, a building or a person secure from harm and outside interference. ",
+            "subcategories": {}
+          },
+          "subj:11001004": {
+            "name": "armed Forces",
+            "level": 3,
+            "description": "Those employed by a government to conduct war, or to enforce the security of a nation ",
+            "subcategories": {}
+          },
+          "subj:11001005": {
+            "name": "military equipment",
+            "level": 3,
+            "description": "Equipment issued to members of the armed forces ",
+            "subcategories": {}
+          },
+          "subj:11001006": {
+            "name": "firearms",
+            "level": 3,
+            "description": "Anything that uses an explosive in a directed manner to propel an object that can maim or kill ",
+            "subcategories": {}
+          },
+          "subj:11001007": {
+            "name": "biological and chemical weapons",
+            "level": 3,
+            "description": "Devices using biological agents, or chemical mixtures to disable, maim or kill an opponent ",
+            "subcategories": {}
+          },
+          "subj:11001008": {
+            "name": "missile systems",
+            "level": 3,
+            "description": "Anything that propels an inert, explosive, biological or chemical object through the air with the aim of disabling, maiming or killing an opponent. ",
+            "subcategories": {}
+          },
+          "subj:11001009": {
+            "name": "nuclear weapons",
+            "level": 3,
+            "description": "Weapons that use controlled radioactivity from the decay of certain elements to disable, maim or kill an opponent ",
+            "subcategories": {}
+          }
+        }
+      },
+      "subj:11002000": {
+        "name": "diplomacy",
+        "level": 2,
+        "description": "The use of verbal and written skills for persuading others to your point of view ",
+        "subcategories": {
+          "subj:11002001": {
+            "name": "summit",
+            "level": 3,
+            "description": "Includes meetings of leaders, foreign and finance ministers from the Group of Eight major nations and Group of Seven industrialized nations. ",
+            "subcategories": {}
+          },
+          "subj:11002002": {
+            "name": "international relations",
+            "level": 3,
+            "description": "Non-violent relations between nations through negotiation, treaty, or personal meetings ",
+            "subcategories": {}
+          },
+          "subj:11002003": {
+            "name": "peace negotiations",
+            "level": 3,
+            "description": "Negotiations intended to bring an end to a conflict ",
+            "subcategories": {}
+          },
+          "subj:11002004": {
+            "name": "alliances",
+            "level": 3,
+            "description": "Coalitions of like-minded groups formed to present a stronger force against any challenges ",
+            "subcategories": {}
+          }
+        }
+      },
+      "subj:11003000": {
+        "name": "election",
+        "level": 2,
+        "description": "The selection of representatives by the casting of votes ",
+        "subcategories": {
+          "subj:11003001": {
+            "name": "political candidates",
+            "level": 3,
+            "description": "Individuals who are chosen to stand for office ",
+            "subcategories": {}
+          },
+          "subj:11003002": {
+            "name": "political campaigns",
+            "level": 3,
+            "description": "Campaigns for public office ",
+            "subcategories": {}
+          },
+          "subj:11003003": {
+            "name": "campaign finance",
+            "level": 3,
+            "description": "The money that makes campaigns for public office possible ",
+            "subcategories": {}
+          },
+          "subj:11003004": {
+            "name": "national elections",
+            "level": 3,
+            "description": "Choosing individuals for government at a national level ",
+            "subcategories": {}
+          },
+          "subj:11003005": {
+            "name": "regional elections",
+            "level": 3,
+            "description": "Choosing individuals for government at a regional level ",
+            "subcategories": {}
+          },
+          "subj:11003006": {
+            "name": "local elections",
+            "level": 3,
+            "description": "Choosing individuals for government at the basic level, whether city, village or county ",
+            "subcategories": {}
+          },
+          "subj:11003007": {
+            "name": "voting",
+            "level": 3,
+            "description": "The act of selecting an individual you would like to represent your interests in government ",
+            "subcategories": {}
+          },
+          "subj:11003008": {
+            "name": "poll",
+            "level": 3,
+            "description": "Periodic measurement of a political candidate's standing with the public ",
+            "subcategories": {}
+          },
+          "subj:11003009": {
+            "name": "european elections",
+            "level": 3,
+            "description": "Choosing individuals for a body which is at a higher level than national government, e.g. European parliament ",
+            "subcategories": {}
+          },
+          "subj:11003010": {
+            "name": "primary",
+            "level": 3,
+            "description": "Preliminary elections on a local or regional basis leading up to a regional or national election ",
+            "subcategories": {}
+          }
+        }
+      },
+      "subj:11004000": {
+        "name": "espionage and intelligence",
+        "level": 2,
+        "description": "Covert collection of information ",
+        "subcategories": {}
+      },
+      "subj:11005000": {
+        "name": "foreign aid",
+        "level": 2,
+        "description": "Help provided by one nation to another ",
+        "subcategories": {
+          "subj:11005001": {
+            "name": "economic sanction",
+            "level": 3,
+            "description": "Punitive actions taken by one country against another including trade restrictions, embargoes etc. ",
+            "subcategories": {}
+          }
+        }
+      },
+      "subj:11006000": {
+        "name": "government",
+        "level": 2,
+        "description": "The system for ruling a country ",
+        "subcategories": {
+          "subj:11006001": {
+            "name": "civil and public service",
+            "level": 3,
+            "description": "The paid service by civilians for the government, and the often non-paid service of individuals for the benefit of others (public service) ",
+            "subcategories": {}
+          },
+          "subj:11006002": {
+            "name": "safety of citizens",
+            "level": 3,
+            "description": "Government policies to protect the well being of its citizens ",
+            "subcategories": {}
+          },
+          "subj:11006003": {
+            "name": "think tank",
+            "level": 3,
+            "description": "Group that undertakes political research and issue position papers, recommendations etc ",
+            "subcategories": {}
+          },
+          "subj:11006004": {
+            "name": "national government",
+            "level": 3,
+            "description": "The ruling body of a nation ",
+            "subcategories": {}
+          },
+          "subj:11006005": {
+            "name": "executive (government)",
+            "level": 3,
+            "description": "That portion of a ruling body involving the overall operation of government ",
+            "subcategories": {}
+          },
+          "subj:11006006": {
+            "name": "heads of state",
+            "level": 3,
+            "description": "Symbolic or actual chief representative of a nation, such as royalty, or president or emir, for example ",
+            "subcategories": {}
+          },
+          "subj:11006007": {
+            "name": "government departments",
+            "level": 3,
+            "description": "Divisions of a government that concentrate on specific areas such as health, welfare, economy or war ",
+            "subcategories": {}
+          },
+          "subj:11006008": {
+            "name": "public officials",
+            "level": 3,
+            "description": "Individuals, usually elected, who are in public service or commonly in the public eye. ",
+            "subcategories": {}
+          },
+          "subj:11006009": {
+            "name": "ministers (government)",
+            "level": 3,
+            "description": "Heads of various government departments at one level, also known as secretaries. At another level they form a legislative body. The chief minister is either prime minister or premier. ",
+            "subcategories": {}
+          },
+          "subj:11006010": {
+            "name": "public employees",
+            "level": 3,
+            "description": "People employed by a government at all levels ",
+            "subcategories": {}
+          },
+          "subj:11006011": {
+            "name": "privatisation",
+            "level": 3,
+            "description": "The privatisation of state-owned companies or property ",
+            "subcategories": {}
+          },
+          "subj:11006012": {
+            "name": "nationalisation",
+            "level": 3,
+            "description": "State takeover of private companies or property ",
+            "subcategories": {}
+          },
+          "subj:11006013": {
+            "name": "impeachment",
+            "level": 3,
+            "description": "The process of bringing a public official before a tribunal to answer charges of wrongdoing ",
+            "subcategories": {}
+          }
+        }
+      },
+      "subj:11007000": {
+        "name": "human rights",
+        "level": 2,
+        "description": "Rights entitled to be enjoyed by all citizens universally ",
+        "subcategories": {}
+      },
+      "subj:11008000": {
+        "name": "local authority",
+        "level": 2,
+        "description": "Authorities at city, county state or borough level ",
+        "subcategories": {}
+      },
+      "subj:11009000": {
+        "name": "parliament",
+        "level": 2,
+        "description": "The collective body of elected officials representing the people ",
+        "subcategories": {
+          "subj:11009001": {
+            "name": "upper house",
+            "level": 3,
+            "description": "Senior chamber of a legislative body ",
+            "subcategories": {}
+          },
+          "subj:11009002": {
+            "name": "lower house",
+            "level": 3,
+            "description": "The lower chamber of a legislative body ",
+            "subcategories": {}
+          }
+        }
+      },
+      "subj:11010000": {
+        "name": "parties and movements",
+        "level": 2,
+        "description": "Covers both formally recognized and informal political associations ",
+        "subcategories": {
+          "subj:11010001": {
+            "name": "non government organizations (NGO)",
+            "level": 3,
+            "description": "Groups officially outside of government that lobby, demonstrate or campaign on a wide range of issues such as economics, environment healthcare etc. ",
+            "subcategories": {}
+          }
+        }
+      },
+      "subj:11011000": {
+        "name": "refugee",
+        "level": 2,
+        "description": "A person seeking shelter in another country because of some fear of persecution in his own country ",
+        "subcategories": {}
+      },
+      "subj:11012000": {
+        "name": "regional authority",
+        "level": 2,
+        "description": "Government bodies at levels encompassing more than one jurisdiction, e.g. the Delaware River Basin Commission ",
+        "subcategories": {}
+      },
+      "subj:11013000": {
+        "name": "state budget and tax",
+        "level": 2,
+        "description": "The national budget as promulgated by the government ",
+        "subcategories": {
+          "subj:11013001": {
+            "name": "public finance",
+            "level": 3,
+            "description": "The money of government used for paying for public programs and services and public debt ",
+            "subcategories": {}
+          }
+        }
+      },
+      "subj:11015000": {
+        "name": "constitution",
+        "level": 2,
+        "description": "Usually a written document setting forth the operations of a government and the rights of the citizens therein ",
+        "subcategories": {}
+      },
+      "subj:11016000": {
+        "name": "interior policy",
+        "level": 2,
+        "description": "Government policies affecting internal affairs of a country ",
+        "subcategories": {
+          "subj:11016001": {
+            "name": "data protection",
+            "level": 3,
+            "description": "Efforts to protect personal information in either written, oral or electronic form ",
+            "subcategories": {}
+          },
+          "subj:11016002": {
+            "name": "housing and urban planning",
+            "level": 3,
+            "description": "Systematic planning of urban and suburban areas and the housing within those areas ",
+            "subcategories": {}
+          },
+          "subj:11016003": {
+            "name": "pension and welfare",
+            "level": 3,
+            "description": "Government policies affecting the well being of its citizens through unemployment benefits, state pensions and other similar payments ",
+            "subcategories": {}
+          },
+          "subj:11016004": {
+            "name": "personal weapon control",
+            "level": 3,
+            "description": "Government control of personal ownership of firearms and other offensive weapons, including control of weapons used for sports through licenses and other means ",
+            "subcategories": {}
+          },
+          "subj:11016005": {
+            "name": "indigenous people",
+            "level": 3,
+            "description": "Government policies toward indigenous peoples ",
+            "subcategories": {}
+          },
+          "subj:11016006": {
+            "name": "personal data collection",
+            "level": 3,
+            "description": "The collection, by government or other entities of information on individuals ",
+            "subcategories": {}
+          },
+          "subj:11016007": {
+            "name": "planning inquiries",
+            "level": 3,
+            "description": "Public hearings or planning inquiries on proposed constructions, e.g. Construction of water driven power station in a National Park. ",
+            "subcategories": {}
+          }
+        }
+      },
+      "subj:11017000": {
+        "name": "migration",
+        "level": 2,
+        "description": "Movement of one body of persons from one place to another ",
+        "subcategories": {}
+      },
+      "subj:11018000": {
+        "name": "citizens initiative and recall",
+        "level": 2,
+        "description": "Political suggestions by non-government officials for corrective action, or for changes in existing rules and regulations ",
+        "subcategories": {}
+      },
+      "subj:11019000": {
+        "name": "referenda",
+        "level": 2,
+        "description": "Political proposals, laws and actions suggested by non-government officials to be voted on by the entire voting body ",
+        "subcategories": {}
+      },
+      "subj:11020000": {
+        "name": "nuclear policy",
+        "level": 2,
+        "description": "Government policies as regards to use of nuclear fuels for power production or weapons ",
+        "subcategories": {}
+      },
+      "subj:11021000": {
+        "name": "lobbying",
+        "level": 2,
+        "description": "The attempt by non-government bodies and individual to affect the outcome of legislation through verbal, or other, persuasion ",
+        "subcategories": {}
+      },
+      "subj:11022000": {
+        "name": "regulatory policy and organisation",
+        "level": 2,
+        "description": "The rules and bodies, both national and international, that govern conflict of interest and good practice regulations. ",
+        "subcategories": {}
+      },
+      "subj:11023000": {
+        "name": "censorship",
+        "level": 2,
+        "description": "Attempts by any group to control freedoms of speech, religion, and ideas distributed in print, graphics, cyberspace and other ways. Does not include official standards such as cinema ratings, advertising and broadcast standards. ",
+        "subcategories": {}
+      },
+      "subj:11024000": {
+        "name": "politics (general)",
+        "level": 2,
+        "description": "The art or science of participating in the affairs of government, a state of political party ",
+        "subcategories": {
+          "subj:11024001": {
+            "name": "political systems",
+            "level": 3,
+            "description": "Systems designed to provide order to government ",
+            "subcategories": {}
+          },
+          "subj:11024002": {
+            "name": "democracy",
+            "level": 3,
+            "description": "Government in which the people hold the power either directly, or through elected officials. ",
+            "subcategories": {}
+          },
+          "subj:11024003": {
+            "name": "political development",
+            "level": 3,
+            "description": "The creation and rise of political systems and the history of the people and nations that are associated with those systems. ",
+            "subcategories": {}
+          }
+        }
+      },
+      "subj:11025000": {
+        "name": "freedom of the press",
+        "level": 2,
+        "description": "Mass media rights and freedoms, pressure and intimidation of the journalists, censorship in mass media, activities of government bodies, journalistic associations and/or organizations and other NGOs in regards to press freedom ",
+        "subcategories": {}
+      },
+      "subj:11026000": {
+        "name": "freedom of religion",
+        "level": 2,
+        "description": "Religious rights and freedoms, pressure and intimidation of the believers, censorship in mass media, activities of government bodies, journalistic associations and/or organizations and other NGOs in regards to freedom of belief and practice ",
+        "subcategories": {}
+      },
+      "subj:11027000": {
+        "name": "treaty",
+        "level": 2,
+        "description": "A treaty (as defined by the Vienna Convention on the Law of Treaties) is a written agreement between international entities that is binding under international law. ",
+        "subcategories": {}
+      },
+      "subj:11028000": {
+        "name": "international organisation",
+        "level": 2,
+        "description": "Includes organisations with members and functions that cross international borders, and may include intergovernmental organisations of sovereign nations. ",
+        "subcategories": {}
+      }
+    }
+  }
+}

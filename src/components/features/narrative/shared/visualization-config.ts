@@ -1,37 +1,47 @@
 export const SHARED_CONFIG = {
+  // Margin settings for all visualizations
   margin: {
     top: 30,
     right: 40,
     bottom: 20,
-    left: 120,
+    left: 140,
   },
+  // Axis configuration
   axis: {
-    tickSize: 5,
-    tickPadding: 10,
-    labelOffset: 45,
-    fontSize: 12,
+    tickSize: 5, // Size of axis tick marks in pixels
+    tickPadding: 8, // Distance between tick and label (standardized from values 5-10)
+    labelOffset: 45, // Offset for axis labels
+    fontSize: 12, // Font size for axis labels
+    narrativeAxisTickGap: 1, // Controls gap between narrative y-axis ticks (1 = every integer)
   },
+  // Animation timing
   animation: {
-    duration: 200,
+    duration: 200, // Duration of transitions in milliseconds
   },
+  // Header settings
   header: {
-    height: 40,
+    height: 40, // Height of the header area in pixels
   },
+  // Minimum height for visualizations
   minHeight: 800,
+  // Point/node styling
   point: {
-    radius: 6,
-    strokeWidth: 2,
-    hoverRadius: 9,
-    hoverStrokeWidth: 3,
+    radius: 6, // Default radius for points
+    strokeWidth: 2, // Default stroke width for points
+    hoverRadius: 9, // Radius when hovering
+    hoverStrokeWidth: 3, // Stroke width when hovering
   },
+  // Edge/connector styling
   edge: {
-    strokeWidth: 1.5,
-    opacity: 0.4,
-    dashArray: "4,4",
+    strokeWidth: 1.5, // Width of connecting edges
+    opacity: 0.4, // Default opacity for edges
+    dashArray: "4,4", // Dash pattern for dashed lines
   },
+  // Scale settings
   scale: {
     timeExponent: 3.6, // Power scale exponent for time distribution
   },
+  // Responsive layout settings
   responsive: {
     // Content-based dimensions
     content: {

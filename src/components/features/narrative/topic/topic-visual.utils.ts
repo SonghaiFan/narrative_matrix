@@ -158,13 +158,14 @@ export function calculateDimensions(
   };
 }
 
-// Create axes for the visualization
+// Create axes
 export function createAxes(
-  xScale: any, // Using any since we have a custom composite scale
-  yScale: d3.ScaleBand<string>
+  xScale: any, // Using any since we have a custom scale
+  yScale: d3.ScaleBand<string>,
+  config = TOPIC_CONFIG
 ) {
-  const xAxis = createTimeXAxis(xScale, TOPIC_CONFIG);
-  const yAxis = d3.axisLeft(yScale).tickSize(5).tickPadding(5);
+  const xAxis = createTimeXAxis(xScale, config);
+  const yAxis = createTopicYAxis(yScale, config);
 
   return { xAxis, yAxis };
 }
@@ -320,4 +321,14 @@ export function calculateExpandedPositions(
   }
 
   return positions;
+}
+
+export function createTopicYAxis(
+  yScale: d3.ScaleBand<string>,
+  config = TOPIC_CONFIG
+) {
+  return d3
+    .axisLeft(yScale)
+    .tickSize(config.axis.tickSize)
+    .tickPadding(config.axis.tickPadding);
 }

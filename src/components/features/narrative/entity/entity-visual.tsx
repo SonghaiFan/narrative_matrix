@@ -245,7 +245,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
     g.append("g")
       .attr("class", "y-axis")
       .call(yAxis)
-      .style("font-size", "12px")
+      .style("font-size", `${ENTITY_CONFIG.axis.fontSize}px`)
       .call((g) => g.select(".domain").remove())
       .call((g) => g.selectAll(".tick line").attr("stroke", "#94a3b8"))
       .append("text")

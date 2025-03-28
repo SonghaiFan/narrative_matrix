@@ -119,7 +119,7 @@
       "short_text": "Russia occupies roughly 20 percent of Ukraine after gaining territory in 2024.",
       "lead_title": "Intro",
       "temporal_anchoring": {
-        "real_time": "2022-02-24",
+        "real_time": ["2022-02-24", "2024"],
         "narrative_time": 1
       },
       "entities": [
@@ -136,7 +136,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "armed conflict"],
+        "sub_topic": ["war"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 7
@@ -166,7 +166,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "war", "weaponry"],
+        "sub_topic": ["war", "weaponry"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 8
@@ -196,7 +196,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "armed conflict"],
+        "sub_topic": ["war", "crisis"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 8
@@ -241,7 +241,7 @@
       ],
       "topic": {
         "main_topic": "politics",
-        "sub_topic": ["defence", "diplomacy", "government"],
+        "sub_topic": ["diplomacy", "government"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 7
@@ -276,7 +276,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict"],
+        "sub_topic": ["war"],
         "sentiment": {
           "polarity": "neutral",
           "intensity": 3
@@ -289,7 +289,7 @@
       "short_text": "The United States announced it would immediately lift its intelligence-sharing pause and restore military aid to Ukraine.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": ["2025-03-11", "2025-03-13"],
+        "real_time": "2025-03-11",
         "narrative_time": 6
       },
       "entities": [
@@ -305,8 +305,8 @@
         }
       ],
       "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict"],
+        "main_topic": "politics",
+        "sub_topic": ["diplomacy", "government"],
         "sentiment": {
           "polarity": "positive",
           "intensity": 6

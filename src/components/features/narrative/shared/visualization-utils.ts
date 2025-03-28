@@ -55,8 +55,8 @@ export function createTimeScale(width: number, domain: [Date, Date]) {
     tickFormat = d3.timeFormat("%b %Y");
   } else if (years <= 5) {
     // For spans less than 5 years, show half years
-    tickInterval = d3.timeYear.every(1)!;
-    tickFormat = d3.timeFormat("%Y");
+    tickInterval = d3.timeMonth.every(5)!;
+    tickFormat = d3.timeFormat("%b %Y");
   } else if (years <= 10) {
     // For spans less than 10 years, show years
     tickInterval = d3.timeYear.every(2)!;
@@ -137,12 +137,22 @@ export function generateTimeTicks(startDate: Date, endDate: Date): Date[] {
 }
 
 // Create y-axis with integer ticks for narrative time
-export function createNarrativeYAxis(yScale: d3.ScaleLinear<number, number>) {
+export function createNarrativeYAxis(
+  yScale: d3.ScaleLinear<number, number>,
+  config = SHARED_CONFIG
+) {
+  const maxNarrativeTime = Math.ceil(yScale.domain()[1]);
+  const tickGap = config.axis.narrativeAxisTickGap || 1;
+  const tickValues = Array.from(
+    { length: Math.ceil(maxNarrativeTime / tickGap) + 1 },
+    (_, i) => i * tickGap
+  ).filter((t) => t <= maxNarrativeTime);
+
   return d3
     .axisLeft(yScale)
-    .tickSize(5)
-    .tickPadding(5)
-    .ticks(Math.ceil(yScale.domain()[1]))
+    .tickSize(config.axis.tickSize)
+    .tickPadding(config.axis.tickPadding)
+    .tickValues(tickValues)
     .tickFormat(d3.format("d"));
 }
 
