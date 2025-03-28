@@ -111,16 +111,19 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
   // Get the first event's real time date for the article header
   // Using sortedEvents to get the chronologically first event
   const publicationDate =
-    metadata?.publishDate ||
-    sortedEvents[0]?.temporal_anchoring.real_time ||
-    null;
+    typeof metadata?.publishDate === "string"
+      ? metadata.publishDate
+      : typeof sortedEvents[0]?.temporal_anchoring.real_time === "string"
+      ? sortedEvents[0].temporal_anchoring.real_time
+      : null;
 
   // Use sortedEvents as base, or sorted search results if search is active
   const displayedEvents =
     searchResults.length > 0 ? searchResults : sortedEvents;
 
   // Get the article title from metadata
-  const articleTitle = metadata?.title || "News Article";
+  const articleTitle =
+    typeof metadata?.title === "string" ? metadata.title : "News Article";
 
   return (
     <div className="h-full flex flex-col min-h-0">

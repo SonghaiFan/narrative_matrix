@@ -23,15 +23,17 @@ export function PureTextSearch({
   // Prepare events with timestamp included in the searchable content
   const eventsWithFormattedTimestamps = useMemo(() => {
     return events.map((event) => {
-      let timestampFormatted = "";
+      let timestampFormatted: string | null = null;
       if (event.temporal_anchoring.real_time) {
-        timestampFormatted = new Date(
-          event.temporal_anchoring.real_time
-        ).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        });
+        const realTime = event.temporal_anchoring.real_time;
+        timestampFormatted =
+          typeof realTime === "string"
+            ? new Date(realTime).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })
+            : null;
       }
 
       return {
