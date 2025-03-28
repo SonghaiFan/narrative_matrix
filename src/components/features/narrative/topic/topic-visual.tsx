@@ -665,10 +665,9 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       </div>
       <div
         ref={containerRef}
-        className="flex-1 relative overflow-y-auto"
+        className="flex-1 relative overflow-y-scroll"
         style={{
           scrollbarGutter: "stable",
-          height: "calc(100% - ${TOPIC_CONFIG.header.height}px)",
         }}
       >
         <svg ref={svgRef} className="w-full h-full" />

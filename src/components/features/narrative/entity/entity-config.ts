@@ -9,7 +9,7 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
   },
   // Entity column styling
   entity: {
-    labelFontSize: 14, // Font size for entity labels
+    labelFontSize: 10, // Font size for entity labels
     lineStrokeWidth: 6, // Width of entity vertical guide lines
     columnPadding: 0.2, // Padding within entity columns
     columnWidth: 40, // Width of entity columns

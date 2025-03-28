@@ -215,17 +215,17 @@
       "entities": [
         {
           "id": "GOVERNMENT_4",
-          "name": "President Trump",
+          "name": "Trump",
           "social_role": "government"
         },
         {
           "id": "GOVERNMENT_5",
-          "name": "President Zelenskyy",
+          "name": "Zelenskyy",
           "social_role": "government"
         },
         {
           "id": "GOVERNMENT_6",
-          "name": "Vice President JD Vance",
+          "name": "JD Vance",
           "social_role": "government"
         },
         {
@@ -264,8 +264,8 @@
           "social_role": "government"
         },
         {
-          "id": "GOVERNMENT_7",
-          "name": "Trump administration",
+          "id": "GOVERNMENT_4",
+          "name": "Trump",
           "social_role": "government"
         },
         {
