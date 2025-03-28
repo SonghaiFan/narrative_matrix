@@ -20,45 +20,18 @@ export function PureTextSearch({
   const { text } = PURE_TEXT_CONFIG;
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Prepare events with timestamp included in the searchable content
-  const eventsWithFormattedTimestamps = useMemo(() => {
-    return events.map((event) => {
-      let timestampFormatted: string | null = null;
-      if (event.temporal_anchoring.real_time) {
-        const realTime = event.temporal_anchoring.real_time;
-        timestampFormatted =
-          typeof realTime === "string"
-            ? new Date(realTime).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              })
-            : null;
-      }
-
-      return {
-        ...event,
-        // Add searchable timestamp to event
-        searchableText: `${event.text} (${timestampFormatted})`,
-      };
-    });
-  }, [events]);
-
-  // Initialize Fuse search with enhanced searchable content
+  // Initialize Fuse search with text-only search
   const fuse = useMemo(() => {
-    return new Fuse(eventsWithFormattedTimestamps, {
-      keys: [
-        "searchableText",
-        "entities.name",
-        "topic.main_topic",
-        "topic.sub_topic",
-      ],
+    return new Fuse(events, {
+      keys: ["text"],
       includeScore: true,
-      threshold: 0.4,
+      threshold: 0.1, // Lower threshold for more exact matching
       ignoreLocation: true,
       useExtendedSearch: true,
+      isCaseSensitive: false,
+      minMatchCharLength: 1,
     });
-  }, [eventsWithFormattedTimestamps]);
+  }, [events]);
 
   // Override browser default search with our custom search
   useEffect(() => {
@@ -90,13 +63,7 @@ export function PureTextSearch({
       onSearchQueryChange("");
     } else {
       const results = fuse.search(searchQuery.trim());
-      // Map back to original events since we only added searchableText for searching
-      onSearchResults(
-        results.map((result) => {
-          const { searchableText, ...originalEvent } = result.item;
-          return originalEvent as NarrativeEvent;
-        })
-      );
+      onSearchResults(results.map((result) => result.item));
       onSearchQueryChange(searchQuery.trim());
     }
   }, [searchQuery, events, fuse, onSearchResults, onSearchQueryChange]);
