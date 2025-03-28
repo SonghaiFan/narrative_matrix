@@ -146,7 +146,7 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
             {events.length} event{events.length !== 1 ? "s" : ""}
           </span>
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto mr-8">
           <PureTextSearch
             events={sortedEvents}
             onSearchResults={handleSearchResults}
