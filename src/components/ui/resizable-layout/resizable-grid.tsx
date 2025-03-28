@@ -6,6 +6,9 @@ import {
   PanelGroup,
   ImperativePanelGroupHandle,
 } from "react-resizable-panels";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExpand, faCompress } from "@fortawesome/free-solid-svg-icons";
+import { ExpandButton } from "./expand-button";
 
 interface ResizableGridProps {
   topLeft: React.ReactNode;
@@ -28,8 +31,8 @@ export function ResizableGrid({
   const DEFAULT_TOP_HEIGHT = 45;
 
   // Min/max constraints
-  const MIN_SIZE = 30;
-  const MAX_SIZE = 70;
+  const MIN_SIZE = 0;
+  const MAX_SIZE = 100;
 
   // Track panel sizes
   const [horizontalSizes, setHorizontalSizes] = useState([
@@ -45,6 +48,9 @@ export function ResizableGrid({
     100 - DEFAULT_TOP_HEIGHT,
   ]);
   const [isDragging, setIsDragging] = useState(false);
+  const [expandedSection, setExpandedSection] = useState<
+    "topLeft" | "topRight" | "bottomLeft" | "bottomRight" | null
+  >(null);
 
   // References to panel groups for programmatic resizing
   const leftPanelGroupRef = useRef<ImperativePanelGroupHandle>(null);
@@ -62,6 +68,55 @@ export function ResizableGrid({
 
   const handleRightVerticalLayoutChange = (sizes: number[]) => {
     setRightVerticalSizes(sizes);
+  };
+
+  // Handle expand button clicks
+  const handleExpand = (
+    section: "topLeft" | "topRight" | "bottomLeft" | "bottomRight"
+  ) => {
+    // If clicking the same section that's already expanded, restore default layout
+    if (expandedSection === section) {
+      // Restore default layout
+      horizontalPanelGroupRef.current?.setLayout([
+        DEFAULT_LEFT_WIDTH,
+        100 - DEFAULT_LEFT_WIDTH,
+      ]);
+      leftPanelGroupRef.current?.setLayout([
+        DEFAULT_TOP_HEIGHT,
+        100 - DEFAULT_TOP_HEIGHT,
+      ]);
+      rightPanelGroupRef.current?.setLayout([
+        DEFAULT_TOP_HEIGHT,
+        100 - DEFAULT_TOP_HEIGHT,
+      ]);
+      setExpandedSection(null);
+      return;
+    }
+
+    // Otherwise, expand the clicked section
+    switch (section) {
+      case "topLeft":
+        // Expand left column and top section to full
+        horizontalPanelGroupRef.current?.setLayout([100, 0]);
+        leftPanelGroupRef.current?.setLayout([100, 0]);
+        break;
+      case "topRight":
+        // Expand right column and top section to full
+        horizontalPanelGroupRef.current?.setLayout([0, 100]);
+        rightPanelGroupRef.current?.setLayout([100, 0]);
+        break;
+      case "bottomLeft":
+        // Expand left column and bottom section to full
+        horizontalPanelGroupRef.current?.setLayout([100, 0]);
+        leftPanelGroupRef.current?.setLayout([0, 100]);
+        break;
+      case "bottomRight":
+        // Expand right column and bottom section to full
+        horizontalPanelGroupRef.current?.setLayout([0, 100]);
+        rightPanelGroupRef.current?.setLayout([0, 100]);
+        break;
+    }
+    setExpandedSection(section);
   };
 
   // Handle cross-section drag - simplified
@@ -127,7 +182,6 @@ export function ResizableGrid({
           id="left-column"
           defaultSize={DEFAULT_LEFT_WIDTH}
           minSize={MIN_SIZE}
-          maxSize={MAX_SIZE}
           className="h-full"
         >
           <PanelGroup
@@ -141,9 +195,12 @@ export function ResizableGrid({
               id="top-left"
               defaultSize={DEFAULT_TOP_HEIGHT}
               minSize={MIN_SIZE}
-              maxSize={MAX_SIZE}
-              className="h-full"
+              className="h-full relative"
             >
+              <ExpandButton
+                isExpanded={expandedSection === "topLeft"}
+                onClick={() => handleExpand("topLeft")}
+              />
               {topLeft}
             </Panel>
             {/* Bottom left panel */}
@@ -151,9 +208,12 @@ export function ResizableGrid({
               id="bottom-left"
               defaultSize={100 - DEFAULT_TOP_HEIGHT}
               minSize={MIN_SIZE}
-              maxSize={MAX_SIZE}
-              className="h-full"
+              className="h-full relative"
             >
+              <ExpandButton
+                isExpanded={expandedSection === "bottomLeft"}
+                onClick={() => handleExpand("bottomLeft")}
+              />
               {bottomLeft}
             </Panel>
           </PanelGroup>
@@ -164,7 +224,6 @@ export function ResizableGrid({
           id="right-column"
           defaultSize={100 - DEFAULT_LEFT_WIDTH}
           minSize={MIN_SIZE}
-          maxSize={MAX_SIZE}
           className="h-full"
         >
           <PanelGroup
@@ -178,9 +237,12 @@ export function ResizableGrid({
               id="top-right"
               defaultSize={DEFAULT_TOP_HEIGHT}
               minSize={MIN_SIZE}
-              maxSize={MAX_SIZE}
-              className="h-full"
+              className="h-full relative"
             >
+              <ExpandButton
+                isExpanded={expandedSection === "topRight"}
+                onClick={() => handleExpand("topRight")}
+              />
               {topRight}
             </Panel>
             {/* Bottom right panel */}
@@ -188,9 +250,12 @@ export function ResizableGrid({
               id="bottom-right"
               defaultSize={100 - DEFAULT_TOP_HEIGHT}
               minSize={MIN_SIZE}
-              maxSize={MAX_SIZE}
-              className="h-full"
+              className="h-full relative"
             >
+              <ExpandButton
+                isExpanded={expandedSection === "bottomRight"}
+                onClick={() => handleExpand("bottomRight")}
+              />
               {bottomRight}
             </Panel>
           </PanelGroup>
