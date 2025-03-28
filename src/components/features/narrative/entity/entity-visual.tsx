@@ -427,7 +427,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
       </div>
       <div
         ref={containerRef}
-        className="flex-1 relative overflow-x-scroll"
+        className="flex-1 relative"
         style={{ scrollbarGutter: "stable" }}
       >
         <svg ref={svgRef} className="w-auto" />
