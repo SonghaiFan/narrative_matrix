@@ -197,3 +197,37 @@ export function getXPosition(
   }
   return xScale(date);
 }
+
+interface VisualizationConfig {
+  margin: {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+  };
+  minHeight: number;
+}
+
+/**
+ * Calculate dimensions for visualizations based on container size and event count
+ */
+export function calculateDimensions(
+  containerWidth: number,
+  eventsLength: number,
+  config: VisualizationConfig
+) {
+  const width = containerWidth - config.margin.left - config.margin.right;
+  const minHeight =
+    eventsLength * SHARED_CONFIG.responsive.content.eventHeight +
+    config.margin.top +
+    config.margin.bottom;
+  const containerHeight = Math.max(minHeight, config.minHeight);
+  const height = containerHeight - config.margin.top - config.margin.bottom;
+
+  return {
+    containerWidth,
+    width,
+    containerHeight,
+    height,
+  };
+}

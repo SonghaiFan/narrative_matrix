@@ -10,7 +10,7 @@ import {
   processEvents,
   getSortedPoints,
   getScales,
-  calculateDimensions,
+  getTimeDimensions,
   createAxes,
   createLineGenerator,
   DataPoint,
@@ -409,7 +409,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
 
     // Calculate dimensions
     const { containerWidth, containerHeight, width, height } =
-      calculateDimensions(containerRef.current.clientWidth, events.length);
+      getTimeDimensions(containerRef.current.clientWidth, events.length);
 
     // Create scales
     const publishDate = new Date(metadata.publishDate);
@@ -497,16 +497,16 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     // Create line generator
     const smoothLine = createLineGenerator(xScale, yScale);
 
-    // Add main line connecting to the right edge of rectangles
+    // Add narrative line connecting to the right edge of rectangles
     g.append("g")
       .attr("class", "line-group")
       .append("path")
       .datum(sortedPoints)
-      .attr("class", "main-line")
+      .attr("class", "narrative-line")
       .attr("fill", "none")
-      .attr("stroke", "black")
-      .attr("stroke-width", TIME_CONFIG.curve.strokeWidth)
-      .attr("stroke-opacity", TIME_CONFIG.curve.opacity)
+      .attr("stroke", TIME_CONFIG.track.color)
+      .attr("stroke-width", TIME_CONFIG.track.strokeWidth)
+      .attr("stroke-opacity", TIME_CONFIG.track.opacity)
       .attr("stroke-linecap", "round")
       .attr("d", smoothLine);
 
@@ -578,7 +578,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         className="flex-1 relative "
         style={{ scrollbarGutter: "stable" }}
       >
-        <svg ref={svgRef} className="w-auto" />
+        <svg ref={svgRef} className="min-w-full min-h-full" />
       </div>
     </div>
   );

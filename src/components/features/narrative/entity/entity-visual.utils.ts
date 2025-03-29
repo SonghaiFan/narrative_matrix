@@ -1,7 +1,11 @@
 import { Entity, NarrativeEvent } from "@/types/narrative/lite";
 import * as d3 from "d3";
 import { ENTITY_CONFIG } from "./entity-config";
-import { createNarrativeYAxis } from "@/components/features/narrative/shared/visualization-utils";
+import {
+  createNarrativeYAxis,
+  calculateDimensions,
+} from "@/components/features/narrative/shared/visualization-utils";
+import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
 
 export type EntityAttribute = string;
 
@@ -34,20 +38,12 @@ export function getEntityAttributeValue(
   return value?.toString() || "Unknown";
 }
 
-// Calculate dimensions for the visualization
-export function calculateDimensions(
+// Remove the old calculateDimensions function and use the shared one
+export function getEntityDimensions(
   containerWidth: number,
   eventsLength: number
 ) {
-  const width =
-    containerWidth - ENTITY_CONFIG.margin.left - ENTITY_CONFIG.margin.right;
-  const minHeight =
-    eventsLength * 20 + ENTITY_CONFIG.margin.top + ENTITY_CONFIG.margin.bottom;
-  const containerHeight = Math.max(minHeight, ENTITY_CONFIG.minHeight);
-  const height =
-    containerHeight - ENTITY_CONFIG.margin.top - ENTITY_CONFIG.margin.bottom;
-
-  return { containerWidth, width, containerHeight, height };
+  return calculateDimensions(containerWidth, eventsLength, ENTITY_CONFIG);
 }
 
 // Get entity mentions count from events
@@ -117,7 +113,7 @@ export function getVisibleEntities(
   return (
     Array.from(entityMentions.values())
       .sort((a, b) => b.count - a.count)
-      // .slice(0, 10)
+      // .slice(0, 10) // Comment this line to show all
       .map((item) => item.entity)
   );
 }

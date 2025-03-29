@@ -9,6 +9,7 @@ import {
   getDateFromRange,
   getTimeDomain,
   getXPosition,
+  calculateDimensions,
 } from "@/components/features/narrative/shared/visualization-utils";
 import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
 
@@ -118,25 +119,12 @@ export function getScales(
   return { xScale, yScale };
 }
 
-// Calculate dimensions based on container and config
-export function calculateDimensions(
+// Remove the old calculateDimensions function and use the shared one
+export function getTimeDimensions(
   containerWidth: number,
   eventsLength: number
 ) {
-  const minHeight =
-    eventsLength * 20 + TIME_CONFIG.margin.top + TIME_CONFIG.margin.bottom;
-  const containerHeight = Math.max(minHeight, TIME_CONFIG.minHeight);
-  const width =
-    containerWidth - TIME_CONFIG.margin.left - TIME_CONFIG.margin.right;
-  const height =
-    containerHeight - TIME_CONFIG.margin.top - TIME_CONFIG.margin.bottom;
-
-  return {
-    containerWidth,
-    containerHeight,
-    width,
-    height,
-  };
+  return calculateDimensions(containerWidth, eventsLength, TIME_CONFIG);
 }
 
 // Create axes for the visualization

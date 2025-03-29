@@ -250,9 +250,9 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         .attr("y1", y)
         .attr("x2", width)
         .attr("y2", y)
-        .attr("stroke", TOPIC_CONFIG.topic.lineColor)
-        .attr("stroke-width", TOPIC_CONFIG.topic.lineStrokeWidth)
-        .attr("opacity", TOPIC_CONFIG.topic.lineOpacity);
+        .attr("stroke", TOPIC_CONFIG.track.color)
+        .attr("stroke-width", TOPIC_CONFIG.track.strokeWidth)
+        .attr("opacity", TOPIC_CONFIG.track.opacity);
     });
 
     // Group overlapping points
@@ -479,7 +479,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         const topic = d.mainTopic || d.points[0].mainTopic;
         g.select(`.topic-line-${topic.replace(/\s+/g, "-")}`).attr(
           "opacity",
-          TOPIC_CONFIG.topic.lineHighlightOpacity
+          TOPIC_CONFIG.track.highlightOpacity
         );
       },
 
@@ -493,8 +493,8 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         // Reset topic line
         const topic = d.mainTopic || d.points[0].mainTopic;
         g.select(`.topic-line-${topic.replace(/\s+/g, "-")}`)
-          .attr("opacity", TOPIC_CONFIG.topic.lineOpacity)
-          .attr("stroke-width", TOPIC_CONFIG.topic.lineStrokeWidth);
+          .attr("opacity", TOPIC_CONFIG.track.opacity)
+          .attr("stroke-width", TOPIC_CONFIG.track.strokeWidth);
 
         hideTooltip();
       },

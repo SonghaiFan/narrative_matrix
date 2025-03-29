@@ -7,8 +7,6 @@ import {
   PanelResizeHandle,
   ImperativePanelGroupHandle,
 } from "react-resizable-panels";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExpand, faCompress } from "@fortawesome/free-solid-svg-icons";
 import { ExpandButton } from "./expand-button";
 
 interface ResizableGridProps {
@@ -53,9 +51,9 @@ export function ResizableGrid({
     "topRight" | "bottomLeft" | "bottomRight" | null
   >(null);
   const [visibleHandles, setVisibleHandles] = useState({
-    horizontal: true,
-    verticalLeft: true,
-    verticalRight: true,
+    horizontal: false,
+    verticalLeft: false,
+    verticalRight: false,
   });
 
   // References to panel groups for programmatic resizing
@@ -94,11 +92,11 @@ export function ResizableGrid({
         100 - DEFAULT_TOP_HEIGHT,
       ]);
       setExpandedSection(null);
-      // Show all resize handles
+      // Hide all resize handles when no section is expanded
       setVisibleHandles({
-        horizontal: true,
-        verticalLeft: true,
-        verticalRight: true,
+        horizontal: false,
+        verticalLeft: false,
+        verticalRight: false,
       });
       return;
     }
@@ -113,7 +111,7 @@ export function ResizableGrid({
         ]);
         leftPanelGroupRef.current?.setLayout([100, 0]); // Make top left full height
         rightPanelGroupRef.current?.setLayout([100, 0]);
-        // Hide vertical resize handles
+        // Show only horizontal resize handle
         setVisibleHandles({
           horizontal: true,
           verticalLeft: false,
@@ -127,11 +125,11 @@ export function ResizableGrid({
           DEFAULT_TOP_HEIGHT,
           100 - DEFAULT_TOP_HEIGHT,
         ]);
-        // Hide horizontal resize handle
+        // Show only vertical left resize handle
         setVisibleHandles({
           horizontal: false,
           verticalLeft: true,
-          verticalRight: true,
+          verticalRight: false,
         });
         break;
       case "bottomRight":
@@ -142,7 +140,7 @@ export function ResizableGrid({
         ]);
         leftPanelGroupRef.current?.setLayout([100, 0]); // Make top left full height
         rightPanelGroupRef.current?.setLayout([0, 100]);
-        // Hide vertical resize handles
+        // Show only horizontal resize handle
         setVisibleHandles({
           horizontal: true,
           verticalLeft: false,
@@ -313,9 +311,9 @@ export function ResizableGrid({
 
       {/* Cross-section handle*/}
       <div
-        className={`absolute w-6 h-6 cursor-move transform -translate-x-1/2 -translate-y-1/2 z-50 flex items-center justify-center hidden ${
-          isDragging ? "scale-110" : ""
-        }`}
+        className={`absolute w-10 h-10 cursor-move transform -translate-x-1/2 -translate-y-1/2 z-50 flex items-center justify-center ${
+          expandedSection ? "hidden" : ""
+        } ${isDragging ? "scale-110" : ""}`}
         style={{
           left: `${horizontalSizes[0]}%`,
           top: `${leftVerticalSizes[0]}%`,

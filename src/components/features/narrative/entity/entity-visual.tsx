@@ -7,7 +7,7 @@ import { ENTITY_CONFIG } from "./entity-config";
 import { useTooltip } from "@/contexts/tooltip-context";
 import { useCenterControl } from "@/contexts/center-control-context";
 import {
-  calculateDimensions,
+  getEntityDimensions,
   getEntityMentions,
   calculateColumnLayout,
   createXScale,
@@ -116,7 +116,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
     d3.select(headerRef.current).selectAll("*").remove();
 
     // Setup dimensions first
-    const { containerHeight, height } = calculateDimensions(
+    const { containerHeight, height } = getEntityDimensions(
       containerRef.current.clientWidth,
       events.length
     );
@@ -156,41 +156,28 @@ export function EntityVisual({ events }: EntityVisualProps) {
     // Create entity labels in the fixed header
     allEntities.forEach((entity) => {
       const x = xScale(entity.id)! + xScale.bandwidth() / 2;
-      const entitySlug = entity.id.replace(/\s+/g, "-");
 
       const labelContainer = headerContent
         .append("div")
-        .style("position", "absolute")
+        .attr("class", "absolute -translate-x-1/2 cursor-pointer")
         .style("left", `${x}px`)
-        .style("transform", "translateX(-50%)")
-        .style("cursor", "pointer")
-        .style("max-width", `${xScale.bandwidth()}px`)
-        .on("mouseenter", () => {
-          g.select(`.guide-line-${entitySlug}`)
-            .attr("opacity", 0.8)
-            .attr("stroke-width", ENTITY_CONFIG.entity.lineStrokeWidth);
-        })
-        .on("mouseleave", () => {
-          g.select(`.guide-line-${entitySlug}`)
-            .attr("opacity", 0.3)
-            .attr("stroke-width", ENTITY_CONFIG.entity.lineStrokeWidth);
-        });
+        .style("max-width", `${xScale.bandwidth()}px`);
 
       // Show only the entity name with text wrapping
       labelContainer
         .append("div")
-        .style("font-weight", "600")
-        .style("font-size", "12px")
-        .style("color", "#374151")
-        .style("text-align", "center")
-        .style("word-wrap", "break-word")
-        .style("white-space", "normal")
-        .style("line-height", "1.2")
-        .style("max-height", "2.4em")
-        .style("overflow", "hidden")
-        .style("display", "-webkit-box")
-        .style("-webkit-line-clamp", "2")
-        .style("-webkit-box-orient", "vertical")
+        .attr(
+          "class",
+          [
+            "font-semibold",
+            `text-xs`,
+            "text-gray-700",
+            "text-center",
+            "break-words",
+            "leading-tight",
+            "line-clamp-3",
+          ].join(" ")
+        )
         .attr("title", entity.name)
         .text(entity.name);
     });
@@ -216,7 +203,6 @@ export function EntityVisual({ events }: EntityVisualProps) {
       .attr("class", "guide-lines")
       .style("display", "none");
 
-    // Add horizontal guide line with proper width
     guideLine
       .append("line")
       .attr("class", "guide-line horizontal")
@@ -231,13 +217,13 @@ export function EntityVisual({ events }: EntityVisualProps) {
       const entitySlug = entity.id.replace(/\s+/g, "-");
 
       g.append("line")
-        .attr("class", `guide-line-${entitySlug}`)
+        .attr("class", `track-${entitySlug}`)
         .attr("x1", x)
         .attr("y1", 0)
         .attr("x2", x)
         .attr("y2", height)
         .attr("stroke", "#94a3b8")
-        .attr("stroke-width", ENTITY_CONFIG.entity.lineStrokeWidth)
+        .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
         .attr("opacity", 0.3);
     });
 
@@ -262,8 +248,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
       parent: d3.Selection<any, unknown, null, undefined>,
       cx: number,
       cy: number,
-      event: NarrativeEvent,
-      isConnector = false
+      event: NarrativeEvent
     ) => {
       const node = parent
         .append("circle")
@@ -271,13 +256,13 @@ export function EntityVisual({ events }: EntityVisualProps) {
         .attr("data-event-index", event.index)
         .attr("cx", cx)
         .attr("cy", cy)
-        .attr("r", ENTITY_CONFIG.event.nodeRadius)
+        .attr("r", ENTITY_CONFIG.point.radius)
         .attr("fill", getSentimentColor(event.topic.sentiment.polarity))
         .attr(
           "stroke",
           selectedEventId === event.index ? getHighlightColor() : "black"
         )
-        .attr("stroke-width", ENTITY_CONFIG.event.nodeStrokeWidth)
+        .attr("stroke-width", ENTITY_CONFIG.point.strokeWidth)
         .style("cursor", "pointer");
 
       // Add event handlers
@@ -286,7 +271,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
           d3.select(this)
             .transition()
             .duration(200)
-            .attr("r", ENTITY_CONFIG.event.nodeRadius * 1.5);
+            .attr("r", ENTITY_CONFIG.point.radius * 1.5);
 
           showTooltip(event, e.pageX, e.pageY, "entity");
           updatePosition(e.pageX, e.pageY);
@@ -298,7 +283,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
           d3.select(this)
             .transition()
             .duration(200)
-            .attr("r", ENTITY_CONFIG.event.nodeRadius);
+            .attr("r", ENTITY_CONFIG.point.radius);
           hideTooltip();
         })
         .on("click", function () {
@@ -370,7 +355,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
           // Draw nodes on top of the connector
           connectorPoints.forEach((point) => {
-            createEventNode(connectorGroup, point.x, 0, event, true);
+            createEventNode(connectorGroup, point.x, 0, event);
           });
         }
       }
@@ -428,7 +413,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
         className="flex-none bg-white sticky top-0 z-10 shadow-sm"
       />
       <div ref={containerRef} className="flex-1 relative">
-        <svg ref={svgRef} className="min-w-full" />
+        <svg ref={svgRef} className="min-w-full min-h-full" />
       </div>
     </div>
   );

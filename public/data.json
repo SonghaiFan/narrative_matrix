@@ -417,7 +417,7 @@
       "entities": [
         {
           "id": "GOVERNMENT_9",
-          "name": "Benjamin Netanyahu",
+          "name": "Netanyahu",
           "social_role": "government"
         },
         {
@@ -698,11 +698,6 @@
         {
           "id": "OBJECT_25",
           "name": "Sinai Peninsula",
-          "social_role": "object"
-        },
-        {
-          "id": "OBJECT_26",
-          "name": "1956 Suez Crisis",
           "social_role": "object"
         }
       ],
@@ -1527,12 +1522,7 @@
       "entities": [
         {
           "id": "GOVERNMENT_39",
-          "name": "Donald J. Trump administration",
-          "social_role": "government"
-        },
-        {
-          "id": "GOVERNMENT_40",
-          "name": "UN Relief and Works Agency",
+          "name": "Trump administration",
           "social_role": "government"
         },
         {
@@ -1562,7 +1552,7 @@
       "entities": [
         {
           "id": "GOVERNMENT_39",
-          "name": "Donald J. Trump administration",
+          "name": "Trump administration",
           "social_role": "government"
         },
         {
@@ -1636,13 +1626,13 @@
       },
       "entities": [
         {
-          "id": "GOVERNMENT_43",
-          "name": "Israeli police",
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
           "social_role": "government"
         },
         {
-          "id": "PUBLIC_44",
-          "name": "Palestinian families",
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
           "social_role": "public"
         },
         {
@@ -1797,22 +1787,7 @@
         },
         {
           "id": "GOVERNMENT_9",
-          "name": "Benjamin Netanyahu",
-          "social_role": "government"
-        },
-        {
-          "id": "GOVERNMENT_46",
-          "name": "Likud party",
-          "social_role": "government"
-        },
-        {
-          "id": "GOVERNMENT_47",
-          "name": "ultra-Orthodox parties",
-          "social_role": "government"
-        },
-        {
-          "id": "GOVERNMENT_48",
-          "name": "far-right parties",
+          "name": "Netanyahu",
           "social_role": "government"
         }
       ],

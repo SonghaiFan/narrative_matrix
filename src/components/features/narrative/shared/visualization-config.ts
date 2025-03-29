@@ -14,6 +14,15 @@ export const SHARED_CONFIG = {
     fontSize: 12, // Font size for axis labels
     narrativeAxisTickGap: 1, // Controls gap between narrative y-axis ticks (1 = every integer)
   },
+  //
+  track: {
+    strokeWidth: 6,
+    opacity: 0.3,
+    highlightOpacity: 0.8,
+    highlightStrokeWidth: 2,
+    dashArray: "3,3",
+    color: "#94a3b8",
+  },
   // Animation timing
   animation: {
     duration: 200, // Duration of transitions in milliseconds
@@ -47,7 +56,7 @@ export const SHARED_CONFIG = {
     content: {
       minEntityWidth: 40, // Minimum width per entity
       entityGap: 10, // Gap between entities
-      eventHeight: 20, // Height per event
+      eventHeight: 40, // Height per event
       minEventGap: 5, // Minimum gap between events
     },
     // Container-based dimensions
@@ -56,13 +65,6 @@ export const SHARED_CONFIG = {
       minHeight: 400, // Minimum container height
       maxWidth: 2000, // Maximum container width
       maxHeight: 2000, // Maximum container height
-    },
-    // Alignment settings
-    alignment: {
-      entityTimeGap: 20, // Gap between entity and time visualizations
-      timeTopicGap: 20, // Gap between time and topic visualizations
-      sharedYScale: true, // Whether to share y-scale between entity and time
-      sharedXScale: true, // Whether to share x-scale between time and topic
     },
   },
 };
