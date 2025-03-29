@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import {
   Panel,
   PanelGroup,
+  PanelResizeHandle,
   ImperativePanelGroupHandle,
 } from "react-resizable-panels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -49,8 +50,13 @@ export function ResizableGrid({
   ]);
   const [isDragging, setIsDragging] = useState(false);
   const [expandedSection, setExpandedSection] = useState<
-    "topLeft" | "topRight" | "bottomLeft" | "bottomRight" | null
+    "topRight" | "bottomLeft" | "bottomRight" | null
   >(null);
+  const [visibleHandles, setVisibleHandles] = useState({
+    horizontal: true,
+    verticalLeft: true,
+    verticalRight: true,
+  });
 
   // References to panel groups for programmatic resizing
   const leftPanelGroupRef = useRef<ImperativePanelGroupHandle>(null);
@@ -71,9 +77,7 @@ export function ResizableGrid({
   };
 
   // Handle expand button clicks
-  const handleExpand = (
-    section: "topLeft" | "topRight" | "bottomLeft" | "bottomRight"
-  ) => {
+  const handleExpand = (section: "topRight" | "bottomLeft" | "bottomRight") => {
     // If clicking the same section that's already expanded, restore default layout
     if (expandedSection === section) {
       // Restore default layout
@@ -90,36 +94,66 @@ export function ResizableGrid({
         100 - DEFAULT_TOP_HEIGHT,
       ]);
       setExpandedSection(null);
+      // Show all resize handles
+      setVisibleHandles({
+        horizontal: true,
+        verticalLeft: true,
+        verticalRight: true,
+      });
       return;
     }
 
-    // Otherwise, expand the clicked section
+    // Otherwise, expand the clicked section while keeping top left visible
     switch (section) {
-      case "topLeft":
-        // Expand left column and top section to full
-        horizontalPanelGroupRef.current?.setLayout([100, 0]);
-        leftPanelGroupRef.current?.setLayout([100, 0]);
-        break;
       case "topRight":
-        // Expand right column and top section to full
-        horizontalPanelGroupRef.current?.setLayout([0, 100]);
+        // Expand right column and top section to full, keeping top left visible and full height
+        horizontalPanelGroupRef.current?.setLayout([
+          DEFAULT_LEFT_WIDTH,
+          100 - DEFAULT_LEFT_WIDTH,
+        ]);
+        leftPanelGroupRef.current?.setLayout([100, 0]); // Make top left full height
         rightPanelGroupRef.current?.setLayout([100, 0]);
+        // Hide vertical resize handles
+        setVisibleHandles({
+          horizontal: true,
+          verticalLeft: false,
+          verticalRight: false,
+        });
         break;
       case "bottomLeft":
-        // Expand left column and bottom section to full
+        // Expand left column and bottom section to full, keeping top left visible
         horizontalPanelGroupRef.current?.setLayout([100, 0]);
-        leftPanelGroupRef.current?.setLayout([0, 100]);
+        leftPanelGroupRef.current?.setLayout([
+          DEFAULT_TOP_HEIGHT,
+          100 - DEFAULT_TOP_HEIGHT,
+        ]);
+        // Hide horizontal resize handle
+        setVisibleHandles({
+          horizontal: false,
+          verticalLeft: true,
+          verticalRight: true,
+        });
         break;
       case "bottomRight":
-        // Expand right column and bottom section to full
-        horizontalPanelGroupRef.current?.setLayout([0, 100]);
+        // Expand right column and bottom section to full, keeping top left visible and full height
+        horizontalPanelGroupRef.current?.setLayout([
+          DEFAULT_LEFT_WIDTH,
+          100 - DEFAULT_LEFT_WIDTH,
+        ]);
+        leftPanelGroupRef.current?.setLayout([100, 0]); // Make top left full height
         rightPanelGroupRef.current?.setLayout([0, 100]);
+        // Hide vertical resize handles
+        setVisibleHandles({
+          horizontal: true,
+          verticalLeft: false,
+          verticalRight: false,
+        });
         break;
     }
     setExpandedSection(section);
   };
 
-  // Handle cross-section drag - simplified
+  // Handle cross-section drag
   const handleCrossDragStart = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -133,7 +167,7 @@ export function ResizableGrid({
       const deltaX = ((moveEvent.clientX - startX) / window.innerWidth) * 100;
       const deltaY = ((moveEvent.clientY - startY) / window.innerHeight) * 100;
 
-      // Update horizontal sizes (width) with 30/70 constraints
+      // Update horizontal sizes (width) with constraints
       const newHorizontalSize = Math.max(
         MIN_SIZE,
         Math.min(MAX_SIZE, startHorizontal + deltaX)
@@ -143,7 +177,7 @@ export function ResizableGrid({
         100 - newHorizontalSize,
       ]);
 
-      // Update vertical sizes (height) for both columns with 30/70 constraints
+      // Update vertical sizes (height) for both columns with constraints
       const newVerticalSize = Math.max(
         MIN_SIZE,
         Math.min(MAX_SIZE, startLeftVertical + deltaY)
@@ -197,12 +231,14 @@ export function ResizableGrid({
               minSize={MIN_SIZE}
               className="h-full relative"
             >
-              <ExpandButton
-                isExpanded={expandedSection === "topLeft"}
-                onClick={() => handleExpand("topLeft")}
-              />
               {topLeft}
             </Panel>
+            <PanelResizeHandle
+              id={"vertical-left-resize-handle"}
+              className={`w-full h-1 bg-gray-200 hover:bg-gray-300 transition-colors ${
+                visibleHandles.verticalLeft ? "" : "hidden"
+              }`}
+            />
             {/* Bottom left panel */}
             <Panel
               id="bottom-left"
@@ -218,6 +254,13 @@ export function ResizableGrid({
             </Panel>
           </PanelGroup>
         </Panel>
+
+        <PanelResizeHandle
+          id={"horiztonal-grid-resize-handle"}
+          className={`w-1 h-full bg-gray-200 hover:bg-gray-300 transition-colors ${
+            visibleHandles.horizontal ? "" : "hidden"
+          }`}
+        />
 
         {/* Right column */}
         <Panel
@@ -245,6 +288,12 @@ export function ResizableGrid({
               />
               {topRight}
             </Panel>
+            <PanelResizeHandle
+              id={"vertical-right-resize-handle"}
+              className={`w-full h-1 bg-gray-200 hover:bg-gray-300 transition-colors ${
+                visibleHandles.verticalRight ? "" : "hidden"
+              }`}
+            />
             {/* Bottom right panel */}
             <Panel
               id="bottom-right"
@@ -264,8 +313,8 @@ export function ResizableGrid({
 
       {/* Cross-section handle*/}
       <div
-        className={`absolute w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded-full cursor-move transform -translate-x-1/2 -translate-y-1/2 transition-colors z-50 flex items-center justify-center shadow-md border border-gray-300 ${
-          isDragging ? "bg-gray-200 scale-110" : ""
+        className={`absolute w-6 h-6 cursor-move transform -translate-x-1/2 -translate-y-1/2 z-50 flex items-center justify-center hidden ${
+          isDragging ? "scale-110" : ""
         }`}
         style={{
           left: `${horizontalSizes[0]}%`,
@@ -281,8 +330,11 @@ export function ResizableGrid({
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="M4 4h4v4H4V4zm12 0h4v4h-4V4zM4 16h4v4H4v-4zm12 0h4v4h-4v-4z"
-            fill="currentColor"
+            d="M12 4v16M4 12h16"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       </div>
