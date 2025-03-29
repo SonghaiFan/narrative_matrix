@@ -6,9 +6,9 @@ import { TopicDisplay } from "@/components/features/narrative/topic/topic-displa
 import { PureTextDisplay } from "@/components/features/narrative/pure-text/pure-text-display";
 import { ChatInterface } from "@/components/features/chat/chat-interface";
 import { TaskPanel } from "@/components/features/task/task-panel";
-import { ResizableTwoRowCol } from "@/components/ui/resizable-layout/resizable-two-row-col";
-import { ResizableGrid } from "@/components/ui/resizable-layout/resizable-grid";
-import { ScenarioPageFactory } from "@/components/features/scenario/scenario-page-factory";
+import { ResizableTwoRowCol } from "@/components/ui/resizable-two-row-col";
+import { ResizableGrid } from "@/components/ui/resizable-grid";
+import { ScenarioPageFactory } from "@/components/features/dashboard/scenario-page-factory";
 
 function VisualizationChatScenario() {
   return (

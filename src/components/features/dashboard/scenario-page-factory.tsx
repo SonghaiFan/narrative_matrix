@@ -1,8 +1,8 @@
 "use client";
 
 import { ReactNode } from "react";
-import { ScenarioLayout } from "@/components/layouts/scenario-layout";
-import { useScenarioData } from "@/hooks/use-scenario-data";
+import { ScenarioLayout } from "@/components/features/dashboard/scenario-layout";
+import { useScenarioData } from "@/components/features/dashboard/use-scenario-data";
 import { useAuth } from "@/contexts/auth-context";
 
 interface ScenarioPageFactoryProps {

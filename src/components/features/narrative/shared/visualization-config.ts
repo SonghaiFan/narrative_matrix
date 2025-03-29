@@ -48,7 +48,7 @@ export const SHARED_CONFIG = {
   },
   // Scale settings
   scale: {
-    timeExponent: 3.6, // Power scale exponent for time distribution
+    timeExponent: 3, // Power scale exponent for time distribution
   },
   // Responsive layout settings
   responsive: {
@@ -56,7 +56,7 @@ export const SHARED_CONFIG = {
     content: {
       minEntityWidth: 40, // Minimum width per entity
       entityGap: 10, // Gap between entities
-      eventHeight: 40, // Height per event
+      eventHeight: 30, // Height per event
       minEventGap: 5, // Minimum gap between events
     },
     // Container-based dimensions

@@ -6,7 +6,7 @@ import { AuthHeader } from "@/components/features/auth/auth-header";
 import { ScenarioSelector } from "@/components/features/dashboard/scenario-selector";
 import { UserDataViewer } from "@/components/features/dashboard/local-storage-viewer";
 import { useAuth } from "@/contexts/auth-context";
-import { useScenarioData } from "@/hooks/use-scenario-data";
+import { useScenarioData } from "@/components/features/dashboard/use-scenario-data";
 
 export interface ScenarioCardProps {
   title: string;

@@ -2,7 +2,7 @@
 
 import { PureTextDisplay } from "@/components/features/narrative/pure-text/pure-text-display";
 import { TaskPanel } from "@/components/features/task/task-panel";
-import { ScenarioPageFactory } from "@/components/features/scenario/scenario-page-factory";
+import { ScenarioPageFactory } from "@/components/features/dashboard/scenario-page-factory";
 
 function PureTextTrainingScenario() {
   return (

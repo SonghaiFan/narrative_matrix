@@ -10,7 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select/select";
+} from "@/components/ui/select";
 import { SHARED_CONFIG } from "../shared/visualization-config";
 
 // Helper function to format attribute labels

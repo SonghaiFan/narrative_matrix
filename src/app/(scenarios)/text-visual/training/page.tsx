@@ -5,8 +5,8 @@ import { EntityDisplay } from "@/components/features/narrative/entity/entity-dis
 import { TopicDisplay } from "@/components/features/narrative/topic/topic-display";
 import { PureTextDisplay } from "@/components/features/narrative/pure-text/pure-text-display";
 import { TaskPanel } from "@/components/features/task/task-panel";
-import { ResizableGrid } from "@/components/ui/resizable-layout/resizable-grid";
-import { ScenarioPageFactory } from "@/components/features/scenario/scenario-page-factory";
+import { ResizableGrid } from "@/components/ui/resizable-grid";
+import { ScenarioPageFactory } from "@/components/features/dashboard/scenario-page-factory";
 
 function VisualizationTrainingScenario() {
   return (

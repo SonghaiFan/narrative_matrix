@@ -82,15 +82,15 @@ export function NarrativeTooltip({
         borderColor: sentimentColor === "#ffffff" ? "#e5e7eb" : "transparent",
       }}
     >
-      {/* Event text - guaranteed to exist */}
-      <div className="font-medium text-gray-900">{event.text}</div>
-
       {/* Temporal information - optional field */}
       {event.temporal_anchoring?.real_time && (
-        <div className="text-gray-500 text-xs mt-1">
+        <div className="text-gray-700 font-bold text-sm mb-2">
           {formatDate(event.temporal_anchoring.real_time)}
         </div>
       )}
+
+      {/* Event text - guaranteed to exist */}
+      <div className="font-medium text-gray-900">{event.text}</div>
 
       {/* Topic information - guaranteed to exist */}
       {event.topic && (

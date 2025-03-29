@@ -239,7 +239,6 @@
       "index": 1,
       "text": "Hamas launched its deadly attack on Israel on October 7, 2023, prompting the Israel Defense Forces (IDF) to engage in aerial campaigns and ground operations within the Gaza Strip.",
       "short_text": "Hamas launched a deadly attack on Israel, leading to IDF's aerial and ground operations in Gaza on October 7, 2023.",
-      "lead_title": "Intro",
       "temporal_anchoring": {
         "real_time": "2023-10-07",
         "narrative_time": 1
@@ -564,7 +563,6 @@
       "index": 10,
       "text": "The\u202fIsraeli-Palestinian conflict\u202fdates back to the end of the nineteenth century. In 1947, the United Nations adopted\u202fResolution 181, known as the Partition Plan, which sought to divide the British Mandate of Palestine into Arab and Jewish states.",
       "short_text": "In 1947, the United Nations adopted Resolution 181, the Partition Plan, to divide the British Mandate of Palestine into Arab and Jewish states.",
-      "lead_title": "Background",
       "temporal_anchoring": {
         "real_time": ["1947-01-01", "1947-12-31"],
         "narrative_time": 10
@@ -582,7 +580,7 @@
         },
         {
           "id": "OBJECT_20",
-          "name": "British Mandate of Palestine",
+          "name": "Palestine",
           "social_role": "object"
         }
       ],

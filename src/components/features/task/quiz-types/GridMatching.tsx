@@ -9,8 +9,9 @@ import {
 } from "@hello-pangea/dnd";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
-import type { GridMatchingQuiz } from "@/types/quiz";
+import type { GridMatchingQuiz } from "./index";
 
+// Types
 type GridMatchingOptions = GridMatchingQuiz["options"];
 
 interface GridMatchingProps {
@@ -25,6 +26,60 @@ interface MatchedPair {
   right: string;
 }
 
+// Constants
+const DEFAULT_LABELS = {
+  left: "Items",
+  right: "Categories",
+} as const;
+
+const DRAG_HANDLE_ICON = (
+  <svg
+    className="w-4 h-4"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M4 6h16M4 12h16M4 18h16"
+    />
+  </svg>
+);
+
+// Sub-components
+function DragHandle({
+  disabled,
+  isDragging,
+}: {
+  disabled: boolean;
+  isDragging: boolean;
+}) {
+  if (disabled || isDragging) return null;
+
+  return (
+    <div className="text-gray-400 hover:text-gray-600">{DRAG_HANDLE_ICON}</div>
+  );
+}
+
+function MatchedItemBadge({
+  text,
+  onRemove,
+}: {
+  text: string;
+  onRemove: () => void;
+}) {
+  return (
+    <div className="flex items-center gap-2 bg-blue-50 text-blue-700 rounded-md px-2 py-1 text-sm border border-blue-200">
+      <span className="text-blue-700">{text}</span>
+      <button onClick={onRemove} className="text-blue-400 hover:text-blue-600">
+        <X className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  );
+}
+
 export function GridMatching({
   options,
   value,
@@ -34,8 +89,8 @@ export function GridMatching({
   const {
     leftItems = [],
     rightItems = [],
-    leftLabel = "Items",
-    rightLabel = "Categories",
+    leftLabel = DEFAULT_LABELS.left,
+    rightLabel = DEFAULT_LABELS.right,
   } = options;
 
   // Ensure arrays are not undefined
@@ -48,60 +103,52 @@ export function GridMatching({
 
   // Parse initial value into matched pairs
   useEffect(() => {
-    if (value) {
-      try {
-        const pairs = value.split(",").map((pair) => {
-          const [left, right] = pair.split(":").map((s) => s.trim());
-          return { left, right };
-        });
-        setMatchedPairs(pairs);
-      } catch (e) {
-        console.error("Error parsing value:", e);
-      }
+    if (!value) return;
+
+    try {
+      const pairs = value.split(",").map((pair) => {
+        const [left, right] = pair.split(":").map((s) => s.trim());
+        return { left, right };
+      });
+      setMatchedPairs(pairs);
+    } catch (e) {
+      console.error("Error parsing value:", e);
     }
   }, [value]);
 
-  const handleDragStart = () => {
-    setIsDragging(true);
-  };
+  const handleDragStart = () => setIsDragging(true);
 
   const handleDragEnd = (result: DropResult) => {
     setIsDragging(false);
     setDraggedOverId(null);
     if (!result.destination) return;
 
-    const { source, destination } = result;
-    const sourceId = source.droppableId;
+    const { source } = result;
+    if (source.droppableId !== "left") return;
 
-    // Only allow dragging from left to right
-    if (sourceId === "left") {
-      const leftItem = safeLeftItems[source.index];
-      const rightItem = safeRightItems.find(
-        (_, index) =>
-          `right-${index}` === draggedOverId?.replace("droppable-", "")
-      );
+    const leftItem = safeLeftItems[source.index];
+    const rightItem = safeRightItems.find(
+      (_, index) =>
+        `right-${index}` === draggedOverId?.replace("droppable-", "")
+    );
 
-      if (rightItem) {
-        // Allow multiple matches - only check if this exact pair already exists
-        const isExactPairMatched = matchedPairs.some(
-          (pair) => pair.left === leftItem && pair.right === rightItem
-        );
+    if (!rightItem) return;
 
-        if (!isExactPairMatched) {
-          const newPairs = [
-            ...matchedPairs,
-            { left: leftItem, right: rightItem },
-          ];
-          setMatchedPairs(newPairs);
+    // Allow multiple matches - only check if this exact pair already exists
+    const isExactPairMatched = matchedPairs.some(
+      (pair) => pair.left === leftItem && pair.right === rightItem
+    );
 
-          // Update the textarea value
-          const formattedValue = newPairs
-            .map((pair) => `${pair.left}: ${pair.right}`)
-            .join(", ");
-          onChange(formattedValue);
-        }
-      }
-    }
+    if (isExactPairMatched) return;
+
+    const newPairs = [...matchedPairs, { left: leftItem, right: rightItem }];
+    setMatchedPairs(newPairs);
+
+    // Update the value
+    const formattedValue = newPairs
+      .map((pair) => `${pair.left}: ${pair.right}`)
+      .join(", ");
+    onChange(formattedValue);
   };
 
   const removePair = (pairToRemove: MatchedPair) => {
@@ -148,79 +195,37 @@ export function GridMatching({
                       : "border-gray-200"
                   )}
                 >
-                  {safeLeftItems.map((item, index) => {
-                    const matchesForItem = matchedPairs.filter(
-                      (pair) => pair.left === item
-                    );
-                    const hasMatches = matchesForItem.length > 0;
-
-                    return (
-                      <Draggable
-                        key={item}
-                        draggableId={`left-${item}`}
-                        index={index}
-                        isDragDisabled={disabled}
-                      >
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className={cn(
-                              "p-2 mb-1 last:mb-0 rounded-md shadow-sm border transition-all group",
-                              snapshot.isDragging
-                                ? "shadow-md border-blue-500 ring-2 ring-blue-500 bg-white"
-                                : hasMatches
-                                ? "bg-green-50 border-green-200"
-                                : "bg-white border-gray-200 hover:border-gray-300",
-                              disabled && "opacity-50 cursor-not-allowed"
-                            )}
-                          >
-                            <div className="flex flex-col gap-1">
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm flex-1">{item}</span>
-                                {!disabled && !snapshot.isDragging && (
-                                  <div className="text-gray-400 hover:text-gray-600">
-                                    <svg
-                                      className="w-4 h-4"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                      />
-                                    </svg>
-                                  </div>
-                                )}
-                              </div>
-                              {hasMatches && (
-                                <div className="flex flex-wrap gap-1">
-                                  {matchesForItem.map((match, idx) => (
-                                    <div
-                                      key={`${match.left}-${match.right}-${idx}`}
-                                      className="flex items-center gap-1 bg-green-100 text-green-700 rounded px-1.5 py-0.5 text-xs"
-                                    >
-                                      {match.right}
-                                      <button
-                                        onClick={() => removePair(match)}
-                                        className="hover:text-green-800"
-                                      >
-                                        <X className="h-3 w-3" />
-                                      </button>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
+                  {safeLeftItems.map((item: string, index: number) => (
+                    <Draggable
+                      key={item}
+                      draggableId={`left-${item}`}
+                      index={index}
+                      isDragDisabled={disabled}
+                    >
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          className={cn(
+                            "p-2 mb-1 last:mb-0 rounded-md shadow-sm border transition-all group",
+                            snapshot.isDragging
+                              ? "shadow-md border-blue-500 ring-2 ring-blue-500 bg-white"
+                              : "bg-white border-gray-200 hover:border-gray-300",
+                            disabled && "opacity-50 cursor-not-allowed"
+                          )}
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm flex-1">{item}</span>
+                            <DragHandle
+                              disabled={disabled}
+                              isDragging={snapshot.isDragging}
+                            />
                           </div>
-                        )}
-                      </Draggable>
-                    );
-                  })}
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
                   {provided.placeholder}
                 </div>
               )}
@@ -230,7 +235,7 @@ export function GridMatching({
           {/* Right Column */}
           <div className="flex-1">
             <div className="grid grid-cols-1 gap-1">
-              {safeRightItems.map((item, index) => {
+              {safeRightItems.map((item: string, index: number) => {
                 const matchesForItem = matchedPairs.filter(
                   (pair) => pair.right === item
                 );
@@ -243,7 +248,7 @@ export function GridMatching({
                     key={`right-${index}`}
                     droppableId={`right-${index}`}
                   >
-                    {(provided, snapshot) => (
+                    {(provided) => (
                       <div
                         {...provided.droppableProps}
                         ref={provided.innerRef}
@@ -255,32 +260,27 @@ export function GridMatching({
                           isDragging && setDraggedOverId(null)
                         }
                         className={cn(
-                          "p-2 rounded-md border transition-all min-h-[44px]",
+                          "rounded-md border transition-all",
                           isBeingDraggedOver
                             ? "border-blue-500 ring-2 ring-blue-500 bg-blue-50"
                             : hasMatches
-                            ? "bg-green-50 border-green-200"
+                            ? "bg-blue-50 border-blue-200"
                             : "bg-white border-gray-200",
                           disabled && "opacity-50 cursor-not-allowed"
                         )}
                       >
-                        <div className="flex flex-col gap-1">
-                          <span className="text-sm">{item}</span>
+                        <div className="p-2 space-y-2">
+                          <div className="flex items-center">
+                            <span className="text-sm">{item}</span>
+                          </div>
                           {hasMatches && (
-                            <div className="flex flex-wrap gap-1">
+                            <div className="space-y-1">
                               {matchesForItem.map((match, idx) => (
-                                <div
+                                <MatchedItemBadge
                                   key={`${match.left}-${match.right}-${idx}`}
-                                  className="flex items-center gap-1 bg-green-100 text-green-700 rounded px-1.5 py-0.5 text-xs"
-                                >
-                                  {match.left}
-                                  <button
-                                    onClick={() => removePair(match)}
-                                    className="hover:text-green-800"
-                                  >
-                                    <X className="h-3 w-3" />
-                                  </button>
-                                </div>
+                                  text={match.left}
+                                  onRemove={() => removePair(match)}
+                                />
                               ))}
                             </div>
                           )}
@@ -297,18 +297,8 @@ export function GridMatching({
       </DragDropContext>
 
       <div className="text-xs text-gray-500">
-        Drag items from {leftLabel} to {rightLabel} to create matches, or enter
-        them manually below
+        Drag items from {leftLabel} to {rightLabel} to create matches
       </div>
-
-      <textarea
-        className="w-full p-2 border rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-        rows={2}
-        placeholder={`Enter matches in format: item1: category1, item2: category2...`}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={disabled}
-      />
     </div>
   );
 }
