@@ -167,18 +167,8 @@ export function NumberedSequence({
       </DragDropContext>
 
       <div className="text-xs text-gray-500">
-        Drag and drop events to reorder them, or enter the sequence manually
-        below
+        Drag and drop events to reorder them
       </div>
-
-      <textarea
-        className="w-full p-2 border rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-        rows={2}
-        placeholder="Enter the event numbers in order (e.g., 1,2,3,4)..."
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={disabled}
-      />
     </div>
   );
 }

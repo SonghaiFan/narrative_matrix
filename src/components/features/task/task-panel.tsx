@@ -662,8 +662,18 @@ export function TaskPanel({
                   <div className="text-xs text-amber-600 flex items-center">
                     <HelpCircle className="h-3 w-3 mr-1 flex-shrink-0" />
                     Tip: If you cannot find the specific information in the
-                    text, use the "Skip" button.
+                    text, use the "Information Not Found" button below to skip
+                    this question.
                   </div>
+                  {!currentTask.completed && !showAnswer && (
+                    <button
+                      onClick={handleSkip}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2 mt-2 border border-amber-200 bg-amber-50 text-amber-700 rounded-md hover:bg-amber-100 hover:border-amber-300 transition-colors text-sm font-medium"
+                    >
+                      <HelpCircle className="h-4 w-4" />
+                      Information Not Found in Text
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -887,23 +897,14 @@ export function TaskPanel({
             )}
 
             {!currentTask.completed && !showAnswer ? (
-              <>
-                <button
-                  onClick={handleSkip}
-                  className="flex items-center gap-1.5 px-4 py-2 border-2 border-amber-300 bg-amber-50 text-amber-600 rounded-md hover:bg-amber-100 hover:border-amber-400 transition-colors"
-                >
-                  <HelpCircle className="h-4 w-4" />
-                  <span className="text-sm font-medium">Skip</span>
-                </button>
-                <button
-                  onClick={handleSubmit}
-                  disabled={!userAnswer.trim() || isSubmitting}
-                  className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <CheckCircle className="h-4 w-4" />
-                  <span className="text-sm font-medium">Submit</span>
-                </button>
-              </>
+              <button
+                onClick={handleSubmit}
+                disabled={!userAnswer.trim() || isSubmitting}
+                className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                <CheckCircle className="h-4 w-4" />
+                <span className="text-sm font-medium">Submit</span>
+              </button>
             ) : !currentTask.completed && showAnswer ? (
               <button
                 onClick={handleSubmit}
@@ -965,18 +966,26 @@ export function TaskPanel({
           <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-4">
             <div className="flex items-start mb-3">
               <div className="flex-shrink-0 mr-3">
-                <AlertCircle className="h-5 w-5 text-red-500" />
+                <AlertCircle className="h-5 w-5 text-amber-500" />
               </div>
               <div className="flex-1">
                 <h3 className="text-sm font-medium text-gray-900">
-                  Confirm Skip
+                  Confirm: Information Not Found
                 </h3>
-                <p className="text-xs text-gray-500 mt-1">
-                  Are you sure you want to skip this question? If the
-                  information is not specified in the text or there is no single
-                  correct answer based on the text, you should skip. Once
-                  skipped, you won't be able to go back or change your answer.
-                </p>
+                <div className="text-xs text-gray-500 mt-1">
+                  <p>
+                    Are you sure this information is not specified in the text?
+                  </p>
+                  <p className="mt-1">Please confirm that you have:</p>
+                  <ul className="mt-1 ml-4 list-disc">
+                    <li>Carefully read through all available text</li>
+                    <li>Checked all relevant events and references</li>
+                    <li>
+                      Found no clear answer based solely on the provided
+                      information
+                    </li>
+                  </ul>
+                </div>
               </div>
               <button
                 onClick={handleCancelSkip}
@@ -990,13 +999,13 @@ export function TaskPanel({
                 onClick={handleCancelSkip}
                 className="px-3 py-1.5 text-xs border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
               >
-                Cancel
+                Go Back & Check Again
               </button>
               <button
                 onClick={handleConfirmSkip}
-                className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                className="px-3 py-1.5 text-xs bg-amber-600 text-white rounded-md hover:bg-amber-700"
               >
-                Yes, Skip
+                Confirm Not Found
               </button>
             </div>
           </div>
