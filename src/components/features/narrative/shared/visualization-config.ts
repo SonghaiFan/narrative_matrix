@@ -29,7 +29,7 @@ export const SHARED_CONFIG = {
   },
   // Header settings
   header: {
-    height: 40, // Height of the header area in pixels
+    height: 50, // Height of the header area in pixels
   },
   // Minimum height for visualizations
   minHeight: 800,
@@ -48,7 +48,7 @@ export const SHARED_CONFIG = {
   },
   // Scale settings
   scale: {
-    timeExponent: 3, // Power scale exponent for time distribution
+    timeExponent: 2.5, // Power scale exponent for time distribution
   },
   // Responsive layout settings
   responsive: {

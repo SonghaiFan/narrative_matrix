@@ -103,7 +103,7 @@
       {
         "id": "israel-4",
         "question": "Which neutral third-party organization supervised the January 2025 ceasefire implementation between Israel and Hamas?",
-        "answer": "This information is not specified in the text",
+        "answer": null,
         "level": "Sanity Check",
         "type": "radio-options",
         "options": [
@@ -360,6 +360,11 @@
           "social_role": "activist"
         },
         {
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
+          "social_role": "public"
+        },
+        {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government"
@@ -568,6 +573,16 @@
         "narrative_time": 10
       },
       "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
+          "social_role": "public"
+        },
         {
           "id": "GOVERNMENT_18",
           "name": "United Nations",
@@ -975,7 +990,7 @@
         },
         {
           "id": "GOVERNMENT_32",
-          "name": "Palestinian Authority",
+          "name": "Palestinian",
           "social_role": "government"
         },
         {
@@ -1054,9 +1069,9 @@
       },
       "entities": [
         {
-          "id": "PUBLIC_21",
-          "name": "Palestinians",
-          "social_role": "public"
+          "id": "GOVERNMENT_32",
+          "name": "Palestinian",
+          "social_role": "government"
         },
         {
           "id": "GOVERNMENT_2",
@@ -1135,7 +1150,7 @@
         },
         {
           "id": "GOVERNMENT_32",
-          "name": "Palestinian Authority",
+          "name": "Palestinian",
           "social_role": "government"
         },
         {
@@ -1168,6 +1183,11 @@
         "narrative_time": 25
       },
       "entities": [
+        {
+          "id": "GOVERNMENT_32",
+          "name": "Palestinian",
+          "social_role": "government"
+        },
         {
           "id": "GOVERNMENT_5",
           "name": "United States",
@@ -1302,6 +1322,11 @@
           "id": "OBJECT_8",
           "name": "Gaza",
           "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_32",
+          "name": "Palestinian",
+          "social_role": "government"
         }
       ],
       "topic": {
@@ -1324,9 +1349,9 @@
       },
       "entities": [
         {
-          "id": "GOVERNMENT_2",
-          "name": "Israel",
-          "social_role": "government"
+          "id": "PUBLIC_45",
+          "name": "Israelis",
+          "social_role": "public"
         },
         {
           "id": "GOVERNMENT_6",
@@ -1367,6 +1392,16 @@
           "id": "ACTIVIST_36",
           "name": "Fatah",
           "social_role": "activist"
+        },
+        {
+          "id": "PUBLIC_45",
+          "name": "Israelis",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_32",
+          "name": "Palestinian",
+          "social_role": "government"
         },
         {
           "id": "PUBLIC_21",
@@ -1485,7 +1520,7 @@
         },
         {
           "id": "GOVERNMENT_32",
-          "name": "Palestinian Authority",
+          "name": "Palestinian",
           "social_role": "government"
         },
         {
@@ -1527,6 +1562,11 @@
           "id": "GOVERNMENT_5",
           "name": "United States",
           "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
+          "social_role": "public"
         }
       ],
       "topic": {
@@ -1588,6 +1628,11 @@
         "narrative_time": 37
       },
       "entities": [
+        {
+          "id": "GOVERNMENT_32",
+          "name": "Palestinian",
+          "social_role": "government"
+        },
         {
           "id": "GOVERNMENT_37",
           "name": "Mahmoud Abbas",
@@ -1666,6 +1711,11 @@
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_32",
+          "name": "Palestinian",
           "social_role": "government"
         }
       ],

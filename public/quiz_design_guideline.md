@@ -96,7 +96,6 @@ The design is grounded in established comprehension frameworks and cognitive mod
    - Reference to relevant narrative events
 
 2. Answer Validation:
-   - `single-input`: Exact match or predefined variations
    - `radio-options`: One correct option with plausible distractors
    - `multiple-select`: All correct options must be selected
    - `numbered-sequence`: Exact order matching
@@ -106,7 +105,7 @@ The design is grounded in established comprehension frameworks and cognitive mod
 
 1. Objective Scoring:
 
-   - Use exact matching for `single-input`, `radio-options`, `numbered-sequence`
+   - Use exact matching for `radio-options`, `numbered-sequence`
    - Implement partial credit for `multiple-select` and `grid-matching`
    - Track completion status for all questions
 
@@ -147,9 +146,15 @@ The design is grounded in established comprehension frameworks and cognitive mod
 
 ```typescript
 {
-  type: "single-input",
+  type: "radio-options",
   question: "What was the date of the first protest?",
   answer: "January 15, 2024",
+  options: [
+    "January 10, 2024",
+    "January 15, 2024",
+    "January 20, 2024",
+    "January 25, 2024"
+  ],
   level: "Information Retrieval"
 }
 ```

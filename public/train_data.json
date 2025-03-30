@@ -9,46 +9,56 @@
     "quiz": [
       {
         "id": "ukraine-1",
-        "question": "What is the total number of civilian casualties in Ukraine?",
-        "answer": "over 40,000",
-        "level": "Information Retrieval",
-        "completed": false,
-        "type": "radio-options",
-        "options": [
-          "over 40,000",
-          "under 20,000",
-          "between 20,000 and 30,000",
-          "between 30,000 and 40,000",
-          "over 50,000"
-        ],
-        "event_reference": 3
-      },
-      {
-        "id": "ukraine-2",
-        "question": "Select the two main countries involved in the military conflict.",
-        "options": ["Russia", "Ukraine", "Belarus", "Poland"],
-        "answer": "Russia,Ukraine",
+        "question": "Which entities are involved in more than three events in the narrative?",
+        "answer": ["Ukraine", "Russia", "United States"],
         "level": "Information Retrieval",
         "completed": false,
         "type": "multiple-select",
-        "event_reference": 1
+        "options": [
+          "Ukraine",
+          "Russia",
+          "United States",
+          "Trump",
+          "Zelenskyy",
+          "JD Vance"
+        ],
+        "event_reference": [1, 2, 3, 4, 5]
       },
       {
-        "id": "ukraine-3",
-        "question": "Which country sent military troops to support Russia in the Ukraine conflict?",
-        "options": ["China", "Belarus", "Germany"],
-        "answer": "The article does not specify",
+        "id": "ukraine-2",
+        "question": "How much aid has the United States committed to Ukraine since February 24, 2022?",
+        "options": [
+          "Over $118 billion",
+          "Over $407 billion",
+          "Under $100 billion"
+        ],
+        "answer": null,
         "level": "Sanity Check",
         "completed": false,
         "type": "radio-options",
-        "event_reference": null
+        "event_reference": []
+      },
+      {
+        "id": "ukraine-3",
+        "question": "Match each narrative section with its dominant sentiment:",
+        "options": {
+          "leftItems": ["Start", "Middle", "End"],
+          "rightItems": ["Negative", "Neutral", "Positive"],
+          "leftLabel": "Narrative Section",
+          "rightLabel": "Dominant Sentiment"
+        },
+        "answer": "Start: Negative, Middle: Negative, End: Positive",
+        "level": "Pattern Recognition",
+        "completed": false,
+        "type": "grid-matching",
+        "event_reference": [1, 2, 3, 4, 5]
       },
       {
         "id": "ukraine-4",
         "question": "Arrange the following events in chronological order:",
         "options": {
           "events": [
-            { "id": 1, "text": "Ukraine's acceptance of cease-fire proposal" },
+            { "id": 1, "text": "Ukraine announces readiness for cease-fire" },
             { "id": 2, "text": "US restoration of military aid" },
             { "id": 3, "text": "Russia's full-scale invasion" },
             { "id": 4, "text": "Trump's suspension of military aid" }
@@ -62,26 +72,14 @@
       },
       {
         "id": "ukraine-5",
-        "question": "Match each event with its corresponding stage in the narrative arc:",
+        "question": "Match each time period with its dominant topic:",
         "options": {
-          "leftItems": [
-            "Russia occupies 20% of Ukraine",
-            "Ongoing bombardment and drone warfare",
-            "Trump suspends military aid after contentious meeting",
-            "Ukraine accepts cease-fire proposal",
-            "US restores military aid"
-          ],
-          "rightItems": [
-            "Exposition",
-            "Rising Action",
-            "Climax",
-            "Falling Action",
-            "Resolution"
-          ],
-          "leftLabel": "Events",
-          "rightLabel": "Narrative Stages"
+          "leftItems": ["2022-2023", "2024-2025"],
+          "rightItems": ["Diplomacy", "War", "Both topics equally"],
+          "leftLabel": "Period",
+          "rightLabel": "Dominant Topic"
         },
-        "answer": "Russia occupies 20% of Ukraine: Exposition, Ongoing bombardment and drone warfare: Rising Action, Trump suspends military aid after contentious meeting: Climax, Ukraine accepts cease-fire proposal: Falling Action, US restores military aid: Resolution",
+        "answer": "2022-2023: War, 2024-2025: Both topics equally",
         "level": "Pattern Recognition",
         "completed": false,
         "type": "grid-matching",
@@ -89,25 +87,17 @@
       },
       {
         "id": "ukraine-6",
-        "question": "Match each cause with its effect in the conflict:",
-        "options": {
-          "leftItems": [
-            "Russia's full-scale invasion",
-            "Trump's suspension of military aid",
-            "Ukraine's acceptance of cease-fire proposal"
-          ],
-          "rightItems": [
-            "US restoration of military aid",
-            "Massive civilian displacement and casualties",
-            "Temporary halt in US military support"
-          ],
-          "leftLabel": "Causes",
-          "rightLabel": "Effects"
-        },
-        "answer": "Russia's full-scale invasion: Massive civilian displacement and casualties, Trump's suspension of military aid: Temporary halt in US military support, Ukraine's acceptance of cease-fire proposal: US restoration of military aid",
+        "question": "What was the outcome of the White House meeting between President Zelenskyy, President Trump, and Vice President JD Vance?",
+        "options": [
+          "US increased military aid to Ukraine",
+          "Trump suspended US military assistance to Ukraine",
+          "A peace agreement was reached",
+          "Joint military operations were planned"
+        ],
+        "answer": "Trump suspended US military assistance to Ukraine",
         "level": "Causal Reasoning",
         "completed": false,
-        "type": "grid-matching",
+        "type": "radio-options",
         "event_reference": [1, 3, 4, 5, 6]
       }
     ]
@@ -117,7 +107,6 @@
       "index": 1,
       "text": "Three years since Russia'\u2019's February 2022 full-scale invasion of Ukraine, Russia still occupies roughly 20 percent of the country after gaining over four thousand square kilometers of territory in 2024.",
       "short_text": "Russia occupies roughly 20 percent of Ukraine after gaining territory in 2024.",
-      "lead_title": "Intro",
       "temporal_anchoring": {
         "real_time": ["2022-02-24", "2024"],
         "narrative_time": 1
@@ -145,11 +134,11 @@
     },
     {
       "index": 2,
-      "text": "Russia continues to bombard Ukrainian cities, while Ukraine maintains drone attacks on Russian ships and military vehicles.",
-      "short_text": "Russia bombards Ukrainian cities and Ukraine attacks Russian ships and military vehicles with drones.",
+      "text": "Russia continues to bombard Ukrainian cities, while Ukraine maintains drone attacks on Russian ships and military vehicles. Fighting and air strikes have inflicted over 40,000 civilian casualties, while 4 million people are internally displaced, and 6.8 million have fled Ukraine. 14.6 million people need humanitarian assistance.",
+      "short_text": "Russia bombards Ukrainian cities and Ukraine attacks Russian ships and military vehicles with drones. ",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": ["2024-01-01", "2024-12-31"],
+        "real_time": "2024",
         "narrative_time": 2
       },
       "entities": [
@@ -175,42 +164,12 @@
     },
     {
       "index": 3,
-      "text": "Since January 2022, Ukraine has received about $407 billion in aid, including over $118 billion from the United States. Fighting and air strikes have inflicted over 40,000 civilian casualties, while 4 million people are internally displaced, and 6.8 million have fled Ukraine. 14.6 million people need humanitarian assistance. ",
-      "short_text": "The United States has provided over $118 billion in aid to Ukraine since January 2022.",
-      "lead_title": null,
-      "temporal_anchoring": {
-        "real_time": ["2022-01-01", "2025-03-13"],
-        "narrative_time": 3
-      },
-      "entities": [
-        {
-          "id": "GOVERNMENT_3",
-          "name": "United States",
-          "social_role": "government"
-        },
-        {
-          "id": "GOVERNMENT_2",
-          "name": "Ukraine",
-          "social_role": "government"
-        }
-      ],
-      "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "crisis"],
-        "sentiment": {
-          "polarity": "negative",
-          "intensity": 8
-        }
-      }
-    },
-    {
-      "index": 4,
       "text": "As the United States works to negotiate an end to the war in Ukraine, the Trump administration\u2019s approach has escalated tensions between Kyiv and Washington. Following a White House meeting between President Zelenskyy, President Trump, and Vice President JD Vance that descended into acrimony, Trump suspended U.S. military assistance to Ukraine.",
       "short_text": "President Trump suspended U.S. military assistance to Ukraine following a contentious meeting with President Zelenskyy and Vice President JD Vance.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": "2025-02-28",
-        "narrative_time": 4
+        "narrative_time": 3
       },
       "entities": [
         {
@@ -240,8 +199,8 @@
         }
       ],
       "topic": {
-        "main_topic": "politics",
-        "sub_topic": ["diplomacy", "government"],
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["peace negotiations"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 7
@@ -249,13 +208,13 @@
       }
     },
     {
-      "index": 5,
+      "index": 4,
       "text": "On March 11, Ukraine announced it was ready to accept the Trump administration's proposal for a thirty-day interim cease-fire, contingent on Russian agreement.",
       "short_text": "Ukraine agreed to a thirty-day interim cease-fire proposed by the Trump administration, pending Russian consent.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": "2025-03-11",
-        "narrative_time": 5
+        "narrative_time": 4
       },
       "entities": [
         {
@@ -276,7 +235,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war"],
+        "sub_topic": ["peace negotiations"],
         "sentiment": {
           "polarity": "neutral",
           "intensity": 3
@@ -284,13 +243,13 @@
       }
     },
     {
-      "index": 6,
+      "index": 5,
       "text": "The United States announced it would immediately lift its intelligence-sharing pause and restore military aid to Ukraine.",
       "short_text": "The United States announced it would immediately lift its intelligence-sharing pause and restore military aid to Ukraine.",
       "lead_title": null,
       "temporal_anchoring": {
         "real_time": "2025-03-11",
-        "narrative_time": 6
+        "narrative_time": 5
       },
       "entities": [
         {
