@@ -1,6 +1,6 @@
 "use client";
 
-import { NarrativeEvent } from "@/types/narrative/lite";
+import { NarrativeEvent } from "@/types/lite";
 import { useEffect, useRef, useCallback } from "react";
 import * as d3 from "d3";
 import { ENTITY_CONFIG } from "./entity-config";
@@ -14,8 +14,9 @@ import {
   createYScale,
   createYAxis,
   getRelevantEntities,
-  calculateConnectorPoints,
   getVisibleEntities,
+  calculateForceLayout,
+  createMetroTrack,
 } from "./entity-visual.utils";
 import {
   getSentimentColor,
@@ -211,20 +212,61 @@ export function EntityVisual({ events }: EntityVisualProps) {
       .attr("stroke", "#3b82f6")
       .attr("stroke-width", 2);
 
-    // Draw entity columns
-    allEntities.forEach((entity) => {
-      const x = xScale(entity.id)! + xScale.bandwidth() / 2;
-      const entitySlug = entity.id.replace(/\s+/g, "-");
+    // Apply force layout for all entities with connections
+    const forceLayout = calculateForceLayout(
+      events,
+      allEntities,
+      totalColumnsWidth,
+      height,
+      "name"
+    );
 
-      g.append("line")
-        .attr("class", `track-${entitySlug}`)
-        .attr("x1", x)
-        .attr("y1", 0)
-        .attr("x2", x)
-        .attr("y2", height)
-        .attr("stroke", "#94a3b8")
-        .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
-        .attr("opacity", 0.3);
+    // Draw entity track
+    allEntities.forEach((entity) => {
+      const entitySlug = entity.id.replace(/\s+/g, "-");
+      const startX = xScale(entity.id)! + xScale.bandwidth() / 2;
+
+      // Get all nodes for this entity from the force layout
+      const entityNodes = forceLayout.nodes
+        .filter((node) => node.entity.id === entity.id)
+        .sort((a, b) => a.y - b.y); // Sort by y position to ensure correct path order
+
+      if (entityNodes.length > 0) {
+        // Create points array including start point
+        const points = [
+          { x: startX, y: 0 }, // Start from the entity's column position at y=0
+          ...entityNodes.map((node) => ({ x: node.x, y: node.y })),
+        ];
+
+        // Create the metro-style path using the utility function
+        const metroPath = createMetroTrack(points, {
+          cornerRadius: 8,
+          gridSize: 15,
+          preferredAngles: [0, 45, 90, 135, 180],
+          minSegmentLength: 20,
+          smoothing: true,
+        });
+
+        // Create the curved path
+        g.append("path")
+          .attr("class", `track-${entitySlug}`)
+          .attr("d", metroPath.toString())
+          .attr("fill", "none")
+          .attr("stroke", "#94a3b8")
+          .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
+          .attr("opacity", 0.3);
+      } else {
+        // If no nodes, draw a straight line as fallback
+        g.append("line")
+          .attr("class", `track-${entitySlug}`)
+          .attr("x1", startX)
+          .attr("y1", 0)
+          .attr("x2", startX)
+          .attr("y2", height)
+          .attr("stroke", "#94a3b8")
+          .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
+          .attr("opacity", 0.15); // Lower opacity for unused tracks
+      }
     });
 
     // Add y-axis with integer ticks
@@ -312,52 +354,64 @@ export function EntityVisual({ events }: EntityVisualProps) {
           )
           .attr("stroke-dasharray", "3,3");
       } else if (relevantEntities.entities.length > 0) {
-        const connectorPoints = calculateConnectorPoints(
-          relevantEntities.entities,
-          xScale
-        );
+        // Skip this - we'll use the force layout instead
+      }
+    });
 
-        if (connectorPoints.length > 0) {
-          // Create a single curved connector path
-          const connectorGroup = g
-            .append("g")
-            .attr("class", "connector-group")
-            .attr("transform", `translate(0, ${y})`);
+    // Draw links from the force simulation
+    const linkGroup = g.append("g").attr("class", "links");
+    forceLayout.links.forEach((link) => {
+      // Get the source and target nodes
+      const sourceNode =
+        typeof link.source === "string"
+          ? forceLayout.nodes.find((n) => n.id === link.source)
+          : link.source;
 
-          if (connectorPoints.length > 1) {
-            // Create curved path for multiple points
-            const path = d3.path();
-            connectorPoints.forEach((point, i) => {
-              if (i === 0) {
-                path.moveTo(point.x, 0);
-              } else {
-                const prevPoint = connectorPoints[i - 1];
-                const midX = (prevPoint.x + point.x) / 2;
-                path.bezierCurveTo(
-                  midX,
-                  0, // Control point 1
-                  midX,
-                  0, // Control point 2
-                  point.x,
-                  0 // End point
-                );
-              }
-            });
+      const targetNode =
+        typeof link.target === "string"
+          ? forceLayout.nodes.find((n) => n.id === link.target)
+          : link.target;
 
-            connectorGroup
-              .append("path")
-              .attr("d", path.toString())
-              .attr("fill", "none")
-              .attr("stroke", "#94a3b8")
-              .attr("stroke-width", 2)
-              .attr("opacity", 0.6);
-          }
+      if (sourceNode && targetNode) {
+        // Only draw links between nodes at the same narrative time (same y-coordinate)
+        // This skips the vertical entity links that would make the visualization messy
+        const yDifference = Math.abs(sourceNode.y - targetNode.y);
 
-          // Draw nodes on top of the connector
-          connectorPoints.forEach((point) => {
-            createEventNode(connectorGroup, point.x, 0, event);
-          });
+        if (yDifference < 5) {
+          // Small threshold to account for floating point precision
+          // Create a curved path between nodes
+          const path = d3.path();
+          path.moveTo(sourceNode.x, sourceNode.y);
+
+          // Create a gentle curve
+          const midX = (sourceNode.x + targetNode.x) / 2;
+          path.bezierCurveTo(
+            midX,
+            sourceNode.y, // Control point 1
+            midX,
+            targetNode.y, // Control point 2
+            targetNode.x,
+            targetNode.y // End point
+          );
+
+          linkGroup
+            .append("path")
+            .attr("d", path.toString())
+            .attr("fill", "none")
+            .attr("stroke", "#94a3b8")
+            .attr("stroke-width", 1.5)
+            .attr("opacity", 0.6);
         }
+      }
+    });
+
+    // Draw nodes from the force simulation
+    forceLayout.nodes.forEach((node) => {
+      const eventId = parseInt(node.id.split("-")[0]);
+      const event = events.find((e) => e.index === eventId);
+
+      if (event) {
+        createEventNode(g, node.x, node.y, event);
       }
     });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { NarrativeEvent } from "@/types/narrative/lite";
+import { NarrativeEvent } from "@/types/lite";
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { VisualizationDisplay } from "../shared/visualization-display";
 import { EntityVisual } from "./entity-visual";
@@ -26,8 +26,6 @@ type EntityAttribute = string;
 interface EntityDisplayProps {
   events: NarrativeEvent[];
 }
-
-type ViewMode = "visual" | "text";
 
 export function EntityDisplay({ events }: EntityDisplayProps) {
   const [selectedAttribute, setSelectedAttribute] =
