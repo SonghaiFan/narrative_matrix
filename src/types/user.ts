@@ -1,4 +1,4 @@
-import { ScenarioType } from "@/types/shared/scenario";
+import { ScenarioType } from "@/types/scenario";
 
 export type UserRole = "domain" | "normal";
 

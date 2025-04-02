@@ -6,13 +6,10 @@ export type QuizLevel =
   | "Sanity Check";
 
 export type QuizType =
-  | "single-input"
   | "multiple-select"
   | "radio-options"
   | "numbered-sequence"
-  | "grid-matching"
-  | "long-text"
-  | "comma-separated";
+  | "grid-matching";
 
 interface BaseQuizItem {
   id: string;
@@ -22,10 +19,6 @@ interface BaseQuizItem {
   completed: boolean;
   type: QuizType;
   event_reference: number | number[] | null;
-}
-
-export interface SingleInputQuiz extends BaseQuizItem {
-  type: "single-input";
 }
 
 export interface MultipleSelectQuiz extends BaseQuizItem {
@@ -58,32 +51,18 @@ export interface GridMatchingQuiz extends BaseQuizItem {
   };
 }
 
-export interface LongTextQuiz extends BaseQuizItem {
-  type: "long-text";
-}
-
-export interface CommaSeparatedQuiz extends BaseQuizItem {
-  type: "comma-separated";
-}
-
 export type QuizItem =
-  | SingleInputQuiz
   | MultipleSelectQuiz
   | RadioOptionsQuiz
   | NumberedSequenceQuiz
-  | GridMatchingQuiz
-  | LongTextQuiz
-  | CommaSeparatedQuiz;
+  | GridMatchingQuiz;
 
 export interface Quiz {
   items: QuizItem[];
 }
 
 // Component exports
-export { SingleInput } from "./SingleInput";
 export { MultipleSelect } from "./MultipleSelect";
 export { RadioOptions } from "./RadioOptions";
 export { NumberedSequence } from "./NumberedSequence";
 export { GridMatching } from "./GridMatching";
-export { LongText } from "./LongText";
-export { CommaSeparated } from "./CommaSeparated";

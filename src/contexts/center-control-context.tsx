@@ -1,6 +1,6 @@
 "use client";
 
-import { NarrativeEvent, NarrativeMatrixData } from "@/types/narrative/lite";
+import { NarrativeEvent, NarrativeMatrixData } from "@/types/lite";
 import {
   createContext,
   useCallback,
@@ -10,7 +10,7 @@ import {
 } from "react";
 
 // Import ScenarioType
-import { ScenarioType } from "@/types/shared/scenario";
+import { ScenarioType } from "@/types/scenario";
 
 interface CenterControlContextType {
   // Data state

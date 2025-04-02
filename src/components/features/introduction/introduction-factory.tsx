@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { IntroductionPage } from "./introduction-page";
-import { ScenarioType } from "@/types/shared/scenario";
+import { ScenarioType } from "@/types/scenario";
 
 interface IntroductionFactoryProps {
   scenarioType: ScenarioType;
