@@ -1,6 +1,6 @@
 "use client";
 
-import { NarrativeEvent } from "@/types/narrative/lite";
+import { NarrativeEvent } from "@/types/lite";
 import { ReactNode } from "react";
 import { PURE_TEXT_CONFIG } from "./pure-text-config";
 

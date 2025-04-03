@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ScenarioType } from "@/types/shared/scenario";
+import { ScenarioType } from "@/types/scenario";
 
 // Define introduction content for each scenario type
 const introductionContent = {

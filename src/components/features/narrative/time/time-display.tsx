@@ -1,6 +1,6 @@
 "use client";
 
-import { NarrativeEvent } from "@/types/narrative/lite";
+import { NarrativeEvent } from "@/types/lite";
 import { VisualizationDisplay } from "@/components/features/narrative/shared/visualization-display";
 import { NarrativeTimeVisual } from "./time-visual";
 

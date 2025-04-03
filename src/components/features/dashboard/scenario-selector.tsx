@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCenterControl } from "@/contexts/center-control-context";
 import { ScenarioCard } from "./scenario-card";
-import { ScenarioType } from "@/types/shared/scenario";
+import { ScenarioType } from "@/types/scenario";
 
 export function ScenarioSelector() {
   const router = useRouter();

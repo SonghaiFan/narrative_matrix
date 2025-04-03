@@ -1,8 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { AuthState } from "@/types/auth/user";
-import { ScenarioType } from "@/types/shared/scenario";
+import { AuthState } from "@/types/user";
+import { ScenarioType } from "@/types/scenario";
 
 // Mock users for demonstration
 const MOCK_USERS = [

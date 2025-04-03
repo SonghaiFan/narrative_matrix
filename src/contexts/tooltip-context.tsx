@@ -1,6 +1,6 @@
 "use client";
 
-import { NarrativeEvent, Entity } from "@/types/narrative/lite";
+import { NarrativeEvent, Entity } from "@/types/lite";
 import {
   createContext,
   useContext,

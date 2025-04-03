@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useCenterControl } from "@/contexts/center-control-context";
 import { loadDataFile } from "@/lib/data-storage";
-import { NarrativeMatrixData } from "@/types/narrative/lite";
+import { NarrativeMatrixData } from "@/types/lite";
 import { useAuth } from "@/contexts/auth-context";
 
 /**

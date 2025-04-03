@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo, useRef } from "react";
 import Fuse from "fuse.js";
-import { NarrativeEvent } from "@/types/narrative/lite";
+import { NarrativeEvent } from "@/types/lite";
 import { PURE_TEXT_CONFIG } from "./pure-text-config";
 
 interface PureTextSearchProps {
