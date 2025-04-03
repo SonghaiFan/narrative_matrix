@@ -276,6 +276,9 @@ export function calculateForceLayout(
   // Create scale for y-axis based on narrative time
   const yScale = createYScale(events, height);
 
+  // Track number of nodes per entity for force weighting
+  const entityNodeCounts = new Map<string, number>();
+
   // Process each event to create nodes and links
   events.forEach((event) => {
     const narrativeTime = event.temporal_anchoring.narrative_time;
@@ -302,6 +305,10 @@ export function calculateForceLayout(
         };
         nodes.push(node);
         nodeMap.set(nodeId, node);
+
+        // Count nodes per entity
+        const currentCount = entityNodeCounts.get(entity.id) || 0;
+        entityNodeCounts.set(entity.id, currentCount + 1);
       });
 
       // Create links between entities in the same event
@@ -344,7 +351,7 @@ export function calculateForceLayout(
   const simulation = d3
     .forceSimulation<ForceNode>()
     .nodes(nodes)
-    // Apply x force to keep nodes in their entity column, but very weak
+    // Apply x force to keep nodes in their entity column, with strength based on node count
     .force(
       "x",
       d3
@@ -353,14 +360,23 @@ export function calculateForceLayout(
           // Get the entity's ideal x position
           return entityPositions.get(d.entity.id) || width / 2;
         })
-        .strength(0) // Very weak column alignment to allow more horizontal movement
+        .strength((d) => {
+          // Get the number of nodes for this entity
+          const nodeCount = entityNodeCounts.get(d.entity.id) || 1;
+          // More nodes = stronger x-force to keep the track straighter
+          // Use a logarithmic scale with configurable base and max
+          return Math.min(
+            ENTITY_CONFIG.force.xForceMax,
+            Math.log2(nodeCount) * ENTITY_CONFIG.force.xForceBase
+          );
+        })
     )
     // Apply minimal collision force to prevent overlap
     .force(
       "collision",
-      d3.forceCollide<ForceNode>(ENTITY_CONFIG.point.radius + 1) // Just enough to prevent overlap
+      d3.forceCollide<ForceNode>(ENTITY_CONFIG.point.radius + 1)
     )
-    // Apply strong link force to pull connected entities very close together
+    // Apply link force with strength based on node count
     .force(
       "link",
       d3
@@ -368,24 +384,42 @@ export function calculateForceLayout(
         .id((d) => d.id)
         .strength((link) => {
           const l = link as ForceLink;
-          // Get source and target narrative times safely
-          const sourceTime =
+          // Get source and target nodes
+          const sourceNode =
             typeof l.source === "string"
-              ? nodes.find((n) => n.id === l.source)?.narrativeTime ?? 0
-              : l.source.narrativeTime;
-          const targetTime =
+              ? nodes.find((n) => n.id === l.source)
+              : l.source;
+          const targetNode =
             typeof l.target === "string"
-              ? nodes.find((n) => n.id === l.target)?.narrativeTime ?? 0
-              : l.target.narrativeTime;
+              ? nodes.find((n) => n.id === l.target)
+              : l.target;
+
+          if (!sourceNode || !targetNode)
+            return ENTITY_CONFIG.force.verticalLinkStrength;
+
+          // Get source and target narrative times
+          const sourceTime = sourceNode.narrativeTime;
+          const targetTime = targetNode.narrativeTime;
+
+          // Get node counts for both entities
+          const sourceCount = entityNodeCounts.get(sourceNode.entity.id) || 1;
+          const targetCount = entityNodeCounts.get(targetNode.entity.id) || 1;
+
+          // Calculate average node count for this link
+          const avgNodeCount = (sourceCount + targetCount) / 2;
 
           // Very strong force for horizontal connections (same narrative time)
-          if (Math.abs(sourceTime - targetTime) == 0) {
-            return 2.0; // Stronger horizontal connection
+          if (Math.abs(sourceTime - targetTime) < 0.1) {
+            // Use logarithmic scale for link strength based on node count
+            return Math.min(
+              ENTITY_CONFIG.force.horizontalLinkMax,
+              Math.log2(avgNodeCount) * ENTITY_CONFIG.force.horizontalLinkBase
+            );
           }
-          return 0.1; // Very weak vertical connection
+          // Very weak vertical connection
+          return ENTITY_CONFIG.force.verticalLinkStrength;
         })
         .distance((d) => {
-          // Keep horizontal connections as close as possible
           const source =
             typeof d.source === "string"
               ? nodes.find((n) => n.id === d.source)
@@ -394,18 +428,26 @@ export function calculateForceLayout(
             typeof d.target === "string"
               ? nodes.find((n) => n.id === d.target)
               : d.target;
-          if (
-            source &&
-            target &&
-            Math.abs(source.narrativeTime - target.narrativeTime) < 0.1
-          ) {
-            return ENTITY_CONFIG.point.radius * 2; // Just slightly more than collision radius
+
+          if (!source || !target)
+            return (
+              ENTITY_CONFIG.point.radius * ENTITY_CONFIG.force.maxNodeDistance
+            );
+
+          // Keep horizontal connections as close as possible
+          if (Math.abs(source.narrativeTime - target.narrativeTime) < 0.1) {
+            return (
+              ENTITY_CONFIG.point.radius * ENTITY_CONFIG.force.minNodeDistance
+            );
           }
-          return ENTITY_CONFIG.point.radius * 10; // Keep vertical connections far apart
+          return (
+            ENTITY_CONFIG.point.radius * ENTITY_CONFIG.force.maxNodeDistance
+          );
         })
     );
-  // Run the simulation longer to ensure convergence
-  for (let i = 0; i < 300; i++) {
+
+  // Run the simulation for configured number of iterations
+  for (let i = 0; i < ENTITY_CONFIG.force.iterations; i++) {
     simulation.tick();
   }
 
