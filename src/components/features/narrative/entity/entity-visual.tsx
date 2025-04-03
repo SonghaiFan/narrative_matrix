@@ -42,10 +42,14 @@ export function EntityVisual({ events }: EntityVisualProps) {
     (newSelectedId: number | null) => {
       if (!svgRef.current) return;
 
-      // Reset all nodes to default style
+      // Reset all nodes and connectors to default style
       d3.select(svgRef.current)
         .selectAll(".event-node")
         .attr("stroke", "black");
+
+      d3.select(svgRef.current)
+        .selectAll(".connector-outer")
+        .attr("stroke", "#000");
 
       // Get guide lines group
       const guideLine = d3.select(svgRef.current).select(".guide-lines");
@@ -55,31 +59,29 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
       // If we have a selected event, highlight it and show guide line
       if (newSelectedId !== null) {
-        const selectedNodes = d3
+        const selectedGroup = d3
           .select(svgRef.current)
-          .selectAll(`.event-node[data-event-index="${newSelectedId}"]`);
+          .select(`.event-group-${newSelectedId}`);
 
-        if (!selectedNodes.empty()) {
-          // Update node style
-          selectedNodes.attr("stroke", getHighlightColor());
+        if (!selectedGroup.empty()) {
+          // Update node style in the group
+          selectedGroup
+            .selectAll(".event-node")
+            .attr("stroke", getHighlightColor());
+
+          // Update outer connector style in the group
+          selectedGroup
+            .selectAll(".connector-outer")
+            .attr("stroke", getHighlightColor());
 
           // Get the selected node
-          const node = selectedNodes.node() as SVGCircleElement;
+          const node = selectedGroup
+            .select(".event-node")
+            .node() as SVGCircleElement;
           let y = 0;
 
-          // Find the parent connector group if it exists
-          const parentGroup = d3.select(node.parentElement);
-          if (parentGroup.classed("connector-group")) {
-            // Get the transform attribute which contains the y position
-            const transform = parentGroup.attr("transform");
-            const match = transform.match(/translate\(0,\s*([^)]+)\)/);
-            if (match) {
-              y = parseFloat(match[1]);
-            }
-          } else {
-            // For nodes without connector groups (e.g., nodes with no entities)
-            y = parseFloat(node.getAttribute("cy") || "0");
-          }
+          // Get the y position from the node
+          y = parseFloat(node.getAttribute("cy") || "0");
 
           // Update guide line position and show it
           guideLine
@@ -377,59 +379,13 @@ export function EntityVisual({ events }: EntityVisualProps) {
         .attr("stroke-width", ENTITY_CONFIG.point.strokeWidth)
         .style("cursor", "pointer");
 
-      // Add event handlers
-      node
-        .on("mouseenter", function (this: SVGCircleElement, e: MouseEvent) {
-          d3.select(this)
-            .transition()
-            .duration(200)
-            .attr("r", ENTITY_CONFIG.point.radius * 1.5);
-
-          showTooltip(event, e.pageX, e.pageY, "entity");
-          updatePosition(e.pageX, e.pageY);
-        })
-        .on("mousemove", function (e: MouseEvent) {
-          updatePosition(e.pageX, e.pageY);
-        })
-        .on("mouseleave", function (this: SVGCircleElement) {
-          d3.select(this)
-            .transition()
-            .duration(200)
-            .attr("r", ENTITY_CONFIG.point.radius);
-          hideTooltip();
-        })
-        .on("click", function () {
-          setSelectedEventId(
-            selectedEventId === event.index ? null : event.index
-          );
-        });
-
       return node;
     };
 
-    // Draw event nodes and connectors
-    events.forEach((event) => {
-      const y = yScale(event.temporal_anchoring.narrative_time);
-      const relevantEntities = getRelevantEntities(event, allEntities, "name");
+    // Create a map to store event groups
+    const eventGroups = new Map();
 
-      if (
-        relevantEntities.hasNoEntities ||
-        relevantEntities.hasNoVisibleEntities
-      ) {
-        // Draw a single dashed node for events with no entities or no visible entities
-        createEventNode(g, 0, y, event)
-          .attr(
-            "stroke",
-            relevantEntities.hasNoEntities ? "#94a3b8" : "#64748b"
-          )
-          .attr("stroke-dasharray", "3,3");
-      } else if (relevantEntities.entities.length > 0) {
-        // Skip this - we'll use the force layout instead
-      }
-    });
-
-    // Draw links from the force simulation
-    const linkGroup = g.append("g").attr("class", "links");
+    // 1. First draw the outer black connector
     forceLayout.links.forEach((link) => {
       // Get the source and target nodes
       const sourceNode =
@@ -444,44 +400,221 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
       if (sourceNode && targetNode) {
         // Only draw links between nodes at the same narrative time (same y-coordinate)
-        // This skips the vertical entity links that would make the visualization messy
         const yDifference = Math.abs(sourceNode.y - targetNode.y);
 
-        if (yDifference < 5) {
-          // Small threshold to account for floating point precision
-          // Create a curved path between nodes
-          const path = d3.path();
-          path.moveTo(sourceNode.x, sourceNode.y);
+        if (yDifference < 1) {
+          // Get the event IDs from the node IDs
+          const sourceEventId = parseInt(sourceNode.id.split("-")[0]);
+          const targetEventId = parseInt(targetNode.id.split("-")[0]);
 
-          // Create a gentle curve
-          const midX = (sourceNode.x + targetNode.x) / 2;
-          path.bezierCurveTo(
-            midX,
-            sourceNode.y, // Control point 1
-            midX,
-            targetNode.y, // Control point 2
-            targetNode.x,
-            targetNode.y // End point
-          );
+          // Create or get the event groups
+          if (!eventGroups.has(sourceEventId)) {
+            eventGroups.set(
+              sourceEventId,
+              g.append("g").attr("class", `event-group-${sourceEventId}`)
+            );
+          }
+          if (!eventGroups.has(targetEventId)) {
+            eventGroups.set(
+              targetEventId,
+              g.append("g").attr("class", `event-group-${targetEventId}`)
+            );
+          }
 
-          linkGroup
-            .append("path")
-            .attr("d", path.toString())
-            .attr("fill", "none")
-            .attr("stroke", "#94a3b8")
-            .attr("stroke-width", 1.5)
-            .attr("opacity", 0.6);
+          const sourceGroup = eventGroups.get(sourceEventId);
+          const targetGroup = eventGroups.get(targetEventId);
+
+          // Add outer connector to both groups
+          sourceGroup
+            .append("line")
+            .attr("class", "connector-outer")
+            .attr("x1", sourceNode.x)
+            .attr("y1", sourceNode.y)
+            .attr("x2", targetNode.x)
+            .attr("y2", targetNode.y)
+            .attr("stroke", "#000")
+            .attr(
+              "stroke-width",
+              ENTITY_CONFIG.event.connectorStrokeWidth +
+                ENTITY_CONFIG.point.strokeWidth * 1.25
+            )
+            .attr("stroke-linecap", "round");
+
+          targetGroup
+            .append("line")
+            .attr("class", "connector-outer")
+            .attr("x1", sourceNode.x)
+            .attr("y1", sourceNode.y)
+            .attr("x2", targetNode.x)
+            .attr("y2", targetNode.y)
+            .attr("stroke", "#000")
+            .attr(
+              "stroke-width",
+              ENTITY_CONFIG.event.connectorStrokeWidth +
+                ENTITY_CONFIG.point.strokeWidth * 1.25
+            )
+            .attr("stroke-linecap", "round");
         }
       }
     });
 
-    // Draw nodes from the force simulation
+    // 2. Draw nodes in the middle from the force simulation
     forceLayout.nodes.forEach((node) => {
       const eventId = parseInt(node.id.split("-")[0]);
       const event = events.find((e) => e.index === eventId);
 
       if (event) {
-        createEventNode(g, node.x, node.y, event);
+        // Create or get the event group
+        if (!eventGroups.has(eventId)) {
+          eventGroups.set(
+            eventId,
+            g.append("g").attr("class", `event-group-${eventId}`)
+          );
+        }
+
+        const eventGroup = eventGroups.get(eventId);
+
+        // Create the event node and store its coordinates
+        const eventNode = createEventNode(eventGroup, node.x, node.y, event);
+
+        // Add hover effects to the entire group
+        eventGroup
+          .on("mouseenter", function (this: SVGGElement, e: MouseEvent) {
+            // Highlight all nodes in the group
+            d3.select(this)
+              .selectAll(".event-node")
+              .transition()
+              .duration(200)
+              .attr("r", ENTITY_CONFIG.point.radius * 1.5);
+
+            // Scale up connectors
+            d3.select(this)
+              .selectAll(".connector-outer")
+              .transition()
+              .duration(200)
+              .attr(
+                "stroke-width",
+                ENTITY_CONFIG.event.hoverConnectorStrokeWidth +
+                  ENTITY_CONFIG.point.strokeWidth * 1.25
+              );
+
+            d3.select(this)
+              .selectAll(".connector-inner")
+              .transition()
+              .duration(200)
+              .attr(
+                "stroke-width",
+                ENTITY_CONFIG.event.hoverConnectorStrokeWidth *
+                  ENTITY_CONFIG.event.innerConnectorScale
+              );
+
+            // Show tooltip
+            showTooltip(event, e.pageX, e.pageY, "entity");
+            updatePosition(e.pageX, e.pageY);
+          })
+          .on("mousemove", function (e: MouseEvent) {
+            updatePosition(e.pageX, e.pageY);
+          })
+          .on("mouseleave", function (this: SVGGElement) {
+            // Reset all nodes in the group
+            d3.select(this)
+              .selectAll(".event-node")
+              .transition()
+              .duration(200)
+              .attr("r", ENTITY_CONFIG.point.radius);
+
+            // Reset connectors
+            d3.select(this)
+              .selectAll(".connector-outer")
+              .transition()
+              .duration(200)
+              .attr(
+                "stroke-width",
+                ENTITY_CONFIG.event.connectorStrokeWidth +
+                  ENTITY_CONFIG.point.strokeWidth * 1.25
+              );
+
+            d3.select(this)
+              .selectAll(".connector-inner")
+              .transition()
+              .duration(200)
+              .attr(
+                "stroke-width",
+                ENTITY_CONFIG.event.connectorStrokeWidth *
+                  ENTITY_CONFIG.event.innerConnectorScale
+              );
+
+            hideTooltip();
+          })
+          .on("click", function () {
+            setSelectedEventId(selectedEventId === eventId ? null : eventId);
+          });
+      }
+    });
+
+    // 3. Finally draw the inner connector on top
+    forceLayout.links.forEach((link) => {
+      // Get the source and target nodes
+      const sourceNode =
+        typeof link.source === "string"
+          ? forceLayout.nodes.find((n) => n.id === link.source)
+          : link.source;
+
+      const targetNode =
+        typeof link.target === "string"
+          ? forceLayout.nodes.find((n) => n.id === link.target)
+          : link.target;
+
+      if (sourceNode && targetNode) {
+        // Only draw links between nodes at the same narrative time (same y-coordinate)
+        const yDifference = Math.abs(sourceNode.y - targetNode.y);
+
+        if (yDifference < 1) {
+          // Get the event IDs from the node IDs
+          const sourceEventId = parseInt(sourceNode.id.split("-")[0]);
+          const targetEventId = parseInt(targetNode.id.split("-")[0]);
+
+          // Find the corresponding events
+          const sourceEvent = events.find((e) => e.index === sourceEventId);
+          const targetEvent = events.find((e) => e.index === targetEventId);
+
+          // Use the sentiment color from the source event
+          const connectorColor = sourceEvent
+            ? getSentimentColor(sourceEvent.topic.sentiment.polarity)
+            : "#fff";
+
+          // Add inner connector to both groups
+          const sourceGroup = eventGroups.get(sourceEventId);
+          const targetGroup = eventGroups.get(targetEventId);
+
+          sourceGroup
+            .append("line")
+            .attr("class", "connector-inner")
+            .attr("x1", sourceNode.x)
+            .attr("y1", sourceNode.y)
+            .attr("x2", targetNode.x)
+            .attr("y2", targetNode.y)
+            .attr("stroke", connectorColor)
+            .attr(
+              "stroke-width",
+              ENTITY_CONFIG.event.connectorStrokeWidth * 0.85
+            )
+            .attr("stroke-linecap", "round");
+
+          targetGroup
+            .append("line")
+            .attr("class", "connector-inner")
+            .attr("x1", sourceNode.x)
+            .attr("y1", sourceNode.y)
+            .attr("x2", targetNode.x)
+            .attr("y2", targetNode.y)
+            .attr("stroke", connectorColor)
+            .attr(
+              "stroke-width",
+              ENTITY_CONFIG.event.connectorStrokeWidth * 0.85
+            )
+            .attr("stroke-linecap", "round");
+        }
       }
     });
 

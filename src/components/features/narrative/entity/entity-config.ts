@@ -13,4 +13,9 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     columnWidth: 50, // Width of entity columns
     columnGap: 10, // Gap between entity columns
   },
+  event: {
+    connectorStrokeWidth: 6,
+    hoverConnectorStrokeWidth: 18, // Stroke width when hovering
+    innerConnectorScale: 0.85, // Scale factor for inner connector
+  },
 });

@@ -353,7 +353,7 @@ export function calculateForceLayout(
     // Apply minimal collision force to prevent overlap
     .force(
       "collision",
-      d3.forceCollide<ForceNode>(ENTITY_CONFIG.point.radius) // Just enough to prevent overlap
+      d3.forceCollide<ForceNode>(ENTITY_CONFIG.point.radius + 1) // Just enough to prevent overlap
     )
     // Apply strong link force to pull connected entities very close together
     .force(
