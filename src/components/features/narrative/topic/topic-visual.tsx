@@ -6,10 +6,7 @@ import * as d3 from "d3";
 import { TOPIC_CONFIG } from "./topic-config";
 import { useTooltip } from "@/contexts/tooltip-context";
 import { useCenterControl } from "@/contexts/center-control-context";
-import {
-  getSentimentColor,
-  getHighlightColor,
-} from "@/components/features/narrative/shared/color-utils";
+import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
 import {
   processEvents,
   getTopicCounts,
@@ -101,11 +98,11 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           );
         });
 
-      childNode.attr("stroke", getHighlightColor());
+      childNode.attr("stroke", TOPIC_CONFIG.highlight.color);
 
       // Update guide line based on selected node
       if (!parentNode.empty()) {
-        parentNode.attr("stroke", getHighlightColor());
+        parentNode.attr("stroke", TOPIC_CONFIG.highlight.color);
         const x = parseFloat(parentNode.attr("x") || "0");
         const width = parseFloat(parentNode.attr("width") || "0");
         const centerX = x + width / 2;
@@ -120,7 +117,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         if (parentKey) {
           const parentNodeId = getParentNodeId(parentKey);
           const parentRect = d3.select(`#${parentNodeId}`).select("rect");
-          parentRect.attr("stroke", getHighlightColor());
+          parentRect.attr("stroke", TOPIC_CONFIG.highlight.color);
 
           const x = parseFloat(parentRect.attr("x") || "0");
           const width = parseFloat(parentRect.attr("width") || "0");

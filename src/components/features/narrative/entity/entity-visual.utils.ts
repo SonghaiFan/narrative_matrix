@@ -2,10 +2,7 @@ import { Entity, NarrativeEvent } from "@/types/lite";
 import { VisualizationType } from "@/types/visualization";
 import * as d3 from "d3";
 import { ENTITY_CONFIG } from "./entity-config";
-import {
-  getSentimentColor,
-  getHighlightColor,
-} from "@/components/features/narrative/shared/color-utils";
+import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
 import {
   createNarrativeYAxis,
   calculateDimensions,
@@ -525,19 +522,21 @@ export function createEventNode(
   cx: number,
   cy: number,
   event: NarrativeEvent,
-  selectedEventId: number | null
+  selectedEventId: number | null,
+  entityId?: string
 ) {
   return parent
     .append("circle")
     .attr("class", "event-node")
     .attr("data-event-index", event.index)
+    .attr("data-entity-id", entityId || "")
     .attr("cx", cx)
     .attr("cy", cy)
     .attr("r", ENTITY_CONFIG.point.radius)
     .attr("fill", getSentimentColor(event.topic.sentiment.polarity))
     .attr(
       "stroke",
-      selectedEventId === event.index ? getHighlightColor() : "black"
+      selectedEventId === event.index ? ENTITY_CONFIG.highlight.color : "black"
     )
     .attr("stroke-width", ENTITY_CONFIG.point.strokeWidth)
     .style("cursor", "pointer");
@@ -997,8 +996,18 @@ export function createTrackWithHover(
   }
 
   track
-    .attr("stroke", selectedTrackId === entity.id ? "#3b82f6" : "#94a3b8")
-    .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
+    .attr(
+      "stroke",
+      selectedTrackId === entity.id
+        ? ENTITY_CONFIG.highlight.color
+        : ENTITY_CONFIG.track.color
+    )
+    .attr(
+      "stroke-width",
+      selectedTrackId === entity.id
+        ? ENTITY_CONFIG.track.strokeWidth * 1.5
+        : ENTITY_CONFIG.track.strokeWidth
+    )
     .attr("opacity", selectedTrackId === entity.id ? 0.8 : 0.3);
 
   addTrackHoverEffects(

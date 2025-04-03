@@ -27,6 +27,9 @@ export const SHARED_CONFIG = {
   animation: {
     duration: 200, // Duration of transitions in milliseconds
   },
+  highlight: {
+    color: "#3b82f6",
+  },
   // Header settings
   header: {
     height: 50, // Height of the header area in pixels

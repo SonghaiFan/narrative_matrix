@@ -22,7 +22,6 @@ import {
   drawLinkConnectors,
 } from "./entity-visual.utils";
 import { createMetroTrack } from "./entity-visual.utils";
-import { getHighlightColor } from "@/components/features/narrative/shared/color-utils";
 import { createTrackWithHover } from "./entity-visual.utils";
 
 export interface EntityVisualProps {
@@ -69,12 +68,12 @@ export function EntityVisual({ events }: EntityVisualProps) {
           // Update node style in the group
           selectedGroup
             .selectAll(".event-node")
-            .attr("stroke", getHighlightColor());
+            .attr("stroke", ENTITY_CONFIG.highlight.color);
 
           // Update outer connector style in the group
           selectedGroup
             .selectAll(".connector-outer")
-            .attr("stroke", getHighlightColor());
+            .attr("stroke", ENTITY_CONFIG.highlight.color);
 
           // Get the selected node
           const node = selectedGroup
@@ -107,6 +106,34 @@ export function EntityVisual({ events }: EntityVisualProps) {
     []
   );
 
+  // Function to update node styles based on selectedTrackId
+  const updateSelectedTrackStyles = useCallback(
+    (trackId: string | null, selectedEventId: number | null) => {
+      if (!svgRef.current || trackId === null) return;
+
+      // Find all nodes associated with the selected track using the data-entity-id attribute
+      const selectedNodes = d3
+        .select(svgRef.current)
+        .selectAll(".event-node")
+        .filter(function () {
+          // Get the entity ID from the node
+          const entityId = d3.select(this).attr("data-entity-id");
+          return entityId === trackId;
+        });
+
+      // Apply highlight border to all nodes on the selected track
+      // but skip the selected event node
+      selectedNodes
+        .filter(function () {
+          const eventIndex = d3.select(this).attr("data-event-index");
+          return eventIndex !== String(selectedEventId);
+        })
+        .attr("stroke", ENTITY_CONFIG.highlight.color)
+        .attr("stroke-width", ENTITY_CONFIG.point.strokeWidth * 1.5);
+    },
+    []
+  );
+
   // Add a separate effect to handle track selection without scrolling
   useEffect(() => {
     // When a track is selected, we don't want to scroll
@@ -129,6 +156,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
     // Store current selection before clearing
     const currentSelection = selectedEventId;
+    const currentTrackSelection = selectedTrackId;
 
     // Clear previous content
     d3.select(svgRef.current).selectAll("*").remove();
@@ -233,7 +261,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
       .attr("class", "guide-line horizontal")
       .attr("x1", 0)
       .attr("x2", totalColumnsWidth)
-      .attr("stroke", "#3b82f6")
+      .attr("stroke", ENTITY_CONFIG.highlight.color)
       .attr("stroke-width", 2);
 
     // Apply force layout for all entities with connections
@@ -339,8 +367,18 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
         const eventGroup = eventGroups.get(event.index);
 
+        // Extract entity ID from node ID (format: "eventIndex-entityId")
+        const entityId = node.id.split("-")[1];
+
         // Create the event node
-        createEventNode(eventGroup, node.x, node.y, event, selectedEventId);
+        createEventNode(
+          eventGroup,
+          node.x,
+          node.y,
+          event,
+          selectedEventId,
+          entityId
+        );
 
         // Add hover effects to the entire group
         addEventGroupHoverEffects(
@@ -372,6 +410,13 @@ export function EntityVisual({ events }: EntityVisualProps) {
     if (currentSelection !== null && currentSelection !== undefined) {
       updateSelectedEventStyles(currentSelection);
     }
+
+    // Reapply track selection if it exists
+    if (currentTrackSelection !== null) {
+      setSelectedTrackId(currentTrackSelection);
+      // Apply track styling after setting the track ID
+      updateSelectedTrackStyles(currentTrackSelection, currentSelection);
+    }
   }, [
     events,
     showTooltip,
@@ -382,14 +427,41 @@ export function EntityVisual({ events }: EntityVisualProps) {
     updateSelectedEventStyles,
     selectedTrackId,
     setSelectedTrackId,
+    updateSelectedTrackStyles,
   ]);
 
   // Keep selection handling in a separate effect
   useEffect(() => {
     if (svgRef.current && selectedEventId !== undefined) {
       updateSelectedEventStyles(selectedEventId);
+
+      // If a track is also selected, apply track styling after event styling
+      if (selectedTrackId !== null) {
+        updateSelectedTrackStyles(selectedTrackId, selectedEventId);
+      }
     }
-  }, [selectedEventId, updateSelectedEventStyles]);
+  }, [
+    selectedEventId,
+    updateSelectedEventStyles,
+    selectedTrackId,
+    updateSelectedTrackStyles,
+  ]);
+
+  // Add effect to highlight nodes on selected track
+  useEffect(() => {
+    if (!svgRef.current) return;
+
+    // Reset all nodes to default stroke style
+    d3.select(svgRef.current)
+      .selectAll(".event-node")
+      .attr("stroke", "black")
+      .attr("stroke-width", ENTITY_CONFIG.point.strokeWidth);
+
+    // If a track is selected, apply track styling
+    if (selectedTrackId !== null) {
+      updateSelectedTrackStyles(selectedTrackId, selectedEventId);
+    }
+  }, [selectedTrackId, selectedEventId, updateSelectedTrackStyles]);
 
   // Initial setup and cleanup with resize observer
   useEffect(() => {
