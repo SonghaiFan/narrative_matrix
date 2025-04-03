@@ -1,6 +1,11 @@
 import { Entity, NarrativeEvent } from "@/types/lite";
+import { VisualizationType } from "@/types/visualization";
 import * as d3 from "d3";
 import { ENTITY_CONFIG } from "./entity-config";
+import {
+  getSentimentColor,
+  getHighlightColor,
+} from "@/components/features/narrative/shared/color-utils";
 import {
   createNarrativeYAxis,
   calculateDimensions,
@@ -410,16 +415,16 @@ export function calculateForceLayout(
   return { nodes, links };
 }
 
-interface Point {
+export interface Point {
   x: number;
   y: number;
 }
 
-interface GridPoint extends Point {
+export interface GridPoint extends Point {
   isSnapped: boolean;
 }
 
-interface MetroPathOptions {
+export interface MetroPathOptions {
   cornerRadius?: number;
   gridSize?: number;
   minSegmentLength?: number;
@@ -428,7 +433,7 @@ interface MetroPathOptions {
   yScale?: d3.ScaleLinear<number, number>;
 }
 
-function snapToGrid(
+export function snapToGrid(
   point: Point,
   gridSize: number,
   yScale?: d3.ScaleLinear<number, number>
@@ -449,7 +454,7 @@ function snapToGrid(
   };
 }
 
-function getAngle(
+export function getAngle(
   p1: Point,
   p2: Point,
   yScale?: d3.ScaleLinear<number, number>
@@ -465,11 +470,240 @@ function getAngle(
   return Math.atan2(p2.y - p1.y, p2.x - p1.x);
 }
 
-function getDistance(p1: Point, p2: Point): number {
+export function getDistance(p1: Point, p2: Point): number {
   // Use a more efficient calculation for distance
   const dx = p2.x - p1.x;
   const dy = p2.y - p1.y;
   return Math.sqrt(dx * dx + dy * dy);
+}
+
+// Helper function to create event node
+export function createEventNode(
+  parent: d3.Selection<any, unknown, null, undefined>,
+  cx: number,
+  cy: number,
+  event: NarrativeEvent,
+  selectedEventId: number | null
+) {
+  return parent
+    .append("circle")
+    .attr("class", "event-node")
+    .attr("data-event-index", event.index)
+    .attr("cx", cx)
+    .attr("cy", cy)
+    .attr("r", ENTITY_CONFIG.point.radius)
+    .attr("fill", getSentimentColor(event.topic.sentiment.polarity))
+    .attr(
+      "stroke",
+      selectedEventId === event.index ? getHighlightColor() : "black"
+    )
+    .attr("stroke-width", ENTITY_CONFIG.point.strokeWidth)
+    .style("cursor", "pointer");
+}
+
+// Helper function to create connector
+export function createConnector(
+  parent: d3.Selection<any, unknown, null, undefined>,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  className: string,
+  stroke: string,
+  strokeWidth: number
+) {
+  return parent
+    .append("line")
+    .attr("class", className)
+    .attr("x1", x1)
+    .attr("y1", y1)
+    .attr("x2", x2)
+    .attr("y2", y2)
+    .attr("stroke", stroke)
+    .attr("stroke-width", strokeWidth)
+    .attr("stroke-linecap", "round");
+}
+
+// Helper function to get event from node ID
+export function getEventFromNodeId(nodeId: string, events: NarrativeEvent[]) {
+  const eventId = parseInt(nodeId.split("-")[0]);
+  return events.find((e) => e.index === eventId);
+}
+
+// Helper function to get nodes from link
+export function getNodesFromLink(
+  link: ForceLink,
+  nodes: ForceNode[]
+): { sourceNode: ForceNode | undefined; targetNode: ForceNode | undefined } {
+  const sourceNode =
+    typeof link.source === "string"
+      ? nodes.find((n) => n.id === link.source)
+      : link.source;
+
+  const targetNode =
+    typeof link.target === "string"
+      ? nodes.find((n) => n.id === link.target)
+      : link.target;
+
+  return { sourceNode, targetNode };
+}
+
+// Helper function to create event group
+export function createEventGroup(
+  parent: d3.Selection<any, unknown, null, undefined>,
+  eventId: number
+) {
+  return parent.append("g").attr("class", `event-group-${eventId}`);
+}
+
+// Helper function to add hover effects to event group
+export function addEventGroupHoverEffects(
+  eventGroup: d3.Selection<SVGGElement, unknown, null, undefined>,
+  event: NarrativeEvent,
+  showTooltip: (
+    event: NarrativeEvent,
+    x: number,
+    y: number,
+    type: VisualizationType
+  ) => void,
+  updatePosition: (x: number, y: number) => void,
+  hideTooltip: () => void,
+  setSelectedEventId: (id: number | null) => void,
+  selectedEventId: number | null
+) {
+  eventGroup
+    .on("mouseenter", function (this: SVGGElement, e: MouseEvent) {
+      // Highlight all nodes in the group
+      d3.select(this)
+        .selectAll(".event-node")
+        .transition()
+        .duration(200)
+        .attr("r", ENTITY_CONFIG.point.radius * 1.5);
+
+      // Scale up connectors
+      d3.select(this)
+        .selectAll(".connector-outer")
+        .transition()
+        .duration(200)
+        .attr(
+          "stroke-width",
+          ENTITY_CONFIG.event.hoverConnectorStrokeWidth +
+            ENTITY_CONFIG.point.strokeWidth * 1.25
+        );
+
+      d3.select(this)
+        .selectAll(".connector-inner")
+        .transition()
+        .duration(200)
+        .attr(
+          "stroke-width",
+          ENTITY_CONFIG.event.hoverConnectorStrokeWidth *
+            ENTITY_CONFIG.event.innerConnectorScale
+        );
+
+      // Show tooltip
+      showTooltip(event, e.pageX, e.pageY, "entity" as VisualizationType);
+      updatePosition(e.pageX, e.pageY);
+    })
+    .on("mousemove", function (e: MouseEvent) {
+      updatePosition(e.pageX, e.pageY);
+    })
+    .on("mouseleave", function (this: SVGGElement) {
+      // Reset all nodes in the group
+      d3.select(this)
+        .selectAll(".event-node")
+        .transition()
+        .duration(200)
+        .attr("r", ENTITY_CONFIG.point.radius);
+
+      // Reset connectors
+      d3.select(this)
+        .selectAll(".connector-outer")
+        .transition()
+        .duration(200)
+        .attr(
+          "stroke-width",
+          ENTITY_CONFIG.event.connectorStrokeWidth +
+            ENTITY_CONFIG.point.strokeWidth * 1.25
+        );
+
+      d3.select(this)
+        .selectAll(".connector-inner")
+        .transition()
+        .duration(200)
+        .attr(
+          "stroke-width",
+          ENTITY_CONFIG.event.connectorStrokeWidth *
+            ENTITY_CONFIG.event.innerConnectorScale
+        );
+
+      hideTooltip();
+    })
+    .on("click", function () {
+      setSelectedEventId(selectedEventId === event.index ? null : event.index);
+    });
+}
+
+// Helper function to add track hover effects
+export function addTrackHoverEffects(
+  track: d3.Selection<
+    SVGLineElement | SVGPathElement,
+    unknown,
+    null,
+    undefined
+  >,
+  entity: Entity,
+  selectedTrackId: string | null,
+  showTooltip: (
+    event: null,
+    x: number,
+    y: number,
+    type: VisualizationType,
+    entity: Entity
+  ) => void,
+  updatePosition: (x: number, y: number) => void,
+  hideTooltip: () => void,
+  setSelectedTrackId: (id: string | null) => void
+) {
+  track
+    .style("cursor", "pointer")
+    .on(
+      "mouseenter",
+      function (this: SVGLineElement | SVGPathElement, event: MouseEvent) {
+        // Smoothly increase stroke width and opacity
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth * 1.5)
+          .attr("opacity", selectedTrackId === entity.id ? 1 : 0.5);
+
+        // Show tooltip with entity name
+        showTooltip(
+          null,
+          event.pageX,
+          event.pageY,
+          "entity" as VisualizationType,
+          entity
+        );
+        updatePosition(event.pageX, event.pageY);
+      }
+    )
+    .on("mousemove", function (event: MouseEvent) {
+      updatePosition(event.pageX, event.pageY);
+    })
+    .on("mouseleave", function (this: SVGLineElement | SVGPathElement) {
+      // Smoothly revert stroke width and opacity
+      d3.select(this)
+        .transition()
+        .duration(200)
+        .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
+        .attr("opacity", selectedTrackId === entity.id ? 0.8 : 0.3);
+
+      hideTooltip();
+    })
+    .on("click", function () {
+      setSelectedTrackId(selectedTrackId === entity.id ? null : entity.id);
+    });
 }
 
 export function createMetroTrack(
@@ -477,11 +711,12 @@ export function createMetroTrack(
   options: MetroPathOptions = {}
 ) {
   const {
-    cornerRadius = ENTITY_CONFIG.point.radius * 2,
-    gridSize = 20,
-    minSegmentLength = cornerRadius * 2,
-    preferredAngles = [0, 45, 90, 135, 180],
-    smoothing = true,
+    cornerRadius = ENTITY_CONFIG.point.radius *
+      ENTITY_CONFIG.metro.cornerRadius,
+    gridSize = ENTITY_CONFIG.metro.gridSize,
+    minSegmentLength = cornerRadius * ENTITY_CONFIG.metro.minSegmentLength,
+    preferredAngles = ENTITY_CONFIG.metro.preferredAngles,
+    smoothing = ENTITY_CONFIG.metro.smoothing,
     yScale,
   } = options;
 
@@ -591,10 +826,14 @@ export function createMetroTrack(
     const dist1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
     const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
 
-    // Adjust radius if segments are too short
-    const actualRadius = Math.min(radius, dist1 * 0.5, dist2 * 0.5);
+    // Adjust radius if segments are too short, but allow larger curves
+    const actualRadius = Math.min(
+      radius,
+      dist1 * ENTITY_CONFIG.metro.maxCurveRatio,
+      dist2 * ENTITY_CONFIG.metro.maxCurveRatio
+    );
 
-    // Calculate corner points
+    // Calculate corner points with additional smoothing
     const startCorner = {
       x: corner.x - Math.cos(angle1) * actualRadius,
       y: corner.y - Math.sin(angle1) * actualRadius,
@@ -633,8 +872,16 @@ export function createMetroTrack(
           cornerRadius
         );
 
+        // Add a small straight line before the curve for smoother transition
         path.lineTo(startCorner.x, startCorner.y);
-        path.arcTo(point.x, point.y, endCorner.x, endCorner.y, actualRadius);
+        // Use a larger arc for smoother curves
+        path.arcTo(
+          point.x,
+          point.y,
+          endCorner.x,
+          endCorner.y,
+          actualRadius * ENTITY_CONFIG.metro.curveScale
+        );
         path.lineTo(nextIntPoint.x, nextIntPoint.y);
       } else {
         path.lineTo(point.x, point.y);

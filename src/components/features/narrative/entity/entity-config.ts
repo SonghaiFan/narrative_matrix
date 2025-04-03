@@ -18,4 +18,14 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     hoverConnectorStrokeWidth: 18, // Stroke width when hovering
     innerConnectorScale: 0.85, // Scale factor for inner connector
   },
+  // Metro track styling
+  metro: {
+    cornerRadius: 4, // Multiplier for point radius
+    gridSize: 20, // Size of the grid for snapping
+    minSegmentLength: 3, // Multiplier for corner radius
+    preferredAngles: [0, 45, 90, 135, 180], // Preferred angles for track segments
+    smoothing: true, // Whether to apply smoothing to corners
+    curveScale: 1.2, // Scale factor for curve radius
+    maxCurveRatio: 0.8, // Maximum ratio of curve radius to segment length
+  },
 });

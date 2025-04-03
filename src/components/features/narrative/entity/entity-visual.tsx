@@ -16,8 +16,15 @@ import {
   getRelevantEntities,
   getVisibleEntities,
   calculateForceLayout,
-  createMetroTrack,
+  createEventNode,
+  createConnector,
+  getEventFromNodeId,
+  getNodesFromLink,
+  createEventGroup,
+  addEventGroupHoverEffects,
+  addTrackHoverEffects,
 } from "./entity-visual.utils";
+import { createMetroTrack } from "./entity-visual.utils";
 import {
   getSentimentColor,
   getHighlightColor,
@@ -238,67 +245,41 @@ export function EntityVisual({ events }: EntityVisualProps) {
       // Get all nodes for this entity from the force layout
       const entityNodes = forceLayout.nodes
         .filter((node) => node.entity.id === entity.id)
-        .sort((a, b) => a.y - b.y); // Sort by y position to ensure correct path order
+        .sort((a, b) => a.y - b.y);
 
       if (entityNodes.length > 0) {
         // Create points array including start point
         const points = [
-          { x: startX, y: 0 }, // Start from the entity's column position at y=0
+          { x: startX, y: 0 },
           ...entityNodes.map((node) => ({ x: node.x, y: node.y })),
         ];
 
-        // Create the metro-style path using the utility function
-        const metroPath = createMetroTrack(points, {
-          cornerRadius: 8,
-          gridSize: 15,
-          preferredAngles: [0, 45, 90, 135, 180],
-          minSegmentLength: 20,
-          smoothing: true,
-          yScale,
-        });
+        // Create the metro-style path
+        const metroPath = createMetroTrack(points, { yScale });
 
         // Create the curved path with hover interaction
-        g.append("path")
+        const track = g
+          .append("path")
           .attr("class", `track-${entitySlug}`)
           .attr("d", metroPath.toString())
           .attr("fill", "none")
           .attr("stroke", selectedTrackId === entity.id ? "#3b82f6" : "#94a3b8")
           .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
-          .attr("opacity", selectedTrackId === entity.id ? 0.8 : 0.3)
-          .style("cursor", "pointer")
-          .on("mouseenter", function (this: SVGPathElement, event: MouseEvent) {
-            // Smoothly increase stroke width and opacity
-            d3.select(this)
-              .transition()
-              .duration(200)
-              .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth * 1.5)
-              .attr("opacity", selectedTrackId === entity.id ? 1 : 0.5);
+          .attr("opacity", selectedTrackId === entity.id ? 0.8 : 0.3);
 
-            // Show tooltip with entity name
-            showTooltip(null, event.pageX, event.pageY, "entity", entity);
-            updatePosition(event.pageX, event.pageY);
-          })
-          .on("mousemove", function (event: MouseEvent) {
-            updatePosition(event.pageX, event.pageY);
-          })
-          .on("mouseleave", function (this: SVGPathElement) {
-            // Smoothly revert stroke width and opacity
-            d3.select(this)
-              .transition()
-              .duration(200)
-              .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
-              .attr("opacity", selectedTrackId === entity.id ? 0.8 : 0.3);
-
-            hideTooltip();
-          })
-          .on("click", function () {
-            setSelectedTrackId(
-              selectedTrackId === entity.id ? null : entity.id
-            );
-          });
+        addTrackHoverEffects(
+          track,
+          entity,
+          selectedTrackId,
+          showTooltip,
+          updatePosition,
+          hideTooltip,
+          setSelectedTrackId
+        );
       } else {
-        // If no nodes, draw a straight line as fallback with hover interaction
-        g.append("line")
+        // If no nodes, draw a straight line as fallback
+        const track = g
+          .append("line")
           .attr("class", `track-${entitySlug}`)
           .attr("x1", startX)
           .attr("y1", 0)
@@ -306,38 +287,17 @@ export function EntityVisual({ events }: EntityVisualProps) {
           .attr("y2", height)
           .attr("stroke", selectedTrackId === entity.id ? "#3b82f6" : "#94a3b8")
           .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
-          .attr("opacity", selectedTrackId === entity.id ? 0.8 : 0.15)
-          .style("cursor", "pointer")
-          .on("mouseenter", function (this: SVGLineElement, event: MouseEvent) {
-            // Smoothly increase stroke width and opacity
-            d3.select(this)
-              .transition()
-              .duration(200)
-              .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth * 1.5)
-              .attr("opacity", selectedTrackId === entity.id ? 1 : 0.3);
+          .attr("opacity", selectedTrackId === entity.id ? 0.8 : 0.15);
 
-            // Show tooltip with entity name
-            showTooltip(null, event.pageX, event.pageY, "entity", entity);
-            updatePosition(event.pageX, event.pageY);
-          })
-          .on("mousemove", function (event: MouseEvent) {
-            updatePosition(event.pageX, event.pageY);
-          })
-          .on("mouseleave", function (this: SVGLineElement) {
-            // Smoothly revert stroke width and opacity
-            d3.select(this)
-              .transition()
-              .duration(200)
-              .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
-              .attr("opacity", selectedTrackId === entity.id ? 0.8 : 0.15);
-
-            hideTooltip();
-          })
-          .on("click", function () {
-            setSelectedTrackId(
-              selectedTrackId === entity.id ? null : entity.id
-            );
-          });
+        addTrackHoverEffects(
+          track,
+          entity,
+          selectedTrackId,
+          showTooltip,
+          updatePosition,
+          hideTooltip,
+          setSelectedTrackId
+        );
       }
     });
 
@@ -357,263 +317,134 @@ export function EntityVisual({ events }: EntityVisualProps) {
       .attr("text-anchor", "middle")
       .text("Narrative Time");
 
-    // Helper function to create event node with event handlers
-    const createEventNode = (
-      parent: d3.Selection<any, unknown, null, undefined>,
-      cx: number,
-      cy: number,
-      event: NarrativeEvent
-    ) => {
-      const node = parent
-        .append("circle")
-        .attr("class", "event-node")
-        .attr("data-event-index", event.index)
-        .attr("cx", cx)
-        .attr("cy", cy)
-        .attr("r", ENTITY_CONFIG.point.radius)
-        .attr("fill", getSentimentColor(event.topic.sentiment.polarity))
-        .attr(
-          "stroke",
-          selectedEventId === event.index ? getHighlightColor() : "black"
-        )
-        .attr("stroke-width", ENTITY_CONFIG.point.strokeWidth)
-        .style("cursor", "pointer");
-
-      return node;
-    };
-
     // Create a map to store event groups
     const eventGroups = new Map();
 
     // 1. First draw the outer black connector
     forceLayout.links.forEach((link) => {
-      // Get the source and target nodes
-      const sourceNode =
-        typeof link.source === "string"
-          ? forceLayout.nodes.find((n) => n.id === link.source)
-          : link.source;
-
-      const targetNode =
-        typeof link.target === "string"
-          ? forceLayout.nodes.find((n) => n.id === link.target)
-          : link.target;
+      const { sourceNode, targetNode } = getNodesFromLink(
+        link,
+        forceLayout.nodes
+      );
 
       if (sourceNode && targetNode) {
-        // Only draw links between nodes at the same narrative time (same y-coordinate)
         const yDifference = Math.abs(sourceNode.y - targetNode.y);
 
         if (yDifference < 1) {
-          // Get the event IDs from the node IDs
           const sourceEventId = parseInt(sourceNode.id.split("-")[0]);
           const targetEventId = parseInt(targetNode.id.split("-")[0]);
 
           // Create or get the event groups
           if (!eventGroups.has(sourceEventId)) {
-            eventGroups.set(
-              sourceEventId,
-              g.append("g").attr("class", `event-group-${sourceEventId}`)
-            );
+            eventGroups.set(sourceEventId, createEventGroup(g, sourceEventId));
           }
           if (!eventGroups.has(targetEventId)) {
-            eventGroups.set(
-              targetEventId,
-              g.append("g").attr("class", `event-group-${targetEventId}`)
-            );
+            eventGroups.set(targetEventId, createEventGroup(g, targetEventId));
           }
 
           const sourceGroup = eventGroups.get(sourceEventId);
           const targetGroup = eventGroups.get(targetEventId);
 
           // Add outer connector to both groups
-          sourceGroup
-            .append("line")
-            .attr("class", "connector-outer")
-            .attr("x1", sourceNode.x)
-            .attr("y1", sourceNode.y)
-            .attr("x2", targetNode.x)
-            .attr("y2", targetNode.y)
-            .attr("stroke", "#000")
-            .attr(
-              "stroke-width",
-              ENTITY_CONFIG.event.connectorStrokeWidth +
-                ENTITY_CONFIG.point.strokeWidth * 1.25
-            )
-            .attr("stroke-linecap", "round");
+          createConnector(
+            sourceGroup,
+            sourceNode.x,
+            sourceNode.y,
+            targetNode.x,
+            targetNode.y,
+            "connector-outer",
+            "#000",
+            ENTITY_CONFIG.event.connectorStrokeWidth +
+              ENTITY_CONFIG.point.strokeWidth * 1.25
+          );
 
-          targetGroup
-            .append("line")
-            .attr("class", "connector-outer")
-            .attr("x1", sourceNode.x)
-            .attr("y1", sourceNode.y)
-            .attr("x2", targetNode.x)
-            .attr("y2", targetNode.y)
-            .attr("stroke", "#000")
-            .attr(
-              "stroke-width",
-              ENTITY_CONFIG.event.connectorStrokeWidth +
-                ENTITY_CONFIG.point.strokeWidth * 1.25
-            )
-            .attr("stroke-linecap", "round");
+          createConnector(
+            targetGroup,
+            sourceNode.x,
+            sourceNode.y,
+            targetNode.x,
+            targetNode.y,
+            "connector-outer",
+            "#000",
+            ENTITY_CONFIG.event.connectorStrokeWidth +
+              ENTITY_CONFIG.point.strokeWidth * 1.25
+          );
         }
       }
     });
 
     // 2. Draw nodes in the middle from the force simulation
     forceLayout.nodes.forEach((node) => {
-      const eventId = parseInt(node.id.split("-")[0]);
-      const event = events.find((e) => e.index === eventId);
+      const event = getEventFromNodeId(node.id, events);
 
       if (event) {
         // Create or get the event group
-        if (!eventGroups.has(eventId)) {
-          eventGroups.set(
-            eventId,
-            g.append("g").attr("class", `event-group-${eventId}`)
-          );
+        if (!eventGroups.has(event.index)) {
+          eventGroups.set(event.index, createEventGroup(g, event.index));
         }
 
-        const eventGroup = eventGroups.get(eventId);
+        const eventGroup = eventGroups.get(event.index);
 
-        // Create the event node and store its coordinates
-        const eventNode = createEventNode(eventGroup, node.x, node.y, event);
+        // Create the event node
+        createEventNode(eventGroup, node.x, node.y, event, selectedEventId);
 
         // Add hover effects to the entire group
-        eventGroup
-          .on("mouseenter", function (this: SVGGElement, e: MouseEvent) {
-            // Highlight all nodes in the group
-            d3.select(this)
-              .selectAll(".event-node")
-              .transition()
-              .duration(200)
-              .attr("r", ENTITY_CONFIG.point.radius * 1.5);
-
-            // Scale up connectors
-            d3.select(this)
-              .selectAll(".connector-outer")
-              .transition()
-              .duration(200)
-              .attr(
-                "stroke-width",
-                ENTITY_CONFIG.event.hoverConnectorStrokeWidth +
-                  ENTITY_CONFIG.point.strokeWidth * 1.25
-              );
-
-            d3.select(this)
-              .selectAll(".connector-inner")
-              .transition()
-              .duration(200)
-              .attr(
-                "stroke-width",
-                ENTITY_CONFIG.event.hoverConnectorStrokeWidth *
-                  ENTITY_CONFIG.event.innerConnectorScale
-              );
-
-            // Show tooltip
-            showTooltip(event, e.pageX, e.pageY, "entity");
-            updatePosition(e.pageX, e.pageY);
-          })
-          .on("mousemove", function (e: MouseEvent) {
-            updatePosition(e.pageX, e.pageY);
-          })
-          .on("mouseleave", function (this: SVGGElement) {
-            // Reset all nodes in the group
-            d3.select(this)
-              .selectAll(".event-node")
-              .transition()
-              .duration(200)
-              .attr("r", ENTITY_CONFIG.point.radius);
-
-            // Reset connectors
-            d3.select(this)
-              .selectAll(".connector-outer")
-              .transition()
-              .duration(200)
-              .attr(
-                "stroke-width",
-                ENTITY_CONFIG.event.connectorStrokeWidth +
-                  ENTITY_CONFIG.point.strokeWidth * 1.25
-              );
-
-            d3.select(this)
-              .selectAll(".connector-inner")
-              .transition()
-              .duration(200)
-              .attr(
-                "stroke-width",
-                ENTITY_CONFIG.event.connectorStrokeWidth *
-                  ENTITY_CONFIG.event.innerConnectorScale
-              );
-
-            hideTooltip();
-          })
-          .on("click", function () {
-            setSelectedEventId(selectedEventId === eventId ? null : eventId);
-          });
+        addEventGroupHoverEffects(
+          eventGroup,
+          event,
+          showTooltip,
+          updatePosition,
+          hideTooltip,
+          setSelectedEventId,
+          selectedEventId
+        );
       }
     });
 
     // 3. Finally draw the inner connector on top
     forceLayout.links.forEach((link) => {
-      // Get the source and target nodes
-      const sourceNode =
-        typeof link.source === "string"
-          ? forceLayout.nodes.find((n) => n.id === link.source)
-          : link.source;
-
-      const targetNode =
-        typeof link.target === "string"
-          ? forceLayout.nodes.find((n) => n.id === link.target)
-          : link.target;
+      const { sourceNode, targetNode } = getNodesFromLink(
+        link,
+        forceLayout.nodes
+      );
 
       if (sourceNode && targetNode) {
-        // Only draw links between nodes at the same narrative time (same y-coordinate)
         const yDifference = Math.abs(sourceNode.y - targetNode.y);
 
         if (yDifference < 1) {
-          // Get the event IDs from the node IDs
           const sourceEventId = parseInt(sourceNode.id.split("-")[0]);
           const targetEventId = parseInt(targetNode.id.split("-")[0]);
 
-          // Find the corresponding events
-          const sourceEvent = events.find((e) => e.index === sourceEventId);
-          const targetEvent = events.find((e) => e.index === targetEventId);
-
-          // Use the sentiment color from the source event
+          const sourceEvent = getEventFromNodeId(sourceNode.id, events);
           const connectorColor = sourceEvent
             ? getSentimentColor(sourceEvent.topic.sentiment.polarity)
             : "#fff";
 
-          // Add inner connector to both groups
           const sourceGroup = eventGroups.get(sourceEventId);
           const targetGroup = eventGroups.get(targetEventId);
 
-          sourceGroup
-            .append("line")
-            .attr("class", "connector-inner")
-            .attr("x1", sourceNode.x)
-            .attr("y1", sourceNode.y)
-            .attr("x2", targetNode.x)
-            .attr("y2", targetNode.y)
-            .attr("stroke", connectorColor)
-            .attr(
-              "stroke-width",
-              ENTITY_CONFIG.event.connectorStrokeWidth * 0.85
-            )
-            .attr("stroke-linecap", "round");
+          // Add inner connector to both groups
+          createConnector(
+            sourceGroup,
+            sourceNode.x,
+            sourceNode.y,
+            targetNode.x,
+            targetNode.y,
+            "connector-inner",
+            connectorColor,
+            ENTITY_CONFIG.event.connectorStrokeWidth * 0.85
+          );
 
-          targetGroup
-            .append("line")
-            .attr("class", "connector-inner")
-            .attr("x1", sourceNode.x)
-            .attr("y1", sourceNode.y)
-            .attr("x2", targetNode.x)
-            .attr("y2", targetNode.y)
-            .attr("stroke", connectorColor)
-            .attr(
-              "stroke-width",
-              ENTITY_CONFIG.event.connectorStrokeWidth * 0.85
-            )
-            .attr("stroke-linecap", "round");
+          createConnector(
+            targetGroup,
+            sourceNode.x,
+            sourceNode.y,
+            targetNode.x,
+            targetNode.y,
+            "connector-inner",
+            connectorColor,
+            ENTITY_CONFIG.event.connectorStrokeWidth * 0.85
+          );
         }
       }
     });
