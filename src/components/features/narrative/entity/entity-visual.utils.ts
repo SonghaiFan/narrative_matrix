@@ -204,7 +204,7 @@ export function getRelevantEntities(
 
   // Filter event entities to only include those that match visible entities by ID
   const filteredEntities = event.entities.filter(
-    (entity) =>
+    (entity: Entity) =>
       // Entity must have the selected attribute
       entity[selectedAttribute] !== undefined &&
       entity[selectedAttribute] !== null &&
@@ -425,9 +425,23 @@ interface MetroPathOptions {
   minSegmentLength?: number;
   preferredAngles?: number[];
   smoothing?: boolean;
+  yScale?: d3.ScaleLinear<number, number>;
 }
 
-function snapToGrid(point: Point, gridSize: number): GridPoint {
+function snapToGrid(
+  point: Point,
+  gridSize: number,
+  yScale?: d3.ScaleLinear<number, number>
+): GridPoint {
+  if (yScale) {
+    return {
+      x: Math.round(point.x / gridSize) * gridSize,
+      y: point.y,
+      isSnapped: true,
+    };
+  }
+
+  // Default behavior without y-scale
   return {
     x: Math.round(point.x / gridSize) * gridSize,
     y: Math.round(point.y / gridSize) * gridSize,
@@ -435,7 +449,19 @@ function snapToGrid(point: Point, gridSize: number): GridPoint {
   };
 }
 
-function getAngle(p1: Point, p2: Point): number {
+function getAngle(
+  p1: Point,
+  p2: Point,
+  yScale?: d3.ScaleLinear<number, number>
+): number {
+  // If yScale is provided, convert y coordinates to narrative time for angle calculation
+  if (yScale) {
+    const t1 = yScale.invert(p1.y);
+    const t2 = yScale.invert(p2.y);
+    return Math.atan2(t2 - t1, p2.x - p1.x);
+  }
+
+  // Default behavior without y-scale
   return Math.atan2(p2.y - p1.y, p2.x - p1.x);
 }
 
@@ -451,11 +477,12 @@ export function createMetroTrack(
   options: MetroPathOptions = {}
 ) {
   const {
-    cornerRadius = ENTITY_CONFIG.point.radius * 2, // Use point radius * 2 for better visual appearance
+    cornerRadius = ENTITY_CONFIG.point.radius * 2,
     gridSize = 20,
     minSegmentLength = cornerRadius * 2,
     preferredAngles = [0, 45, 90, 135, 180],
     smoothing = true,
+    yScale,
   } = options;
 
   const path = d3.path();
@@ -467,11 +494,13 @@ export function createMetroTrack(
   );
 
   // Snap points to grid and optimize path
-  const snappedPoints: GridPoint[] = points.map((p) => snapToGrid(p, gridSize));
+  const snappedPoints: GridPoint[] = points.map((p) =>
+    snapToGrid(p, gridSize, yScale)
+  );
 
   // Helper to find the best angle
   function findBestAngle(dx: number, dy: number): number {
-    const angle = Math.atan2(dy, dx);
+    const angle = getAngle({ x: 0, y: 0 }, { x: dx, y: dy }, yScale);
     // Normalize angle to 0-2π
     const normalizedAngle = angle < 0 ? angle + 2 * Math.PI : angle;
 
@@ -520,13 +549,14 @@ export function createMetroTrack(
           x: start.x + dx / 2,
           y: start.y + dy / 2,
         },
-        gridSize
+        gridSize,
+        yScale
       );
       intermediatePoints.push({ ...midPoint, isSnapped: true });
     } else {
       // For other angles, create two intermediate points to maintain grid alignment
-      const midX = snapToGrid({ x: end.x, y: start.y }, gridSize);
-      const midY = snapToGrid({ x: start.x, y: end.y }, gridSize);
+      const midX = snapToGrid({ x: end.x, y: start.y }, gridSize, yScale);
+      const midY = snapToGrid({ x: start.x, y: end.y }, gridSize, yScale);
 
       // Choose the shorter path
       if (

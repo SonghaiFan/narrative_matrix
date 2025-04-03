@@ -1,7 +1,7 @@
 "use client";
 
 import { NarrativeEvent } from "@/types/lite";
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import * as d3 from "d3";
 import { ENTITY_CONFIG } from "./entity-config";
 import { useTooltip } from "@/contexts/tooltip-context";
@@ -29,6 +29,7 @@ export interface EntityVisualProps {
 
 export function EntityVisual({ events }: EntityVisualProps) {
   const { selectedEventId, setSelectedEventId } = useCenterControl();
+  const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -162,7 +163,10 @@ export function EntityVisual({ events }: EntityVisualProps) {
         .append("div")
         .attr("class", "absolute -translate-x-1/2 cursor-pointer")
         .style("left", `${x}px`)
-        .style("max-width", `${xScale.bandwidth()}px`);
+        .style("max-width", `${xScale.bandwidth()}px`)
+        .on("click", () => {
+          setSelectedTrackId(selectedTrackId === entity.id ? null : entity.id);
+        });
 
       // Show only the entity name with text wrapping
       labelContainer
@@ -172,11 +176,14 @@ export function EntityVisual({ events }: EntityVisualProps) {
           [
             "font-semibold",
             `text-xs`,
-            "text-gray-700",
+            selectedTrackId === entity.id ? "text-blue-600" : "text-gray-700",
             "text-center",
             "break-words",
             "leading-tight",
             "line-clamp-3",
+            "transition-colors",
+            "duration-200",
+            "hover:text-blue-600",
           ].join(" ")
         )
         .attr("title", entity.name)
@@ -245,27 +252,90 @@ export function EntityVisual({ events }: EntityVisualProps) {
           preferredAngles: [0, 45, 90, 135, 180],
           minSegmentLength: 20,
           smoothing: true,
+          yScale,
         });
 
-        // Create the curved path
+        // Create the curved path with hover interaction
         g.append("path")
           .attr("class", `track-${entitySlug}`)
           .attr("d", metroPath.toString())
           .attr("fill", "none")
-          .attr("stroke", "#94a3b8")
+          .attr("stroke", selectedTrackId === entity.id ? "#3b82f6" : "#94a3b8")
           .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
-          .attr("opacity", 0.3);
+          .attr("opacity", selectedTrackId === entity.id ? 0.8 : 0.3)
+          .style("cursor", "pointer")
+          .on("mouseenter", function (this: SVGPathElement, event: MouseEvent) {
+            // Smoothly increase stroke width and opacity
+            d3.select(this)
+              .transition()
+              .duration(200)
+              .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth * 1.5)
+              .attr("opacity", selectedTrackId === entity.id ? 1 : 0.5);
+
+            // Show tooltip with entity name
+            showTooltip(null, event.pageX, event.pageY, "entity", entity);
+            updatePosition(event.pageX, event.pageY);
+          })
+          .on("mousemove", function (event: MouseEvent) {
+            updatePosition(event.pageX, event.pageY);
+          })
+          .on("mouseleave", function (this: SVGPathElement) {
+            // Smoothly revert stroke width and opacity
+            d3.select(this)
+              .transition()
+              .duration(200)
+              .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
+              .attr("opacity", selectedTrackId === entity.id ? 0.8 : 0.3);
+
+            hideTooltip();
+          })
+          .on("click", function () {
+            setSelectedTrackId(
+              selectedTrackId === entity.id ? null : entity.id
+            );
+          });
       } else {
-        // If no nodes, draw a straight line as fallback
+        // If no nodes, draw a straight line as fallback with hover interaction
         g.append("line")
           .attr("class", `track-${entitySlug}`)
           .attr("x1", startX)
           .attr("y1", 0)
           .attr("x2", startX)
           .attr("y2", height)
-          .attr("stroke", "#94a3b8")
+          .attr("stroke", selectedTrackId === entity.id ? "#3b82f6" : "#94a3b8")
           .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
-          .attr("opacity", 0.15); // Lower opacity for unused tracks
+          .attr("opacity", selectedTrackId === entity.id ? 0.8 : 0.15)
+          .style("cursor", "pointer")
+          .on("mouseenter", function (this: SVGLineElement, event: MouseEvent) {
+            // Smoothly increase stroke width and opacity
+            d3.select(this)
+              .transition()
+              .duration(200)
+              .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth * 1.5)
+              .attr("opacity", selectedTrackId === entity.id ? 1 : 0.3);
+
+            // Show tooltip with entity name
+            showTooltip(null, event.pageX, event.pageY, "entity", entity);
+            updatePosition(event.pageX, event.pageY);
+          })
+          .on("mousemove", function (event: MouseEvent) {
+            updatePosition(event.pageX, event.pageY);
+          })
+          .on("mouseleave", function (this: SVGLineElement) {
+            // Smoothly revert stroke width and opacity
+            d3.select(this)
+              .transition()
+              .duration(200)
+              .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
+              .attr("opacity", selectedTrackId === entity.id ? 0.8 : 0.15);
+
+            hideTooltip();
+          })
+          .on("click", function () {
+            setSelectedTrackId(
+              selectedTrackId === entity.id ? null : entity.id
+            );
+          });
       }
     });
 
@@ -427,6 +497,8 @@ export function EntityVisual({ events }: EntityVisualProps) {
     setSelectedEventId,
     selectedEventId,
     updateSelectedEventStyles,
+    selectedTrackId,
+    setSelectedTrackId,
   ]);
 
   // Keep selection handling in a separate effect
@@ -458,16 +530,18 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
   return (
     <div
-      className="w-full h-full flex flex-col overflow-auto"
+      className="w-full h-full overflow-y-scroll"
       style={{ scrollbarGutter: "stable" }}
     >
-      <div
-        ref={headerRef}
-        style={{ height: `${ENTITY_CONFIG.header.height}px` }}
-        className="flex-none bg-white sticky top-0 z-10 shadow-sm"
-      />
-      <div ref={containerRef} className="flex-1 relative">
-        <svg ref={svgRef} className="min-w-full min-h-full" />
+      <div className="min-w-fit">
+        <div
+          ref={headerRef}
+          style={{ height: `${ENTITY_CONFIG.header.height}px` }}
+          className="bg-white sticky top-0 z-10 shadow-sm"
+        />
+        <div ref={containerRef}>
+          <svg ref={svgRef} className="w-full" />
+        </div>
       </div>
     </div>
   );

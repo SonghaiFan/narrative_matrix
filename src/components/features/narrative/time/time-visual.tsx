@@ -566,19 +566,19 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
   }, [updateVisualization]);
 
   return (
-    <div className="w-full h-full flex flex-col overflow-auto">
-      <div className="flex-none bg-white sticky top-0 z-10 shadow-sm">
+    <div
+      className="w-full h-full overflow-scroll"
+      style={{ scrollbarGutter: "stable" }}
+    >
+      <div className="min-w-fit">
         <div
           ref={headerRef}
           style={{ height: `${TIME_CONFIG.header.height}px` }}
+          className="bg-white sticky top-0 z-10 shadow-sm"
         />
-      </div>
-      <div
-        ref={containerRef}
-        className="flex-1 relative overflow-x-scroll "
-        style={{ scrollbarGutter: "stable" }}
-      >
-        <svg ref={svgRef} className="min-w-full min-h-full" />
+        <div ref={containerRef}>
+          <svg ref={svgRef} className="w-full" />
+        </div>
       </div>
     </div>
   );
