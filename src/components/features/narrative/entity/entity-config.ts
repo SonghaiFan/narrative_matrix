@@ -10,12 +10,12 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
   // Entity column styling
   entity: {
     columnPadding: 0.1, // Padding within entity columns
-    columnWidth: 50, // Width of entity columns
+    columnWidth: 40, // Width of entity columns
     columnGap: 10, // Gap between entity columns
   },
   event: {
-    connectorStrokeWidth: 6,
-    hoverConnectorStrokeWidth: 18, // Stroke width when hovering
+    connectorStrokeWidth: 3,
+    hoverConnectorStrokeWidth: 12, // Stroke width when hovering
     innerConnectorScale: 0.85, // Scale factor for inner connector
   },
   // Metro track styling
@@ -28,7 +28,7 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For sharp corners: 1-2
     // For rounded corners: 4-6
     // For very rounded corners: 6-8
-    cornerRadius: 4, // Multiplier for point radius
+    cornerRadius: 10, // Multiplier for point radius
 
     // Grid Size
     // Range: 2 to 20
@@ -38,7 +38,7 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For precise paths: 2-4
     // For balanced: 6-8
     // For grid-aligned: 10-20
-    gridSize: 1, // Size of the grid for snapping
+    gridSize: 10, // Size of the grid for snapping
 
     // Minimum Segment Length
     // Range: 0.5 to 3.0
@@ -83,7 +83,7 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For small curves: 0.5-0.8
     // For balanced: 1.0-1.2
     // For large curves: 1.5-2.0
-    maxCurveRatio: 0.5, // Maximum ratio of curve radius to segment length
+    maxCurveRatio: 1, // Maximum ratio of curve radius to segment length
 
     // Common Scenarios:
     // 1. Sharp Metro Grid:
@@ -135,8 +135,8 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For flexible tracks: 0.05, 0.3
     // For balanced: 0.1, 0.5 (current)
     // For legacy behavior: 0, 0 (no x-force)
-    xForceBase: 0.01, // Base strength for x-force (keeping nodes in their columns)
-    xForceMax: 0.8, // Maximum x-force strength
+    xForceBase: 0.1, // Base strength for x-force (keeping nodes in their columns)
+    xForceMax: 0.5, // Maximum x-force strength
 
     // Horizontal Link Parameters (Controls Same-Time Connections)
     // Range: 0.0 to 3.0

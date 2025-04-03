@@ -134,16 +134,6 @@ export function EntityVisual({ events }: EntityVisualProps) {
     []
   );
 
-  // Add a separate effect to handle track selection without scrolling
-  useEffect(() => {
-    // When a track is selected, we don't want to scroll
-    // This effect will run when selectedTrackId changes
-    if (selectedTrackId !== null && selectedNodeRef.current) {
-      // Prevent scrolling when a track is selected
-      // We don't need to do anything here, just let the track selection happen
-    }
-  }, [selectedTrackId]);
-
   // Function to update the visualization
   const updateVisualization = useCallback(() => {
     if (
@@ -485,7 +475,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
   return (
     <div
-      className="w-full h-full overflow-y-scroll"
+      className="w-full h-full overflow-scroll"
       style={{ scrollbarGutter: "stable" }}
     >
       <div className="min-w-fit">
