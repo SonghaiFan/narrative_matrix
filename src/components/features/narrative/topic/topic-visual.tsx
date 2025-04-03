@@ -449,14 +449,18 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           parseFloat(node.attr("y") || "0") +
           parseFloat(node.attr("height") || "0") / 2;
 
-        const { width, height, rx, ry } = calculateRectDimensions(
-          pointCount,
-          TOPIC_CONFIG.point.hoverRadius,
-          false,
-          true
-        );
+        // Only apply hover scaling if the parent is not expanded
+        const isExpanded = isParent && d.isExpanded;
+        if (!isExpanded) {
+          const { width, height, rx, ry } = calculateRectDimensions(
+            pointCount,
+            TOPIC_CONFIG.point.hoverRadius,
+            false,
+            true
+          );
 
-        updateRectAndText(node, null, x, y, width, height, rx, ry);
+          updateRectAndText(node, null, x, y, width, height, rx, ry);
+        }
 
         if (!isParent) {
           const parentKey = node.attr("data-parent-key");
@@ -466,7 +470,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
               .select("rect");
             const parentData = parentNode.datum() as GroupedPoint;
 
-            if (parentData) {
+            if (parentData && !parentData.isExpanded) {
               const parentX =
                 parseFloat(parentNode.attr("x") || "0") +
                 parseFloat(parentNode.attr("width") || "0") / 2;
@@ -520,12 +524,16 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           parseFloat(node.attr("y") || "0") +
           parseFloat(node.attr("height") || "0") / 2;
 
-        const { width, height, rx, ry } = calculateRectDimensions(
-          pointCount,
-          radius
-        );
+        // Only reset if the parent is not expanded
+        const isExpanded = isParent && d.isExpanded;
+        if (!isExpanded) {
+          const { width, height, rx, ry } = calculateRectDimensions(
+            pointCount,
+            radius
+          );
 
-        updateRectAndText(node, null, x, y, width, height, rx, ry);
+          updateRectAndText(node, null, x, y, width, height, rx, ry);
+        }
 
         if (!isParent) {
           const parentKey = node.attr("data-parent-key");
@@ -533,39 +541,43 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             const parentGroup = d3.select(`#${getParentNodeId(parentKey)}`);
             if (!parentGroup.empty()) {
               const parentData = parentGroup.datum() as GroupedPoint;
-              const parentRadius =
-                parentData.points.length > 1
-                  ? TOPIC_CONFIG.point.radius * 1.2
-                  : TOPIC_CONFIG.point.radius;
 
-              const parentRect = parentGroup.select("rect");
-              const parentX =
-                parseFloat(parentRect.attr("x") || "0") +
-                parseFloat(parentRect.attr("width") || "0") / 2;
-              const parentY =
-                parseFloat(parentRect.attr("y") || "0") +
-                parseFloat(parentRect.attr("height") || "0") / 2;
+              // Only reset parent if it's not expanded
+              if (!parentData.isExpanded) {
+                const parentRadius =
+                  parentData.points.length > 1
+                    ? TOPIC_CONFIG.point.radius * 1.2
+                    : TOPIC_CONFIG.point.radius;
 
-              const {
-                width: parentWidth,
-                height: parentHeight,
-                rx: parentRx,
-                ry: parentRy,
-              } = calculateRectDimensions(
-                parentData.points.length,
-                parentRadius
-              );
+                const parentRect = parentGroup.select("rect");
+                const parentX =
+                  parseFloat(parentRect.attr("x") || "0") +
+                  parseFloat(parentRect.attr("width") || "0") / 2;
+                const parentY =
+                  parseFloat(parentRect.attr("y") || "0") +
+                  parseFloat(parentRect.attr("height") || "0") / 2;
 
-              updateRectAndText(
-                parentRect,
-                null,
-                parentX,
-                parentY,
-                parentWidth,
-                parentHeight,
-                parentRx,
-                parentRy
-              );
+                const {
+                  width: parentWidth,
+                  height: parentHeight,
+                  rx: parentRx,
+                  ry: parentRy,
+                } = calculateRectDimensions(
+                  parentData.points.length,
+                  parentRadius
+                );
+
+                updateRectAndText(
+                  parentRect,
+                  null,
+                  parentX,
+                  parentY,
+                  parentWidth,
+                  parentHeight,
+                  parentRx,
+                  parentRy
+                );
+              }
             }
           }
         }
@@ -575,6 +587,12 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       mouseOver(this: any, event: MouseEvent, d: any) {
         const node = d3.select(this);
         const isParent = node.classed("parent-point");
+        const isExpanded = isParent && d.isExpanded;
+
+        // Skip hover effects if parent is expanded
+        if (isExpanded) {
+          return;
+        }
 
         // Raise node to front
         if (isParent) {
@@ -604,6 +622,12 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       mouseOut(this: any, event: MouseEvent, d: any) {
         const node = d3.select(this);
         const isParent = node.classed("parent-point");
+        const isExpanded = isParent && d.isExpanded;
+
+        // Skip reset if parent is expanded
+        if (isExpanded) {
+          return;
+        }
 
         handleNodeInteraction.resetNode(node, d, isParent);
 
@@ -664,7 +688,9 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           const { width, height, rx, ry } = calculateRectDimensions(
             d.points.length,
             TOPIC_CONFIG.point.radius,
-            true
+            true,
+            false,
+            d.points.length
           );
 
           updateRectAndText(
@@ -678,8 +704,17 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             ry,
             200,
             0.5,
-            "pointer"
+            "default" // Change cursor to default when expanded
           );
+
+          // Disable mouse events on parent when expanded
+          parentRect.style("pointer-events", "none").style("cursor", "default");
+
+          // Remove mouse event handlers from parent
+          parentRect
+            .on("mouseover", null)
+            .on("mouseout", null)
+            .on("mousemove", null);
 
           children
             .transition()
@@ -706,6 +741,15 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             "pointer"
           );
 
+          // Re-enable mouse events on parent when collapsed
+          parentRect.style("pointer-events", "all").style("cursor", "pointer");
+
+          // Re-add mouse event handlers to parent
+          parentRect
+            .on("mouseover", handleNodeInteraction.mouseOver)
+            .on("mouseout", handleNodeInteraction.mouseOut)
+            .on("mousemove", handleNodeInteraction.mouseMove);
+
           children
             .transition()
             .duration(200)
@@ -713,6 +757,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             .style("pointer-events", "none");
         }
       } else {
+        // For parent nodes with no children, behave like a child node
         const eventData = d.points[0].event;
         setSelectedEventId(
           eventData.index === selectedEventId ? null : eventData.index
@@ -758,7 +803,9 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           const { width, height, rx, ry } = calculateRectDimensions(
             parent.points.length,
             TOPIC_CONFIG.point.radius,
-            true
+            true,
+            false,
+            parent.points.length
           );
 
           updateRectAndText(
@@ -773,6 +820,9 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             0,
             0.5
           );
+
+          // Disable mouse events on parent when expanded
+          parentRect.style("pointer-events", "none").style("cursor", "default");
 
           children.style("opacity", 1).style("pointer-events", "all");
         }
@@ -874,6 +924,11 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
               1,
               "pointer"
             );
+
+            // Re-enable mouse events on parent when collapsed
+            parentRect
+              .style("pointer-events", "all")
+              .style("cursor", "pointer");
 
             children
               .transition()

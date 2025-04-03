@@ -332,7 +332,8 @@ export function calculateRectDimensions(
   pointCount: number,
   radius: number,
   isExpanded: boolean = false,
-  isHovered: boolean = false
+  isHovered: boolean = false,
+  childCount: number = 0
 ) {
   let width, height, rx, ry;
 
@@ -342,8 +343,19 @@ export function calculateRectDimensions(
     rx = radius;
     ry = radius;
   } else if (isExpanded) {
-    width = radius * 1.6;
-    height = radius * 1.6;
+    // When expanded, make the rectangle taller to encompass all child nodes
+    // Calculate height based on number of child nodes
+    const verticalSpacing = radius * 2.5; // Same as in calculateExpandedPositions
+    const childHeight = childCount > 0 ? (childCount - 1) * verticalSpacing : 0;
+
+    // Increase base size for expanded parent nodes
+    const expandedBaseSize = radius * 3;
+
+    // Base height plus space for children with additional padding
+    height = Math.max(expandedBaseSize, childHeight + radius * 3);
+    width = expandedBaseSize;
+
+    // Keep corner radius proportional but smaller for the expanded state
     rx = radius * 0.8;
     ry = radius * 0.8;
   } else {
