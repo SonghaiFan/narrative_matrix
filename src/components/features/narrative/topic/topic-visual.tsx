@@ -18,6 +18,10 @@ import {
   createAxes,
   groupOverlappingPoints,
   calculateExpandedPositions,
+  calculateRectDimensions,
+  calculateRectPosition,
+  calculateCenterPoint,
+  updateRectAndText,
   type DataPoint,
   type GroupedPoint,
 } from "./topic-visual.utils";
@@ -68,7 +72,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
       // Reset all nodes to default stroke style
       d3.select(svgRef.current)
-        .selectAll(".parent-point, .child-point-circle")
+        .selectAll(".parent-point, .child-point-rect")
         .attr("stroke", "black")
         .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth);
 
@@ -90,7 +94,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       // Try to find and highlight the child node
       const childNode = d3
         .select(svgRef.current)
-        .selectAll(".child-point-circle")
+        .selectAll(".child-point-rect")
         .filter(function () {
           return (
             d3.select(this).attr("data-event-index") === String(newSelectedId)
@@ -102,25 +106,31 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       // Update guide line based on selected node
       if (!parentNode.empty()) {
         parentNode.attr("stroke", getHighlightColor());
-        const cx = parseFloat(parentNode.attr("cx") || "0");
+        const x = parseFloat(parentNode.attr("x") || "0");
+        const width = parseFloat(parentNode.attr("width") || "0");
+        const centerX = x + width / 2;
+
         guideLine
           .style("display", "block")
           .select(".vertical")
-          .attr("x1", cx)
-          .attr("x2", cx);
+          .attr("x1", centerX)
+          .attr("x2", centerX);
       } else if (!childNode.empty()) {
         const parentKey = childNode.attr("data-parent-key");
         if (parentKey) {
           const parentNodeId = getParentNodeId(parentKey);
-          const parentCircle = d3.select(`#${parentNodeId}`).select("circle");
-          parentCircle.attr("stroke", getHighlightColor());
+          const parentRect = d3.select(`#${parentNodeId}`).select("rect");
+          parentRect.attr("stroke", getHighlightColor());
 
-          const cx = parseFloat(parentCircle.attr("cx") || "0");
+          const x = parseFloat(parentRect.attr("x") || "0");
+          const width = parseFloat(parentRect.attr("width") || "0");
+          const centerX = x + width / 2;
+
           guideLine
             .style("display", "block")
             .select(".vertical")
-            .attr("x1", cx)
-            .attr("x2", cx);
+            .attr("x1", centerX)
+            .attr("x2", centerX);
         }
       }
     },
@@ -200,6 +210,16 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .attr("height", containerHeight)
       .style("display", "block")
       .style("overflow", "visible");
+
+    // Add background rectangle to capture clicks outside nodes
+    svg
+      .append("rect")
+      .attr("class", "background-rect")
+      .attr("width", containerWidth)
+      .attr("height", containerHeight)
+      .attr("fill", "transparent")
+      .style("pointer-events", "all")
+      .on("click", handleBackgroundClick);
 
     const g = svg
       .append("g")
@@ -314,33 +334,50 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       return getSentimentColor(dominantPolarity);
     };
 
-    // Add parent circles
+    // Add parent rectangles
     parentNodes
-      .append("circle")
+      .append("rect")
       .attr("class", "parent-point")
-      .attr("cx", (d) => d.x)
-      .attr("cy", (d) => d.y)
-      .attr("r", (d) =>
-        d.points.length > 1
-          ? TOPIC_CONFIG.point.radius * 1.2
-          : TOPIC_CONFIG.point.radius
-      )
-      .attr("fill", getParentSentimentColor)
-      .attr("stroke", "black")
-      .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth)
-      .style("cursor", (d) => (d.points.length > 1 ? "pointer" : "default"))
-      .attr("data-group-key", (d) => d.key.replace(/[^a-zA-Z0-9-_]/g, "_"))
-      .attr("data-event-index", (d) => d.points[0].event.index)
-      .attr("data-point-count", (d) => d.points.length)
       .each(function (d: GroupedPoint) {
+        const { width, height, rx, ry } = calculateRectDimensions(
+          d.points.length,
+          TOPIC_CONFIG.point.radius
+        );
+        const { rectX, rectY } = calculateRectPosition(d.x, d.y, width, height);
+
+        d3.select(this)
+          .attr("x", rectX)
+          .attr("y", rectY)
+          .attr("width", width)
+          .attr("height", height)
+          .attr("rx", rx)
+          .attr("ry", ry)
+          .attr("fill", getParentSentimentColor(d))
+          .attr("stroke", "black")
+          .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth)
+          .style("cursor", d.points.length > 1 ? "pointer" : "default")
+          .attr("data-group-key", d.key.replace(/[^a-zA-Z0-9-_]/g, "_"))
+          .attr("data-event-index", d.points[0].event.index)
+          .attr("data-point-count", d.points.length);
+
         if (d.points.length > 1) {
+          const { centerX, centerY } = calculateCenterPoint(
+            rectX,
+            rectY,
+            width,
+            height
+          );
+
           d3.select(this.parentElement)
             .append("text")
-            .attr("x", d.x)
-            .attr("y", d.y)
+            .attr("x", centerX)
+            .attr("y", centerY)
             .attr("dy", "0.35em")
             .attr("text-anchor", "middle")
-            .style("font-size", "10px")
+            .style(
+              "font-size",
+              `${Math.min(10 + (d.points.length - 1) * 0.5, 14)}px`
+            )
             .style("fill", "black")
             .style("pointer-events", "none")
             .text(d.points.length);
@@ -365,10 +402,10 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .style("pointer-events", "none");
 
     childNodes
-      .append("circle")
-      .attr("class", "child-point-circle")
+      .append("rect")
+      .attr("class", "child-point-rect")
       .attr("id", (d: ChildPoint) => getChildNodeId(d.event.index))
-      .attr("cx", (d: ChildPoint) => {
+      .attr("x", (d: ChildPoint) => {
         const parent = groupedPoints.find(
           (g) => g.key.replace(/[^a-zA-Z0-9-_]/g, "_") === d.parentKey
         )!;
@@ -376,9 +413,9 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           parent,
           TOPIC_CONFIG.point.radius
         );
-        return positions[d.index].x;
+        return positions[d.index].x - TOPIC_CONFIG.point.radius;
       })
-      .attr("cy", (d: ChildPoint) => {
+      .attr("y", (d: ChildPoint) => {
         const parent = groupedPoints.find(
           (g) => g.key.replace(/[^a-zA-Z0-9-_]/g, "_") === d.parentKey
         )!;
@@ -386,9 +423,12 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           parent,
           TOPIC_CONFIG.point.radius
         );
-        return positions[d.index].y;
+        return positions[d.index].y - TOPIC_CONFIG.point.radius;
       })
-      .attr("r", TOPIC_CONFIG.point.radius)
+      .attr("width", TOPIC_CONFIG.point.radius * 2)
+      .attr("height", TOPIC_CONFIG.point.radius * 2)
+      .attr("rx", TOPIC_CONFIG.point.radius)
+      .attr("ry", TOPIC_CONFIG.point.radius)
       .attr("fill", (d: ChildPoint) => getSentimentColor(d.sentimentPolarity))
       .attr("stroke", "black")
       .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth)
@@ -400,19 +440,63 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     const handleNodeInteraction = {
       // Highlight node on hover
       highlightNode(node: d3.Selection<any, any, any, any>, isParent: boolean) {
-        node
-          .transition()
-          .duration(150)
-          .attr("r", TOPIC_CONFIG.point.hoverRadius);
+        const d = node.datum();
+        const pointCount = isParent && d.points ? d.points.length : 1;
+        const x =
+          parseFloat(node.attr("x") || "0") +
+          parseFloat(node.attr("width") || "0") / 2;
+        const y =
+          parseFloat(node.attr("y") || "0") +
+          parseFloat(node.attr("height") || "0") / 2;
+
+        const { width, height, rx, ry } = calculateRectDimensions(
+          pointCount,
+          TOPIC_CONFIG.point.hoverRadius,
+          false,
+          true
+        );
+
+        updateRectAndText(node, null, x, y, width, height, rx, ry);
 
         if (!isParent) {
           const parentKey = node.attr("data-parent-key");
           if (parentKey) {
-            d3.select(`#${getParentNodeId(parentKey)}`)
-              .select("circle")
-              .transition()
-              .duration(150)
-              .attr("r", TOPIC_CONFIG.point.hoverRadius);
+            const parentNode = d3
+              .select(`#${getParentNodeId(parentKey)}`)
+              .select("rect");
+            const parentData = parentNode.datum() as GroupedPoint;
+
+            if (parentData) {
+              const parentX =
+                parseFloat(parentNode.attr("x") || "0") +
+                parseFloat(parentNode.attr("width") || "0") / 2;
+              const parentY =
+                parseFloat(parentNode.attr("y") || "0") +
+                parseFloat(parentNode.attr("height") || "0") / 2;
+
+              const {
+                width: parentWidth,
+                height: parentHeight,
+                rx: parentRx,
+                ry: parentRy,
+              } = calculateRectDimensions(
+                parentData.points.length,
+                TOPIC_CONFIG.point.hoverRadius,
+                false,
+                true
+              );
+
+              updateRectAndText(
+                parentNode,
+                null,
+                parentX,
+                parentY,
+                parentWidth,
+                parentHeight,
+                parentRx,
+                parentRy
+              );
+            }
           }
         }
       },
@@ -429,7 +513,19 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             ? TOPIC_CONFIG.point.radius * 1.2
             : TOPIC_CONFIG.point.radius;
 
-        node.transition().duration(150).attr("r", radius);
+        const x =
+          parseFloat(node.attr("x") || "0") +
+          parseFloat(node.attr("width") || "0") / 2;
+        const y =
+          parseFloat(node.attr("y") || "0") +
+          parseFloat(node.attr("height") || "0") / 2;
+
+        const { width, height, rx, ry } = calculateRectDimensions(
+          pointCount,
+          radius
+        );
+
+        updateRectAndText(node, null, x, y, width, height, rx, ry);
 
         if (!isParent) {
           const parentKey = node.attr("data-parent-key");
@@ -442,11 +538,34 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
                   ? TOPIC_CONFIG.point.radius * 1.2
                   : TOPIC_CONFIG.point.radius;
 
-              parentGroup
-                .select("circle")
-                .transition()
-                .duration(150)
-                .attr("r", parentRadius);
+              const parentRect = parentGroup.select("rect");
+              const parentX =
+                parseFloat(parentRect.attr("x") || "0") +
+                parseFloat(parentRect.attr("width") || "0") / 2;
+              const parentY =
+                parseFloat(parentRect.attr("y") || "0") +
+                parseFloat(parentRect.attr("height") || "0") / 2;
+
+              const {
+                width: parentWidth,
+                height: parentHeight,
+                rx: parentRx,
+                ry: parentRy,
+              } = calculateRectDimensions(
+                parentData.points.length,
+                parentRadius
+              );
+
+              updateRectAndText(
+                parentRect,
+                null,
+                parentX,
+                parentY,
+                parentWidth,
+                parentHeight,
+                parentRx,
+                parentRy
+              );
             }
           }
         }
@@ -529,19 +648,38 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
         const parent = d3.select(this);
         const children = parent.selectAll(".child-point");
-        const parentCircle = parent.select("circle");
+        const parentRect = parent.select("rect");
         const countText = parent.select("text");
+
+        const x =
+          parseFloat(parentRect.attr("x") || "0") +
+          parseFloat(parentRect.attr("width") || "0") / 2;
+        const y =
+          parseFloat(parentRect.attr("y") || "0") +
+          parseFloat(parentRect.attr("height") || "0") / 2;
 
         if (isExpanded) {
           parent.raise();
-          parentCircle
-            .transition()
-            .duration(200)
-            .attr("r", TOPIC_CONFIG.point.radius * 0.8)
-            .style("opacity", 0.5)
-            .style("cursor", "pointer");
 
-          countText?.style("opacity", 0);
+          const { width, height, rx, ry } = calculateRectDimensions(
+            d.points.length,
+            TOPIC_CONFIG.point.radius,
+            true
+          );
+
+          updateRectAndText(
+            parentRect,
+            countText,
+            x,
+            y,
+            width,
+            height,
+            rx,
+            ry,
+            200,
+            0.5,
+            "pointer"
+          );
 
           children
             .transition()
@@ -549,19 +687,24 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             .style("opacity", 1)
             .style("pointer-events", "all");
         } else {
-          parentCircle
-            .transition()
-            .duration(200)
-            .attr(
-              "r",
-              d.points.length > 1
-                ? TOPIC_CONFIG.point.radius * 1.2
-                : TOPIC_CONFIG.point.radius
-            )
-            .style("opacity", 1)
-            .style("cursor", "pointer");
+          const { width, height, rx, ry } = calculateRectDimensions(
+            d.points.length,
+            TOPIC_CONFIG.point.radius
+          );
 
-          countText?.style("opacity", 1);
+          updateRectAndText(
+            parentRect,
+            countText,
+            x,
+            y,
+            width,
+            height,
+            rx,
+            ry,
+            200,
+            1,
+            "pointer"
+          );
 
           children
             .transition()
@@ -579,13 +722,13 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
     // Add event listeners
     parentNodes
-      .selectAll("circle.parent-point")
+      .selectAll("rect.parent-point")
       .on("mouseover", handleNodeInteraction.mouseOver)
       .on("mouseout", handleNodeInteraction.mouseOut)
       .on("mousemove", handleNodeInteraction.mouseMove);
 
     childNodes
-      .selectAll("circle.child-point-circle")
+      .selectAll("rect.child-point-rect")
       .on("mouseover", handleNodeInteraction.mouseOver)
       .on("mouseout", handleNodeInteraction.mouseOut)
       .on("mousemove", handleNodeInteraction.mouseMove)
@@ -601,15 +744,36 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           pointStatesRef.current.set(key, state);
 
           // Restore expanded state visually
-          const parentCircle = parentNode.select("circle");
+          const parentRect = parentNode.select("rect");
           const countText = parentNode.select("text");
           const children = parentNode.selectAll(".child-point");
 
-          parentCircle
-            .attr("r", TOPIC_CONFIG.point.radius * 0.8)
-            .style("opacity", 0.5);
+          const x =
+            parseFloat(parentRect.attr("x") || "0") +
+            parseFloat(parentRect.attr("width") || "0") / 2;
+          const y =
+            parseFloat(parentRect.attr("y") || "0") +
+            parseFloat(parentRect.attr("height") || "0") / 2;
 
-          countText?.style("opacity", 0);
+          const { width, height, rx, ry } = calculateRectDimensions(
+            parent.points.length,
+            TOPIC_CONFIG.point.radius,
+            true
+          );
+
+          updateRectAndText(
+            parentRect,
+            countText,
+            x,
+            y,
+            width,
+            height,
+            rx,
+            ry,
+            0,
+            0.5
+          );
+
           children.style("opacity", 1).style("pointer-events", "all");
         }
       }
@@ -653,6 +817,74 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     };
   }, [updateVisualization]);
 
+  // Handle background click to deselect
+  const handleBackgroundClick = useCallback(() => {
+    // Deselect any selected event
+    setSelectedEventId(null);
+    hideTooltip();
+
+    // Close all expanded parent nodes
+    if (svgRef.current) {
+      // Reset all parent nodes to collapsed state
+      d3.select(svgRef.current)
+        .selectAll(".point-group")
+        .each(function (d: any) {
+          if (d.isExpanded) {
+            d.isExpanded = false;
+
+            // Update the pointStatesRef to reflect the collapsed state
+            if (d.key) {
+              const currentState = pointStatesRef.current.get(d.key);
+              if (currentState) {
+                pointStatesRef.current.set(d.key, {
+                  ...currentState,
+                  isExpanded: false,
+                });
+              }
+            }
+
+            // Update the visual state
+            const parent = d3.select(this);
+            const children = parent.selectAll(".child-point");
+            const parentRect = parent.select("rect");
+            const countText = parent.select("text");
+
+            const x =
+              parseFloat(parentRect.attr("x") || "0") +
+              parseFloat(parentRect.attr("width") || "0") / 2;
+            const y =
+              parseFloat(parentRect.attr("y") || "0") +
+              parseFloat(parentRect.attr("height") || "0") / 2;
+
+            const { width, height, rx, ry } = calculateRectDimensions(
+              d.points.length,
+              TOPIC_CONFIG.point.radius
+            );
+
+            updateRectAndText(
+              parentRect,
+              countText,
+              x,
+              y,
+              width,
+              height,
+              rx,
+              ry,
+              200,
+              1,
+              "pointer"
+            );
+
+            children
+              .transition()
+              .duration(200)
+              .style("opacity", 0)
+              .style("pointer-events", "none");
+          }
+        });
+    }
+  }, [setSelectedEventId, hideTooltip]);
+
   return (
     <div className="w-full h-full flex flex-col">
       <div className="flex-none bg-white sticky top-0 z-10 shadow-sm">
@@ -667,8 +899,20 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         style={{
           scrollbarGutter: "stable",
         }}
+        onClick={(e) => {
+          // Only trigger if clicking directly on the container or a direct child that's not the SVG
+          const target = e.target as HTMLElement;
+          if (
+            target === containerRef.current ||
+            (target.parentElement === containerRef.current &&
+              target.tagName !== "svg")
+          ) {
+            handleBackgroundClick();
+          }
+        }}
       >
-        <svg ref={svgRef} className="w-full h-full" />
+        <div className="absolute inset-0 z-0" />
+        <svg ref={svgRef} className="w-full h-full relative z-10" />
       </div>
     </div>
   );

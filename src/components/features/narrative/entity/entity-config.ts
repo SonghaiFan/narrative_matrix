@@ -38,7 +38,7 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For precise paths: 2-4
     // For balanced: 6-8
     // For grid-aligned: 10-20
-    gridSize: 4, // Size of the grid for snapping
+    gridSize: 1, // Size of the grid for snapping
 
     // Minimum Segment Length
     // Range: 0.5 to 3.0
@@ -73,7 +73,7 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For tight curves: 0.8-1.0
     // For balanced: 1.2-1.4
     // For wide curves: 1.6-2.0
-    curveScale: 1.2, // Scale factor for curve radius
+    curveScale: 1, // Scale factor for curve radius
 
     // Maximum Curve Ratio
     // Range: 0.5 to 2.0
@@ -83,7 +83,7 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For small curves: 0.5-0.8
     // For balanced: 1.0-1.2
     // For large curves: 1.5-2.0
-    maxCurveRatio: 1, // Maximum ratio of curve radius to segment length
+    maxCurveRatio: 0.5, // Maximum ratio of curve radius to segment length
 
     // Common Scenarios:
     // 1. Sharp Metro Grid:
@@ -135,8 +135,8 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For flexible tracks: 0.05, 0.3
     // For balanced: 0.1, 0.5 (current)
     // For legacy behavior: 0, 0 (no x-force)
-    xForceBase: 0.1, // Base strength for x-force (keeping nodes in their columns)
-    xForceMax: 0.5, // Maximum x-force strength
+    xForceBase: 0.01, // Base strength for x-force (keeping nodes in their columns)
+    xForceMax: 0.8, // Maximum x-force strength
 
     // Horizontal Link Parameters (Controls Same-Time Connections)
     // Range: 0.0 to 3.0
@@ -179,7 +179,7 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For stable layout: 600 (current)
     // For very stable layout: 1000
     // For legacy behavior: 300 (faster simulation)
-    iterations: 1000, // Number of simulation iterations
+    iterations: 600, // Number of simulation iterations
 
     // Common Scenarios:
     // 1. Very Rigid Tracks:

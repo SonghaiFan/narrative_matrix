@@ -92,8 +92,11 @@ export function EntityVisual({ events }: EntityVisualProps) {
             .attr("y1", y)
             .attr("y2", y);
 
-          // Store the selected node in the ref and scroll into view
+          // Store the selected node in the ref
           selectedNodeRef.current = node;
+
+          // Always scroll into view when an event is selected
+          // This ensures that when selectedEventId changes, the view scrolls to the selected node
           selectedNodeRef.current.scrollIntoView({
             behavior: "smooth",
             block: "center",
@@ -103,6 +106,16 @@ export function EntityVisual({ events }: EntityVisualProps) {
     },
     []
   );
+
+  // Add a separate effect to handle track selection without scrolling
+  useEffect(() => {
+    // When a track is selected, we don't want to scroll
+    // This effect will run when selectedTrackId changes
+    if (selectedTrackId !== null && selectedNodeRef.current) {
+      // Prevent scrolling when a track is selected
+      // We don't need to do anything here, just let the track selection happen
+    }
+  }, [selectedTrackId]);
 
   // Function to update the visualization
   const updateVisualization = useCallback(() => {

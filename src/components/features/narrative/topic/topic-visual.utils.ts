@@ -301,22 +301,16 @@ export function calculateExpandedPositions(
     return [{ x: group.x, y: group.y }];
   }
 
-  // Calculate radius for the circle of nodes
-  // Scale the circle radius based on the number of points
-  // to ensure they don't overlap or go too far from the center
-  const circleRadius = Math.max(
-    radius * 2,
-    Math.min(radius * 3, radius * (1 + n * 0.2))
-  );
+  // Vertical alignment parameters
+  const verticalSpacing = radius * 2.5; // Space between nodes vertically
+  const totalHeight = (n - 1) * verticalSpacing; // Total height of the vertical arrangement
+  const startY = group.y - totalHeight / 2; // Start from the top, centered around the parent
 
-  // Distribute points evenly in a circle
-  const angleStep = (2 * Math.PI) / n;
-
+  // Distribute points vertically
   for (let i = 0; i < n; i++) {
-    const angle = i * angleStep;
     positions.push({
-      x: group.x + circleRadius * Math.cos(angle),
-      y: group.y + circleRadius * Math.sin(angle),
+      x: group.x, // Keep x position the same as parent
+      y: startY + i * verticalSpacing, // Distribute vertically
     });
   }
 
@@ -331,4 +325,118 @@ export function createTopicYAxis(
     .axisLeft(yScale)
     .tickSize(config.axis.tickSize)
     .tickPadding(config.axis.tickPadding);
+}
+
+// Utility functions for rectangle and text positioning
+export function calculateRectDimensions(
+  pointCount: number,
+  radius: number,
+  isExpanded: boolean = false,
+  isHovered: boolean = false
+) {
+  let width, height, rx, ry;
+
+  if (isHovered) {
+    width = radius * 2;
+    height = radius * 2;
+    rx = radius;
+    ry = radius;
+  } else if (isExpanded) {
+    width = radius * 1.6;
+    height = radius * 1.6;
+    rx = radius * 0.8;
+    ry = radius * 0.8;
+  } else {
+    // Scale parent node size based on child count
+    const baseSize = radius * 2;
+    const scaleFactor = Math.min(1 + (pointCount - 1) * 0.2, 2.5); // Scale up to 2.5x for larger groups
+
+    width = pointCount > 1 ? baseSize * scaleFactor : baseSize;
+    height = pointCount > 1 ? baseSize * scaleFactor : baseSize;
+
+    // Corner radius scales proportionally with the size
+    // Use a percentage of the width/height to maintain consistent rounded corners
+    const cornerRadiusPercentage = 0.5; // 50% of the smaller dimension
+    rx =
+      pointCount > 1
+        ? Math.min(width, height) * cornerRadiusPercentage
+        : radius;
+    ry =
+      pointCount > 1
+        ? Math.min(width, height) * cornerRadiusPercentage
+        : radius;
+  }
+
+  return { width, height, rx, ry };
+}
+
+export function calculateRectPosition(
+  x: number,
+  y: number,
+  width: number,
+  height: number
+) {
+  const rectX = x - width / 2;
+  const rectY = y - height / 2;
+  return { rectX, rectY };
+}
+
+export function calculateCenterPoint(
+  rectX: number,
+  rectY: number,
+  width: number,
+  height: number
+) {
+  const centerX = rectX + width / 2;
+  const centerY = rectY + height / 2;
+  return { centerX, centerY };
+}
+
+export function updateRectAndText(
+  rect: d3.Selection<any, any, any, any>,
+  text: d3.Selection<any, any, any, any> | null,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  rx: number,
+  ry: number,
+  duration: number = 150,
+  opacity: number = 1,
+  cursor: string = "pointer"
+) {
+  const { rectX, rectY } = calculateRectPosition(x, y, width, height);
+  const { centerX, centerY } = calculateCenterPoint(
+    rectX,
+    rectY,
+    width,
+    height
+  );
+
+  const transition = rect.transition().duration(duration);
+
+  transition
+    .attr("width", width)
+    .attr("height", height)
+    .attr("x", rectX)
+    .attr("y", rectY)
+    .attr("rx", rx)
+    .attr("ry", ry)
+    .style("opacity", opacity)
+    .style("cursor", cursor);
+
+  if (text) {
+    // Get the point count from the data attribute if available
+    const pointCount = parseInt(rect.attr("data-point-count") || "1", 10);
+    const fontSize = Math.min(10 + (pointCount - 1) * 0.5, 14);
+
+    text
+      .transition()
+      .duration(duration)
+      .attr("x", centerX)
+      .attr("y", centerY)
+      .style("font-size", `${fontSize}px`);
+  }
+
+  return { rectX, rectY, centerX, centerY };
 }
