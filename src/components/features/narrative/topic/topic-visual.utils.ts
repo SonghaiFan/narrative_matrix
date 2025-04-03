@@ -3,7 +3,6 @@ import * as d3 from "d3";
 import { TOPIC_CONFIG } from "./topic-config";
 import {
   createTimeScale,
-  generateTimeTicks,
   createTimeXAxis,
   getDateFromRange,
   getTimeDomain,
@@ -39,10 +38,7 @@ export interface GroupedPoint {
 }
 
 // Process events into data points
-export function processEvents(
-  events: NarrativeEvent[],
-  viewMode: "main" | "sub" = "main"
-): DataPoint[] {
+export function processEvents(events: NarrativeEvent[]): DataPoint[] {
   const validEvents = events.filter((e) => e.temporal_anchoring.real_time);
   return validEvents.map((event, index) => ({
     event,
@@ -65,7 +61,7 @@ export function processEvents(
 // Get unique topics and their counts
 export function getTopicCounts(
   dataPoints: DataPoint[],
-  viewMode: "main" | "sub" = "main"
+  viewMode: "main" | "sub" = "sub"
 ): Map<string, number> {
   const topicCounts = new Map<string, number>();
 
@@ -94,10 +90,7 @@ export function getTopicCounts(
 }
 
 // Get all unique topics sorted by frequency, filtering out empty topics
-export function getTopTopics(
-  topicCounts: Map<string, number>,
-  viewMode: "main" | "sub" = "main"
-): string[] {
+export function getTopTopics(topicCounts: Map<string, number>): string[] {
   return Array.from(topicCounts.entries())
     .filter(([_, count]) => count > 0) // Filter out topics with no nodes
     .sort((a, b) => b[1] - a[1])
@@ -229,7 +222,7 @@ export function groupOverlappingPoints(
   dataPoints: DataPoint[],
   xScale: any, // Using any since we have a custom composite scale
   yScale: d3.ScaleBand<string>,
-  viewMode: "main" | "sub" = "main"
+  viewMode: "main" | "sub" = "sub"
 ): GroupedPoint[] {
   const groups: Map<string, GroupedPoint> = new Map();
   const threshold = 10; // Threshold for considering points as overlapping
