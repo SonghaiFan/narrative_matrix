@@ -13,22 +13,17 @@ import {
   createXScale,
   createYScale,
   createYAxis,
-  getRelevantEntities,
   getVisibleEntities,
   calculateForceLayout,
   createEventNode,
-  createConnector,
   getEventFromNodeId,
-  getNodesFromLink,
   createEventGroup,
   addEventGroupHoverEffects,
-  addTrackHoverEffects,
+  drawLinkConnectors,
 } from "./entity-visual.utils";
 import { createMetroTrack } from "./entity-visual.utils";
-import {
-  getSentimentColor,
-  getHighlightColor,
-} from "@/components/features/narrative/shared/color-utils";
+import { getHighlightColor } from "@/components/features/narrative/shared/color-utils";
+import { createTrackWithHover } from "./entity-visual.utils";
 
 export interface EntityVisualProps {
   events: NarrativeEvent[];
@@ -258,45 +253,31 @@ export function EntityVisual({ events }: EntityVisualProps) {
         const metroPath = createMetroTrack(points, { yScale });
 
         // Create the curved path with hover interaction
-        const track = g
-          .append("path")
-          .attr("class", `track-${entitySlug}`)
-          .attr("d", metroPath.toString())
-          .attr("fill", "none")
-          .attr("stroke", selectedTrackId === entity.id ? "#3b82f6" : "#94a3b8")
-          .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
-          .attr("opacity", selectedTrackId === entity.id ? 0.8 : 0.3);
-
-        addTrackHoverEffects(
-          track,
+        createTrackWithHover(
+          g,
           entity,
+          entitySlug,
           selectedTrackId,
           showTooltip,
           updatePosition,
           hideTooltip,
-          setSelectedTrackId
+          setSelectedTrackId,
+          true,
+          { d: metroPath.toString() }
         );
       } else {
         // If no nodes, draw a straight line as fallback
-        const track = g
-          .append("line")
-          .attr("class", `track-${entitySlug}`)
-          .attr("x1", startX)
-          .attr("y1", 0)
-          .attr("x2", startX)
-          .attr("y2", height)
-          .attr("stroke", selectedTrackId === entity.id ? "#3b82f6" : "#94a3b8")
-          .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
-          .attr("opacity", selectedTrackId === entity.id ? 0.8 : 0.15);
-
-        addTrackHoverEffects(
-          track,
+        createTrackWithHover(
+          g,
           entity,
+          entitySlug,
           selectedTrackId,
           showTooltip,
           updatePosition,
           hideTooltip,
-          setSelectedTrackId
+          setSelectedTrackId,
+          false,
+          { x1: startX, y1: 0, x2: startX, y2: height }
         );
       }
     });
@@ -322,55 +303,15 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
     // 1. First draw the outer black connector
     forceLayout.links.forEach((link) => {
-      const { sourceNode, targetNode } = getNodesFromLink(
+      drawLinkConnectors(
+        g,
         link,
-        forceLayout.nodes
+        forceLayout.nodes,
+        events,
+        eventGroups,
+        selectedEventId,
+        "outer"
       );
-
-      if (sourceNode && targetNode) {
-        const yDifference = Math.abs(sourceNode.y - targetNode.y);
-
-        if (yDifference < 1) {
-          const sourceEventId = parseInt(sourceNode.id.split("-")[0]);
-          const targetEventId = parseInt(targetNode.id.split("-")[0]);
-
-          // Create or get the event groups
-          if (!eventGroups.has(sourceEventId)) {
-            eventGroups.set(sourceEventId, createEventGroup(g, sourceEventId));
-          }
-          if (!eventGroups.has(targetEventId)) {
-            eventGroups.set(targetEventId, createEventGroup(g, targetEventId));
-          }
-
-          const sourceGroup = eventGroups.get(sourceEventId);
-          const targetGroup = eventGroups.get(targetEventId);
-
-          // Add outer connector to both groups
-          createConnector(
-            sourceGroup,
-            sourceNode.x,
-            sourceNode.y,
-            targetNode.x,
-            targetNode.y,
-            "connector-outer",
-            "#000",
-            ENTITY_CONFIG.event.connectorStrokeWidth +
-              ENTITY_CONFIG.point.strokeWidth * 1.25
-          );
-
-          createConnector(
-            targetGroup,
-            sourceNode.x,
-            sourceNode.y,
-            targetNode.x,
-            targetNode.y,
-            "connector-outer",
-            "#000",
-            ENTITY_CONFIG.event.connectorStrokeWidth +
-              ENTITY_CONFIG.point.strokeWidth * 1.25
-          );
-        }
-      }
     });
 
     // 2. Draw nodes in the middle from the force simulation
@@ -403,50 +344,15 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
     // 3. Finally draw the inner connector on top
     forceLayout.links.forEach((link) => {
-      const { sourceNode, targetNode } = getNodesFromLink(
+      drawLinkConnectors(
+        g,
         link,
-        forceLayout.nodes
+        forceLayout.nodes,
+        events,
+        eventGroups,
+        selectedEventId,
+        "inner"
       );
-
-      if (sourceNode && targetNode) {
-        const yDifference = Math.abs(sourceNode.y - targetNode.y);
-
-        if (yDifference < 1) {
-          const sourceEventId = parseInt(sourceNode.id.split("-")[0]);
-          const targetEventId = parseInt(targetNode.id.split("-")[0]);
-
-          const sourceEvent = getEventFromNodeId(sourceNode.id, events);
-          const connectorColor = sourceEvent
-            ? getSentimentColor(sourceEvent.topic.sentiment.polarity)
-            : "#fff";
-
-          const sourceGroup = eventGroups.get(sourceEventId);
-          const targetGroup = eventGroups.get(targetEventId);
-
-          // Add inner connector to both groups
-          createConnector(
-            sourceGroup,
-            sourceNode.x,
-            sourceNode.y,
-            targetNode.x,
-            targetNode.y,
-            "connector-inner",
-            connectorColor,
-            ENTITY_CONFIG.event.connectorStrokeWidth * 0.85
-          );
-
-          createConnector(
-            targetGroup,
-            sourceNode.x,
-            sourceNode.y,
-            targetNode.x,
-            targetNode.y,
-            "connector-inner",
-            connectorColor,
-            ENTITY_CONFIG.event.connectorStrokeWidth * 0.85
-          );
-        }
-      }
     });
 
     // After visualization is complete, reapply selection if it exists

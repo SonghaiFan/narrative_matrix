@@ -935,3 +935,178 @@ export function createMetroTrack(
 
   return path;
 }
+
+// Helper function to create and add hover effects to tracks
+export function createTrackWithHover(
+  g: d3.Selection<SVGGElement, unknown, null, undefined>,
+  entity: Entity,
+  entitySlug: string,
+  selectedTrackId: string | null,
+  showTooltip: (
+    event: null,
+    x: number,
+    y: number,
+    type: VisualizationType,
+    entity: Entity
+  ) => void,
+  updatePosition: (x: number, y: number) => void,
+  hideTooltip: () => void,
+  setSelectedTrackId: (id: string | null) => void,
+  isPath: boolean,
+  pathData: { d: string } | { x1: number; y1: number; x2: number; y2: number }
+) {
+  let track: d3.Selection<
+    SVGLineElement | SVGPathElement,
+    unknown,
+    null,
+    undefined
+  >;
+
+  if (isPath) {
+    const pathTrack = g
+      .append("path")
+      .attr("class", `track-${entitySlug}`)
+      .attr("d", (pathData as { d: string }).d)
+      .attr("fill", "none");
+    track = pathTrack as d3.Selection<
+      SVGLineElement | SVGPathElement,
+      unknown,
+      null,
+      undefined
+    >;
+  } else {
+    const { x1, y1, x2, y2 } = pathData as {
+      x1: number;
+      y1: number;
+      x2: number;
+      y2: number;
+    };
+    const lineTrack = g
+      .append("line")
+      .attr("class", `track-${entitySlug}`)
+      .attr("x1", x1)
+      .attr("y1", y1)
+      .attr("x2", x2)
+      .attr("y2", y2);
+    track = lineTrack as d3.Selection<
+      SVGLineElement | SVGPathElement,
+      unknown,
+      null,
+      undefined
+    >;
+  }
+
+  track
+    .attr("stroke", selectedTrackId === entity.id ? "#3b82f6" : "#94a3b8")
+    .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
+    .attr("opacity", selectedTrackId === entity.id ? 0.8 : 0.3);
+
+  addTrackHoverEffects(
+    track,
+    entity,
+    selectedTrackId,
+    showTooltip,
+    updatePosition,
+    hideTooltip,
+    setSelectedTrackId
+  );
+
+  return track;
+}
+
+// Helper function to draw connectors for a link
+export function drawLinkConnectors(
+  g: d3.Selection<SVGGElement, unknown, null, undefined>,
+  link: ForceLink,
+  nodes: ForceNode[],
+  events: NarrativeEvent[],
+  eventGroups: Map<number, d3.Selection<SVGGElement, unknown, null, undefined>>,
+  selectedEventId: number | null,
+  layer: "outer" | "inner"
+) {
+  const { sourceNode, targetNode } = getNodesFromLink(link, nodes);
+
+  if (!sourceNode || !targetNode) return;
+
+  const yDifference = Math.abs(sourceNode.y - targetNode.y);
+  if (yDifference >= 1) return;
+
+  const sourceEventId = parseInt(sourceNode.id.split("-")[0]);
+  const targetEventId = parseInt(targetNode.id.split("-")[0]);
+
+  // Create or get the event groups
+  if (!eventGroups.has(sourceEventId)) {
+    eventGroups.set(sourceEventId, createEventGroup(g, sourceEventId));
+  }
+  if (!eventGroups.has(targetEventId)) {
+    eventGroups.set(targetEventId, createEventGroup(g, targetEventId));
+  }
+
+  const sourceGroup = eventGroups.get(sourceEventId) as d3.Selection<
+    SVGGElement,
+    unknown,
+    null,
+    undefined
+  >;
+  const targetGroup = eventGroups.get(targetEventId) as d3.Selection<
+    SVGGElement,
+    unknown,
+    null,
+    undefined
+  >;
+
+  if (layer === "outer") {
+    // Add outer connector to both groups
+    createConnector(
+      sourceGroup,
+      sourceNode.x,
+      sourceNode.y,
+      targetNode.x,
+      targetNode.y,
+      "connector-outer",
+      "#000",
+      ENTITY_CONFIG.event.connectorStrokeWidth +
+        ENTITY_CONFIG.point.strokeWidth * 1.25
+    );
+
+    createConnector(
+      targetGroup,
+      sourceNode.x,
+      sourceNode.y,
+      targetNode.x,
+      targetNode.y,
+      "connector-outer",
+      "#000",
+      ENTITY_CONFIG.event.connectorStrokeWidth +
+        ENTITY_CONFIG.point.strokeWidth * 1.25
+    );
+  } else {
+    // Add inner connector to both groups
+    const sourceEvent = getEventFromNodeId(sourceNode.id, events);
+    const connectorColor = sourceEvent
+      ? getSentimentColor(sourceEvent.topic.sentiment.polarity)
+      : "#fff";
+
+    createConnector(
+      sourceGroup,
+      sourceNode.x,
+      sourceNode.y,
+      targetNode.x,
+      targetNode.y,
+      "connector-inner",
+      connectorColor,
+      ENTITY_CONFIG.event.connectorStrokeWidth * 0.85
+    );
+
+    createConnector(
+      targetGroup,
+      sourceNode.x,
+      sourceNode.y,
+      targetNode.x,
+      targetNode.y,
+      "connector-inner",
+      connectorColor,
+      ENTITY_CONFIG.event.connectorStrokeWidth * 0.85
+    );
+  }
+}

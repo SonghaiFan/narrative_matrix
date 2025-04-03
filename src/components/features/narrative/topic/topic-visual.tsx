@@ -97,6 +97,8 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           );
         });
 
+      childNode.attr("stroke", getHighlightColor());
+
       // Update guide line based on selected node
       if (!parentNode.empty()) {
         parentNode.attr("stroke", getHighlightColor());
@@ -107,10 +109,6 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           .attr("x1", cx)
           .attr("x2", cx);
       } else if (!childNode.empty()) {
-        childNode
-          .attr("stroke", getHighlightColor())
-          .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth * 1.5);
-
         const parentKey = childNode.attr("data-parent-key");
         if (parentKey) {
           const parentNodeId = getParentNodeId(parentKey);
@@ -126,7 +124,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         }
       }
     },
-    [getParentNodeId]
+    []
   );
 
   // Update visualization

@@ -9,8 +9,7 @@ import {
   ReactNode,
 } from "react";
 import { NarrativeTooltip } from "@/components/features/narrative/shared/narrative-tooltip";
-
-export type VisualizationType = "entity" | "time" | "topic";
+import { VisualizationType } from "@/types/visualization";
 
 export interface TooltipPosition {
   x: number;
