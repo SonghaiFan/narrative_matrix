@@ -38,7 +38,10 @@ export interface GroupedPoint {
 }
 
 // Process events into data points
-export function processEvents(events: NarrativeEvent[]): DataPoint[] {
+export function processEvents(
+  events: NarrativeEvent[],
+  viewMode: "main" | "sub" = "sub"
+): DataPoint[] {
   const validEvents = events.filter((e) => e.temporal_anchoring.real_time);
   return validEvents.map((event, index) => ({
     event,
@@ -90,7 +93,10 @@ export function getTopicCounts(
 }
 
 // Get all unique topics sorted by frequency, filtering out empty topics
-export function getTopTopics(topicCounts: Map<string, number>): string[] {
+export function getTopTopics(
+  topicCounts: Map<string, number>,
+  viewMode: "main" | "sub" = "sub"
+): string[] {
   return Array.from(topicCounts.entries())
     .filter(([_, count]) => count > 0) // Filter out topics with no nodes
     .sort((a, b) => b[1] - a[1])

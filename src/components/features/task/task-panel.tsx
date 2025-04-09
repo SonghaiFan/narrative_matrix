@@ -21,15 +21,13 @@ import {
 } from "@/lib/task-progress";
 import {
   RadioOptions,
-  SingleInput,
-  CommaSeparated,
   NumberedSequence,
   GridMatching,
-  LongText,
   MultipleSelect,
 } from "./quiz-types";
 import { useCenterControl } from "@/contexts/center-control-context";
 import React from "react";
+import { TextInput } from "./quiz-types/TextInput";
 
 interface Task {
   id: string;
@@ -43,12 +41,10 @@ interface Task {
   event_reference?: number | number[] | null;
   type?:
     | "radio-options"
-    | "single-input"
-    | "comma-separated"
     | "numbered-sequence"
     | "grid-matching"
-    | "long-text"
-    | "multiple-select";
+    | "multiple-select"
+    | "single-input";
   options?:
     | string[]
     | {
@@ -700,22 +696,6 @@ export function TaskPanel({
                             disabled={showAnswer}
                           />
                         );
-                      case "single-input":
-                        return (
-                          <SingleInput
-                            value={userAnswer}
-                            onChange={setUserAnswer}
-                            disabled={showAnswer}
-                          />
-                        );
-                      case "comma-separated":
-                        return (
-                          <CommaSeparated
-                            value={userAnswer}
-                            onChange={setUserAnswer}
-                            disabled={showAnswer}
-                          />
-                        );
                       case "numbered-sequence":
                         return (
                           <NumberedSequence
@@ -764,14 +744,7 @@ export function TaskPanel({
 
                         // Otherwise, transform the options into the correct shape
                         let transformedOptions;
-                        if (options.countries && options.roles) {
-                          transformedOptions = {
-                            leftItems: options.countries,
-                            rightItems: options.roles,
-                            leftLabel: "Countries",
-                            rightLabel: "Roles",
-                          };
-                        } else if (options.causes && options.effects) {
+                        if (options.causes && options.effects) {
                           transformedOptions = {
                             leftItems: options.causes,
                             rightItems: options.effects,
@@ -796,17 +769,9 @@ export function TaskPanel({
                             disabled={showAnswer}
                           />
                         );
-                      case "long-text":
-                        return (
-                          <LongText
-                            value={userAnswer}
-                            onChange={setUserAnswer}
-                            disabled={showAnswer}
-                          />
-                        );
                       default:
                         return (
-                          <SingleInput
+                          <TextInput
                             value={userAnswer}
                             onChange={setUserAnswer}
                             disabled={showAnswer}
