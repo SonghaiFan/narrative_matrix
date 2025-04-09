@@ -3,7 +3,6 @@ import { TIME_CONFIG } from "./time-config";
 import * as d3 from "d3";
 import {
   createTimeScale,
-  generateTimeTicks,
   createNarrativeYAxis,
   createTimeXAxis,
   getDateFromRange,
@@ -11,7 +10,6 @@ import {
   getXPosition,
   calculateDimensions,
 } from "@/components/features/narrative/shared/visualization-utils";
-import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
 
 export interface DataPoint {
   event: NarrativeEvent;

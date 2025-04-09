@@ -27,6 +27,9 @@ export const SHARED_CONFIG = {
   animation: {
     duration: 200, // Duration of transitions in milliseconds
   },
+  highlight: {
+    color: "#3b82f6",
+  },
   // Header settings
   header: {
     height: 50, // Height of the header area in pixels
@@ -48,7 +51,7 @@ export const SHARED_CONFIG = {
   },
   // Scale settings
   scale: {
-    timeExponent: 2.5, // Power scale exponent for time distribution
+    timeExponent: 3, // Power scale exponent for time distribution
   },
   // Responsive layout settings
   responsive: {
@@ -56,7 +59,7 @@ export const SHARED_CONFIG = {
     content: {
       minEntityWidth: 40, // Minimum width per entity
       entityGap: 10, // Gap between entities
-      eventHeight: 60, // Height per event
+      eventHeight: 40, // Height per event
       minEventGap: 5, // Minimum gap between events
     },
     // Container-based dimensions

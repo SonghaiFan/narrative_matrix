@@ -1,6 +1,6 @@
 "use client";
 
-import { NarrativeEvent } from "@/types/lite";
+import { NarrativeEvent, Entity } from "@/types/lite";
 import {
   createContext,
   useContext,
@@ -9,8 +9,7 @@ import {
   ReactNode,
 } from "react";
 import { NarrativeTooltip } from "@/components/features/narrative/shared/narrative-tooltip";
-
-export type VisualizationType = "entity" | "time" | "topic";
+import { VisualizationType } from "@/types/visualization";
 
 export interface TooltipPosition {
   x: number;
@@ -19,6 +18,7 @@ export interface TooltipPosition {
 
 interface TooltipState {
   event: NarrativeEvent | null;
+  entity: Entity | null;
   position: TooltipPosition | null;
   visible: boolean;
   type: VisualizationType;
@@ -26,10 +26,11 @@ interface TooltipState {
 
 interface TooltipContextType {
   showTooltip: (
-    event: NarrativeEvent,
+    event: NarrativeEvent | null,
     x: number,
     y: number,
-    type: VisualizationType
+    type: VisualizationType,
+    entity?: Entity | null
   ) => void;
   hideTooltip: () => void;
   updatePosition: (x: number, y: number) => void;
@@ -41,15 +42,23 @@ const TooltipContext = createContext<TooltipContextType | undefined>(undefined);
 export function TooltipProvider({ children }: { children: ReactNode }) {
   const [tooltipState, setTooltipState] = useState<TooltipState>({
     event: null,
+    entity: null,
     position: null,
     visible: false,
     type: "topic",
   });
 
   const showTooltip = useCallback(
-    (event: NarrativeEvent, x: number, y: number, type: VisualizationType) => {
+    (
+      event: NarrativeEvent | null,
+      x: number,
+      y: number,
+      type: VisualizationType,
+      entity?: Entity | null
+    ) => {
       setTooltipState({
         event,
+        entity: entity || null,
         position: { x, y },
         visible: true,
         type,
@@ -76,6 +85,7 @@ export function TooltipProvider({ children }: { children: ReactNode }) {
       {children}
       <NarrativeTooltip
         event={tooltipState.event}
+        entity={tooltipState.entity}
         position={tooltipState.position}
         visible={tooltipState.visible}
         type={tooltipState.type}

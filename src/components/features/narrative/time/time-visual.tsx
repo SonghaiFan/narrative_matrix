@@ -15,10 +15,7 @@ import {
   createLineGenerator,
   DataPoint,
 } from "./time-visual.utils";
-import {
-  getSentimentColor,
-  getHighlightColor,
-} from "@/components/features/narrative/shared/color-utils";
+import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
 
 interface TimeVisualProps {
   events: NarrativeEvent[];
@@ -58,7 +55,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
 
       if (!selectedPoints.empty()) {
         // Update point style
-        selectedPoints.attr("stroke", getHighlightColor());
+        selectedPoints.attr("stroke", TIME_CONFIG.highlight.color);
 
         // Get the selected point's position
         const selectedPoint = selectedPoints.node() as SVGRectElement;
@@ -566,11 +563,15 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
   }, [updateVisualization]);
 
   return (
-    <div className="w-full h-full flex flex-col overflow-auto">
-      <div className="flex-none bg-white sticky top-0 z-10 shadow-sm">
+    <div
+      className="w-full h-full overflow-scroll"
+      style={{ scrollbarGutter: "stable" }}
+    >
+      <div className="min-w-fit">
         <div
           ref={headerRef}
           style={{ height: `${TIME_CONFIG.header.height}px` }}
+          className="bg-white sticky top-0 z-10 shadow-sm"
         />
       </div>
       <div

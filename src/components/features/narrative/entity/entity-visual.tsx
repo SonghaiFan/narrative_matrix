@@ -1,7 +1,7 @@
 "use client";
 
-import { NarrativeEvent } from "@/types/narrative/lite";
-import { useEffect, useRef, useCallback } from "react";
+import { NarrativeEvent } from "@/types/lite";
+import { useEffect, useRef, useCallback, useState } from "react";
 import * as d3 from "d3";
 import { ENTITY_CONFIG } from "./entity-config";
 import { useTooltip } from "@/contexts/tooltip-context";
@@ -13,14 +13,16 @@ import {
   createXScale,
   createYScale,
   createYAxis,
-  getRelevantEntities,
-  calculateConnectorPoints,
   getVisibleEntities,
+  calculateForceLayout,
+  createEventNode,
+  getEventFromNodeId,
+  createEventGroup,
+  addEventGroupHoverEffects,
+  drawLinkConnectors,
 } from "./entity-visual.utils";
-import {
-  getSentimentColor,
-  getHighlightColor,
-} from "@/components/features/narrative/shared/color-utils";
+import { createMetroTrack } from "./entity-visual.utils";
+import { createTrackWithHover } from "./entity-visual.utils";
 
 export interface EntityVisualProps {
   events: NarrativeEvent[];
@@ -28,6 +30,7 @@ export interface EntityVisualProps {
 
 export function EntityVisual({ events }: EntityVisualProps) {
   const { selectedEventId, setSelectedEventId } = useCenterControl();
+  const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -40,10 +43,14 @@ export function EntityVisual({ events }: EntityVisualProps) {
     (newSelectedId: number | null) => {
       if (!svgRef.current) return;
 
-      // Reset all nodes to default style
+      // Reset all nodes and connectors to default style
       d3.select(svgRef.current)
         .selectAll(".event-node")
         .attr("stroke", "black");
+
+      d3.select(svgRef.current)
+        .selectAll(".connector-outer")
+        .attr("stroke", "#000");
 
       // Get guide lines group
       const guideLine = d3.select(svgRef.current).select(".guide-lines");
@@ -53,31 +60,29 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
       // If we have a selected event, highlight it and show guide line
       if (newSelectedId !== null) {
-        const selectedNodes = d3
+        const selectedGroup = d3
           .select(svgRef.current)
-          .selectAll(`.event-node[data-event-index="${newSelectedId}"]`);
+          .select(`.event-group-${newSelectedId}`);
 
-        if (!selectedNodes.empty()) {
-          // Update node style
-          selectedNodes.attr("stroke", getHighlightColor());
+        if (!selectedGroup.empty()) {
+          // Update node style in the group
+          selectedGroup
+            .selectAll(".event-node")
+            .attr("stroke", ENTITY_CONFIG.highlight.color);
+
+          // Update outer connector style in the group
+          selectedGroup
+            .selectAll(".connector-outer")
+            .attr("stroke", ENTITY_CONFIG.highlight.color);
 
           // Get the selected node
-          const node = selectedNodes.node() as SVGCircleElement;
+          const node = selectedGroup
+            .select(".event-node")
+            .node() as SVGCircleElement;
           let y = 0;
 
-          // Find the parent connector group if it exists
-          const parentGroup = d3.select(node.parentElement);
-          if (parentGroup.classed("connector-group")) {
-            // Get the transform attribute which contains the y position
-            const transform = parentGroup.attr("transform");
-            const match = transform.match(/translate\(0,\s*([^)]+)\)/);
-            if (match) {
-              y = parseFloat(match[1]);
-            }
-          } else {
-            // For nodes without connector groups (e.g., nodes with no entities)
-            y = parseFloat(node.getAttribute("cy") || "0");
-          }
+          // Get the y position from the node
+          y = parseFloat(node.getAttribute("cy") || "0");
 
           // Update guide line position and show it
           guideLine
@@ -86,14 +91,45 @@ export function EntityVisual({ events }: EntityVisualProps) {
             .attr("y1", y)
             .attr("y2", y);
 
-          // Store the selected node in the ref and scroll into view
+          // Store the selected node in the ref
           selectedNodeRef.current = node;
+
+          // Always scroll into view when an event is selected
+          // This ensures that when selectedEventId changes, the view scrolls to the selected node
           selectedNodeRef.current.scrollIntoView({
             behavior: "smooth",
             block: "center",
           });
         }
       }
+    },
+    []
+  );
+
+  // Function to update node styles based on selectedTrackId
+  const updateSelectedTrackStyles = useCallback(
+    (trackId: string | null, selectedEventId: number | null) => {
+      if (!svgRef.current || trackId === null) return;
+
+      // Find all nodes associated with the selected track using the data-entity-id attribute
+      const selectedNodes = d3
+        .select(svgRef.current)
+        .selectAll(".event-node")
+        .filter(function () {
+          // Get the entity ID from the node
+          const entityId = d3.select(this).attr("data-entity-id");
+          return entityId === trackId;
+        });
+
+      // Apply highlight border to all nodes on the selected track
+      // but skip the selected event node
+      selectedNodes
+        .filter(function () {
+          const eventIndex = d3.select(this).attr("data-event-index");
+          return eventIndex !== String(selectedEventId);
+        })
+        .attr("stroke", ENTITY_CONFIG.highlight.color)
+        .attr("stroke-width", ENTITY_CONFIG.point.strokeWidth * 1.5);
     },
     []
   );
@@ -110,6 +146,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
     // Store current selection before clearing
     const currentSelection = selectedEventId;
+    const currentTrackSelection = selectedTrackId;
 
     // Clear previous content
     d3.select(svgRef.current).selectAll("*").remove();
@@ -123,7 +160,12 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
     // Get all entity mentions
     const entityMentions = getEntityMentions(events, "name");
-    const allEntities = getVisibleEntities(entityMentions);
+    const allEntities = getVisibleEntities(
+      entityMentions,
+      selectedTrackId,
+      selectedEventId,
+      events
+    );
 
     // Calculate layout dimensions for all entities
     const { totalColumnsWidth } = calculateColumnLayout(
@@ -161,7 +203,10 @@ export function EntityVisual({ events }: EntityVisualProps) {
         .append("div")
         .attr("class", "absolute -translate-x-1/2 cursor-pointer")
         .style("left", `${x}px`)
-        .style("max-width", `${xScale.bandwidth()}px`);
+        .style("max-width", `${xScale.bandwidth()}px`)
+        .on("click", () => {
+          setSelectedTrackId(selectedTrackId === entity.id ? null : entity.id);
+        });
 
       // Show only the entity name with text wrapping
       labelContainer
@@ -171,11 +216,14 @@ export function EntityVisual({ events }: EntityVisualProps) {
           [
             "font-semibold",
             `text-xs`,
-            "text-gray-700",
+            selectedTrackId === entity.id ? "text-blue-600" : "text-gray-700",
             "text-center",
             "break-words",
             "leading-tight",
             "line-clamp-3",
+            "transition-colors",
+            "duration-200",
+            "hover:text-blue-600",
           ].join(" ")
         )
         .attr("title", entity.name)
@@ -208,23 +256,66 @@ export function EntityVisual({ events }: EntityVisualProps) {
       .attr("class", "guide-line horizontal")
       .attr("x1", 0)
       .attr("x2", totalColumnsWidth)
-      .attr("stroke", "#3b82f6")
+      .attr("stroke", ENTITY_CONFIG.highlight.color)
       .attr("stroke-width", 2);
 
-    // Draw entity columns
-    allEntities.forEach((entity) => {
-      const x = xScale(entity.id)! + xScale.bandwidth() / 2;
-      const entitySlug = entity.id.replace(/\s+/g, "-");
+    // Apply force layout for all entities with connections
+    const forceLayout = calculateForceLayout(
+      events,
+      allEntities,
+      totalColumnsWidth,
+      height,
+      "name"
+    );
 
-      g.append("line")
-        .attr("class", `track-${entitySlug}`)
-        .attr("x1", x)
-        .attr("y1", 0)
-        .attr("x2", x)
-        .attr("y2", height)
-        .attr("stroke", "#94a3b8")
-        .attr("stroke-width", ENTITY_CONFIG.track.strokeWidth)
-        .attr("opacity", 0.3);
+    // Draw entity track
+    allEntities.forEach((entity) => {
+      const entitySlug = entity.id.replace(/\s+/g, "-");
+      const startX = xScale(entity.id)! + xScale.bandwidth() / 2;
+
+      // Get all nodes for this entity from the force layout
+      const entityNodes = forceLayout.nodes
+        .filter((node) => node.entity.id === entity.id)
+        .sort((a, b) => a.y - b.y);
+
+      if (entityNodes.length > 0) {
+        // Create points array including start point
+        const points = [
+          { x: startX, y: 0 },
+          ...entityNodes.map((node) => ({ x: node.x, y: node.y })),
+        ];
+
+        // Create the metro-style path
+        const metroPath = createMetroTrack(points, { yScale });
+
+        // Create the curved path with hover interaction
+        createTrackWithHover(
+          g,
+          entity,
+          entitySlug,
+          selectedTrackId,
+          showTooltip,
+          updatePosition,
+          hideTooltip,
+          setSelectedTrackId,
+          true,
+          { d: metroPath.toString() }
+        );
+      } else {
+        // If no nodes, draw a straight line as fallback
+        createTrackWithHover(
+          g,
+          entity,
+          entitySlug,
+          selectedTrackId,
+          showTooltip,
+          updatePosition,
+          hideTooltip,
+          setSelectedTrackId,
+          false,
+          { x1: startX, y1: 0, x2: startX, y2: height }
+        );
+      }
     });
 
     // Add y-axis with integer ticks
@@ -243,127 +334,83 @@ export function EntityVisual({ events }: EntityVisualProps) {
       .attr("text-anchor", "middle")
       .text("Narrative Time");
 
-    // Helper function to create event node with event handlers
-    const createEventNode = (
-      parent: d3.Selection<any, unknown, null, undefined>,
-      cx: number,
-      cy: number,
-      event: NarrativeEvent
-    ) => {
-      const node = parent
-        .append("circle")
-        .attr("class", "event-node")
-        .attr("data-event-index", event.index)
-        .attr("cx", cx)
-        .attr("cy", cy)
-        .attr("r", ENTITY_CONFIG.point.radius)
-        .attr("fill", getSentimentColor(event.topic.sentiment.polarity))
-        .attr(
-          "stroke",
-          selectedEventId === event.index ? getHighlightColor() : "black"
-        )
-        .attr("stroke-width", ENTITY_CONFIG.point.strokeWidth)
-        .style("cursor", "pointer");
+    // Create a map to store event groups
+    const eventGroups = new Map();
 
-      // Add event handlers
-      node
-        .on("mouseenter", function (this: SVGCircleElement, e: MouseEvent) {
-          d3.select(this)
-            .transition()
-            .duration(200)
-            .attr("r", ENTITY_CONFIG.point.radius * 1.5);
+    // 1. First draw the outer black connector
+    forceLayout.links.forEach((link) => {
+      drawLinkConnectors(
+        g,
+        link,
+        forceLayout.nodes,
+        events,
+        eventGroups,
+        selectedEventId,
+        "outer"
+      );
+    });
 
-          showTooltip(event, e.pageX, e.pageY, "entity");
-          updatePosition(e.pageX, e.pageY);
-        })
-        .on("mousemove", function (e: MouseEvent) {
-          updatePosition(e.pageX, e.pageY);
-        })
-        .on("mouseleave", function (this: SVGCircleElement) {
-          d3.select(this)
-            .transition()
-            .duration(200)
-            .attr("r", ENTITY_CONFIG.point.radius);
-          hideTooltip();
-        })
-        .on("click", function () {
-          setSelectedEventId(
-            selectedEventId === event.index ? null : event.index
-          );
-        });
+    // 2. Draw nodes in the middle from the force simulation
+    forceLayout.nodes.forEach((node) => {
+      const event = getEventFromNodeId(node.id, events);
 
-      return node;
-    };
+      if (event) {
+        // Create or get the event group
+        if (!eventGroups.has(event.index)) {
+          eventGroups.set(event.index, createEventGroup(g, event.index));
+        }
 
-    // Draw event nodes and connectors
-    events.forEach((event) => {
-      const y = yScale(event.temporal_anchoring.narrative_time);
-      const relevantEntities = getRelevantEntities(event, allEntities, "name");
+        const eventGroup = eventGroups.get(event.index);
 
-      if (
-        relevantEntities.hasNoEntities ||
-        relevantEntities.hasNoVisibleEntities
-      ) {
-        // Draw a single dashed node for events with no entities or no visible entities
-        createEventNode(g, 0, y, event)
-          .attr(
-            "stroke",
-            relevantEntities.hasNoEntities ? "#94a3b8" : "#64748b"
-          )
-          .attr("stroke-dasharray", "3,3");
-      } else if (relevantEntities.entities.length > 0) {
-        const connectorPoints = calculateConnectorPoints(
-          relevantEntities.entities,
-          xScale
+        // Extract entity ID from node ID (format: "eventIndex-entityId")
+        const entityId = node.id.split("-")[1];
+
+        // Create the event node
+        createEventNode(
+          eventGroup,
+          node.x,
+          node.y,
+          event,
+          selectedEventId,
+          entityId
         );
 
-        if (connectorPoints.length > 0) {
-          // Create a single curved connector path
-          const connectorGroup = g
-            .append("g")
-            .attr("class", "connector-group")
-            .attr("transform", `translate(0, ${y})`);
-
-          if (connectorPoints.length > 1) {
-            // Create curved path for multiple points
-            const path = d3.path();
-            connectorPoints.forEach((point, i) => {
-              if (i === 0) {
-                path.moveTo(point.x, 0);
-              } else {
-                const prevPoint = connectorPoints[i - 1];
-                const midX = (prevPoint.x + point.x) / 2;
-                path.bezierCurveTo(
-                  midX,
-                  0, // Control point 1
-                  midX,
-                  0, // Control point 2
-                  point.x,
-                  0 // End point
-                );
-              }
-            });
-
-            connectorGroup
-              .append("path")
-              .attr("d", path.toString())
-              .attr("fill", "none")
-              .attr("stroke", "#94a3b8")
-              .attr("stroke-width", 2)
-              .attr("opacity", 0.6);
-          }
-
-          // Draw nodes on top of the connector
-          connectorPoints.forEach((point) => {
-            createEventNode(connectorGroup, point.x, 0, event);
-          });
-        }
+        // Add hover effects to the entire group
+        addEventGroupHoverEffects(
+          eventGroup,
+          event,
+          showTooltip,
+          updatePosition,
+          hideTooltip,
+          setSelectedEventId,
+          selectedEventId
+        );
       }
+    });
+
+    // 3. Finally draw the inner connector on top
+    forceLayout.links.forEach((link) => {
+      drawLinkConnectors(
+        g,
+        link,
+        forceLayout.nodes,
+        events,
+        eventGroups,
+        selectedEventId,
+        "inner"
+      );
     });
 
     // After visualization is complete, reapply selection if it exists
     if (currentSelection !== null && currentSelection !== undefined) {
       updateSelectedEventStyles(currentSelection);
+    }
+
+    // Reapply track selection if it exists
+    if (currentTrackSelection !== null) {
+      setSelectedTrackId(currentTrackSelection);
+      // Apply track styling after setting the track ID
+      updateSelectedTrackStyles(currentTrackSelection, currentSelection);
     }
   }, [
     events,
@@ -373,14 +420,43 @@ export function EntityVisual({ events }: EntityVisualProps) {
     setSelectedEventId,
     selectedEventId,
     updateSelectedEventStyles,
+    selectedTrackId,
+    setSelectedTrackId,
+    updateSelectedTrackStyles,
   ]);
 
   // Keep selection handling in a separate effect
   useEffect(() => {
     if (svgRef.current && selectedEventId !== undefined) {
       updateSelectedEventStyles(selectedEventId);
+
+      // If a track is also selected, apply track styling after event styling
+      if (selectedTrackId !== null) {
+        updateSelectedTrackStyles(selectedTrackId, selectedEventId);
+      }
     }
-  }, [selectedEventId, updateSelectedEventStyles]);
+  }, [
+    selectedEventId,
+    updateSelectedEventStyles,
+    selectedTrackId,
+    updateSelectedTrackStyles,
+  ]);
+
+  // Add effect to highlight nodes on selected track
+  useEffect(() => {
+    if (!svgRef.current) return;
+
+    // Reset all nodes to default stroke style
+    d3.select(svgRef.current)
+      .selectAll(".event-node")
+      .attr("stroke", "black")
+      .attr("stroke-width", ENTITY_CONFIG.point.strokeWidth);
+
+    // If a track is selected, apply track styling
+    if (selectedTrackId !== null) {
+      updateSelectedTrackStyles(selectedTrackId, selectedEventId);
+    }
+  }, [selectedTrackId, selectedEventId, updateSelectedTrackStyles]);
 
   // Initial setup and cleanup with resize observer
   useEffect(() => {
@@ -404,16 +480,18 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
   return (
     <div
-      className="w-full h-full flex flex-col overflow-auto"
+      className="w-full h-full overflow-scroll"
       style={{ scrollbarGutter: "stable" }}
     >
-      <div
-        ref={headerRef}
-        style={{ height: `${ENTITY_CONFIG.header.height}px` }}
-        className="flex-none bg-white sticky top-0 z-10 shadow-sm"
-      />
-      <div ref={containerRef} className="flex-1 relative">
-        <svg ref={svgRef} className="min-w-full min-h-full" />
+      <div className="min-w-fit">
+        <div
+          ref={headerRef}
+          style={{ height: `${ENTITY_CONFIG.header.height}px` }}
+          className="bg-white sticky top-0 z-10 shadow-sm"
+        />
+        <div ref={containerRef}>
+          <svg ref={svgRef} className="w-full" />
+        </div>
       </div>
     </div>
   );

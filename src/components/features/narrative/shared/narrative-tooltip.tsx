@@ -8,6 +8,7 @@ import { getSentimentColor } from "@/components/features/narrative/shared/color-
 
 interface NarrativeTooltipProps {
   event: NarrativeEvent | null;
+  entity: Entity | null;
   position: TooltipPosition | null;
   visible: boolean;
   type: VisualizationType;
@@ -15,6 +16,7 @@ interface NarrativeTooltipProps {
 
 export function NarrativeTooltip({
   event,
+  entity,
   position,
   visible,
   type,
@@ -60,7 +62,35 @@ export function NarrativeTooltip({
     });
   }, [position, visible]);
 
-  if (!event || !visible) {
+  if (!visible) {
+    return null;
+  }
+
+  // Handle entity track tooltip
+  if (type === "entity" && entity) {
+    return (
+      <div
+        ref={tooltipRef}
+        className="fixed z-50 rounded-md shadow-lg p-3 max-w-xs border border-gray-200 text-sm bg-white"
+        style={tooltipStyle}
+      >
+        <div className="font-medium text-gray-900">{entity.name}</div>
+        {entity.social_role && (
+          <div className="mt-1 text-xs text-gray-600">
+            Role: <span className="font-medium">{entity.social_role}</span>
+          </div>
+        )}
+        {entity.type && (
+          <div className="mt-1 text-xs text-gray-600">
+            Type: <span className="font-medium">{entity.type}</span>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Handle event tooltip
+  if (!event) {
     return null;
   }
 
