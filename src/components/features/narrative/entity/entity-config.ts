@@ -14,7 +14,7 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     columnGap: 10, // Gap between entity columns
   },
   event: {
-    connectorStrokeWidth: 3,
+    connectorStrokeWidth: 2,
     hoverConnectorStrokeWidth: 12, // Stroke width when hovering
     innerConnectorScale: 0.85, // Scale factor for inner connector
   },
@@ -38,7 +38,7 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For precise paths: 2-4
     // For balanced: 6-8
     // For grid-aligned: 10-20
-    gridSize: 10, // Size of the grid for snapping
+    gridSize: 1, // Size of the grid for snapping
 
     // Minimum Segment Length
     // Range: 0.5 to 3.0
@@ -73,7 +73,7 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For tight curves: 0.8-1.0
     // For balanced: 1.2-1.4
     // For wide curves: 1.6-2.0
-    curveScale: 1, // Scale factor for curve radius
+    curveScale: 0.8, // Scale factor for curve radius
 
     // Maximum Curve Ratio
     // Range: 0.5 to 2.0
@@ -83,7 +83,7 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For small curves: 0.5-0.8
     // For balanced: 1.0-1.2
     // For large curves: 1.5-2.0
-    maxCurveRatio: 1, // Maximum ratio of curve radius to segment length
+    maxCurveRatio: 0.5, // Maximum ratio of curve radius to segment length
 
     // Common Scenarios:
     // 1. Sharp Metro Grid:
@@ -135,8 +135,8 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For flexible tracks: 0.05, 0.3
     // For balanced: 0.1, 0.5 (current)
     // For legacy behavior: 0, 0 (no x-force)
-    xForceBase: 0.1, // Base strength for x-force (keeping nodes in their columns)
-    xForceMax: 0.5, // Maximum x-force strength
+    xForceBase: 0.2, // Base strength for x-force (keeping nodes in their columns)
+    xForceMax: 1, // Maximum x-force strength
 
     // Horizontal Link Parameters (Controls Same-Time Connections)
     // Range: 0.0 to 3.0
@@ -144,8 +144,8 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For loose grouping: 0.3, 1.5
     // For balanced: 0.5, 2.0 (current)
     // For legacy behavior: 2.0, 2.0 (fixed strong horizontal links)
-    horizontalLinkBase: 0.5, // Base strength for horizontal links (same narrative time)
-    horizontalLinkMax: 2, // Maximum horizontal link strength
+    horizontalLinkBase: 0, // Base strength for horizontal links (same narrative time)
+    horizontalLinkMax: 3, // Maximum horizontal link strength
 
     // Vertical Link Parameter (Controls Time-Based Connections)
     // Range: 0.0 to 1.0
@@ -153,7 +153,7 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For curved tracks: 0.05
     // For balanced: 0.1 (current)
     // For legacy behavior: 0.1 (same as balanced)
-    verticalLinkStrength: 0.1, // Strength for vertical links (different narrative time)
+    verticalLinkStrength: 0, // Strength for vertical links (different narrative time)
 
     // Node Count Scaling
     // Range: 0.0 to 1.0
@@ -161,7 +161,7 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For weak node count influence: 0.3
     // For balanced: 0.5 (current)
     // For legacy behavior: 0 (no node count influence)
-    nodeCountScale: 0.5, // How much node count affects forces
+    nodeCountScale: 1, // How much node count affects forces
 
     // Node Distance Parameters
     // minNodeDistance Range: 0.5 to 2.0

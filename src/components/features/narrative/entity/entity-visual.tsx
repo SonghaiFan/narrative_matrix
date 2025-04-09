@@ -160,7 +160,12 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
     // Get all entity mentions
     const entityMentions = getEntityMentions(events, "name");
-    const allEntities = getVisibleEntities(entityMentions);
+    const allEntities = getVisibleEntities(
+      entityMentions,
+      selectedTrackId,
+      selectedEventId,
+      events
+    );
 
     // Calculate layout dimensions for all entities
     const { totalColumnsWidth } = calculateColumnLayout(

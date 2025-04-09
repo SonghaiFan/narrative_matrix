@@ -80,19 +80,48 @@ export function getEntityMentions(
 
 // Get top entities by mention count
 export function getVisibleEntities(
-  entityMentions: Map<string, EntityMention>
+  entityMentions: Map<string, EntityMention>,
+  selectedTrackId: string | null = null,
+  selectedEventId: number | null = null,
+  events: NarrativeEvent[] = []
 ): Entity[] {
   // If no entity mentions, return empty array
   if (entityMentions.size === 0) {
     return [];
   }
 
-  return (
-    Array.from(entityMentions.values())
-      .sort((a, b) => b.count - a.count)
-      // .slice(0, 10) // Comment this line to show all
-      .map((item) => item.entity)
-  );
+  // Get entities related to selected event
+  const selectedEventEntities = new Set<string>();
+  if (selectedEventId !== null) {
+    const selectedEvent = events.find((e) => e.index === selectedEventId);
+    if (selectedEvent) {
+      selectedEvent.entities.forEach((entity) => {
+        selectedEventEntities.add(entity.id);
+      });
+    }
+  }
+
+  // Convert to array and sort
+  const sortedEntities = Array.from(entityMentions.values())
+    .sort((a, b) => {
+      // First priority: selected track
+      if (selectedTrackId) {
+        if (a.entity.id === selectedTrackId) return -1;
+        if (b.entity.id === selectedTrackId) return 1;
+      }
+
+      // Second priority: entities in selected event
+      const aInSelectedEvent = selectedEventEntities.has(a.entity.id);
+      const bInSelectedEvent = selectedEventEntities.has(b.entity.id);
+      if (aInSelectedEvent && !bInSelectedEvent) return -1;
+      if (!aInSelectedEvent && bInSelectedEvent) return 1;
+
+      // Third priority: count
+      return b.count - a.count;
+    })
+    .map((item) => item.entity);
+
+  return sortedEntities;
 }
 
 // Calculate column layout dimensions
