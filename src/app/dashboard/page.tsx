@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { AuthHeader } from "@/components/features/auth/auth-header";
+import { AppHeader } from "@/components/features/auth/app-header";
 import { ScenarioSelector } from "@/components/features/dashboard/scenario-selector";
 import { UserDataViewer } from "@/components/features/dashboard/local-storage-viewer";
 import { useAuth } from "@/contexts/auth-context";
@@ -66,7 +66,7 @@ export default function Dashboard() {
   // Only domain users should reach this point
   return (
     <div className="min-h-screen bg-gray-50">
-      <AuthHeader title="Domain Expert Dashboard" />
+      <AppHeader title="Domain Expert Dashboard" />
 
       <div className="max-w-7xl mx-auto px-4 py-6">
         <ScenarioSelector />

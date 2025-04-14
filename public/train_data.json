@@ -14,6 +14,7 @@
         "level": "Information Retrieval",
         "completed": false,
         "type": "multiple-select",
+        "timeLimit": 10,
         "options": [
           "Ukraine",
           "Russia",
@@ -36,6 +37,7 @@
         "level": "Sanity Check",
         "completed": false,
         "type": "radio-options",
+        "timeLimit": 10,
         "event_reference": []
       },
       {
@@ -51,6 +53,7 @@
         "level": "Pattern Recognition",
         "completed": false,
         "type": "grid-matching",
+        "timeLimit": 10,
         "event_reference": [1, 2, 3, 4, 5]
       },
       {
@@ -68,6 +71,7 @@
         "level": "Pattern Recognition",
         "completed": false,
         "type": "numbered-sequence",
+        "timeLimit": 10,
         "event_reference": [1, 4, 5, 6]
       },
       {
@@ -83,6 +87,7 @@
         "level": "Pattern Recognition",
         "completed": false,
         "type": "grid-matching",
+        "timeLimit": 10,
         "event_reference": [1, 2, 4, 5, 6]
       },
       {
@@ -98,6 +103,7 @@
         "level": "Causal Reasoning",
         "completed": false,
         "type": "radio-options",
+        "timeLimit": 90,
         "event_reference": [1, 3, 4, 5, 6]
       }
     ]

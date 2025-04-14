@@ -19,6 +19,8 @@ interface BaseQuizItem {
   completed: boolean;
   type: QuizType;
   event_reference: number | number[] | null;
+  timeLimit?: number; // Time limit in seconds
+  completionTime?: number; // Time taken to complete in seconds
 }
 
 export interface MultipleSelectQuiz extends BaseQuizItem {

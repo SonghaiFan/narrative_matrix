@@ -19,6 +19,7 @@ interface CompletionPageProps {
   totalTasks: number;
   userRole?: "domain" | "normal";
   studyType?: string;
+  sessionTime?: number;
   onRestart?: () => void;
   showRecall?: boolean;
   recallData?: any;
@@ -79,6 +80,7 @@ export function CompletionPage({
   totalTasks,
   userRole = "normal",
   studyType = "visualization",
+  sessionTime = 0,
   onRestart,
   showRecall = false,
   recallData = null,
@@ -217,6 +219,24 @@ export function CompletionPage({
     } catch (error) {
       console.error("Failed to submit survey data:", error);
       setIsSubmitting(false);
+    }
+  };
+
+  // Format time as MM:SS or HH:MM:SS
+  const formatTime = (seconds: number) => {
+    if (seconds < 3600) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+        .toString()
+        .padStart(2, "0")}`;
+    } else {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const remainingSeconds = seconds % 60;
+      return `${hours}:${minutes.toString().padStart(2, "0")}:${remainingSeconds
+        .toString()
+        .padStart(2, "0")}`;
     }
   };
 
@@ -454,6 +474,11 @@ export function CompletionPage({
           <div className="bg-white p-2 rounded border border-gray-100">
             <div className="text-gray-500">Interface</div>
             <div className="font-medium capitalize">{studyType}</div>
+          </div>
+
+          <div className="bg-white p-2 rounded border border-gray-100">
+            <div className="text-gray-500">Session Time</div>
+            <div className="font-medium">{formatTime(sessionTime)}</div>
           </div>
         </div>
       </div>

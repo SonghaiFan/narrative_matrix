@@ -14,6 +14,7 @@
         "level": "Information Retrieval",
         "completed": false,
         "type": "radio-options",
+        "timeLimit": 60,
         "options": [
           "over 250 Palestinians and at least 13 Israelis",
           "under 100 total casualties",
@@ -48,6 +49,7 @@
         "level": "Pattern Recognition",
         "completed": false,
         "type": "grid-matching",
+        "timeLimit": 180,
         "event_reference": [12, 25, 1, 7, 2]
       }
     ],
@@ -58,6 +60,7 @@
         "answer": "October 7, 2023",
         "level": "Information Retrieval",
         "type": "radio-options",
+        "timeLimit": 60,
         "options": [
           "October 5, 2023",
           "October 7, 2023",
@@ -73,6 +76,7 @@
         "answer": "The United States,Egypt,Qatar",
         "level": "Information Retrieval",
         "type": "multiple-select",
+        "timeLimit": 90,
         "options": [
           "The United States",
           "Egypt",
@@ -90,6 +94,7 @@
         "answer": "Hamas,Fatah",
         "level": "Information Retrieval",
         "type": "multiple-select",
+        "timeLimit": 90,
         "options": [
           "Hamas",
           "Fatah",
@@ -106,6 +111,7 @@
         "answer": null,
         "level": "Sanity Check",
         "type": "radio-options",
+        "timeLimit": 60,
         "options": [
           "United Nations Peacekeeping Force",
           "International Committee of the Red Cross",
@@ -120,6 +126,7 @@
         "answer": "Regional militant groups joined the conflict, increasing its scope.",
         "level": "Pattern Recognition",
         "type": "radio-options",
+        "timeLimit": 90,
         "options": [
           "Conflicts subsided over time.",
           "Only Hamas and Israel remained in conflict.",
@@ -135,6 +142,7 @@
         "answer": "1,2,3,4",
         "level": "Pattern Recognition",
         "type": "numbered-sequence",
+        "timeLimit": 150,
         "options": {
           "events": [
             {
@@ -164,6 +172,7 @@
         "answer": "Sinai Peninsula,Gaza Strip,West Bank,East Jerusalem,Golan Heights",
         "level": "Information Retrieval",
         "type": "multiple-select",
+        "timeLimit": 120,
         "options": [
           "Sinai Peninsula",
           "Gaza Strip",
@@ -181,6 +190,7 @@
         "answer": "Western nations refused to recognize Hamas due to its terrorist designation",
         "level": "Causal Reasoning",
         "type": "radio-options",
+        "timeLimit": 90,
         "options": [
           "Western nations refused to recognize Hamas due to its terrorist designation",
           "Internal power struggles between Palestinian factions",
@@ -196,6 +206,7 @@
         "answer": "Israeli government policies expanding West Bank settlements and limiting judicial oversight",
         "level": "Causal Reasoning",
         "type": "radio-options",
+        "timeLimit": 90,
         "options": [
           "Israeli government policies expanding West Bank settlements and limiting judicial oversight",
           "Iran's direct military interventions",
@@ -211,6 +222,7 @@
         "answer": "Creation of State of Israel: Exposition, Hamas electoral victory: Rising Action, Hamas attack on Israel: Climax, Regional escalation with Iran and Hezbollah: Falling Action, US-mediated ceasefire: Resolution",
         "level": "Pattern Recognition",
         "type": "grid-matching",
+        "timeLimit": 180,
         "options": {
           "leftItems": [
             "Creation of State of Israel",
@@ -1317,11 +1329,6 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government"
-        },
-        {
-          "id": "OBJECT_8",
-          "name": "Gaza",
-          "social_role": "object"
         },
         {
           "id": "GOVERNMENT_32",

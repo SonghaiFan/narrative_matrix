@@ -383,7 +383,9 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         .attr("fill", (d) =>
           getSentimentColor(d.event.topic.sentiment.polarity)
         )
-        .attr("stroke", (d) => (isEventMarked(d.event.index) ? "red" : "black"))
+        .attr("stroke", (d) =>
+          isEventMarked(d.event.index) ? TIME_CONFIG.highlight.color : "black"
+        )
         .attr("stroke-width", (d) =>
           isEventMarked(d.event.index) ? 2 : TIME_CONFIG.point.strokeWidth
         )

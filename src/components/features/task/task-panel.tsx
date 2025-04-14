@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -39,6 +39,8 @@ interface Task {
   userEventReference?: number | number[] | null;
   startTimestamp?: number;
   submitTimestamp?: number;
+  completionTime?: number;
+  timeLimit: number;
   event_reference?: number | number[] | null;
   type?:
     | "radio-options"
@@ -54,6 +56,10 @@ interface Task {
         roles?: string[];
         causes?: string[];
         effects?: string[];
+        leftItems?: string[];
+        rightItems?: string[];
+        leftLabel?: string;
+        rightLabel?: string;
       };
 }
 
@@ -63,6 +69,7 @@ interface TaskPanelProps {
   className?: string;
   userRole?: "domain" | "normal";
   is_training?: boolean;
+  sessionTimeLimit?: number; // Time limit in seconds
 }
 
 export function TaskPanel({
@@ -71,6 +78,7 @@ export function TaskPanel({
   className = "",
   userRole = "normal",
   is_training = false,
+  sessionTimeLimit = 1800, // 30 minutes default
 }: TaskPanelProps) {
   const router = useRouter();
   const { markedEventIds, toggleMarkedEvent, isEventMarked } =
@@ -86,6 +94,11 @@ export function TaskPanel({
   const [showTrainingCompleteModal, setShowTrainingCompleteModal] =
     useState(false);
   const [pendingRedirectPath, setPendingRedirectPath] = useState("");
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const [showTimeWarningModal, setShowTimeWarningModal] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const hasCalledTimeUp = useRef(false);
+  const warningShownRef = useRef(false);
 
   const isDomainExpert = userRole === "domain";
 
@@ -141,16 +154,27 @@ export function TaskPanel({
       metadata.quiz.length > 0
     ) {
       // Use quiz questions from metadata and ensure type is set
-      const quizTasks: Task[] = metadata.quiz.map((q: any, index: number) => ({
-        id: q.id || String(index + 1),
-        level: q.level || "Information Retrieval",
-        question: q.question,
-        answer: q.answer,
-        type: q.type || "single-input",
-        options: q.options,
-        event_reference: q.event_reference || null,
-        completed: false,
-      }));
+      const quizTasks: Task[] = metadata.quiz.map((q: any, index: number) => {
+        // Select appropriate default time limit based on question type
+        let defaultTimeLimit = 60; // Default 1 minute
+        if (q.type === "grid-matching")
+          defaultTimeLimit = 180; // 3 minutes for matching
+        else if (q.type === "numbered-sequence")
+          defaultTimeLimit = 120; // 2 minutes for sequencing
+        else if (q.type === "multiple-select") defaultTimeLimit = 90; // 1.5 minutes for multiple select
+
+        return {
+          id: q.id || String(index + 1),
+          level: q.level || "Information Retrieval",
+          question: q.question,
+          answer: q.answer,
+          type: q.type || "single-input",
+          options: q.options,
+          event_reference: q.event_reference || null,
+          timeLimit: q.timeLimit || defaultTimeLimit,
+          completed: false,
+        };
+      });
       setTasks(quizTasks);
       return;
     }
@@ -166,6 +190,7 @@ export function TaskPanel({
           events[0].date || events[0].temporal_anchoring?.real_time || ""
         ).toLocaleDateString(),
         completed: false,
+        timeLimit: 60, // 1 minute for simple questions
       },
       {
         id: "2",
@@ -180,6 +205,7 @@ export function TaskPanel({
           (events.length + 1).toString(),
         ],
         completed: false,
+        timeLimit: 60, // 1 minute for simple questions
       },
       {
         id: "3",
@@ -194,6 +220,7 @@ export function TaskPanel({
           "Technology",
         ],
         completed: false,
+        timeLimit: 60, // 1 minute for simple questions
       },
       {
         id: "4",
@@ -208,6 +235,7 @@ export function TaskPanel({
               `${index + 1}. ${event.short_text || event.text.slice(0, 100)}...`
           ),
         completed: false,
+        timeLimit: 120, // 2 minutes for more complex questions
       },
       {
         id: "5",
@@ -237,6 +265,7 @@ export function TaskPanel({
           ),
         },
         completed: false,
+        timeLimit: 180, // 3 minutes for complex matching questions
       },
     ];
 
@@ -266,6 +295,158 @@ export function TaskPanel({
   }, [currentTaskIndex, tasks]);
 
   const currentTask = tasks[currentTaskIndex];
+
+  // Function to start/reset the timer for the current question
+  const resetQuestionTimer = useCallback(() => {
+    // Clear any existing timer
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+
+    // Don't set a timer if there's no current task or no time limit
+    if (!currentTask || !currentTask.timeLimit) {
+      setTimeLeft(null);
+      return;
+    }
+
+    // Reset the time left to the current question's time limit
+    setTimeLeft(currentTask.timeLimit);
+    hasCalledTimeUp.current = false;
+    warningShownRef.current = false; // Reset warning flag for new task
+
+    // Start a new timer
+    startTimer();
+  }, [currentTask]);
+
+  // Function to start the timer
+  const startTimer = useCallback(() => {
+    // Don't start a new timer if there's already one running
+    if (timerRef.current) return;
+
+    timerRef.current = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev === null) return null;
+
+        // Show warning when 20 seconds remain, but only if not already shown for this task
+        if (prev === 20 && !warningShownRef.current) {
+          warningShownRef.current = true; // Mark warning as shown for this task
+          setShowTimeWarningModal(true);
+          // Pause the timer by clearing the interval
+          clearInterval(timerRef.current as NodeJS.Timeout);
+          timerRef.current = null;
+          return prev;
+        }
+
+        if (prev <= 1) {
+          // Clear the interval immediately to prevent multiple calls
+          if (timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+          }
+
+          // Ensure we only call onTimeUp once
+          if (!hasCalledTimeUp.current) {
+            hasCalledTimeUp.current = true;
+            handleTimeUp();
+          }
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+
+  // Reset timer when current task changes
+  useEffect(() => {
+    resetQuestionTimer();
+
+    // Cleanup function
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [currentTaskIndex, tasks, resetQuestionTimer]);
+
+  // Function to resume the timer after the warning (starting from 19 seconds to avoid re-triggering)
+  const resumeTimer = useCallback(() => {
+    // Don't start a new timer if there's already one running
+    if (timerRef.current) return;
+
+    // Set to 19 seconds (just below the warning threshold of 20) to avoid re-triggering the warning
+    if (timeLeft === 20) {
+      setTimeLeft(19);
+    }
+
+    timerRef.current = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev === null) return null;
+
+        if (prev <= 1) {
+          // Clear the interval immediately to prevent multiple calls
+          if (timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+          }
+
+          // Ensure we only call onTimeUp once
+          if (!hasCalledTimeUp.current) {
+            hasCalledTimeUp.current = true;
+            handleTimeUp();
+          }
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, [timeLeft]);
+
+  // Function to handle closing the time warning modal
+  const handleCloseTimeWarning = useCallback(() => {
+    setShowTimeWarningModal(false);
+    // Resume the timer with the special function to avoid re-triggering
+    resumeTimer();
+  }, [resumeTimer]);
+
+  // Function to handle submit from time warning
+  const handleSubmitFromWarning = useCallback(() => {
+    setShowTimeWarningModal(false);
+    handleTimeUp();
+  }, []);
+
+  // Function to handle when question time is up
+  const handleTimeUp = () => {
+    if (currentTask && !currentTask.completed) {
+      // Auto-submit the answer when time is up
+      processSubmission(false, true);
+    }
+  };
+
+  // Format time as MM:SS
+  const formatTime = (seconds: number | null) => {
+    if (seconds === null) return "--:--";
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  // Get color for the timer based on time remaining
+  const getTimerColor = () => {
+    if (timeLeft === null || !currentTask?.timeLimit)
+      return "bg-gray-50 text-gray-600 border-gray-200";
+
+    if (timeLeft <= 20) {
+      return "bg-red-50 text-red-600 border-red-200 animate-pulse";
+    }
+    if (timeLeft <= currentTask.timeLimit / 2) {
+      return "bg-yellow-50 text-yellow-700 border-yellow-200";
+    }
+    return "bg-blue-50 text-blue-600 border-blue-100";
+  };
 
   const handlePrevious = () => {
     if (currentTaskIndex > 0) {
@@ -332,7 +513,7 @@ export function TaskPanel({
     processSubmission();
   };
 
-  const processSubmission = (isSkipped = false) => {
+  const processSubmission = (isSkipped = false, isQuestionTimeUp = false) => {
     if (!currentTask) return;
 
     setIsSubmitting(true);
@@ -348,6 +529,8 @@ export function TaskPanel({
         completed: true,
         userAnswer: isSkipped
           ? "Information not specified in the text"
+          : isQuestionTimeUp && !userAnswer.trim()
+          ? "Time expired before answer was submitted"
           : userAnswer,
         userEventReference:
           markedEventIds.length > 0 ? [...markedEventIds] : null,
@@ -364,6 +547,7 @@ export function TaskPanel({
           totalTasks: tasks.length,
           completedTasks: completedCount,
           correctTasks: 0,
+          totalSessionTime: timeLeft ? timeLeft : 0,
           studyType:
             metadata?.studyType ||
             getStudyTypeFromPath(window.location.pathname),
@@ -375,6 +559,8 @@ export function TaskPanel({
             completed: task.completed,
             startTimestamp: task.startTimestamp,
             submitTimestamp: task.submitTimestamp,
+            isTimeExpired:
+              task.id === currentTask.id ? isQuestionTimeUp : false,
             duration:
               task.submitTimestamp && task.startTimestamp
                 ? task.submitTimestamp - task.startTimestamp
@@ -461,6 +647,7 @@ export function TaskPanel({
       correctTasks: 0,
       studyType,
       isCompleted: true,
+      totalSessionTime: timeLeft ? timeLeft : 0,
       answers: tasks.map((task) => ({
         questionId: task.id,
         question: task.question,
@@ -483,7 +670,11 @@ export function TaskPanel({
     console.log("Redirecting to completion page...");
 
     // Use router for navigation
-    router.push(`/completion?total=${tasks.length}&type=${studyType}`);
+    router.push(
+      `/completion?total=${tasks.length}&type=${studyType}&time=${
+        timeLeft ? timeLeft : 0
+      }`
+    );
   };
 
   // Function to handle training completion confirmation
@@ -577,6 +768,31 @@ export function TaskPanel({
           </div>
         </div>
 
+        {/* Enhanced Question Timer in Header */}
+        {!is_training && (
+          <div className="flex-grow flex justify-center items-center">
+            <div
+              className={`flex items-center px-4 py-2 rounded-lg border shadow-sm ${getTimerColor()}`}
+            >
+              <div className="flex flex-col items-center">
+                <div className="flex items-center">
+                  {timeLeft !== null && timeLeft <= 20 ? (
+                    <AlertCircle className="h-4 w-4 mr-2" />
+                  ) : (
+                    <Timer className="h-4 w-4 mr-2" />
+                  )}
+                  <span className="text-sm font-bold">
+                    {formatTime(timeLeft)}
+                  </span>
+                </div>
+                <span className="text-xs mt-0.5">
+                  Question {currentTaskIndex + 1} Timer
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Domain expert skip buttons */}
         {isDomainExpert && (
           <>
@@ -651,11 +867,13 @@ export function TaskPanel({
 
                 {/* Question number and text */}
                 <div className="p-3">
-                  <div className="text-xs text-gray-500 mb-1.5">
-                    Question {currentTaskIndex + 1}:
-                  </div>
-                  <div className="text-normal font-medium text-gray-900">
-                    {currentTask.question}
+                  <div className="flex flex-col">
+                    <div className="text-xs text-gray-500 mb-1.5">
+                      Question {currentTaskIndex + 1}:
+                    </div>
+                    <div className="text-normal font-medium text-gray-900">
+                      {currentTask.question}
+                    </div>
                   </div>
                 </div>
 
@@ -1127,6 +1345,48 @@ export function TaskPanel({
                 className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
                 I'm Ready
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Time Warning Modal */}
+      {showTimeWarningModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-4">
+            <div className="flex items-start mb-3">
+              <div className="flex-shrink-0 mr-3">
+                <AlertCircle className="h-5 w-5 text-red-500" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-medium text-gray-900">
+                  Time Warning
+                </h3>
+                <p className="text-xs text-gray-500 mt-1">
+                  You have only 20 seconds remaining. The timer is now paused.
+                  Would you like to submit now or continue?
+                </p>
+              </div>
+              <button
+                onClick={handleCloseTimeWarning}
+                className="flex-shrink-0 ml-1 text-gray-400 hover:text-gray-500"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={handleCloseTimeWarning}
+                className="px-3 py-1.5 text-xs border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                Continue Working
+              </button>
+              <button
+                onClick={handleSubmitFromWarning}
+                className="px-3 py-1.5 text-xs bg-red-600 text-white rounded-md hover:bg-red-700"
+              >
+                Submit Now
               </button>
             </div>
           </div>

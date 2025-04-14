@@ -5,13 +5,14 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { CenterControlProvider } from "@/contexts/center-control-context";
 import { TooltipProvider } from "@/contexts/tooltip-context";
-import { AuthHeader } from "@/components/features/auth/auth-header";
+import { AppHeader } from "@/components/features/auth/app-header";
 
 interface ScenarioLayoutProps {
   children: ReactNode;
   title: string;
   isLoading?: boolean;
   isTraining?: boolean;
+  showSentimentLegend?: boolean;
 }
 
 export function ScenarioLayout({
@@ -19,6 +20,7 @@ export function ScenarioLayout({
   title,
   isLoading = false,
   isTraining = false,
+  showSentimentLegend = true,
 }: ScenarioLayoutProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -104,7 +106,11 @@ export function ScenarioLayout({
           }`}
         >
           {/* Header */}
-          <AuthHeader title={title} isTrainingMode={isTraining} />
+          <AppHeader
+            title={title}
+            isTrainingMode={isTraining}
+            showSentimentLegend={showSentimentLegend}
+          />
 
           {/* Main content */}
           <div className="flex-1 min-h-0">{children}</div>

@@ -4,6 +4,17 @@ import { useState, useRef, useEffect, ReactNode } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter, usePathname } from "next/navigation";
+import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowLeft,
+  faChevronDown,
+  faHome,
+  faPencilAlt,
+  faSignOutAlt,
+  faMousePointer,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface AuthHeaderProps {
   title: string;
@@ -11,23 +22,22 @@ interface AuthHeaderProps {
   onToggleUserData?: () => void;
   showUserData?: boolean;
   isTrainingMode?: boolean;
-  countdownDuration?: number; // in seconds
+  showSentimentLegend?: boolean;
 }
 
-export function AuthHeader({
+export function AppHeader({
   title,
   children,
   onToggleUserData,
   showUserData = false,
   isTrainingMode = false,
-  countdownDuration = 300, // default 5 minutes
+  showSentimentLegend = false,
 }: AuthHeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [countdown, setCountdown] = useState(countdownDuration);
 
   // Check if current path is dashboard
   const isDashboard = pathname === "/dashboard";
@@ -51,27 +61,6 @@ export function AuthHeader({
     };
   }, []);
 
-  // Reset countdown when route changes
-  useEffect(() => {
-    setCountdown(countdownDuration);
-  }, [pathname, countdownDuration]);
-
-  // Update countdown every second
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prevCountdown) => {
-        if (prevCountdown <= 0) {
-          return 0;
-        }
-        return prevCountdown - 1;
-      });
-    }, 1000);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
   const handleBackClick = () => {
     // Back navigation based on user role and current path
     if (user?.role === "domain") {
@@ -81,15 +70,6 @@ export function AuthHeader({
       // Normal users go back to login page (they should not be able to go back)
       router.push("/");
     }
-  };
-
-  // Format countdown as MM:SS
-  const formatCountdown = () => {
-    const minutes = Math.floor(countdown / 60);
-    const seconds = countdown % 60;
-    return `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
   };
 
   return (
@@ -104,20 +84,7 @@ export function AuthHeader({
                 className="flex items-center justify-center text-gray-600 hover:text-gray-900 transition-colors focus:outline-none"
                 aria-label="Go back to dashboard"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="mr-1"
-                >
-                  <path d="M19 12H5M12 19l-7-7 7-7" />
-                </svg>
+                <FontAwesomeIcon icon={faArrowLeft} className="mr-1" />
                 <span className="text-sm font-medium">Dashboard</span>
               </button>
               <div className="h-6 border-l border-gray-300 mx-2"></div>
@@ -139,35 +106,57 @@ export function AuthHeader({
           </div>
         </div>
 
-        {/* Countdown timer - Centered */}
-        <div className="flex-1 flex justify-center">
-          <div
-            className={`flex items-center px-3 py-1.5 rounded-full shadow-sm ${
-              countdown < 60
-                ? "bg-red-50 text-red-600"
-                : "bg-gray-50 text-gray-600"
-            }`}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="mr-1.5"
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            <span className="text-sm font-medium">{formatCountdown()}</span>
+        <div className="flex items-center gap-3">
+          {/* Interaction Hints */}
+          <div className="flex items-center bg-gray-50 rounded-lg border border-gray-200 px-3 py-1.5 mr-1">
+            <div className="flex items-center mr-3">
+              <div className="mr-2 text-gray-600">
+                <FontAwesomeIcon icon={faMousePointer} size="sm" />
+              </div>
+              <span className="text-xs font-medium text-gray-700">
+                Left Click: Focus
+              </span>
+            </div>
+            <div className="flex items-center">
+              <div className="mr-2 text-gray-600">
+                <FontAwesomeIcon icon={faCheck} size="sm" />
+              </div>
+              <span className="text-xs font-medium text-gray-700">
+                Right Click: Mark
+              </span>
+            </div>
           </div>
-        </div>
 
-        <div className="flex items-center">
+          {/* Sentiment Legend */}
+          {showSentimentLegend && (
+            <div className="flex items-center bg-gray-50 rounded-lg border border-gray-200 px-3 py-1.5">
+              <span className="text-xs font-medium text-gray-700 mr-2">
+                Sentiment:
+              </span>
+              <div className="flex items-center mr-3">
+                <div
+                  className="w-3 h-3 rounded-full mr-1"
+                  style={{ backgroundColor: getSentimentColor("positive") }}
+                />
+                <span className="text-xs text-gray-700">Positive</span>
+              </div>
+              <div className="flex items-center mr-3">
+                <div
+                  className="w-3 h-3 rounded-full mr-1"
+                  style={{ backgroundColor: getSentimentColor("negative") }}
+                />
+                <span className="text-xs text-gray-700">Negative</span>
+              </div>
+              <div className="flex items-center">
+                <div
+                  className="w-3 h-3 rounded-full mr-1"
+                  style={{ backgroundColor: getSentimentColor("neutral") }}
+                />
+                <span className="text-xs text-gray-700">Neutral</span>
+              </div>
+            </div>
+          )}
+
           {/* Additional content passed as children */}
           {children}
 
@@ -189,20 +178,11 @@ export function AuthHeader({
                   {user?.name?.charAt(0).toUpperCase() || "U"}
                 </span>
               </div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              <FontAwesomeIcon
+                icon={faChevronDown}
                 className="ml-1 text-gray-400 group-hover:text-gray-600"
-              >
-                <path d="M6 9l6 6 6-6" />
-              </svg>
+                size="xs"
+              />
             </button>
 
             {dropdownOpen && (
@@ -221,21 +201,10 @@ export function AuthHeader({
                       className="flex items-center w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
                       onClick={() => setDropdownOpen(false)}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                      <FontAwesomeIcon
+                        icon={faHome}
                         className="mr-2 text-gray-500"
-                      >
-                        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                        <path d="M9 22V12h6v10" />
-                      </svg>
+                      />
                       Dashboard
                     </Link>
                   </div>
@@ -251,21 +220,10 @@ export function AuthHeader({
                       }}
                       className="flex items-center w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                      <FontAwesomeIcon
+                        icon={faPencilAlt}
                         className="mr-2 text-gray-500"
-                      >
-                        <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34" />
-                        <polygon points="18 2 22 6 12 16 8 16 8 12 18 2" />
-                      </svg>
+                      />
                       {showUserData ? "Hide User Data" : "Show User Data"}
                     </button>
                   </div>
@@ -285,22 +243,7 @@ export function AuthHeader({
                     }}
                     className="flex items-center w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="mr-2"
-                    >
-                      <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
-                      <path d="M16 17l5-5-5-5" />
-                      <path d="M21 12H9" />
-                    </svg>
+                    <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
                     Sign out
                   </button>
                 </div>

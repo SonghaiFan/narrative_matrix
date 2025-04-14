@@ -28,6 +28,7 @@ interface TaskProgress {
   studyType: string;
   lastUpdated: string;
   isCompleted: boolean;
+  totalSessionTime?: number; // Total time spent on all tasks in seconds
   answers?: TaskAnswer[];
   surveyData?: SurveyData;
 }

@@ -25,7 +25,7 @@ function VisualizationChatScenario() {
 
         return (
           <div className="w-full h-full overflow-hidden p-4">
-            <div className="h-full grid grid-cols-[3fr_1fr] gap-4">
+            <div className="h-full grid grid-cols-[2fr_1fr] gap-4">
               <div className="h-full w-full overflow-hidden relative">
                 <ResizableGrid
                   topLeft={renderPanel(<PureTextDisplay events={events} />)}
@@ -46,6 +46,7 @@ function VisualizationChatScenario() {
                       events={events}
                       metadata={metadata}
                       userRole={user?.role as "domain" | "normal"}
+                      sessionTimeLimit={1800}
                     />
                   }
                   defaultFirstSize={50}

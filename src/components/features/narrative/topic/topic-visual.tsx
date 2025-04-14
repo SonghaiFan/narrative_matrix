@@ -434,7 +434,9 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           .attr("ry", ry)
           .attr("fill", getParentSentimentColor(d))
           .attr("stroke", (d: any) =>
-            isEventMarked(d.points[0].event.index) ? "red" : "black"
+            isEventMarked(d.points[0].event.index)
+              ? TOPIC_CONFIG.highlight.color
+              : "black"
           )
           .attr("stroke-width", (d: any) =>
             isEventMarked(d.points[0].event.index)
@@ -517,7 +519,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .attr("ry", TOPIC_CONFIG.point.radius)
       .attr("fill", (d: ChildPoint) => getSentimentColor(d.sentimentPolarity))
       .attr("stroke", (d: ChildPoint) =>
-        isEventMarked(d.event.index) ? "red" : "black"
+        isEventMarked(d.event.index) ? TOPIC_CONFIG.highlight.color : "black"
       )
       .attr("stroke-width", (d: ChildPoint) =>
         isEventMarked(d.event.index) ? 2 : TOPIC_CONFIG.point.strokeWidth

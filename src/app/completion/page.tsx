@@ -14,6 +14,7 @@ function CompletionContent() {
   const [pageData, setPageData] = useState({
     totalTasks: 0,
     studyType: "mixed",
+    sessionTime: 0,
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -55,6 +56,8 @@ function CompletionContent() {
     // Get data from URL parameters or local storage
     const totalParam = searchParams.get("total");
     const studyType = searchParams.get("type") || "mixed";
+    const sessionTimeParam = searchParams.get("time");
+    const sessionTime = sessionTimeParam ? parseInt(sessionTimeParam, 10) : 0;
 
     if (totalParam) {
       // If URL parameters exist, use them
@@ -70,6 +73,7 @@ function CompletionContent() {
       setPageData({
         totalTasks,
         studyType,
+        sessionTime,
       });
       setLoading(false);
     } else if (user) {
@@ -80,6 +84,7 @@ function CompletionContent() {
         setPageData({
           totalTasks: progress.totalTasks,
           studyType: progress.studyType,
+          sessionTime: progress.totalSessionTime || 0,
         });
         setLoading(false);
       } else {
@@ -159,6 +164,7 @@ function CompletionContent() {
         totalTasks={pageData.totalTasks}
         userRole={user?.role as "domain" | "normal"}
         studyType={pageData.studyType}
+        sessionTime={pageData.sessionTime}
         onRestart={user?.role === "domain" ? handleBackToDashboard : undefined}
         showRecall={showRecall}
         recallData={recallData}

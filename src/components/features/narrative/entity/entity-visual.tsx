@@ -53,7 +53,9 @@ export function EntityVisual({ events }: EntityVisualProps) {
       .selectAll(".event-node")
       .attr("stroke", function () {
         const eventIndex = d3.select(this).attr("data-event-index");
-        return isEventMarked(Number(eventIndex)) ? "red" : "black";
+        return isEventMarked(Number(eventIndex))
+          ? ENTITY_CONFIG.highlight.color
+          : "black";
       })
       .attr("stroke-width", function () {
         const eventIndex = d3.select(this).attr("data-event-index");
@@ -66,7 +68,9 @@ export function EntityVisual({ events }: EntityVisualProps) {
       .selectAll(".connector-outer")
       .attr("stroke", function () {
         const eventIndex = d3.select(this).attr("data-event-index");
-        return isEventMarked(Number(eventIndex)) ? "red" : "#000";
+        return isEventMarked(Number(eventIndex))
+          ? ENTITY_CONFIG.highlight.color
+          : "black";
       });
   }, [isEventMarked]);
 
