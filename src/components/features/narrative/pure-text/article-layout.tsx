@@ -89,7 +89,9 @@ export function ArticleSection({ title, children }: ArticleSectionProps) {
 interface ArticleParagraphProps {
   event: NarrativeEvent;
   isSelected: boolean;
+  isMarked: boolean;
   onClick: () => void;
+  onContextMenu: (e: React.MouseEvent) => void;
   highlightEntities: (text: string, entities: any[]) => string;
   searchQuery?: string;
 }
@@ -97,7 +99,9 @@ interface ArticleParagraphProps {
 export function ArticleParagraph({
   event,
   isSelected,
+  isMarked,
   onClick,
+  onContextMenu,
   highlightEntities,
   searchQuery = "",
 }: ArticleParagraphProps) {
@@ -145,9 +149,7 @@ export function ArticleParagraph({
   return (
     <div
       className={`relative group pl-5 py-2 border-l-2 transition-colors cursor-pointer ${
-        isSelected
-          ? "border-blue-500"
-          : "hover:border-gray-300 border-transparent"
+        isMarked ? "border-l-blue-500" : "border-l-transparent"
       }`}
       style={{
         backgroundColor: isSelected ? text.colors.selected : "white",
@@ -155,6 +157,7 @@ export function ArticleParagraph({
         paddingLeft: "1.25rem",
       }}
       onClick={onClick}
+      onContextMenu={onContextMenu}
     >
       <div
         className="leading-relaxed text-gray-800"

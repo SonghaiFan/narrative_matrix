@@ -79,10 +79,10 @@ export function getEntityMentions(
 }
 
 // Get top entities by mention count
-export function getVisibleEntities(
+export function getEntities(
   entityMentions: Map<string, EntityMention>,
   selectedTrackId: string | null = null,
-  selectedEventId: number | null = null,
+  focusedEventId: number | null = null,
   events: NarrativeEvent[] = []
 ): Entity[] {
   // If no entity mentions, return empty array
@@ -92,8 +92,8 @@ export function getVisibleEntities(
 
   // Get entities related to selected event
   const selectedEventEntities = new Set<string>();
-  if (selectedEventId !== null) {
-    const selectedEvent = events.find((e) => e.index === selectedEventId);
+  if (focusedEventId !== null) {
+    const selectedEvent = events.find((e) => e.index === focusedEventId);
     if (selectedEvent) {
       selectedEvent.entities.forEach((entity) => {
         selectedEventEntities.add(entity.id);
@@ -551,7 +551,7 @@ export function createEventNode(
   cx: number,
   cy: number,
   event: NarrativeEvent,
-  selectedEventId: number | null,
+  focusedEventId: number | null,
   entityId?: string
 ) {
   return parent
@@ -565,7 +565,7 @@ export function createEventNode(
     .attr("fill", getSentimentColor(event.topic.sentiment.polarity))
     .attr(
       "stroke",
-      selectedEventId === event.index ? ENTITY_CONFIG.highlight.color : "black"
+      focusedEventId === event.index ? ENTITY_CONFIG.highlight.color : "black"
     )
     .attr("stroke-width", ENTITY_CONFIG.point.strokeWidth)
     .style("cursor", "pointer");
@@ -638,8 +638,8 @@ export function addEventGroupHoverEffects(
   ) => void,
   updatePosition: (x: number, y: number) => void,
   hideTooltip: () => void,
-  setSelectedEventId: (id: number | null) => void,
-  selectedEventId: number | null
+  setfocusedEventId: (id: number | null) => void,
+  focusedEventId: number | null
 ) {
   eventGroup
     .on("mouseenter", function (this: SVGGElement, e: MouseEvent) {
@@ -710,7 +710,7 @@ export function addEventGroupHoverEffects(
       hideTooltip();
     })
     .on("click", function () {
-      setSelectedEventId(selectedEventId === event.index ? null : event.index);
+      setfocusedEventId(focusedEventId === event.index ? null : event.index);
     });
 }
 
@@ -1059,7 +1059,7 @@ export function drawLinkConnectors(
   nodes: ForceNode[],
   events: NarrativeEvent[],
   eventGroups: Map<number, d3.Selection<SVGGElement, unknown, null, undefined>>,
-  selectedEventId: number | null,
+  focusedEventId: number | null,
   layer: "outer" | "inner"
 ) {
   const { sourceNode, targetNode } = getNodesFromLink(link, nodes);

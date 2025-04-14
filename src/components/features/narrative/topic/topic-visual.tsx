@@ -44,7 +44,13 @@ interface ChildPoint extends DataPoint {
 }
 
 export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
-  const { selectedEventId, setSelectedEventId } = useCenterControl();
+  const {
+    focusedEventId,
+    setfocusedEventId,
+    markedEventIds,
+    toggleMarkedEvent,
+    isEventMarked,
+  } = useCenterControl();
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -62,7 +68,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     return `child-node-${eventIndex}`;
   }, []);
 
-  // Update node styles based on selectedEventId
+  // Update node styles based on focusedEventId and markedEventIds
   const updateSelectedEventStyles = useCallback(
     (newSelectedId: number | null) => {
       if (!svgRef.current) return;
@@ -70,8 +76,16 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       // Reset all nodes to default stroke style
       d3.select(svgRef.current)
         .selectAll(".parent-point, .child-point-rect")
-        .attr("stroke", "black")
-        .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth);
+        .attr("stroke", (d: any) => {
+          const eventIndex = d.event?.index || d.points?.[0]?.event?.index;
+          return isEventMarked(eventIndex)
+            ? TOPIC_CONFIG.highlight.color
+            : "black";
+        })
+        .attr("stroke-width", (d: any) => {
+          const eventIndex = d.event?.index || d.points?.[0]?.event?.index;
+          return isEventMarked(eventIndex) ? 2 : TOPIC_CONFIG.point.strokeWidth;
+        });
 
       const guideLine = d3.select(svgRef.current).select(".guide-lines");
       guideLine.style("display", "none");
@@ -98,11 +112,8 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           );
         });
 
-      childNode.attr("stroke", TOPIC_CONFIG.highlight.color);
-
       // Update guide line based on selected node
       if (!parentNode.empty()) {
-        parentNode.attr("stroke", TOPIC_CONFIG.highlight.color);
         const x = parseFloat(parentNode.attr("x") || "0");
         const width = parseFloat(parentNode.attr("width") || "0");
         const centerX = x + width / 2;
@@ -117,7 +128,6 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         if (parentKey) {
           const parentNodeId = getParentNodeId(parentKey);
           const parentRect = d3.select(`#${parentNodeId}`).select("rect");
-          parentRect.attr("stroke", TOPIC_CONFIG.highlight.color);
 
           const x = parseFloat(parentRect.attr("x") || "0");
           const width = parseFloat(parentRect.attr("width") || "0");
@@ -131,8 +141,81 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         }
       }
     },
-    []
+    [isEventMarked]
   );
+
+  // Handle background click to deselect
+  const handleBackgroundClick = useCallback(() => {
+    // Deselect any selected event
+    setfocusedEventId(null);
+    hideTooltip();
+
+    // Close all expanded parent nodes
+    if (svgRef.current) {
+      // Reset all parent nodes to collapsed state
+      d3.select(svgRef.current)
+        .selectAll(".point-group")
+        .each(function (d: any) {
+          if (d.isExpanded) {
+            d.isExpanded = false;
+
+            // Update the pointStatesRef to reflect the collapsed state
+            if (d.key) {
+              const currentState = pointStatesRef.current.get(d.key);
+              if (currentState) {
+                pointStatesRef.current.set(d.key, {
+                  ...currentState,
+                  isExpanded: false,
+                });
+              }
+            }
+
+            // Update the visual state
+            const parent = d3.select(this);
+            const children = parent.selectAll(".child-point");
+            const parentRect = parent.select("rect");
+            const countText = parent.select("text");
+
+            const x =
+              parseFloat(parentRect.attr("x") || "0") +
+              parseFloat(parentRect.attr("width") || "0") / 2;
+            const y =
+              parseFloat(parentRect.attr("y") || "0") +
+              parseFloat(parentRect.attr("height") || "0") / 2;
+
+            const { width, height, rx, ry } = calculateRectDimensions(
+              d.points.length,
+              TOPIC_CONFIG.point.radius
+            );
+
+            updateRectAndText(
+              parentRect,
+              countText,
+              x,
+              y,
+              width,
+              height,
+              rx,
+              ry,
+              200,
+              1,
+              "pointer"
+            );
+
+            // Re-enable mouse events on parent when collapsed
+            parentRect
+              .style("pointer-events", "all")
+              .style("cursor", "pointer");
+
+            children
+              .transition()
+              .duration(200)
+              .style("opacity", 0)
+              .style("pointer-events", "none");
+          }
+        });
+    }
+  }, [setfocusedEventId, hideTooltip]);
 
   // Update visualization
   const updateVisualization = useCallback(() => {
@@ -145,7 +228,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       return;
 
     // Store current selection and expanded states
-    const currentSelection = selectedEventId;
+    const currentSelection = focusedEventId;
     const currentExpandedStates = new Map(pointStatesRef.current);
 
     // Clear previous content
@@ -350,8 +433,14 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           .attr("rx", rx)
           .attr("ry", ry)
           .attr("fill", getParentSentimentColor(d))
-          .attr("stroke", "black")
-          .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth)
+          .attr("stroke", (d: any) =>
+            isEventMarked(d.points[0].event.index) ? "red" : "black"
+          )
+          .attr("stroke-width", (d: any) =>
+            isEventMarked(d.points[0].event.index)
+              ? 2
+              : TOPIC_CONFIG.point.strokeWidth
+          )
           .style("cursor", d.points.length > 1 ? "pointer" : "default")
           .attr("data-group-key", d.key.replace(/[^a-zA-Z0-9-_]/g, "_"))
           .attr("data-event-index", d.points[0].event.index)
@@ -427,8 +516,12 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .attr("rx", TOPIC_CONFIG.point.radius)
       .attr("ry", TOPIC_CONFIG.point.radius)
       .attr("fill", (d: ChildPoint) => getSentimentColor(d.sentimentPolarity))
-      .attr("stroke", "black")
-      .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth)
+      .attr("stroke", (d: ChildPoint) =>
+        isEventMarked(d.event.index) ? "red" : "black"
+      )
+      .attr("stroke-width", (d: ChildPoint) =>
+        isEventMarked(d.event.index) ? 2 : TOPIC_CONFIG.point.strokeWidth
+      )
       .style("cursor", "pointer")
       .attr("data-parent-key", (d: ChildPoint) => d.parentKey)
       .attr("data-event-index", (d: ChildPoint) => d.event.index);
@@ -645,7 +738,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       // Child node click handler
       childClick(this: any, event: MouseEvent, d: any) {
         const eventData = d.event;
-        const isDeselecting = eventData.index === selectedEventId;
+        const isDeselecting = eventData.index === focusedEventId;
 
         hideTooltip();
 
@@ -655,8 +748,15 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           d3.select(`#${getParentNodeId(parentKey)}`).raise();
         }
 
-        setSelectedEventId(isDeselecting ? null : eventData.index);
+        setfocusedEventId(isDeselecting ? null : eventData.index);
         event.stopPropagation();
+      },
+
+      // Right-click handler
+      contextmenu(this: any, event: MouseEvent, d: any) {
+        event.preventDefault();
+        const eventIndex = d.event?.index || d.points?.[0]?.event?.index;
+        toggleMarkedEvent(eventIndex);
       },
     };
 
@@ -711,7 +811,8 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           parentRect
             .on("mouseover", null)
             .on("mouseout", null)
-            .on("mousemove", null);
+            .on("mousemove", null)
+            .on("contextmenu", null);
 
           children
             .transition()
@@ -745,7 +846,8 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           parentRect
             .on("mouseover", handleNodeInteraction.mouseOver)
             .on("mouseout", handleNodeInteraction.mouseOut)
-            .on("mousemove", handleNodeInteraction.mouseMove);
+            .on("mousemove", handleNodeInteraction.mouseMove)
+            .on("contextmenu", handleNodeInteraction.contextmenu);
 
           children
             .transition()
@@ -756,8 +858,8 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       } else {
         // For parent nodes with no children, behave like a child node
         const eventData = d.points[0].event;
-        setSelectedEventId(
-          eventData.index === selectedEventId ? null : eventData.index
+        setfocusedEventId(
+          eventData.index === focusedEventId ? null : eventData.index
         );
       }
     });
@@ -774,7 +876,17 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .on("mouseover", handleNodeInteraction.mouseOver)
       .on("mouseout", handleNodeInteraction.mouseOut)
       .on("mousemove", handleNodeInteraction.mouseMove)
-      .on("click", handleNodeInteraction.childClick);
+      .on("click", handleNodeInteraction.childClick)
+      .on("contextmenu", handleNodeInteraction.contextmenu);
+
+    // Add right-click handler to parent nodes
+    parentNodes
+      .select("rect")
+      .on("contextmenu", function (event: MouseEvent, d: GroupedPoint) {
+        event.preventDefault();
+        const eventIndex = d.points[0].event.index;
+        toggleMarkedEvent(eventIndex);
+      });
 
     // Restore expanded states
     currentExpandedStates.forEach((state, key) => {
@@ -832,18 +944,22 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     }
   }, [
     events,
-    getParentNodeId,
     viewMode,
-    selectedEventId,
-    updateSelectedEventStyles,
+    focusedEventId,
+    markedEventIds,
+    isEventMarked,
+    toggleMarkedEvent,
+    getParentNodeId,
+    getChildNodeId,
+    handleBackgroundClick,
   ]);
 
   // Handle selection changes
   useEffect(() => {
-    if (svgRef.current && selectedEventId !== undefined) {
-      updateSelectedEventStyles(selectedEventId);
+    if (svgRef.current && focusedEventId !== undefined) {
+      updateSelectedEventStyles(focusedEventId);
     }
-  }, [selectedEventId, updateSelectedEventStyles]);
+  }, [focusedEventId, updateSelectedEventStyles]);
 
   // Setup resize observer
   useEffect(() => {
@@ -864,78 +980,12 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     };
   }, [updateVisualization]);
 
-  // Handle background click to deselect
-  const handleBackgroundClick = useCallback(() => {
-    // Deselect any selected event
-    setSelectedEventId(null);
-    hideTooltip();
-
-    // Close all expanded parent nodes
+  // Add effect to update visualization when marked events change
+  useEffect(() => {
     if (svgRef.current) {
-      // Reset all parent nodes to collapsed state
-      d3.select(svgRef.current)
-        .selectAll(".point-group")
-        .each(function (d: any) {
-          if (d.isExpanded) {
-            d.isExpanded = false;
-
-            // Update the pointStatesRef to reflect the collapsed state
-            if (d.key) {
-              const currentState = pointStatesRef.current.get(d.key);
-              if (currentState) {
-                pointStatesRef.current.set(d.key, {
-                  ...currentState,
-                  isExpanded: false,
-                });
-              }
-            }
-
-            // Update the visual state
-            const parent = d3.select(this);
-            const children = parent.selectAll(".child-point");
-            const parentRect = parent.select("rect");
-            const countText = parent.select("text");
-
-            const x =
-              parseFloat(parentRect.attr("x") || "0") +
-              parseFloat(parentRect.attr("width") || "0") / 2;
-            const y =
-              parseFloat(parentRect.attr("y") || "0") +
-              parseFloat(parentRect.attr("height") || "0") / 2;
-
-            const { width, height, rx, ry } = calculateRectDimensions(
-              d.points.length,
-              TOPIC_CONFIG.point.radius
-            );
-
-            updateRectAndText(
-              parentRect,
-              countText,
-              x,
-              y,
-              width,
-              height,
-              rx,
-              ry,
-              200,
-              1,
-              "pointer"
-            );
-
-            // Re-enable mouse events on parent when collapsed
-            parentRect
-              .style("pointer-events", "all")
-              .style("cursor", "pointer");
-
-            children
-              .transition()
-              .duration(200)
-              .style("opacity", 0)
-              .style("pointer-events", "none");
-          }
-        });
+      updateVisualization();
     }
-  }, [setSelectedEventId, hideTooltip]);
+  }, [markedEventIds, updateVisualization]);
 
   return (
     <div className="w-full h-full flex flex-col">

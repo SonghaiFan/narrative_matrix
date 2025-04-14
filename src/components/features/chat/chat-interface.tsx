@@ -22,7 +22,7 @@ const MAX_MESSAGES = 20;
 const EVENT_REFERENCE_REGEX = /\[Event #(\d+)\]/g;
 
 export function ChatInterface({ events, className = "" }: ChatInterfaceProps) {
-  const { selectedEventId, getSelectedEvent, setSelectedEventId } =
+  const { focusedEventId, getSelectedEvent, setfocusedEventId } =
     useCenterControl();
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -36,7 +36,7 @@ export function ChatInterface({ events, className = "" }: ChatInterfaceProps) {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const [previousSelectedEventId, setPreviousSelectedEventId] = useState<
+  const [previousfocusedEventId, setPreviousfocusedEventId] = useState<
     number | null
   >(null);
 
@@ -48,7 +48,7 @@ export function ChatInterface({ events, className = "" }: ChatInterfaceProps) {
   // Function to handle event reference clicks
   const handleEventReferenceClick = (eventId: number) => {
     // Simply set the selected event ID without validation
-    setSelectedEventId(eventId);
+    setfocusedEventId(eventId);
   };
 
   // Function to parse message content and render event references as links
@@ -96,18 +96,15 @@ export function ChatInterface({ events, className = "" }: ChatInterfaceProps) {
 
   // Effect to handle selected event changes
   useEffect(() => {
-    // Only proceed if the selectedEventId has changed and is not null
-    if (
-      selectedEventId !== previousSelectedEventId &&
-      selectedEventId !== null
-    ) {
+    // Only proceed if the focusedEventId has changed and is not null
+    if (focusedEventId !== previousfocusedEventId && focusedEventId !== null) {
       const selectedEvent = getSelectedEvent();
 
       if (selectedEvent) {
         // Create a suggestion message about the selected event
         const newMessage: Message = {
           role: "assistant",
-          content: `I notice you've selected [Event #${selectedEventId}]: "${selectedEvent.text.substring(
+          content: `I notice you've selected [Event #${focusedEventId}]: "${selectedEvent.text.substring(
             0,
             100
           )}${
@@ -119,13 +116,13 @@ export function ChatInterface({ events, className = "" }: ChatInterfaceProps) {
         setMessages((prev) => [...prev, newMessage]);
 
         // Pre-fill the input with a question about the event
-        setInput(`Tell me more about [Event #${selectedEventId}]`);
+        setInput(`Tell me more about [Event #${focusedEventId}]`);
       }
     }
 
     // Update the previous selected event ID
-    setPreviousSelectedEventId(selectedEventId);
-  }, [selectedEventId, getSelectedEvent]);
+    setPreviousfocusedEventId(focusedEventId);
+  }, [focusedEventId, getSelectedEvent]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -139,9 +136,9 @@ export function ChatInterface({ events, className = "" }: ChatInterfaceProps) {
 
   // Handle when a new event is selected
   useEffect(() => {
-    if (selectedEventId !== null && selectedEventId !== undefined) {
+    if (focusedEventId !== null && focusedEventId !== undefined) {
       const selectedEvent = events.find(
-        (event) => event.index === selectedEventId
+        (event) => event.index === focusedEventId
       );
       if (selectedEvent) {
         // Update or add a system message about the selected event
@@ -157,7 +154,7 @@ export function ChatInterface({ events, className = "" }: ChatInterfaceProps) {
               ...prev,
               {
                 role: "system",
-                content: `Event selected: [Event #${selectedEventId}] "${selectedEvent.text}"`,
+                content: `Event selected: [Event #${focusedEventId}] "${selectedEvent.text}"`,
                 timestamp: new Date().toISOString(),
               },
             ];
@@ -168,7 +165,7 @@ export function ChatInterface({ events, className = "" }: ChatInterfaceProps) {
           const newMessages = [...prev];
           newMessages[actualIndex] = {
             role: "system",
-            content: `Event selected: [Event #${selectedEventId}] "${selectedEvent.text}"`,
+            content: `Event selected: [Event #${focusedEventId}] "${selectedEvent.text}"`,
             timestamp: new Date().toISOString(),
           };
 
@@ -176,7 +173,7 @@ export function ChatInterface({ events, className = "" }: ChatInterfaceProps) {
         });
       }
     }
-  }, [selectedEventId, events]);
+  }, [focusedEventId, events]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -202,7 +199,7 @@ export function ChatInterface({ events, className = "" }: ChatInterfaceProps) {
         body: JSON.stringify({
           messages: messages.concat(userMessage),
           events,
-          selectedEventId,
+          focusedEventId,
         }),
       });
 

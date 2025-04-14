@@ -36,6 +36,7 @@ interface Task {
   answer: string;
   completed: boolean;
   userAnswer?: string;
+  userEventReference?: number | number[] | null;
   startTimestamp?: number;
   submitTimestamp?: number;
   event_reference?: number | number[] | null;
@@ -72,7 +73,8 @@ export function TaskPanel({
   is_training = false,
 }: TaskPanelProps) {
   const router = useRouter();
-  const { setSelectedEventId } = useCenterControl();
+  const { markedEventIds, toggleMarkedEvent, isEventMarked } =
+    useCenterControl();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -347,6 +349,8 @@ export function TaskPanel({
         userAnswer: isSkipped
           ? "Information not specified in the text"
           : userAnswer,
+        userEventReference:
+          markedEventIds.length > 0 ? [...markedEventIds] : null,
         submitTimestamp: Date.now(),
       };
 
@@ -367,6 +371,7 @@ export function TaskPanel({
             questionId: task.id,
             question: task.question,
             userAnswer: task.userAnswer || "",
+            userEventReference: task.userEventReference || null,
             completed: task.completed,
             startTimestamp: task.startTimestamp,
             submitTimestamp: task.submitTimestamp,
@@ -515,7 +520,7 @@ export function TaskPanel({
 
   // Add this new function to handle event reference clicks
   const handleEventReferenceClick = (eventId: number) => {
-    setSelectedEventId(eventId);
+    toggleMarkedEvent(eventId);
   };
 
   // Add this function to render event references as clickable links
@@ -626,194 +631,291 @@ export function TaskPanel({
         <div className="p-2 flex flex-col min-h-full">
           {/* Question content */}
           <div className="flex-1">
-            {/* Cognitive level badge */}
-            {currentTask.level && (
-              <div className="flex items-center mb-1">
-                <div
-                  className={`text-[10px] px-1.5 py-0.5 rounded-full flex items-center ${getLevelColor(
-                    currentTask.level
-                  )}`}
-                >
-                  <Brain className="h-2.5 w-2.5 mr-0.5" />
-                  <span>{currentTask.level}</span>
-                </div>
-              </div>
-            )}
-
-            <div className="text-xs text-gray-500 mb-1">
-              Question {currentTaskIndex + 1}:
-            </div>
-
             {/* Question card and answer components */}
-            <div className="space-y-2">
-              <div className="bg-gray-50 p-2 rounded text-sm">
-                {currentTask.question}
-                <div className="mt-2 space-y-1.5">
-                  <div className="text-xs text-red-600 flex items-center">
-                    <AlertCircle className="h-3 w-3 mr-1 flex-shrink-0" />
-                    Please answer based ONLY on the text you have read, not your
-                    prior knowledge. Some details may differ from real-world
-                    events.
-                  </div>
-                  <div className="text-xs text-amber-600 flex items-center">
-                    <HelpCircle className="h-3 w-3 mr-1 flex-shrink-0" />
-                    Tip: If you cannot find the specific information in the
-                    text, use the "Information Not Found" button below to skip
-                    this question.
-                  </div>
-                  {!currentTask.completed && !showAnswer && (
-                    <button
-                      onClick={handleSkip}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2 mt-2 border border-amber-200 bg-amber-50 text-amber-700 rounded-md hover:bg-amber-100 hover:border-amber-300 transition-colors text-sm font-medium"
+            <div className="space-y-4">
+              {/* Question header with cognitive level and tips */}
+              <div className="bg-white border rounded-lg overflow-hidden">
+                {/* Cognitive level badge */}
+                {currentTask.level && (
+                  <div className="px-3 py-2 border-b bg-gray-50">
+                    <div
+                      className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] ${getLevelColor(
+                        currentTask.level
+                      )}`}
                     >
-                      <HelpCircle className="h-4 w-4" />
-                      Information Not Found in Text
-                    </button>
-                  )}
+                      <Brain className="h-2.5 w-2.5 mr-0.5" />
+                      <span>{currentTask.level}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Question number and text */}
+                <div className="p-3">
+                  <div className="text-xs text-gray-500 mb-1.5">
+                    Question {currentTaskIndex + 1}:
+                  </div>
+                  <div className="text-normal font-medium text-gray-900">
+                    {currentTask.question}
+                  </div>
+                </div>
+
+                {/* Tips and hints section */}
+                <div className="px-3 pb-3">
+                  <div className="space-y-2">
+                    {/* General warning about using only provided text */}
+                    <div className="bg-red-50 border border-red-200 rounded-md p-2.5">
+                      <div className="flex items-start gap-2">
+                        <AlertCircle className="h-3.5 w-3.5 text-red-600 flex-shrink-0 mt-0.5" />
+                        <div className="text-xs text-red-800">
+                          Please answer based ONLY on the text you have read,
+                          not your prior knowledge. Some details may differ from
+                          real-world events.
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Information Not Found tip */}
+                    <div className="bg-amber-50 border border-amber-200 rounded-md p-2.5">
+                      <div className="flex items-start gap-2">
+                        <HelpCircle className="h-3.5 w-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
+                        <div className="text-xs text-amber-800">
+                          Tip: If you cannot find the specific information in
+                          the text, use the "Information Not Found" button below
+                          to skip this question.
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Event selection requirement */}
+                    <div className="bg-blue-50 border border-blue-200 rounded-md p-2.5">
+                      <div className="flex items-start gap-2">
+                        <AlertCircle className="h-3.5 w-3.5 text-blue-600 flex-shrink-0 mt-0.5" />
+                        <div className="text-xs text-blue-800">
+                          <span className="font-medium">Required:</span> You
+                          must select the event that contains the information
+                          supporting your answer. This helps us understand how
+                          you arrived at your response.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Answer input section */}
-              {!currentTask.completed ? (
-                <div>
-                  {(() => {
-                    switch (currentTask.type) {
-                      case "radio-options":
-                        return (
-                          <RadioOptions
-                            options={currentTask.options as string[]}
-                            value={userAnswer}
-                            onChange={setUserAnswer}
-                            disabled={showAnswer}
-                          />
-                        );
-                      case "multiple-select":
-                        return (
-                          <MultipleSelect
-                            options={currentTask.options as string[]}
-                            value={userAnswer}
-                            onChange={setUserAnswer}
-                            disabled={showAnswer}
-                          />
-                        );
-                      case "numbered-sequence":
-                        return (
-                          <NumberedSequence
-                            options={
-                              currentTask.type === "numbered-sequence" &&
-                              currentTask.options &&
-                              "events" in currentTask.options
-                                ? (currentTask.options as {
-                                    events: Array<{ id: number; text: string }>;
-                                  })
-                                : []
-                            }
-                            value={userAnswer}
-                            onChange={setUserAnswer}
-                            disabled={showAnswer}
-                          />
-                        );
-                      case "grid-matching":
-                        const options = currentTask.options as {
-                          countries?: string[];
-                          roles?: string[];
-                          causes?: string[];
-                          effects?: string[];
-                          leftItems?: string[];
-                          rightItems?: string[];
-                          leftLabel?: string;
-                          rightLabel?: string;
-                        };
-
-                        // If leftItems and rightItems are already provided, use them directly
-                        if (options.leftItems && options.rightItems) {
-                          return (
-                            <GridMatching
-                              options={{
-                                leftItems: options.leftItems,
-                                rightItems: options.rightItems,
-                                leftLabel: options.leftLabel,
-                                rightLabel: options.rightLabel,
-                              }}
-                              value={userAnswer}
-                              onChange={setUserAnswer}
-                              disabled={showAnswer}
-                            />
-                          );
-                        }
-
-                        // Otherwise, transform the options into the correct shape
-                        let transformedOptions;
-                        if (options.causes && options.effects) {
-                          transformedOptions = {
-                            leftItems: options.causes,
-                            rightItems: options.effects,
-                            leftLabel: "Causes",
-                            rightLabel: "Effects",
-                          };
-                        } else {
-                          // Fallback to empty arrays if no valid options are provided
-                          transformedOptions = {
-                            leftItems: [],
-                            rightItems: [],
-                            leftLabel: "Items",
-                            rightLabel: "Categories",
-                          };
-                        }
-
-                        return (
-                          <GridMatching
-                            options={transformedOptions}
-                            value={userAnswer}
-                            onChange={setUserAnswer}
-                            disabled={showAnswer}
-                          />
-                        );
-                      default:
-                        return (
-                          <TextInput
-                            value={userAnswer}
-                            onChange={setUserAnswer}
-                            disabled={showAnswer}
-                          />
-                        );
-                    }
-                  })()}
-                </div>
-              ) : (
-                <div className="p-2 rounded text-xs flex items-start bg-blue-50 text-blue-800">
-                  <CheckCircle className="h-3 w-3 mr-1 flex-shrink-0 text-blue-500" />
+              {/* Answer options */}
+              <div className="bg-white border rounded-lg p-3">
+                <div className="space-y-4">
+                  {/* Step 1: Event Selection */}
                   <div>
-                    <p className="font-medium">Answer Submitted</p>
-                    <p className="mt-0.5">
-                      Your answer: {currentTask.userAnswer}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Answer reveal */}
-              {showAnswer && (
-                <div className="bg-blue-50 p-2 rounded text-xs overflow-auto max-h-40">
-                  <div className="space-y-2">
-                    <div>
-                      <p className="font-medium text-blue-800">Answer:</p>
-                      <p className="text-blue-700">{currentTask.answer}</p>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-medium">
+                        1
+                      </div>
+                      <h3 className="text-sm font-medium text-gray-900">
+                        Mark Reference Events
+                      </h3>
                     </div>
-                    {currentTask.event_reference !== undefined &&
-                      currentTask.event_reference !== null && (
-                        <div className="border-t border-blue-200 pt-2">
-                          <p className="text-blue-600">
-                            <span className="font-medium">
-                              Reference Event(s):
-                            </span>{" "}
-                            {renderEventReferences(currentTask.event_reference)}
-                          </p>
-                        </div>
-                      )}
+                    <div className="bg-blue-50 rounded-md p-3 border border-blue-200">
+                      <div className="text-xs text-blue-700 mb-2">
+                        Right-click on the events that contain the information
+                        for your answer to mark them.
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {markedEventIds.length === 0 ? (
+                          <div className="text-xs text-gray-500 bg-white px-3 py-1.5 rounded-md border border-gray-200">
+                            No events marked yet
+                          </div>
+                        ) : (
+                          markedEventIds.map((eventId) => (
+                            <div
+                              key={eventId}
+                              className="flex items-center gap-1 text-xs text-blue-600 bg-white px-3 py-1.5 rounded-md border border-blue-300"
+                            >
+                              <span>Event #{eventId}</span>
+                              <button
+                                onClick={() => toggleMarkedEvent(eventId)}
+                                className="ml-2 text-blue-400 hover:text-blue-600"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
                   </div>
+
+                  {/* Step 2: Answer Input */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-medium">
+                        2
+                      </div>
+                      <h3 className="text-sm font-medium text-gray-900">
+                        Provide Your Answer
+                      </h3>
+                    </div>
+                    {!currentTask.completed ? (
+                      <div>
+                        {(() => {
+                          switch (currentTask.type) {
+                            case "radio-options":
+                              return (
+                                <RadioOptions
+                                  options={currentTask.options as string[]}
+                                  value={userAnswer}
+                                  onChange={setUserAnswer}
+                                  disabled={showAnswer}
+                                />
+                              );
+                            case "multiple-select":
+                              return (
+                                <MultipleSelect
+                                  options={currentTask.options as string[]}
+                                  value={userAnswer}
+                                  onChange={setUserAnswer}
+                                  disabled={showAnswer}
+                                />
+                              );
+                            case "numbered-sequence":
+                              return (
+                                <NumberedSequence
+                                  options={
+                                    currentTask.type === "numbered-sequence" &&
+                                    currentTask.options &&
+                                    "events" in currentTask.options
+                                      ? (currentTask.options as {
+                                          events: Array<{
+                                            id: number;
+                                            text: string;
+                                          }>;
+                                        })
+                                      : []
+                                  }
+                                  value={userAnswer}
+                                  onChange={setUserAnswer}
+                                  disabled={showAnswer}
+                                />
+                              );
+                            case "grid-matching":
+                              const options = currentTask.options as {
+                                countries?: string[];
+                                roles?: string[];
+                                causes?: string[];
+                                effects?: string[];
+                                leftItems?: string[];
+                                rightItems?: string[];
+                                leftLabel?: string;
+                                rightLabel?: string;
+                              };
+
+                              // If leftItems and rightItems are already provided, use them directly
+                              if (options.leftItems && options.rightItems) {
+                                return (
+                                  <GridMatching
+                                    options={{
+                                      leftItems: options.leftItems,
+                                      rightItems: options.rightItems,
+                                      leftLabel: options.leftLabel,
+                                      rightLabel: options.rightLabel,
+                                    }}
+                                    value={userAnswer}
+                                    onChange={setUserAnswer}
+                                    disabled={showAnswer}
+                                  />
+                                );
+                              }
+
+                              // Otherwise, transform the options into the correct shape
+                              let transformedOptions;
+                              if (options.causes && options.effects) {
+                                transformedOptions = {
+                                  leftItems: options.causes,
+                                  rightItems: options.effects,
+                                  leftLabel: "Causes",
+                                  rightLabel: "Effects",
+                                };
+                              } else {
+                                // Fallback to empty arrays if no valid options are provided
+                                transformedOptions = {
+                                  leftItems: [],
+                                  rightItems: [],
+                                  leftLabel: "Items",
+                                  rightLabel: "Categories",
+                                };
+                              }
+
+                              return (
+                                <GridMatching
+                                  options={transformedOptions}
+                                  value={userAnswer}
+                                  onChange={setUserAnswer}
+                                  disabled={showAnswer}
+                                />
+                              );
+                            default:
+                              return (
+                                <TextInput
+                                  value={userAnswer}
+                                  onChange={setUserAnswer}
+                                  disabled={showAnswer}
+                                />
+                              );
+                          }
+                        })()}
+                      </div>
+                    ) : (
+                      <div className="p-2 rounded text-xs flex items-start bg-blue-50 text-blue-800">
+                        <CheckCircle className="h-3 w-3 mr-1 flex-shrink-0 text-blue-500" />
+                        <div>
+                          <p className="font-medium">Answer Submitted</p>
+                          <p className="mt-0.5">
+                            Your answer: {currentTask.userAnswer}
+                          </p>
+                          {currentTask.userEventReference !== null && (
+                            <p className="mt-0.5">
+                              Reference Event:{" "}
+                              {renderEventReferences(
+                                currentTask.userEventReference || null
+                              )}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Can't find information option */}
+                  {!currentTask.completed && !showAnswer && (
+                    <div className="border-t pt-4">
+                      <div className="text-xs text-gray-500 mb-2">
+                        Can't find the information in any event?
+                      </div>
+                      <button
+                        onClick={handleSkip}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-amber-200 bg-amber-50 text-amber-700 rounded-md hover:bg-amber-100 hover:border-amber-300 transition-colors text-sm font-medium"
+                      >
+                        <HelpCircle className="h-4 w-4" />
+                        Mark as "Information Not Found"
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Warning if event not marked */}
+                  {markedEventIds.length === 0 &&
+                    userAnswer.trim() &&
+                    !currentTask.completed && (
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-md p-2 flex items-center gap-2">
+                        <AlertCircle className="h-4 w-4 text-yellow-600 flex-shrink-0" />
+                        <div className="text-xs text-yellow-800">
+                          Please mark one or more reference events before
+                          submitting your answer, or mark as "Information Not
+                          Found" if the information is not available.
+                        </div>
+                      </div>
+                    )}
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </div>
@@ -864,7 +966,12 @@ export function TaskPanel({
             {!currentTask.completed && !showAnswer ? (
               <button
                 onClick={handleSubmit}
-                disabled={!userAnswer.trim() || isSubmitting}
+                disabled={
+                  !userAnswer.trim() ||
+                  (markedEventIds.length === 0 &&
+                    userAnswer !== "Information not specified in the text") ||
+                  isSubmitting
+                }
                 className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <CheckCircle className="h-4 w-4" />
@@ -873,6 +980,10 @@ export function TaskPanel({
             ) : !currentTask.completed && showAnswer ? (
               <button
                 onClick={handleSubmit}
+                disabled={
+                  markedEventIds.length === 0 &&
+                  userAnswer !== "Information not specified in the text"
+                }
                 className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
                 <CheckCircle className="h-4 w-4" />

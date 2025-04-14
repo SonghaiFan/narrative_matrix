@@ -18,7 +18,13 @@ interface PureTextDisplayProps {
 }
 
 export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
-  const { selectedEventId, setSelectedEventId } = useCenterControl();
+  const {
+    focusedEventId,
+    setfocusedEventId,
+    markedEventIds,
+    toggleMarkedEvent,
+    isEventMarked,
+  } = useCenterControl();
   const eventRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [searchResults, setSearchResults] = useState<NarrativeEvent[]>([]);
@@ -52,13 +58,13 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
 
   // Effect to scroll selected event into view
   useEffect(() => {
-    if (selectedEventId !== null && eventRefs.current[selectedEventId]) {
-      eventRefs.current[selectedEventId]?.scrollIntoView({
+    if (focusedEventId !== null && eventRefs.current[focusedEventId]) {
+      eventRefs.current[focusedEventId]?.scrollIntoView({
         behavior: "smooth",
         block: "center",
       });
     }
-  }, [selectedEventId]);
+  }, [focusedEventId]);
 
   // Function to highlight entities in text
   const highlightEntities = useCallback((text: string, entities: Entity[]) => {
@@ -186,12 +192,17 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
                   )}
                   <ArticleParagraph
                     event={event}
-                    isSelected={selectedEventId === event.index}
+                    isSelected={focusedEventId === event.index}
+                    isMarked={isEventMarked(event.index)}
                     onClick={() =>
-                      setSelectedEventId(
-                        event.index === selectedEventId ? null : event.index
+                      setfocusedEventId(
+                        event.index === focusedEventId ? null : event.index
                       )
                     }
+                    onContextMenu={(e) => {
+                      e.preventDefault();
+                      toggleMarkedEvent(event.index);
+                    }}
                     highlightEntities={highlightEntities}
                     searchQuery={searchQuery}
                   />

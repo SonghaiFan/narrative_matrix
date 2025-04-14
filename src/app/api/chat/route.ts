@@ -29,18 +29,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { messages, events, selectedEventId } = await request.json();
+    const { messages, events, focusedEventId } = await request.json();
 
     // Prepare the system message with context about the narrative
     const systemMessage = {
       role: "system",
       content: `You are an AI assistant helping users analyze a narrative. 
       You have access to a list of narrative events. 
-      ${
-        selectedEventId
-          ? `The user has selected event #${selectedEventId}.`
-          : ""
-      }
+      ${focusedEventId ? `The user has selected event #${focusedEventId}.` : ""}
       ${
         events && events.length > 0
           ? `Here are the events in the narrative: ${JSON.stringify(events)}...`

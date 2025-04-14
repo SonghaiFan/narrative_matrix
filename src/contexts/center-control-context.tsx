@@ -17,9 +17,15 @@ interface CenterControlContextType {
   data: NarrativeMatrixData | null;
   setData: (data: NarrativeMatrixData) => void;
 
-  // Selected event state
-  selectedEventId: number | null;
-  setSelectedEventId: (id: number | null) => void;
+  // Focused event state
+  focusedEventId: number | null;
+  setfocusedEventId: (id: number | null) => void;
+
+  // Marked events state
+  markedEventIds: number[];
+  setMarkedEventIds: (ids: number[]) => void;
+  toggleMarkedEvent: (id: number) => void;
+  isEventMarked: (id: number) => boolean;
 
   // Selected entity state
   selectedEntityId: string | null;
@@ -61,7 +67,8 @@ export function CenterControlProvider({
   );
 
   // Selection states
-  const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+  const [focusedEventId, setfocusedEventId] = useState<number | null>(null);
+  const [markedEventIds, setMarkedEventIds] = useState<number[]>([]);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [selectedScenario, setSelectedScenario] = useState<ScenarioType | null>(
@@ -79,17 +86,36 @@ export function CenterControlProvider({
 
   // Get the currently selected event
   const getSelectedEvent = useCallback(() => {
-    if (!data || selectedEventId === null) return undefined;
-    return data.events.find((event) => event.index === selectedEventId);
-  }, [data, selectedEventId]);
+    if (!data || focusedEventId === null) return undefined;
+    return data.events.find((event) => event.index === focusedEventId);
+  }, [data, focusedEventId]);
 
   // Clear all selections
   const clearSelections = useCallback(() => {
-    setSelectedEventId(null);
+    setfocusedEventId(null);
     setSelectedEntityId(null);
     setSelectedTopic(null);
     // Don't clear scenario selection as it's a higher-level selection
   }, []);
+
+  // Toggle marked state for an event
+  const toggleMarkedEvent = useCallback((id: number) => {
+    setMarkedEventIds((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((eventId) => eventId !== id);
+      } else {
+        return [...prev, id];
+      }
+    });
+  }, []);
+
+  // Check if an event is marked
+  const isEventMarked = useCallback(
+    (id: number) => {
+      return markedEventIds.includes(id);
+    },
+    [markedEventIds]
+  );
 
   const value = {
     // Data state
@@ -97,8 +123,12 @@ export function CenterControlProvider({
     setData,
 
     // Selection states
-    selectedEventId,
-    setSelectedEventId,
+    focusedEventId,
+    setfocusedEventId,
+    markedEventIds,
+    setMarkedEventIds,
+    toggleMarkedEvent,
+    isEventMarked,
     selectedEntityId,
     setSelectedEntityId,
     selectedTopic,

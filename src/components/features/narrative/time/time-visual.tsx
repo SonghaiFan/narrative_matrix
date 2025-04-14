@@ -25,7 +25,13 @@ interface TimeVisualProps {
 }
 
 export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
-  const { selectedEventId, setSelectedEventId } = useCenterControl();
+  const {
+    focusedEventId,
+    setfocusedEventId,
+    markedEventIds,
+    toggleMarkedEvent,
+    isEventMarked,
+  } = useCenterControl();
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -33,30 +39,35 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
   const selectedNodeRef = useRef<SVGRectElement | null>(null);
   const { showTooltip, hideTooltip, updatePosition } = useTooltip();
 
-  // Function to update node styles based on selectedEventId
+  // Function to update node styles based on focusedEventId and markedEventIds
   const updateSelectedEventStyles = useCallback(() => {
     if (!svgRef.current) return;
 
     // Reset all points to default style
     d3.select(svgRef.current)
       .selectAll(".point")
-      .attr("stroke", "black")
-      .attr("stroke-width", TIME_CONFIG.point.strokeWidth);
+      .attr("stroke", (d: any) => {
+        const eventIndex = d.event.index;
+        return isEventMarked(eventIndex)
+          ? TIME_CONFIG.highlight.color
+          : "black";
+      })
+      .attr("stroke-width", (d: any) => {
+        const eventIndex = d.event.index;
+        return isEventMarked(eventIndex) ? 2 : TIME_CONFIG.point.strokeWidth;
+      });
 
     // Get guide lines group
     const guideLines = d3.select(svgRef.current).select(".guide-lines");
 
-    // If we have a selected event, highlight it and show guide lines
-    if (selectedEventId !== null && selectedEventId !== undefined) {
+    // If we have a selected event, show guide lines
+    if (focusedEventId !== null && focusedEventId !== undefined) {
       // Find points with matching event index
       const selectedPoints = d3
         .select(svgRef.current)
-        .selectAll(`.point[data-event-index="${selectedEventId}"]`);
+        .selectAll(`.point[data-event-index="${focusedEventId}"]`);
 
       if (!selectedPoints.empty()) {
-        // Update point style
-        selectedPoints.attr("stroke", TIME_CONFIG.highlight.color);
-
         // Get the selected point's position
         const selectedPoint = selectedPoints.node() as SVGRectElement;
         const x = parseFloat(selectedPoint.getAttribute("x") || "0");
@@ -95,7 +106,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       // Hide guide lines when no point is selected
       guideLines.style("display", "none");
     }
-  }, [selectedEventId]);
+  }, [focusedEventId, markedEventIds, isEventMarked]);
 
   // Create and render lead titles
   const renderLeadTitles = useCallback(
@@ -322,9 +333,15 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
 
         // Click handler
         click(this: any, event: MouseEvent, d: any) {
-          setSelectedEventId(
-            d.event.index === selectedEventId ? null : d.event.index
+          setfocusedEventId(
+            d.event.index === focusedEventId ? null : d.event.index
           );
+        },
+
+        // Right-click handler
+        contextmenu(this: any, event: MouseEvent, d: any) {
+          event.preventDefault();
+          toggleMarkedEvent(d.event.index);
         },
       };
 
@@ -366,8 +383,10 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         .attr("fill", (d) =>
           getSentimentColor(d.event.topic.sentiment.polarity)
         )
-        .attr("stroke", "black")
-        .attr("stroke-width", TIME_CONFIG.point.strokeWidth)
+        .attr("stroke", (d) => (isEventMarked(d.event.index) ? "red" : "black"))
+        .attr("stroke-width", (d) =>
+          isEventMarked(d.event.index) ? 2 : TIME_CONFIG.point.strokeWidth
+        )
         .attr("stroke-dasharray", (d) => (d.hasRealTime ? "none" : "2,2"))
         .style("cursor", "pointer")
         .attr("data-event-index", (d) => d.event.index)
@@ -375,16 +394,27 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         .on("mouseenter", handleNodeInteraction.mouseEnter)
         .on("mousemove", handleNodeInteraction.mouseMove)
         .on("mouseleave", handleNodeInteraction.mouseLeave)
-        .on("click", handleNodeInteraction.click);
+        .on("click", handleNodeInteraction.click)
+        .on("contextmenu", handleNodeInteraction.contextmenu);
     },
     [
-      selectedEventId,
-      setSelectedEventId,
+      focusedEventId,
+      setfocusedEventId,
+      markedEventIds,
+      toggleMarkedEvent,
+      isEventMarked,
       showTooltip,
       hideTooltip,
       updatePosition,
     ]
   );
+
+  // Function to handle background click
+  const handleBackgroundClick = useCallback(() => {
+    // Deselect any selected event
+    setfocusedEventId(null);
+    hideTooltip();
+  }, [setfocusedEventId, hideTooltip]);
 
   // Function to update the visualization
   const updateVisualization = useCallback(() => {
@@ -523,18 +553,35 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       publishX
     );
 
+    // Add background click handler
+    svg.on("click", function (e) {
+      // Check if the click was on the background (not on any event node)
+      const target = e.target as SVGElement;
+      if (target.tagName === "svg" || target.classList.contains("background")) {
+        handleBackgroundClick();
+      }
+    });
+
     // Apply selection if it exists
-    if (selectedEventId !== null && selectedEventId !== undefined) {
+    if (focusedEventId !== null && focusedEventId !== undefined) {
       updateSelectedEventStyles();
     }
   }, [
     events,
     metadata,
-    selectedEventId,
+    focusedEventId,
+    setfocusedEventId,
+    showTooltip,
+    hideTooltip,
+    updatePosition,
+    markedEventIds,
+    isEventMarked,
+    toggleMarkedEvent,
     updateSelectedEventStyles,
     renderLeadTitles,
     renderGuideLines,
     handlePointInteractions,
+    handleBackgroundClick,
   ]);
 
   // Apply selection styles when selection changes
@@ -542,7 +589,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     if (svgRef.current) {
       updateSelectedEventStyles();
     }
-  }, [selectedEventId, updateSelectedEventStyles]);
+  }, [focusedEventId, updateSelectedEventStyles]);
 
   // Initial setup and resize handling
   useEffect(() => {
