@@ -200,6 +200,114 @@ export function EntityVisual({ events }: EntityVisualProps) {
     hideTooltip();
   }, [setfocusedEventId, setSelectedTrackId, hideTooltip]);
 
+  // Create header for entity labels
+  const updateHeader = (
+    headerRef: HTMLDivElement,
+    allEntities: any[],
+    xScale: d3.ScaleBand<string>,
+    totalColumnsWidth: number,
+    selectedTrackId: string | null
+  ) => {
+    const headerWidth =
+      totalColumnsWidth +
+      ENTITY_CONFIG.margin.left +
+      ENTITY_CONFIG.margin.right;
+
+    // Select or create the header container
+    const headerContainer = d3
+      .select(headerRef)
+      .style("width", `${headerWidth}px`);
+
+    // Select or create the header content container
+    let headerContent =
+      headerContainer.select<HTMLDivElement>(".header-content");
+
+    if (headerContent.empty()) {
+      headerContent = headerContainer
+        .append("div")
+        .attr("class", "header-content")
+        .style("position", "relative")
+        .style("margin-left", `${ENTITY_CONFIG.margin.left}px`);
+    }
+
+    headerContent.style("width", `${totalColumnsWidth}px`);
+
+    // Bind data to entity labels
+    const labelContainers = headerContent
+      .selectAll<HTMLDivElement, any>(".entity-label-container")
+      .data(allEntities, (d: any) => d.id);
+
+    // Remove old labels
+    labelContainers
+      .exit()
+      .transition()
+      .duration(500)
+      .style("opacity", 0)
+      .remove();
+
+    // Create new labels
+    const enterLabelContainers = labelContainers
+      .enter()
+      .append("div")
+      .attr(
+        "class",
+        "entity-label-container absolute -translate-x-1/2 cursor-pointer"
+      )
+      .style("opacity", 0)
+      .style("left", (d) => `${xScale(d.id)! + xScale.bandwidth() / 2}px`)
+      .style("max-width", `${xScale.bandwidth()}px`)
+      .on("click", (event, d) => {
+        setSelectedTrackId(selectedTrackId === d.id ? null : d.id);
+      });
+
+    // Add text to new labels
+    enterLabelContainers
+      .append("div")
+      .attr("class", (d) => {
+        return [
+          "font-semibold",
+          "text-xs",
+          selectedTrackId === d.id ? "text-blue-600" : "text-gray-700",
+          "text-center",
+          "break-words",
+          "leading-tight",
+          "line-clamp-3",
+          "transition-colors",
+          "duration-200",
+          "hover:text-blue-600",
+        ].join(" ");
+      })
+      .attr("title", (d) => d.name)
+      .text((d) => d.name);
+
+    // Merge enter + update selections
+    const allLabelContainers = labelContainers.merge(enterLabelContainers);
+
+    // Update all labels with transitions
+    allLabelContainers
+      .transition()
+      .duration(500)
+      .style("opacity", 1)
+      .style("left", (d) => `${xScale(d.id)! + xScale.bandwidth() / 2}px`)
+      .style("max-width", `${xScale.bandwidth()}px`);
+
+    // Update text color for selection state
+    allLabelContainers.select("div").attr("class", (d) => {
+      return [
+        "font-semibold",
+        "text-xs",
+        selectedTrackId === d.id ? "text-blue-600" : "text-gray-700",
+        "text-center",
+        "break-words",
+        "leading-tight",
+        "line-clamp-3",
+        "transition-colors",
+        "duration-200",
+        "hover:text-blue-600",
+      ].join(" ");
+    });
+  };
+
   // Function to update the visualization
   const updateVisualization = useCallback(() => {
     if (
@@ -214,9 +322,8 @@ export function EntityVisual({ events }: EntityVisualProps) {
     const currentSelection = focusedEventId;
     const currentTrackSelection = selectedTrackId;
 
-    // Clear previous content
+    // Clear previous content for SVG but not header
     d3.select(svgRef.current).selectAll("*").remove();
-    d3.select(headerRef.current).selectAll("*").remove();
 
     // Setup dimensions first
     const { containerHeight, height } = getEntityDimensions(
@@ -244,62 +351,24 @@ export function EntityVisual({ events }: EntityVisualProps) {
     const yScale = createYScale(events, height);
     const yAxis = createYAxis(yScale);
 
-    // Create fixed header for entity labels
-    const headerWidth =
-      totalColumnsWidth +
-      ENTITY_CONFIG.margin.left +
-      ENTITY_CONFIG.margin.right;
-
-    const headerContainer = d3
-      .select(headerRef.current)
-      .style("width", `${headerWidth}px`);
-
-    // Create header content container with proper margin
-    const headerContent = headerContainer
-      .append("div")
-      .style("position", "relative")
-      .style("margin-left", `${ENTITY_CONFIG.margin.left}px`)
-      .style("width", `${totalColumnsWidth}px`);
-
-    // Create entity labels in the fixed header
-    allEntities.forEach((entity) => {
-      const x = xScale(entity.id)! + xScale.bandwidth() / 2;
-
-      const labelContainer = headerContent
-        .append("div")
-        .attr("class", "absolute -translate-x-1/2 cursor-pointer")
-        .style("left", `${x}px`)
-        .style("max-width", `${xScale.bandwidth()}px`)
-        .on("click", () => {
-          setSelectedTrackId(selectedTrackId === entity.id ? null : entity.id);
-        });
-
-      // Show only the entity name with text wrapping
-      labelContainer
-        .append("div")
-        .attr(
-          "class",
-          [
-            "font-semibold",
-            `text-xs`,
-            selectedTrackId === entity.id ? "text-blue-600" : "text-gray-700",
-            "text-center",
-            "break-words",
-            "leading-tight",
-            "line-clamp-3",
-            "transition-colors",
-            "duration-200",
-            "hover:text-blue-600",
-          ].join(" ")
-        )
-        .attr("title", entity.name)
-        .text(entity.name);
-    });
+    // Update header with entity labels using D3 pattern
+    updateHeader(
+      headerRef.current,
+      allEntities,
+      xScale,
+      totalColumnsWidth,
+      selectedTrackId
+    );
 
     // Create SVG with proper dimensions
     const svg = d3
       .select(svgRef.current)
-      .attr("width", headerWidth)
+      .attr(
+        "width",
+        totalColumnsWidth +
+          ENTITY_CONFIG.margin.left +
+          ENTITY_CONFIG.margin.right
+      )
       .attr("height", containerHeight)
       .style("overflow", "visible");
 
