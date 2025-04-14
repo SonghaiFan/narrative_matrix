@@ -81,8 +81,12 @@ export function TaskPanel({
   sessionTimeLimit = 1800, // 30 minutes default
 }: TaskPanelProps) {
   const router = useRouter();
-  const { markedEventIds, toggleMarkedEvent, isEventMarked } =
-    useCenterControl();
+  const {
+    markedEventIds,
+    toggleMarkedEvent,
+    isEventMarked,
+    setfocusedEventId,
+  } = useCenterControl();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -714,6 +718,11 @@ export function TaskPanel({
     toggleMarkedEvent(eventId);
   };
 
+  // Add this function to focus on a specific event
+  const handleFocusEvent = (eventId: number) => {
+    setfocusedEventId(eventId);
+  };
+
   // Add this function to render event references as clickable links
   const renderEventReferences = (eventRef: number | number[] | null) => {
     if (!eventRef) return null;
@@ -723,7 +732,7 @@ export function TaskPanel({
       <React.Fragment key={`event-${id}`}>
         {index > 0 && ", "}
         <button
-          onClick={() => handleEventReferenceClick(id)}
+          onClick={() => handleFocusEvent(id)}
           className="text-blue-600 hover:underline font-medium px-1 py-0.5 rounded bg-blue-50 hover:bg-blue-100 transition-colors"
         >
           [Event #{id}]
@@ -947,11 +956,15 @@ export function TaskPanel({
                           markedEventIds.map((eventId) => (
                             <div
                               key={eventId}
-                              className="flex items-center gap-1 text-xs text-blue-600 bg-white px-3 py-1.5 rounded-md border border-blue-300"
+                              className="flex items-center gap-1 text-xs text-blue-600 bg-white px-3 py-1.5 rounded-md border border-blue-300 cursor-pointer hover:bg-blue-50"
+                              onClick={() => handleFocusEvent(eventId)}
                             >
                               <span>Event #{eventId}</span>
                               <button
-                                onClick={() => toggleMarkedEvent(eventId)}
+                                onClick={(e) => {
+                                  e.stopPropagation(); // Prevent triggering parent onClick
+                                  toggleMarkedEvent(eventId);
+                                }}
                                 className="ml-2 text-blue-400 hover:text-blue-600"
                               >
                                 <X className="h-3 w-3" />
