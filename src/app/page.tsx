@@ -139,7 +139,7 @@ export default function Home() {
                   </h3>
                   <p className="text-gray-600">
                     If you have questions about this research, please contact
-                    the research team at research@example.com.
+                    the research team at songhai.fan@moansh.edu.
                   </p>
                 </section>
 
