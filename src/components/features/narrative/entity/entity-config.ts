@@ -14,9 +14,9 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     columnGap: 10, // Gap between entity columns
   },
   event: {
-    connectorStrokeWidth: 2,
-    hoverConnectorStrokeWidth: 12, // Stroke width when hovering
-    innerConnectorScale: 0.85, // Scale factor for inner connector
+    connectorStrokeWidth: 1,
+    hoverConnectorStrokeWidth: 10, // Stroke width when hovering
+    innerConnectorScale: 0.9, // Scale factor for inner connector
   },
   // Metro track styling
   // Controls the appearance and behavior of the metro-style paths
@@ -135,8 +135,8 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For flexible tracks: 0.05, 0.3
     // For balanced: 0.1, 0.5 (current)
     // For legacy behavior: 0, 0 (no x-force)
-    xForceBase: 0.2, // Base strength for x-force (keeping nodes in their columns)
-    xForceMax: 1, // Maximum x-force strength
+    xForceBase: 0, // Base strength for x-force (keeping nodes in their columns)
+    xForceMax: 0, // Maximum x-force strength
 
     // Horizontal Link Parameters (Controls Same-Time Connections)
     // Range: 0.0 to 3.0
@@ -145,7 +145,7 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For balanced: 0.5, 2.0 (current)
     // For legacy behavior: 2.0, 2.0 (fixed strong horizontal links)
     horizontalLinkBase: 0, // Base strength for horizontal links (same narrative time)
-    horizontalLinkMax: 3, // Maximum horizontal link strength
+    horizontalLinkMax: 0, // Maximum horizontal link strength
 
     // Vertical Link Parameter (Controls Time-Based Connections)
     // Range: 0.0 to 1.0
@@ -179,7 +179,7 @@ export const ENTITY_CONFIG = merge({}, SHARED_CONFIG, {
     // For stable layout: 600 (current)
     // For very stable layout: 1000
     // For legacy behavior: 300 (faster simulation)
-    iterations: 600, // Number of simulation iterations
+    iterations: 100, // Number of simulation iterations
 
     // Common Scenarios:
     // 1. Very Rigid Tracks:

@@ -86,6 +86,7 @@ export function TaskPanel({
     toggleMarkedEvent,
     isEventMarked,
     setfocusedEventId,
+    clearMarkedEvents,
   } = useCenterControl();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
@@ -332,7 +333,20 @@ export function TaskPanel({
       setTimeLeft((prev) => {
         if (prev === null) return null;
 
-        // Show warning when 20 seconds remain, but only if not already shown for this task
+        // For domain users, simply count down without triggering warnings or actions
+        if (userRole === "domain") {
+          if (prev <= 1) {
+            // Just stop at 0 without triggering actions
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+              timerRef.current = null;
+            }
+            return 0;
+          }
+          return prev - 1;
+        }
+
+        // Regular timer behavior for non-domain users
         if (prev === 20 && !warningShownRef.current) {
           warningShownRef.current = true; // Mark warning as shown for this task
           setShowTimeWarningModal(true);
@@ -359,7 +373,7 @@ export function TaskPanel({
         return prev - 1;
       });
     }, 1000);
-  }, []);
+  }, [userRole]);
 
   // Reset timer when current task changes
   useEffect(() => {
@@ -388,6 +402,19 @@ export function TaskPanel({
       setTimeLeft((prev) => {
         if (prev === null) return null;
 
+        // For domain users, just count down without triggering actions
+        if (userRole === "domain") {
+          if (prev <= 1) {
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+              timerRef.current = null;
+            }
+            return 0;
+          }
+          return prev - 1;
+        }
+
+        // For non-domain users, regular behavior with auto-submission
         if (prev <= 1) {
           // Clear the interval immediately to prevent multiple calls
           if (timerRef.current) {
@@ -405,7 +432,7 @@ export function TaskPanel({
         return prev - 1;
       });
     }, 1000);
-  }, [timeLeft]);
+  }, [timeLeft, userRole]);
 
   // Function to handle closing the time warning modal
   const handleCloseTimeWarning = useCallback(() => {
@@ -420,10 +447,10 @@ export function TaskPanel({
     handleTimeUp();
   }, []);
 
-  // Function to handle when question time is up
+  // Function to handle when question time is up (only for non-domain users)
   const handleTimeUp = () => {
-    if (currentTask && !currentTask.completed) {
-      // Auto-submit the answer when time is up
+    if (currentTask && !currentTask.completed && userRole !== "domain") {
+      // Auto-submit the answer when time is up (only for non-domain users)
       processSubmission(false, true);
     }
   };
@@ -438,11 +465,20 @@ export function TaskPanel({
       .padStart(2, "0")}`;
   };
 
-  // Get color for the timer based on time remaining
+  // Get color for the timer based on time remaining (modify to be less alarming for domain users)
   const getTimerColor = () => {
     if (timeLeft === null || !currentTask?.timeLimit)
       return "bg-gray-50 text-gray-600 border-gray-200";
 
+    // For domain users, use a more subtle color scheme without animation
+    if (userRole === "domain") {
+      if (timeLeft <= 20) {
+        return "bg-blue-50 text-blue-700 border-blue-200";
+      }
+      return "bg-blue-50 text-blue-600 border-blue-100";
+    }
+
+    // Regular color scheme for non-domain users
     if (timeLeft <= 20) {
       return "bg-red-50 text-red-600 border-red-200 animate-pulse";
     }
@@ -454,6 +490,9 @@ export function TaskPanel({
 
   const handlePrevious = () => {
     if (currentTaskIndex > 0) {
+      // Clear all marked events when moving to a different task
+      clearMarkedEvents();
+
       setCurrentTaskIndex(currentTaskIndex - 1);
       setShowAnswer(false);
       setUserAnswer(tasks[currentTaskIndex - 1].userAnswer || "");
@@ -462,6 +501,9 @@ export function TaskPanel({
 
   const handleNext = () => {
     if (currentTaskIndex < tasks.length - 1) {
+      // Clear all marked events when moving to a different task
+      clearMarkedEvents();
+
       setCurrentTaskIndex(currentTaskIndex + 1);
       setShowAnswer(false);
       setUserAnswer(tasks[currentTaskIndex + 1].userAnswer || "");
@@ -596,7 +638,15 @@ export function TaskPanel({
       } else {
         // Otherwise, move to the next task after a short delay
         setTimeout(() => {
-          handleNext();
+          // Move to next task (which will also clear marked events)
+          if (currentTaskIndex < tasks.length - 1) {
+            setCurrentTaskIndex(currentTaskIndex + 1);
+            setShowAnswer(false);
+            setUserAnswer(tasks[currentTaskIndex + 1].userAnswer || "");
+            // Clear marked events
+            clearMarkedEvents();
+          }
+
           setUserAnswer("");
           setShowAnswer(false);
           setIsSubmitting(false);
@@ -861,7 +911,7 @@ export function TaskPanel({
               {/* Question header with cognitive level and tips */}
               <div className="bg-white border rounded-lg overflow-hidden">
                 {/* Cognitive level badge */}
-                {currentTask.level && (
+                {isDomainExpert && currentTask.level && (
                   <div className="px-3 py-2 border-b bg-gray-50">
                     <div
                       className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] ${getLevelColor(

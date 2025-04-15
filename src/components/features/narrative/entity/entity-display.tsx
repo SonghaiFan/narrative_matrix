@@ -13,14 +13,6 @@ import {
 } from "@/components/ui/select";
 import { SHARED_CONFIG } from "../shared/visualization-config";
 
-// Helper function to format attribute labels
-const formatAttributeLabel = (attr: string): string => {
-  return attr
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-};
-
 type EntityAttribute = string;
 
 interface EntityDisplayProps {

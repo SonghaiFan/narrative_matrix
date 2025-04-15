@@ -64,6 +64,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
           : ENTITY_CONFIG.point.strokeWidth;
       });
 
+    // Update all outer connectors for marked events
     d3.select(svgRef.current)
       .selectAll(".connector-outer")
       .attr("stroke", function () {
@@ -71,6 +72,14 @@ export function EntityVisual({ events }: EntityVisualProps) {
         return isEventMarked(Number(eventIndex))
           ? ENTITY_CONFIG.highlight.color
           : "black";
+      })
+      .attr("stroke-width", function () {
+        const eventIndex = d3.select(this).attr("data-event-index");
+        return isEventMarked(Number(eventIndex))
+          ? ENTITY_CONFIG.event.connectorStrokeWidth +
+              ENTITY_CONFIG.point.strokeWidth * 1.5
+          : ENTITY_CONFIG.event.connectorStrokeWidth +
+              ENTITY_CONFIG.point.strokeWidth * 1.25;
       });
   }, [isEventMarked]);
 
@@ -188,12 +197,31 @@ export function EntityVisual({ events }: EntityVisualProps) {
   const handleContextMenu = useCallback(
     (event: MouseEvent, d: any) => {
       event.preventDefault();
-      const eventIndex = d.event?.index;
+
+      // Get event index from either the passed data or from the current context
+      const eventIndex = d?.event?.index || d;
       if (eventIndex !== undefined) {
         toggleMarkedEvent(eventIndex);
+
+        // Get the event group from the DOM hierarchy
+        const currentGroup = d3.select(event.currentTarget as SVGElement);
+
+        // Update connector styling immediately
+        const isNowMarked = !isEventMarked(eventIndex);
+        currentGroup
+          .selectAll(".connector-outer")
+          .attr("stroke", isNowMarked ? ENTITY_CONFIG.highlight.color : "black")
+          .attr(
+            "stroke-width",
+            isNowMarked
+              ? ENTITY_CONFIG.event.connectorStrokeWidth +
+                  ENTITY_CONFIG.point.strokeWidth * 1.5
+              : ENTITY_CONFIG.event.connectorStrokeWidth +
+                  ENTITY_CONFIG.point.strokeWidth * 1.25
+          );
       }
     },
-    [toggleMarkedEvent]
+    [toggleMarkedEvent, isEventMarked]
   );
 
   // Function to handle background click
@@ -544,8 +572,8 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
         // Add context menu handler
         eventGroup.on("contextmenu", function (e: MouseEvent) {
-          e.preventDefault();
-          toggleMarkedEvent(event.index);
+          // Call the centralized handler with the event index
+          handleContextMenu(e, event.index);
         });
       }
     });
@@ -592,6 +620,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
     updateSelectedEventStyles,
     updateSelectedTrackStyles,
     handleBackgroundClick,
+    handleContextMenu,
   ]);
 
   // Initial setup and cleanup with resize observer

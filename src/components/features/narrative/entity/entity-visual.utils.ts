@@ -580,9 +580,10 @@ export function createConnector(
   y2: number,
   className: string,
   stroke: string,
-  strokeWidth: number
+  strokeWidth: number,
+  eventIndex?: number
 ) {
-  return parent
+  const connector = parent
     .append("line")
     .attr("class", className)
     .attr("x1", x1)
@@ -592,6 +593,13 @@ export function createConnector(
     .attr("stroke", stroke)
     .attr("stroke-width", strokeWidth)
     .attr("stroke-linecap", "round");
+
+  // Add event index as data attribute for outer connectors
+  if (className === "connector-outer" && eventIndex !== undefined) {
+    connector.attr("data-event-index", eventIndex);
+  }
+
+  return connector;
 }
 
 // Helper function to get event from node ID
@@ -1104,7 +1112,8 @@ export function drawLinkConnectors(
       "connector-outer",
       "#000",
       ENTITY_CONFIG.event.connectorStrokeWidth +
-        ENTITY_CONFIG.point.strokeWidth * 1.25
+        ENTITY_CONFIG.point.strokeWidth * 1.25,
+      sourceEventId
     );
 
     createConnector(
@@ -1116,7 +1125,8 @@ export function drawLinkConnectors(
       "connector-outer",
       "#000",
       ENTITY_CONFIG.event.connectorStrokeWidth +
-        ENTITY_CONFIG.point.strokeWidth * 1.25
+        ENTITY_CONFIG.point.strokeWidth * 1.25,
+      targetEventId
     );
   } else {
     // Add inner connector to both groups
@@ -1133,7 +1143,8 @@ export function drawLinkConnectors(
       targetNode.y,
       "connector-inner",
       connectorColor,
-      ENTITY_CONFIG.event.connectorStrokeWidth * 0.85
+      ENTITY_CONFIG.event.connectorStrokeWidth * 0.85,
+      sourceEventId
     );
 
     createConnector(
@@ -1144,7 +1155,8 @@ export function drawLinkConnectors(
       targetNode.y,
       "connector-inner",
       connectorColor,
-      ENTITY_CONFIG.event.connectorStrokeWidth * 0.85
+      ENTITY_CONFIG.event.connectorStrokeWidth * 0.85,
+      targetEventId
     );
   }
 }

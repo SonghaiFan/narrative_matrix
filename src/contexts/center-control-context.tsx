@@ -26,6 +26,7 @@ interface CenterControlContextType {
   setMarkedEventIds: (ids: number[]) => void;
   toggleMarkedEvent: (id: number) => void;
   isEventMarked: (id: number) => boolean;
+  clearMarkedEvents: () => void;
 
   // Selected entity state
   selectedEntityId: string | null;
@@ -109,6 +110,11 @@ export function CenterControlProvider({
     });
   }, []);
 
+  // Clear all marked events
+  const clearMarkedEvents = useCallback(() => {
+    setMarkedEventIds([]);
+  }, []);
+
   // Check if an event is marked
   const isEventMarked = useCallback(
     (id: number) => {
@@ -129,6 +135,7 @@ export function CenterControlProvider({
     setMarkedEventIds,
     toggleMarkedEvent,
     isEventMarked,
+    clearMarkedEvents,
     selectedEntityId,
     setSelectedEntityId,
     selectedTopic,

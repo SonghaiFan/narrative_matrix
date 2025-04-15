@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import {
   Panel,
   PanelGroup,
@@ -15,6 +15,7 @@ interface ResizableGridProps {
   bottomLeft: React.ReactNode;
   bottomRight: React.ReactNode;
   className?: string;
+  defaultExpanded?: "entity" | "topic" | "time";
 }
 
 export function ResizableGrid({
@@ -23,6 +24,7 @@ export function ResizableGrid({
   bottomLeft,
   bottomRight,
   className = "",
+  defaultExpanded,
 }: ResizableGridProps) {
   // Panel configuration with proportions matching the screenshot
   // These values must add up to exactly 100
@@ -61,6 +63,103 @@ export function ResizableGrid({
   const rightPanelGroupRef = useRef<ImperativePanelGroupHandle>(null);
   const horizontalPanelGroupRef = useRef<ImperativePanelGroupHandle>(null);
 
+  // Handle expand button clicks
+  const handleExpand = useCallback(
+    (section: "topRight" | "bottomLeft" | "bottomRight") => {
+      // If clicking the same section that's already expanded, restore default layout
+      if (expandedSection === section) {
+        // Restore default layout
+        horizontalPanelGroupRef.current?.setLayout([
+          DEFAULT_LEFT_WIDTH,
+          100 - DEFAULT_LEFT_WIDTH,
+        ]);
+        leftPanelGroupRef.current?.setLayout([
+          DEFAULT_TOP_HEIGHT,
+          100 - DEFAULT_TOP_HEIGHT,
+        ]);
+        rightPanelGroupRef.current?.setLayout([
+          DEFAULT_TOP_HEIGHT,
+          100 - DEFAULT_TOP_HEIGHT,
+        ]);
+        setExpandedSection(null);
+        // Hide all resize handles when no section is expanded
+        setVisibleHandles({
+          horizontal: false,
+          verticalLeft: false,
+          verticalRight: false,
+        });
+        return;
+      }
+
+      // Otherwise, expand the clicked section while keeping top left visible
+      switch (section) {
+        case "topRight":
+          // Expand right column and top section to full, keeping top left visible and full height
+          horizontalPanelGroupRef.current?.setLayout([
+            DEFAULT_LEFT_WIDTH,
+            100 - DEFAULT_LEFT_WIDTH,
+          ]);
+          leftPanelGroupRef.current?.setLayout([100, 0]); // Make top left full height
+          rightPanelGroupRef.current?.setLayout([100, 0]);
+          // Show only horizontal resize handle
+          setVisibleHandles({
+            horizontal: true,
+            verticalLeft: false,
+            verticalRight: false,
+          });
+          break;
+        case "bottomLeft":
+          // Expand left column and bottom section to full, keeping top left visible
+          horizontalPanelGroupRef.current?.setLayout([100, 0]);
+          leftPanelGroupRef.current?.setLayout([
+            DEFAULT_TOP_HEIGHT,
+            100 - DEFAULT_TOP_HEIGHT,
+          ]);
+          // Show only vertical left resize handle
+          setVisibleHandles({
+            horizontal: false,
+            verticalLeft: true,
+            verticalRight: false,
+          });
+          break;
+        case "bottomRight":
+          // Expand right column and bottom section to full, keeping top left visible and full height
+          horizontalPanelGroupRef.current?.setLayout([
+            DEFAULT_LEFT_WIDTH,
+            100 - DEFAULT_LEFT_WIDTH,
+          ]);
+          leftPanelGroupRef.current?.setLayout([100, 0]); // Make top left full height
+          rightPanelGroupRef.current?.setLayout([0, 100]);
+          // Show only horizontal resize handle
+          setVisibleHandles({
+            horizontal: true,
+            verticalLeft: false,
+            verticalRight: false,
+          });
+          break;
+      }
+      setExpandedSection(section);
+    },
+    [expandedSection]
+  );
+
+  // Handle default expansion on mount
+  useEffect(() => {
+    if (defaultExpanded) {
+      switch (defaultExpanded) {
+        case "entity":
+          handleExpand("bottomLeft");
+          break;
+        case "topic":
+          handleExpand("topRight");
+          break;
+        case "time":
+          handleExpand("bottomRight");
+          break;
+      }
+    }
+  }, [defaultExpanded, handleExpand]);
+
   // Handle panel layout changes with detailed logging
   const handleHorizontalLayoutChange = (sizes: number[]) => {
     setHorizontalSizes(sizes);
@@ -72,83 +171,6 @@ export function ResizableGrid({
 
   const handleRightVerticalLayoutChange = (sizes: number[]) => {
     setRightVerticalSizes(sizes);
-  };
-
-  // Handle expand button clicks
-  const handleExpand = (section: "topRight" | "bottomLeft" | "bottomRight") => {
-    // If clicking the same section that's already expanded, restore default layout
-    if (expandedSection === section) {
-      // Restore default layout
-      horizontalPanelGroupRef.current?.setLayout([
-        DEFAULT_LEFT_WIDTH,
-        100 - DEFAULT_LEFT_WIDTH,
-      ]);
-      leftPanelGroupRef.current?.setLayout([
-        DEFAULT_TOP_HEIGHT,
-        100 - DEFAULT_TOP_HEIGHT,
-      ]);
-      rightPanelGroupRef.current?.setLayout([
-        DEFAULT_TOP_HEIGHT,
-        100 - DEFAULT_TOP_HEIGHT,
-      ]);
-      setExpandedSection(null);
-      // Hide all resize handles when no section is expanded
-      setVisibleHandles({
-        horizontal: false,
-        verticalLeft: false,
-        verticalRight: false,
-      });
-      return;
-    }
-
-    // Otherwise, expand the clicked section while keeping top left visible
-    switch (section) {
-      case "topRight":
-        // Expand right column and top section to full, keeping top left visible and full height
-        horizontalPanelGroupRef.current?.setLayout([
-          DEFAULT_LEFT_WIDTH,
-          100 - DEFAULT_LEFT_WIDTH,
-        ]);
-        leftPanelGroupRef.current?.setLayout([100, 0]); // Make top left full height
-        rightPanelGroupRef.current?.setLayout([100, 0]);
-        // Show only horizontal resize handle
-        setVisibleHandles({
-          horizontal: true,
-          verticalLeft: false,
-          verticalRight: false,
-        });
-        break;
-      case "bottomLeft":
-        // Expand left column and bottom section to full, keeping top left visible
-        horizontalPanelGroupRef.current?.setLayout([100, 0]);
-        leftPanelGroupRef.current?.setLayout([
-          DEFAULT_TOP_HEIGHT,
-          100 - DEFAULT_TOP_HEIGHT,
-        ]);
-        // Show only vertical left resize handle
-        setVisibleHandles({
-          horizontal: false,
-          verticalLeft: true,
-          verticalRight: false,
-        });
-        break;
-      case "bottomRight":
-        // Expand right column and bottom section to full, keeping top left visible and full height
-        horizontalPanelGroupRef.current?.setLayout([
-          DEFAULT_LEFT_WIDTH,
-          100 - DEFAULT_LEFT_WIDTH,
-        ]);
-        leftPanelGroupRef.current?.setLayout([100, 0]); // Make top left full height
-        rightPanelGroupRef.current?.setLayout([0, 100]);
-        // Show only horizontal resize handle
-        setVisibleHandles({
-          horizontal: true,
-          verticalLeft: false,
-          verticalRight: false,
-        });
-        break;
-    }
-    setExpandedSection(section);
   };
 
   // Handle cross-section drag

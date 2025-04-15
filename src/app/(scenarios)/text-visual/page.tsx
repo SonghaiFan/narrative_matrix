@@ -8,7 +8,11 @@ import { TaskPanel } from "@/components/features/task/task-panel";
 import { ResizableGrid } from "@/components/ui/resizable-grid";
 import { ScenarioPageFactory } from "@/components/features/dashboard/scenario-page-factory";
 
-function VisualizationScenario() {
+function VisualizationScenario({
+  defaultExpanded,
+}: {
+  defaultExpanded?: "entity" | "topic" | "time";
+}) {
   return (
     <ScenarioPageFactory
       title="Text + Visualization"
@@ -33,6 +37,7 @@ function VisualizationScenario() {
                 bottomRight={renderPanel(
                   <TimeDisplay events={events} metadata={metadata} />
                 )}
+                defaultExpanded={defaultExpanded}
               />
             </div>
             <div className="bg-white rounded-lg shadow-sm overflow-hidden">
