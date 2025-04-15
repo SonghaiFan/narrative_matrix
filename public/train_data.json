@@ -39,7 +39,7 @@
         "completed": false,
         "type": "radio-options",
         "timeLimit": 10,
-        "prone": "text",
+        "prone": null,
         "event_reference": []
       },
       {

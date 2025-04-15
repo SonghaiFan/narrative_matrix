@@ -6,10 +6,11 @@ export type QuizLevel =
   | "Sanity Check";
 
 export type QuizType =
-  | "multiple-select"
   | "radio-options"
   | "numbered-sequence"
-  | "grid-matching";
+  | "grid-matching"
+  | "multiple-select"
+  | "single-input";
 
 export type QuizProne = "text" | "entity" | "topic" | "time" | null;
 
@@ -22,8 +23,12 @@ interface BaseQuizItem {
   type: QuizType;
   prone: QuizProne;
   event_reference: number | number[] | null;
-  timeLimit?: number; // Time limit in seconds
-  completionTime?: number; // Time taken to complete in seconds
+  timeLimit?: number;
+  completionTime?: number;
+  startTimestamp?: number;
+  submitTimestamp?: number;
+  userAnswer?: string;
+  userEventReference?: number | number[] | null;
 }
 
 export interface MultipleSelectQuiz extends BaseQuizItem {
@@ -39,10 +44,7 @@ export interface RadioOptionsQuiz extends BaseQuizItem {
 export interface NumberedSequenceQuiz extends BaseQuizItem {
   type: "numbered-sequence";
   options: {
-    events: Array<{
-      id: number;
-      text: string;
-    }>;
+    events: Array<{ id: number; text: string }>;
   };
 }
 

@@ -24,10 +24,13 @@ import {
   NumberedSequence,
   GridMatching,
   MultipleSelect,
+  QuizItem,
+  QuizType,
 } from "./quiz-types";
 import { useCenterControl } from "@/contexts/center-control-context";
 import React from "react";
 import { TextInput } from "./quiz-types/TextInput";
+import { useTaskStore } from "@/store/task-store";
 
 interface Task {
   id: string;
@@ -88,7 +91,7 @@ export function TaskPanel({
     setfocusedEventId,
     clearMarkedEvents,
   } = useCenterControl();
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<QuizItem[]>([]);
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [userAnswer, setUserAnswer] = useState("");
@@ -104,6 +107,7 @@ export function TaskPanel({
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const hasCalledTimeUp = useRef(false);
   const warningShownRef = useRef(false);
+  const setCurrentTask = useTaskStore((state) => state.setCurrentTask);
 
   const isDomainExpert = userRole === "domain";
 
@@ -159,33 +163,36 @@ export function TaskPanel({
       metadata.quiz.length > 0
     ) {
       // Use quiz questions from metadata and ensure type is set
-      const quizTasks: Task[] = metadata.quiz.map((q: any, index: number) => {
-        // Select appropriate default time limit based on question type
-        let defaultTimeLimit = 60; // Default 1 minute
-        if (q.type === "grid-matching")
-          defaultTimeLimit = 180; // 3 minutes for matching
-        else if (q.type === "numbered-sequence")
-          defaultTimeLimit = 120; // 2 minutes for sequencing
-        else if (q.type === "multiple-select") defaultTimeLimit = 90; // 1.5 minutes for multiple select
+      const quizTasks: QuizItem[] = metadata.quiz.map(
+        (q: any, index: number) => {
+          // Select appropriate default time limit based on question type
+          let defaultTimeLimit = 60; // Default 1 minute
+          if (q.type === "grid-matching")
+            defaultTimeLimit = 180; // 3 minutes for matching
+          else if (q.type === "numbered-sequence")
+            defaultTimeLimit = 120; // 2 minutes for sequencing
+          else if (q.type === "multiple-select") defaultTimeLimit = 90; // 1.5 minutes for multiple select
 
-        return {
-          id: q.id || String(index + 1),
-          level: q.level || "Information Retrieval",
-          question: q.question,
-          answer: q.answer,
-          type: q.type || "single-input",
-          options: q.options,
-          event_reference: q.event_reference || null,
-          timeLimit: q.timeLimit || defaultTimeLimit,
-          completed: false,
-        };
-      });
+          return {
+            id: q.id || String(index + 1),
+            level: q.level || "Information Retrieval",
+            question: q.question,
+            answer: q.answer,
+            type: q.type || "single-input",
+            options: q.options,
+            event_reference: q.event_reference || null,
+            timeLimit: q.timeLimit || defaultTimeLimit,
+            completed: false,
+            prone: q.prone || "text",
+          } as QuizItem;
+        }
+      );
       setTasks(quizTasks);
       return;
     }
 
     // If no quiz questions available in metadata, create auto-generated tasks
-    const generatedTasks: Task[] = [
+    const generatedTasks: QuizItem[] = [
       {
         id: "1",
         level: "Information Retrieval",
@@ -196,6 +203,8 @@ export function TaskPanel({
         ).toLocaleDateString(),
         completed: false,
         timeLimit: 60, // 1 minute for simple questions
+        prone: "text",
+        event_reference: null,
       },
       {
         id: "2",
@@ -211,6 +220,8 @@ export function TaskPanel({
         ],
         completed: false,
         timeLimit: 60, // 1 minute for simple questions
+        prone: "text",
+        event_reference: null,
       },
       {
         id: "3",
@@ -226,6 +237,8 @@ export function TaskPanel({
         ],
         completed: false,
         timeLimit: 60, // 1 minute for simple questions
+        prone: "text",
+        event_reference: null,
       },
       {
         id: "4",
@@ -241,6 +254,7 @@ export function TaskPanel({
           ),
         completed: false,
         timeLimit: 120, // 2 minutes for more complex questions
+        prone: "text",
       },
       {
         id: "5",
@@ -271,8 +285,9 @@ export function TaskPanel({
         },
         completed: false,
         timeLimit: 180, // 3 minutes for complex matching questions
+        prone: "text",
       },
-    ];
+    ] as QuizItem[];
 
     setTasks(generatedTasks);
   }, [events, metadata, is_training]);
@@ -300,6 +315,13 @@ export function TaskPanel({
   }, [currentTaskIndex, tasks]);
 
   const currentTask = tasks[currentTaskIndex];
+
+  // Update current task in store when task index changes
+  useEffect(() => {
+    if (currentTask) {
+      setCurrentTask(currentTask);
+    }
+  }, [currentTask, setCurrentTask]);
 
   // Function to start/reset the timer for the current question
   const resetQuestionTimer = useCallback(() => {
