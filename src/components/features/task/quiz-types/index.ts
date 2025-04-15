@@ -11,6 +11,8 @@ export type QuizType =
   | "numbered-sequence"
   | "grid-matching";
 
+export type QuizProne = "text" | "entity" | "topic" | "time" | null;
+
 interface BaseQuizItem {
   id: string;
   question: string;
@@ -18,6 +20,7 @@ interface BaseQuizItem {
   level: QuizLevel;
   completed: boolean;
   type: QuizType;
+  prone: QuizProne;
   event_reference: number | number[] | null;
   timeLimit?: number; // Time limit in seconds
   completionTime?: number; // Time taken to complete in seconds
