@@ -50,8 +50,15 @@ export function ScenarioSelector() {
     setIsLoading(true);
     setDataLoading(true);
     setUserScenario(selectedScenario);
-    setSelectedScenario(selectedScenario);
-    router.push("/text-visual/introduction");
+
+    // Extract the numeric ID from the scenario string (e.g., "text-visual-8" -> "8")
+    const scenarioNumericId = selectedScenario.replace("text-visual-", "");
+    // Construct the new dynamic route path
+    const dynamicRoute = `/text-visual/${scenarioNumericId}`;
+
+    console.log(`Navigating to dynamic route: ${dynamicRoute}`);
+    // Push to the dynamic route instead of the static introduction page
+    router.push(dynamicRoute);
   };
 
   if (availableScenarios.length === 0) {

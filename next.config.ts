@@ -9,6 +9,13 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+
+  // Removing redirects as they will be handled client-side for context awareness
+  // async redirects() {
+  //   return [
+  //     // ... redirects removed ...
+  //   ]
+  // },
 };
 
 export default nextConfig;

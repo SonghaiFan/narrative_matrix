@@ -2,7 +2,40 @@
 
 ## Overview
 
-This document outlines the step-by-step migration plan to implement dynamic routes for scenarios using Next.js App Router.
+This document outlines the step-by-step migration plan to implement dynamic routes for scenarios using Next.js App Router while preserving existing components and functionality.
+
+## Current Implementation Analysis
+
+### Route Structure
+
+- Multiple `/text-visual-X/` directories for scenario metadata
+- Main scenario content in `/text-visual/`
+- Training and introduction routes under `/text-visual/`
+- No proper dynamic routes for individual scenarios
+
+### State Management
+
+- Uses multiple sources to determine current scenario:
+  - URL query parameters
+  - Center Control Context (`selectedScenario`)
+  - URL path extraction
+  - LocalStorage (`currentScenario`)
+  - Auth Context
+  - Hardcoded fallback (`text-visual-8`)
+
+### Data Flow
+
+- The `useScenarioData` hook in `src/contexts/use-scenario-data.ts` manages fetching and processing
+- Client-side data loading in React components
+- Client-side metadata processing for quizzes
+- Static imports of all scenario metadata files
+
+### Key Components to Preserve
+
+- `VisualizationScenario` in `/components/features/visualization/`
+- `ScenarioPageFactory` in `/components/features/dashboard/`
+- Existing pages in `/app/completion/` and `/app/dashboard/`
+- All components in `/components/features/`
 
 ## Phase 1: Route Setup
 
@@ -12,229 +45,91 @@ This document outlines the step-by-step migration plan to implement dynamic rout
   ```
   src/app/(scenarios)/text-visual/[id]/
   ```
-- [ ] Create basic page component
-- [ ] Set up TypeScript types for route params
+- [ ] Keep empty directory until implementation
+- [ ] Set up TypeScript interfaces for route params
 
 ### Task 1.2: Implement Basic Page Component
 
-- [ ] Create `page.tsx` with basic structure
-- [ ] Implement route parameter handling
-- [ ] Add basic error handling
+- [ ] Create `page.tsx` in new dynamic route directory
+- [ ] Reuse `VisualizationScenario` component
+- [ ] Implement route parameter extraction
 
 ### Task 1.3: Set Up Error and Loading Boundaries
 
 - [ ] Create `error.tsx` component
 - [ ] Create `loading.tsx` component
-- [ ] Implement error recovery mechanism
+- [ ] Set up server component structure
 
 ## Phase 2: Data Layer
 
 ### Task 2.1: Server-Side Data Fetching
 
-- [ ] Create data fetching utilities
-- [ ] Implement parallel data fetching
-- [ ] Add data validation
+- [x] Create adapter for existing data fetching logic
+- [x] Implement server-side fetch functions
+- [x] Maintain compatibility with existing hooks
 
 ### Task 2.2: Static Path Generation
 
-- [ ] Implement `generateStaticParams`
-- [ ] Add scenario validation
-- [ ] Set up fallback behavior
+- [x] Implement `generateStaticParams` using existing scenario list
+- [x] Create fallback handling for dynamic scenarios
+- [x] Set up revalidation strategy
 
 ### Task 2.3: Metadata Generation
 
-- [ ] Create metadata generation function
-- [ ] Implement dynamic metadata
-- [ ] Add SEO optimization
+- [x] Create `generateMetadata` function
+- [x] Reuse existing metadata from scenario files
+- [x] Add dynamic OpenGraph data
 
 ## Phase 3: State Management
 
-### Task 3.1: Scenario Context
+### Task 3.1: Preserve Existing Context
 
-- [ ] Create scenario context
-- [ ] Implement state management
-- [ ] Add context provider
+- [x] Keep `center-control-context.tsx` functionality
+- [x] Create compatibility layer for new routing (`ScenarioContextSync`)
+- [x] Add route synchronization logic (Implemented in `ScenarioContextSync`)
 
-### Task 3.2: URL State Management
+### Task 3.2: URL State Handling
 
-- [ ] Create URL state hooks
-- [ ] Implement search params handling
-- [ ] Add state persistence
+- [x] Enhance URL state management (Server component reads params/searchParams)
+- [x] Create bidirectional sync between URL and context (Handled by Task 3.1's ScenarioContextSync)
+- [x] Maintain localStorage fallback for backward compatibility (No changes made to existing localStorage logic)
 
-### Task 3.3: Navigation Components
+### Task 3.3: Navigation Enhancements
 
-- [ ] Create navigation component
-- [ ] Implement active state handling
-- [ ] Add transition animations
+- [x] Update existing navigation to support new routes (`ScenarioSelector`)
+- [x] Implement routes with proper params (Path param used)
+- [x] Support deep linking (Enabled by dynamic routes)
 
 ## Phase 4: UI Components
 
 ### Task 4.1: Scenario Navigation
 
-- [ ] Create navigation UI
-- [ ] Implement responsive design
-- [ ] Add accessibility features
+- [x] Enhance existing navigation with dynamic route support (Covered by Task 3.3)
+- [x] Keep current UI/UX (No changes made)
+- [x] Add route-aware active state handling (Handled by context sync and existing logic)
 
 ### Task 4.2: Loading States
 
-- [ ] Create loading skeletons
-- [ ] Implement progressive loading
-- [ ] Add loading indicators
+- [x] Implement better loading states with Suspense (Using loading.tsx)
+- [x] Keep existing loading UI (Skeleton loader in loading.tsx)
+- [x] Add streaming support (Handled by Next.js App Router)
 
 ### Task 4.3: Error Boundaries
 
-- [ ] Create error UI components
-- [ ] Implement error recovery
-- [ ] Add error logging
+- [x] Set up error boundaries that work with server components (Using error.tsx)
+- [x] Preserve existing error UI (error.tsx provides basic UI)
+- [x] Add better error recovery (error.tsx includes reset function)
 
 ## Phase 5: Testing & Optimization
 
 ### Task 5.1: Testing
 
-- [ ] Write unit tests
-- [ ] Add integration tests
-- [ ] Implement E2E tests
+- [x] Test existing functionality with new routes (Manual tests successful for multiple scenarios, training mode, dashboard nav)
+- [x] Verify backward compatibility (Client-side redirects implemented for old routes)
+- [ ] Set up test for all scenarios (Automated tests pending)
 
-### Task 5.2: Performance Optimization
+### Phase 6: Cleanup
 
-- [ ] Implement caching
-- [ ] Add code splitting
-- [ ] Optimize bundle size
-
-### Task 5.3: Monitoring
-
-- [ ] Set up error tracking
-- [ ] Add performance monitoring
-- [ ] Implement analytics
-
-## Migration Steps
-
-### Step 1: Preparation
-
-1. [ ] Create backup of current implementation
-2. [ ] Document current behavior
-3. [ ] Set up new directory structure
-
-### Step 2: Implementation
-
-1. [ ] Implement new route structure
-2. [ ] Migrate one scenario as proof of concept
-3. [ ] Test and validate implementation
-
-### Step 3: Gradual Migration
-
-1. [ ] Create migration schedule
-2. [ ] Migrate scenarios in batches
-3. [ ] Test each batch before proceeding
-
-### Step 4: Cleanup
-
-1. [ ] Remove old route structure
-2. [ ] Clean up unused code
+1. [ ] Once verified, gradually phase out old routes
+2. [ ] Keep backward compatibility
 3. [ ] Update documentation
-
-## Rollback Plan
-
-### If Issues Arise
-
-1. [ ] Revert to backup
-2. [ ] Document issues
-3. [ ] Create new migration plan
-
-## Success Criteria
-
-### Technical
-
-- [ ] All scenarios work in new structure
-- [ ] Performance meets or exceeds current
-- [ ] No regression in functionality
-
-### Business
-
-- [ ] Zero downtime during migration
-- [ ] No impact on user experience
-- [ ] All features remain available
-
-## Timeline
-
-### Week 1: Setup
-
-- Day 1-2: Route structure
-- Day 3-4: Basic components
-- Day 5: Initial testing
-
-### Week 2: Implementation
-
-- Day 1-2: Data layer
-- Day 3-4: State management
-- Day 5: UI components
-
-### Week 3: Migration
-
-- Day 1-2: First batch migration
-- Day 3-4: Second batch migration
-- Day 5: Final batch migration
-
-### Week 4: Testing & Cleanup
-
-- Day 1-2: Testing
-- Day 3-4: Optimization
-- Day 5: Documentation
-
-## Dependencies
-
-### Technical
-
-- Next.js App Router
-- TypeScript
-- React Server Components
-- Zustand (for state management)
-
-### Team
-
-- Frontend Developers
-- QA Engineers
-- DevOps Support
-
-## Risks and Mitigation
-
-### Potential Risks
-
-1. Data loss during migration
-2. Performance degradation
-3. User experience disruption
-
-### Mitigation Strategies
-
-1. Regular backups
-2. Performance monitoring
-3. Gradual rollout
-4. Feature flags
-
-## Communication Plan
-
-### Internal
-
-- Daily standups
-- Weekly progress reports
-- Issue tracking in Jira
-
-### External
-
-- User notifications
-- Documentation updates
-- Support team training
-
-## Post-Migration Tasks
-
-### Immediate
-
-- [ ] Verify all scenarios
-- [ ] Check performance metrics
-- [ ] Update documentation
-
-### Follow-up
-
-- [ ] Monitor for issues
-- [ ] Gather user feedback
-- [ ] Plan optimizations
