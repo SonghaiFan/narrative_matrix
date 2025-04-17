@@ -240,7 +240,7 @@ export function TaskPanel({
           const trainingData = await loadDataFile<{ quiz: any[] }>(
             "train_quiz_data.json"
           );
-          console.log("[TaskPanel Quiz] Loaded training data:", trainingData);
+          // console.log("[TaskPanel Quiz] Loaded training data:", trainingData);
           finalTasks = processQuizData(trainingData?.quiz);
           if (!finalTasks || finalTasks.length === 0) {
             console.warn(
@@ -258,10 +258,10 @@ export function TaskPanel({
               quiz: any[];
               quiz_recall?: any[];
             }>("quiz_data.json");
-            console.log(
-              "[TaskPanel Quiz] Loaded primary quiz data:",
-              publicQuizData
-            );
+            // console.log(
+            //   "[TaskPanel Quiz] Loaded primary quiz data:",
+            //   publicQuizData
+            // );
             let combinedTasks = processQuizData(publicQuizData?.quiz);
             if (
               publicQuizData?.quiz_recall &&
@@ -273,20 +273,20 @@ export function TaskPanel({
               );
               combinedTasks.unshift(...recallTasks);
             }
-            console.log(
-              "[TaskPanel Quiz] Combined tasks from public file (before sort):",
-              combinedTasks
-            );
+            // console.log(
+            //   "[TaskPanel Quiz] Combined tasks from public file (before sort):",
+            //   combinedTasks
+            // );
             // Apply default sorting (or potentially a preference if needed)
             finalTasks = sortTasks(
               combinedTasks,
               metadata?.quiz_order_preference || "default"
             );
-            console.log(
-              `[TaskPanel Quiz] Sorting preference applied: ${
-                metadata?.quiz_order_preference || "default"
-              }`
-            );
+            // console.log(
+            //   `[TaskPanel Quiz] Sorting preference applied: ${
+            //     metadata?.quiz_order_preference || "default"
+            //   }`
+            // );
             if (!finalTasks || finalTasks.length === 0) {
               console.warn(
                 "[TaskPanel Quiz] public/quiz_data.json loaded but yielded no tasks. Will attempt fallback generation."
