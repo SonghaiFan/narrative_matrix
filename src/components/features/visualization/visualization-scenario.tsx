@@ -8,20 +8,20 @@ import { TaskPanel } from "@/components/features/task/task-panel";
 import { ResizableTwoColRow } from "@/components/ui/resizable-two-col-row";
 import { ScenarioPageFactory } from "@/components/features/dashboard/scenario-page-factory";
 import { useTaskStore } from "@/store/task-store";
-import { QuizProne } from "@/components/features/task/quiz-types";
+import { QuizVisual } from "@/components/features/task/quiz-types";
 import { NarrativeEvent, NarrativeMetadata } from "@/types/lite";
 import { Suspense } from "react";
 
 interface VisualizationContentProps {
   events: NarrativeEvent[];
   metadata: NarrativeMetadata;
-  prone: QuizProne | null;
+  visual: QuizVisual | null;
 }
 
 function VisualizationContent({
   events,
   metadata,
-  prone,
+  visual,
 }: VisualizationContentProps) {
   const renderPanel = (content: React.ReactNode) => (
     <div className="h-full bg-white border border-gray-200 shadow-sm">
@@ -30,7 +30,7 @@ function VisualizationContent({
   );
 
   const getLeftComponent = () => {
-    switch (prone) {
+    switch (visual) {
       case "entity":
         return renderPanel(<EntityDisplay events={events} />);
       case "topic":
@@ -64,7 +64,7 @@ export function VisualizationScenario({
   is_training = false,
 }: VisualizationScenarioProps) {
   const currentTask = useTaskStore((state) => state.currentTask);
-  const prone = currentTask?.prone || null;
+  const visual = currentTask?.visual || null;
 
   return (
     <ScenarioPageFactory
@@ -86,7 +86,7 @@ export function VisualizationScenario({
                 <VisualizationContent
                   events={events}
                   metadata={metadata}
-                  prone={prone}
+                  visual={visual}
                 />
               </Suspense>
             </div>

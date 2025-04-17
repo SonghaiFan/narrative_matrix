@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AppHeader } from "@/components/ui/app-header";
-import { ScenarioSelector } from "@/components/features/dashboard/scenario-selector";
+import { ScenarioSelector as DynamicScenarioSelector } from "@/components/features/dashboard/scenario-selector";
 import { UserDataViewer } from "@/components/features/dashboard/local-storage-viewer";
 import { useAuth } from "@/contexts/auth-context";
 import { useScenarioData } from "@/components/features/dashboard/use-scenario-data";
@@ -69,7 +69,10 @@ export default function Dashboard() {
       <AppHeader title="Domain Expert Dashboard" />
 
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <ScenarioSelector />
+        <div className="max-w-2xl mx-auto mb-8">
+          <DynamicScenarioSelector />
+        </div>
+
         <div className="mt-8">
           <UserDataViewer />
         </div>

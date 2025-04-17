@@ -1,3 +1,5 @@
+import { QuizItem } from "../components/features/task/quiz-types";
+
 export interface Entity {
   id: string; // Unique and unified entity ID
   name: string; // The name of the entity (person, organization, or abstract entity)
@@ -43,6 +45,7 @@ export interface NarrativeMetadata {
   author: string;
   publishDate: string;
   imageUrl?: string | null;
+  quiz?: QuizItem[]; // Quiz questions with proper type
 }
 
 export interface NarrativeMatrixData {

@@ -1,0 +1,24 @@
+{
+  "name": "Text with Visualizations 5",
+  "description": "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+  "icon": "BarChart3",
+  "color": "#0891B2",
+  "order": 2,
+  "quizOrder": {
+    "preferredOrder": [
+      "ir_t_n_",
+      "ir_t_v_",
+      "ir_e_n_",
+      "ir_e_v_",
+      "ir_tm_n_",
+      "ir_tm_v_",
+      "pr_t_n_",
+      "pr_t_v_",
+      "pr_e_n_",
+      "pr_e_v_",
+      "pr_tm_n_",
+      "pr_tm_v_"
+    ],
+    "description": "Order: IR first, PR second. Category order: topic, entity, time. Visual order: non-visual then visual."
+  }
+}

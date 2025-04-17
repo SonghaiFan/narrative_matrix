@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { hasCompletedTasks, getTaskProgress } from "@/lib/task-progress";
 
 export default function Home() {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading, availableScenarios } = useAuth();
   const router = useRouter();
   const [hasConsented, setHasConsented] = useState(false);
 
@@ -37,6 +37,18 @@ export default function Home() {
 
         // If not completed, redirect to their default scenario's introduction
         if (user.defaultScenario) {
+          // First check if the scenario exists in available scenarios
+          const scenarioExists = availableScenarios.some(
+            (s) => s.id === user.defaultScenario
+          );
+
+          // If the scenario exists, use it; otherwise use the first available scenario
+          const scenarioToUse = scenarioExists
+            ? user.defaultScenario
+            : availableScenarios.length > 0
+            ? availableScenarios[0].id
+            : "pure-text";
+
           // Map scenario types to their correct routes
           const routeMap = {
             "pure-text": "/pure-text/introduction",
@@ -45,15 +57,25 @@ export default function Home() {
             mixed: "/mixed/introduction",
           };
 
-          const defaultScenario = user.defaultScenario || "mixed";
-          router.push(routeMap[defaultScenario] || "/pure-text/introduction");
+          router.push(routeMap[scenarioToUse] || "/pure-text/introduction");
         } else {
-          // Fallback to pure-text if no default scenario
-          router.push("/pure-text/introduction");
+          // Fallback to first available scenario if no default scenario
+          const firstScenario =
+            availableScenarios.length > 0
+              ? availableScenarios[0].id
+              : "pure-text";
+          const routeMap = {
+            "pure-text": "/pure-text/introduction",
+            "text-visual": "/text-visual/introduction",
+            "text-chat": "/text-chat/introduction",
+            mixed: "/mixed/introduction",
+          };
+
+          router.push(routeMap[firstScenario] || "/pure-text/introduction");
         }
       }
     }
-  }, [isAuthenticated, isLoading, user, router]);
+  }, [isAuthenticated, isLoading, user, router, availableScenarios]);
 
   // Show loading state
   if (isLoading) {

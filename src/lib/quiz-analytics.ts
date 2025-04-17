@@ -6,11 +6,14 @@ interface QuizAnalytics {
   isCompleted: boolean;
   wasAutoSubmitted: boolean;
   timestamp: number;
+  userAnswer: string | string[] | null;
+  correctAnswer: string | string[];
 }
 
 export function trackQuizCompletion(
   quiz: QuizItem,
   completionTime: number,
+  userAnswer: string | string[] | null,
   wasAutoSubmitted = false
 ): QuizAnalytics {
   const analytics: QuizAnalytics = {
@@ -19,6 +22,8 @@ export function trackQuizCompletion(
     isCompleted: quiz.completed,
     wasAutoSubmitted,
     timestamp: Date.now(),
+    userAnswer,
+    correctAnswer: quiz.answer,
   };
 
   // Here you would typically send this data to your analytics service
@@ -27,12 +32,10 @@ export function trackQuizCompletion(
   return analytics;
 }
 
-export function calculateAverageCompletionTime(
-  analytics: QuizAnalytics[]
-): number {
+function calculateAverageCompletionTime(analytics: QuizAnalytics[]) {
   if (analytics.length === 0) return 0;
   const totalTime = analytics.reduce((sum, a) => sum + a.completionTime, 0);
-  return Math.round(totalTime / analytics.length);
+  return totalTime / analytics.length;
 }
 
 export function getQuizPerformanceMetrics(analytics: QuizAnalytics[]) {

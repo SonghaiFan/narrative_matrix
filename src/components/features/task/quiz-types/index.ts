@@ -12,6 +12,8 @@ export type QuizType =
   | "multiple-select"
   | "single-input";
 
+export type QuizVisual = "entity" | "topic" | "time" | null;
+
 export type QuizProne = "entity" | "topic" | "time" | null;
 
 interface BaseQuizItem {
@@ -22,6 +24,7 @@ interface BaseQuizItem {
   completed: boolean;
   type: QuizType;
   prone: QuizProne;
+  visual: QuizVisual;
   event_reference: number | number[] | null;
   timeLimit?: number;
   completionTime?: number;
@@ -65,7 +68,7 @@ export type QuizItem =
   | GridMatchingQuiz;
 
 export interface Quiz {
-  items: QuizItem[];
+  quiz: QuizItem[];
 }
 
 // Component exports

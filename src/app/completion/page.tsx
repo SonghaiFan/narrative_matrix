@@ -2,7 +2,6 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CompletionPage } from "@/components/features/task/completion-page";
 import { useAuth } from "@/contexts/auth-context";
 import { getTaskProgress } from "@/lib/task-progress";
 
@@ -18,8 +17,6 @@ function CompletionContent() {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showRecall, setShowRecall] = useState(false);
-  const [recallData, setRecallData] = useState<any>(null);
 
   useEffect(() => {
     // If user is not authenticated, redirect to login
@@ -95,32 +92,7 @@ function CompletionContent() {
       setError("Missing required parameters");
       setLoading(false);
     }
-
-    // Fetch recall quiz data
-    const fetchRecallData = async () => {
-      try {
-        const response = await fetch("/data.json");
-        const data = await response.json();
-        setRecallData(data.metadata.quiz_recall);
-        setShowRecall(true);
-      } catch (err) {
-        console.error("Error fetching recall data:", err);
-      }
-    };
-
-    fetchRecallData();
   }, [searchParams, user, router]);
-
-  const handleRestart = () => {
-    // For domain users, return to dashboard
-    if (user?.role === "domain") {
-      router.push("/dashboard");
-      return;
-    }
-
-    // For normal users, this is the end of the study
-    // They should see the completion page with no restart option
-  };
 
   // For domain experts, provide a way to return to dashboard
   const handleBackToDashboard = () => {
@@ -131,7 +103,10 @@ function CompletionContent() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="w-12 h-12 border-3 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-sm text-gray-600">Loading...</p>
+        </div>
       </div>
     );
   }
@@ -159,16 +134,36 @@ function CompletionContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <CompletionPage
-        totalTasks={pageData.totalTasks}
-        userRole={user?.role as "domain" | "normal"}
-        studyType={pageData.studyType}
-        sessionTime={pageData.sessionTime}
-        onRestart={user?.role === "domain" ? handleBackToDashboard : undefined}
-        showRecall={showRecall}
-        recallData={recallData}
-      />
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-3xl mx-auto px-4">
+        <div className="bg-white rounded-lg shadow p-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-6">
+            Task Completion
+          </h1>
+
+          {/* Display completion stats */}
+          <div className="mb-8 p-4 bg-blue-50 rounded-lg">
+            <h2 className="text-lg font-semibold text-blue-900 mb-2">
+              Your Progress
+            </h2>
+            <div className="text-sm text-blue-700">
+              <p>Total Questions: {searchParams.get("total") || "N/A"}</p>
+              <p>Study Type: {searchParams.get("type") || "N/A"}</p>
+              <p>Time Spent: {searchParams.get("time") || "N/A"} seconds</p>
+            </div>
+          </div>
+
+          {/* Navigation buttons */}
+          <div className="mt-8 flex justify-end space-x-4">
+            <button
+              onClick={() => router.push("/")}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              Return to Dashboard
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

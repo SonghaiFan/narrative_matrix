@@ -1,26 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/auth-context";
 
-// Mock users for quick reference
-const DEMO_ACCOUNTS = [
-  { name: "Domain Expert", username: "domain", role: "domain" },
-  { name: "Text User", username: "text", role: "normal" },
-  { name: "Visual+ User", username: "viz", role: "normal" },
-  { name: "Chat+ User", username: "textchat", role: "normal" },
-  { name: "Mixed User", username: "vizchat", role: "normal" },
-];
+// The accounts will be generated dynamically based on available scenarios
 
 export interface LoginFormProps {
   isDisabled?: boolean;
 }
 
+interface DemoAccount {
+  name: string;
+  username: string;
+  role: "domain" | "normal";
+}
+
 export function LoginForm({ isDisabled = false }: LoginFormProps) {
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const { login, isLoading, error: authError } = useAuth();
+  const { login, isLoading, error: authError, availableScenarios } = useAuth();
+  const [demoAccounts, setDemoAccounts] = useState<DemoAccount[]>([
+    { name: "Domain Expert", username: "domain", role: "domain" },
+  ]);
+
+  // Generate demo accounts based on available scenarios
+  useEffect(() => {
+    if (availableScenarios.length > 0) {
+      // Create demo account for each scenario
+      const scenarioAccounts = availableScenarios.map((scenario) => {
+        const userName = scenario.metadata.name
+          .replace(/\s+/g, "")
+          .toLowerCase();
+        return {
+          name: `${scenario.metadata.name} User`,
+          username: userName,
+          role: "normal" as const,
+        };
+      });
+
+      // Combine with domain expert account
+      setDemoAccounts([
+        { name: "Domain Expert", username: "domain", role: "domain" },
+        ...scenarioAccounts,
+      ]);
+    }
+  }, [availableScenarios]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,13 +55,9 @@ export function LoginForm({ isDisabled = false }: LoginFormProps) {
       return;
     }
 
-    if (!password.trim()) {
-      setError("Password is required");
-      return;
-    }
-
     try {
-      await login(username, password);
+      // Using a fixed password 'study' for all accounts
+      await login(username, "study");
     } catch (err) {
       // Error is handled by the auth context
     }
@@ -77,24 +97,6 @@ export function LoginForm({ isDisabled = false }: LoginFormProps) {
           />
         </div>
 
-        <div>
-          <label
-            htmlFor="password"
-            className="block text-xs font-medium text-gray-700 mb-1"
-          >
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            disabled={isLoading || isDisabled}
-            className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
-          />
-        </div>
-
         {(error || authError) && (
           <div className="p-2 bg-red-50 text-red-700 rounded text-xs">
             {error || authError}
@@ -117,13 +119,13 @@ export function LoginForm({ isDisabled = false }: LoginFormProps) {
           </div>
           <div className="relative flex justify-center">
             <span className="px-2 bg-gray-50 text-xs text-gray-500">
-              Demo Accounts
+              Quick Login
             </span>
           </div>
         </div>
 
         <div className="mt-2 grid grid-cols-2 gap-2">
-          {DEMO_ACCOUNTS.map((account) => (
+          {demoAccounts.map((account) => (
             <button
               key={account.username}
               onClick={() => handleQuickLogin(account.username)}

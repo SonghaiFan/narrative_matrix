@@ -1,55 +1,88 @@
 "use client";
-import Image from "next/image";
 
-export interface ScenarioCardProps {
-  title: string;
-  description: string;
-  imageSrc: string;
-  onClick: () => void;
+import React from "react";
+import { ScenarioInfo } from "@/types/scenario";
+import {
+  Check,
+  FileText,
+  BarChart3,
+  MessageSquare,
+  Layers,
+} from "lucide-react";
+
+interface ScenarioCardProps {
+  scenario: ScenarioInfo;
   isSelected: boolean;
+  onClick: () => void;
 }
 
 export function ScenarioCard({
-  title,
-  description,
-  imageSrc,
-  onClick,
+  scenario,
   isSelected,
+  onClick,
 }: ScenarioCardProps) {
+  const { metadata } = scenario;
+
+  // Map icon name to component
+  const getIcon = (iconName: string) => {
+    switch (iconName) {
+      case "FileText":
+        return <FileText className="h-5 w-5" />;
+      case "BarChart3":
+        return <BarChart3 className="h-5 w-5" />;
+      case "MessageSquare":
+        return <MessageSquare className="h-5 w-5" />;
+      case "Layers":
+        return <Layers className="h-5 w-5" />;
+      default:
+        return <FileText className="h-5 w-5" />;
+    }
+  };
+
   return (
     <div
-      className={`relative flex flex-col overflow-hidden rounded-lg border transition-all cursor-pointer bg-white hover:shadow-md aspect-square ${
-        isSelected
-          ? "border-blue-500 ring-1 ring-blue-500 shadow-md"
-          : "border-gray-200 hover:border-gray-300"
-      }`}
       onClick={onClick}
+      className={`
+        relative p-5 rounded-lg border transition-all duration-200
+        cursor-pointer hover:shadow-md
+        ${
+          isSelected
+            ? `border-2 shadow bg-white`
+            : "border border-gray-200 bg-gray-50 hover:bg-white"
+        }
+      `}
+      style={{
+        borderColor: isSelected ? metadata.color : undefined,
+      }}
     >
-      <div className="p-4 flex flex-col h-full">
-        <div className="bg-gray-100 rounded-lg overflow-hidden mb-3 flex-1">
-          <Image
-            src={imageSrc}
-            alt={title}
-            width={400}
-            height={400}
-            className="w-full h-full object-contain p-4"
-          />
+      {isSelected && (
+        <div
+          className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center"
+          style={{ backgroundColor: metadata.color }}
+        >
+          <Check className="h-4 w-4 text-white" />
         </div>
-        <div className="space-y-2">
-          <h3 className="text-sm font-medium text-gray-800 line-clamp-1">
-            {title}
+      )}
+
+      <div className="flex items-start gap-4">
+        <div
+          className="p-2 rounded-md"
+          style={{
+            backgroundColor: `${metadata.color}20`,
+            color: metadata.color,
+          }}
+        >
+          {getIcon(metadata.icon)}
+        </div>
+
+        <div className="flex-1">
+          <h3 className="text-base font-medium text-gray-900">
+            {metadata.name}
           </h3>
-          <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">
-            {description}
+          <p className="mt-1 text-sm text-gray-500 line-clamp-2">
+            {metadata.description}
           </p>
         </div>
-        {isSelected && (
-          <div className="absolute top-3 right-3">
-            <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
-              Selected
-            </span>
-          </div>
-        )}
       </div>
     </div>
   );

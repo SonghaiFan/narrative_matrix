@@ -1,13 +1,15 @@
 // Task progress utilities for local storage
 
-interface TaskAnswer {
+export interface TaskAnswer {
   questionId: string;
   question: string;
-  userAnswer: string;
+  userAnswer: string | string[];
+  userEventReference?: number | number[] | null;
   completed: boolean;
   startTimestamp?: number;
   submitTimestamp?: number;
-  duration?: number | null;
+  isTimeExpired?: boolean;
+  duration: number | null;
 }
 
 // Survey data structure
@@ -20,16 +22,16 @@ export interface SurveyData {
   timestamp: string;
 }
 
-interface TaskProgress {
+export interface TaskProgress {
   userId: string;
   totalTasks: number;
   completedTasks: number;
   correctTasks: number;
   studyType: string;
+  isCompleted?: boolean;
   lastUpdated: string;
-  isCompleted: boolean;
   totalSessionTime?: number; // Total time spent on all tasks in seconds
-  answers?: TaskAnswer[];
+  answers: TaskAnswer[];
   surveyData?: SurveyData;
 }
 

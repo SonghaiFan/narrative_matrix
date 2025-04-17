@@ -64,6 +64,7 @@ interface Task {
         leftLabel?: string;
         rightLabel?: string;
       };
+  prone?: string;
 }
 
 interface TaskPanelProps {
@@ -122,7 +123,7 @@ export function TaskPanel({
     if (scenarioName.includes("text-visual")) return "text-visual";
 
     // Default fallback
-    return scenarioName || "pure-text";
+    return scenarioName || "text-visual";
   };
 
   // Get user ID from localStorage on mount
@@ -155,11 +156,7 @@ export function TaskPanel({
     if (!events || events.length === 0) return;
 
     // For both training mode and regular mode, use quiz questions from metadata if available
-    if (
-      metadata?.quiz &&
-      Array.isArray(metadata.quiz) &&
-      metadata.quiz.length > 0
-    ) {
+    if (metadata?.quiz && Array.isArray(metadata.quiz)) {
       // Use quiz questions from metadata and ensure type is set
       const quizTasks: QuizItem[] = metadata.quiz.map(
         (q: any, index: number) => {
@@ -181,10 +178,55 @@ export function TaskPanel({
             event_reference: q.event_reference || null,
             timeLimit: q.timeLimit || defaultTimeLimit,
             completed: false,
-            prone: q.prone || "text",
+            visual: q.visual || null,
+            prone: q.prone || null,
           } as QuizItem;
         }
       );
+
+      // Add recall questions if available
+      if (metadata.quiz_recall && Array.isArray(metadata.quiz_recall)) {
+        const recallTasks: QuizItem[] = metadata.quiz_recall.map(
+          (q: any, index: number) => {
+            let defaultTimeLimit = 60; // Default 1 minute
+            if (q.type === "grid-matching")
+              defaultTimeLimit = 180; // 3 minutes for matching
+            else if (q.type === "numbered-sequence")
+              defaultTimeLimit = 120; // 2 minutes for sequencing
+            else if (q.type === "multiple-select") defaultTimeLimit = 90; // 1.5 minutes for multiple select
+
+            // Ensure unique ID by adding 'recall_' prefix
+            const uniqueId = q.id ? `recall_${q.id}` : `recall_${index + 1}`;
+
+            return {
+              id: uniqueId,
+              level: q.level || "Information Retrieval",
+              question: q.question,
+              answer: q.answer,
+              type: q.type || "single-input",
+              options: q.options,
+              event_reference: q.event_reference || null,
+              timeLimit: q.timeLimit || defaultTimeLimit,
+              completed: false,
+              visual: q.visual || null,
+              prone: q.prone || null,
+            } as QuizItem;
+          }
+        );
+
+        // Combine recall and regular tasks
+        quizTasks.unshift(...recallTasks);
+
+        // Double check for any remaining duplicate IDs and make them unique
+        const seenIds = new Set<string>();
+        quizTasks.forEach((task, index) => {
+          if (seenIds.has(task.id)) {
+            task.id = `${task.id}_${index}`;
+          }
+          seenIds.add(task.id);
+        });
+      }
+
       setTasks(quizTasks);
       return;
     }
@@ -201,8 +243,9 @@ export function TaskPanel({
         ).toLocaleDateString(),
         completed: false,
         timeLimit: 60, // 1 minute for simple questions
-        prone: "text",
+        visual: null,
         event_reference: null,
+        prone: null,
       },
       {
         id: "2",
@@ -218,8 +261,9 @@ export function TaskPanel({
         ],
         completed: false,
         timeLimit: 60, // 1 minute for simple questions
-        prone: "text",
+        visual: null,
         event_reference: null,
+        prone: null,
       },
       {
         id: "3",
@@ -235,8 +279,9 @@ export function TaskPanel({
         ],
         completed: false,
         timeLimit: 60, // 1 minute for simple questions
-        prone: "text",
+        visual: null,
         event_reference: null,
+        prone: null,
       },
       {
         id: "4",
@@ -244,15 +289,16 @@ export function TaskPanel({
         type: "numbered-sequence",
         question: "Arrange these events in chronological order:",
         answer: "1,2,3,4",
-        options: events
-          .slice(0, 4)
-          .map(
-            (event, index) =>
-              `${index + 1}. ${event.short_text || event.text.slice(0, 100)}...`
-          ),
+        options: {
+          events: events.slice(0, 4).map((event, index) => ({
+            id: index + 1,
+            text: event.short_text || event.text.slice(0, 100) + "...",
+          })),
+        },
         completed: false,
         timeLimit: 120, // 2 minutes for more complex questions
-        prone: "text",
+        visual: null,
+        prone: null,
       },
       {
         id: "5",
@@ -264,15 +310,7 @@ export function TaskPanel({
             ?.map((entity: any) => `${entity.name}: ${entity.social_role}`)
             .join(", ") || "",
         options: {
-          roles: Array.from(
-            new Set(
-              events.flatMap(
-                (event) =>
-                  event.entities?.map((entity: any) => entity.social_role) || []
-              )
-            )
-          ),
-          causes: Array.from(
+          leftItems: Array.from(
             new Set(
               events.flatMap(
                 (event) =>
@@ -280,10 +318,21 @@ export function TaskPanel({
               )
             )
           ),
+          rightItems: Array.from(
+            new Set(
+              events.flatMap(
+                (event) =>
+                  event.entities?.map((entity: any) => entity.social_role) || []
+              )
+            )
+          ),
+          leftLabel: "Entities",
+          rightLabel: "Roles",
         },
         completed: false,
         timeLimit: 180, // 3 minutes for complex matching questions
-        prone: "text",
+        visual: null,
+        prone: null,
       },
     ] as QuizItem[];
 
@@ -811,6 +860,24 @@ export function TaskPanel({
     ));
   };
 
+  // Function to check if the submit button should be disabled
+  const isSubmitDisabled = () => {
+    if (!currentTask || isSubmitting) return true;
+    if (currentTask.completed) return true;
+    if (showAnswer) return false;
+
+    // For skipped questions or time expired questions
+    if (
+      userAnswer === "Information not specified in the text" ||
+      userAnswer === "Time expired before answer was submitted"
+    ) {
+      return false;
+    }
+
+    // For any type of answer
+    return !userAnswer.trim() || markedEventIds.length === 0;
+  };
+
   if (!currentTask) {
     return (
       <div className={`flex flex-col h-full bg-white p-2 ${className}`}>
@@ -933,13 +1000,22 @@ export function TaskPanel({
                 {/* Cognitive level badge */}
                 {isDomainExpert && currentTask.level && (
                   <div className="px-3 py-2 border-b bg-gray-50">
-                    <div
-                      className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] ${getLevelColor(
-                        currentTask.level
-                      )}`}
-                    >
-                      <Brain className="h-2.5 w-2.5 mr-0.5" />
-                      <span>{currentTask.level}</span>
+                    <div className="flex flex-wrap gap-2">
+                      <div
+                        className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] ${getLevelColor(
+                          currentTask.level
+                        )}`}
+                      >
+                        <Brain className="h-2.5 w-2.5 mr-0.5" />
+                        <span>{currentTask.level}</span>
+                      </div>
+
+                      {currentTask.prone && (
+                        <div className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] bg-purple-100 text-purple-700">
+                          <span className="font-medium">prone:</span>
+                          <span className="ml-1">{currentTask.prone}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -1176,101 +1252,49 @@ export function TaskPanel({
                             case "radio-options":
                               return (
                                 <RadioOptions
-                                  options={currentTask.options as string[]}
+                                  options={currentTask.options}
                                   value={userAnswer}
                                   onChange={setUserAnswer}
                                   disabled={showAnswer}
-                                  // Add correct answer highlight for domain experts
                                   correctAnswer={
-                                    isDomainExpert && showAnswer
-                                      ? currentTask.answer
-                                      : undefined
+                                    showAnswer ? currentTask.answer : undefined
                                   }
                                 />
                               );
                             case "multiple-select":
                               return (
                                 <MultipleSelect
-                                  options={currentTask.options as string[]}
+                                  options={currentTask.options}
                                   value={userAnswer}
                                   onChange={setUserAnswer}
                                   disabled={showAnswer}
+                                  correctAnswer={
+                                    showAnswer ? currentTask.answer : undefined
+                                  }
                                 />
                               );
                             case "numbered-sequence":
                               return (
                                 <NumberedSequence
-                                  options={
-                                    currentTask.type === "numbered-sequence" &&
-                                    currentTask.options &&
-                                    "events" in currentTask.options
-                                      ? (currentTask.options as {
-                                          events: Array<{
-                                            id: number;
-                                            text: string;
-                                          }>;
-                                        })
-                                      : []
-                                  }
+                                  options={currentTask.options}
                                   value={userAnswer}
                                   onChange={setUserAnswer}
                                   disabled={showAnswer}
+                                  correctAnswer={
+                                    showAnswer ? currentTask.answer : undefined
+                                  }
                                 />
                               );
                             case "grid-matching":
-                              const options = currentTask.options as {
-                                countries?: string[];
-                                roles?: string[];
-                                causes?: string[];
-                                effects?: string[];
-                                leftItems?: string[];
-                                rightItems?: string[];
-                                leftLabel?: string;
-                                rightLabel?: string;
-                              };
-
-                              // If leftItems and rightItems are already provided, use them directly
-                              if (options.leftItems && options.rightItems) {
-                                return (
-                                  <GridMatching
-                                    options={{
-                                      leftItems: options.leftItems,
-                                      rightItems: options.rightItems,
-                                      leftLabel: options.leftLabel,
-                                      rightLabel: options.rightLabel,
-                                    }}
-                                    value={userAnswer}
-                                    onChange={setUserAnswer}
-                                    disabled={showAnswer}
-                                  />
-                                );
-                              }
-
-                              // Otherwise, transform the options into the correct shape
-                              let transformedOptions;
-                              if (options.causes && options.effects) {
-                                transformedOptions = {
-                                  leftItems: options.causes,
-                                  rightItems: options.effects,
-                                  leftLabel: "Causes",
-                                  rightLabel: "Effects",
-                                };
-                              } else {
-                                // Fallback to empty arrays if no valid options are provided
-                                transformedOptions = {
-                                  leftItems: [],
-                                  rightItems: [],
-                                  leftLabel: "Items",
-                                  rightLabel: "Categories",
-                                };
-                              }
-
                               return (
                                 <GridMatching
-                                  options={transformedOptions}
+                                  options={currentTask.options}
                                   value={userAnswer}
                                   onChange={setUserAnswer}
                                   disabled={showAnswer}
+                                  correctAnswer={
+                                    showAnswer ? currentTask.answer : undefined
+                                  }
                                 />
                               );
                             default:
@@ -1325,9 +1349,9 @@ export function TaskPanel({
                   {markedEventIds.length === 0 &&
                     userAnswer.trim() &&
                     !currentTask.completed && (
-                      <div className="bg-yellow-50 border border-yellow-200 rounded-md p-2 flex items-center gap-2">
-                        <AlertCircle className="h-4 w-4 text-yellow-600 flex-shrink-0" />
-                        <div className="text-xs text-yellow-800">
+                      <div className="bg-blue-50 border border-blue-200 rounded-md p-2 flex items-center gap-2">
+                        <AlertCircle className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                        <div className="text-xs text-blue-800">
                           Please mark one or more reference events before
                           submitting your answer, or mark as "Information Not
                           Found" if the information is not available.
@@ -1392,12 +1416,7 @@ export function TaskPanel({
             {!currentTask.completed && !showAnswer ? (
               <button
                 onClick={handleSubmit}
-                disabled={
-                  !userAnswer.trim() ||
-                  (markedEventIds.length === 0 &&
-                    userAnswer !== "Information not specified in the text") ||
-                  isSubmitting
-                }
+                disabled={isSubmitDisabled()}
                 className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <CheckCircle className="h-4 w-4" />
@@ -1406,10 +1425,7 @@ export function TaskPanel({
             ) : !currentTask.completed && showAnswer ? (
               <button
                 onClick={handleSubmit}
-                disabled={
-                  markedEventIds.length === 0 &&
-                  userAnswer !== "Information not specified in the text"
-                }
+                disabled={isSubmitDisabled()}
                 className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
                 <CheckCircle className="h-4 w-4" />
