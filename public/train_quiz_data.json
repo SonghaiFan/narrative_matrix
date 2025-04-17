@@ -8,6 +8,7 @@
       "completed": false,
       "type": "multiple-select",
       "timeLimit": 10,
+      "visual": "entity",
       "prone": "entity",
       "options": [
         "Ukraine",
@@ -32,7 +33,8 @@
       "completed": false,
       "type": "radio-options",
       "timeLimit": 10,
-      "prone": null,
+      "visual": null,
+      "prone": "entity",
       "event_reference": []
     },
     {
@@ -49,6 +51,7 @@
       "completed": false,
       "type": "grid-matching",
       "timeLimit": 10,
+      "visual": "topic",
       "prone": "topic",
       "event_reference": [1, 2, 3, 4, 5]
     },
@@ -68,6 +71,7 @@
       "completed": false,
       "type": "numbered-sequence",
       "timeLimit": 10,
+      "visual": "time",
       "prone": "time",
       "event_reference": [1, 4, 5, 6]
     },
@@ -85,6 +89,7 @@
       "completed": false,
       "type": "grid-matching",
       "timeLimit": 10,
+      "visual": "topic",
       "prone": "topic",
       "event_reference": [1, 2, 4, 5, 6]
     },
@@ -98,10 +103,11 @@
         "Joint military operations were planned"
       ],
       "answer": "Trump suspended US military assistance to Ukraine",
-      "level": "Causal Reasoning",
+      "level": "Pattern Recognition",
       "completed": false,
       "type": "radio-options",
       "timeLimit": 90,
+      "visual": "entity",
       "prone": "entity",
       "event_reference": [1, 3, 4, 5, 6]
     }
