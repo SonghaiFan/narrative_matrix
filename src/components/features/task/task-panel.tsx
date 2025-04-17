@@ -81,13 +81,11 @@ export function TaskPanel({
   className = "",
   userRole = "normal",
   is_training = false,
-  sessionTimeLimit = 1800, // 30 minutes default
 }: TaskPanelProps) {
   const router = useRouter();
   const {
     markedEventIds,
     toggleMarkedEvent,
-    isEventMarked,
     setfocusedEventId,
     clearMarkedEvents,
   } = useCenterControl();
@@ -537,7 +535,7 @@ export function TaskPanel({
   };
 
   const handleReveal = () => {
-    setShowAnswer(true);
+    setShowAnswer((prev) => !prev); // Toggle the answer visibility
   };
 
   const handleConfirmSubmit = () => {
@@ -1019,6 +1017,31 @@ export function TaskPanel({
                         Right-click on the events that contain the information
                         for your answer to mark them.
                       </div>
+                      {/* Show correct reference events when answer is revealed */}
+                      {isDomainExpert &&
+                        showAnswer &&
+                        currentTask.event_reference && (
+                          <div className="mb-2 p-2 bg-green-50 border border-green-200 rounded-md">
+                            <div className="text-xs font-medium text-green-800 mb-1">
+                              Correct Reference Events:
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {(Array.isArray(currentTask.event_reference)
+                                ? currentTask.event_reference
+                                : [currentTask.event_reference]
+                              ).map((eventId) => (
+                                <div
+                                  key={`correct-${eventId}`}
+                                  className="flex items-center gap-1 text-xs text-green-600 bg-white px-3 py-1.5 rounded-md border border-green-300 cursor-pointer hover:bg-green-50"
+                                  onClick={() => handleFocusEvent(eventId)}
+                                >
+                                  <span>Event #{eventId}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      {/* User's marked events */}
                       <div className="flex flex-wrap gap-2">
                         {markedEventIds.length === 0 ? (
                           <div className="text-xs text-gray-500 bg-white px-3 py-1.5 rounded-md border border-gray-200">
@@ -1034,7 +1057,7 @@ export function TaskPanel({
                               <span>Event #{eventId}</span>
                               <button
                                 onClick={(e) => {
-                                  e.stopPropagation(); // Prevent triggering parent onClick
+                                  e.stopPropagation();
                                   toggleMarkedEvent(eventId);
                                 }}
                                 className="ml-2 text-blue-400 hover:text-blue-600"
@@ -1060,6 +1083,94 @@ export function TaskPanel({
                     </div>
                     {!currentTask.completed ? (
                       <div>
+                        {/* Show correct answer in the same format as the input */}
+                        {isDomainExpert && showAnswer && (
+                          <div className="mb-4">
+                            {(() => {
+                              switch (currentTask.type) {
+                                case "radio-options":
+                                  return (
+                                    <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md">
+                                      <div className="text-xs font-medium text-green-800 mb-2">
+                                        Correct Answer:
+                                      </div>
+                                      <RadioOptions
+                                        options={
+                                          currentTask.options as string[]
+                                        }
+                                        value={currentTask.answer}
+                                        onChange={() => {}}
+                                        disabled={true}
+                                        correctAnswer={currentTask.answer}
+                                      />
+                                    </div>
+                                  );
+                                case "multiple-select":
+                                  return (
+                                    <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md">
+                                      <div className="text-xs font-medium text-green-800 mb-2">
+                                        Correct Answer:
+                                      </div>
+                                      <MultipleSelect
+                                        options={
+                                          currentTask.options as string[]
+                                        }
+                                        value={currentTask.answer}
+                                        onChange={() => {}}
+                                        disabled={true}
+                                        correctAnswer={currentTask.answer}
+                                      />
+                                    </div>
+                                  );
+                                case "numbered-sequence":
+                                  return (
+                                    <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md">
+                                      <div className="text-xs font-medium text-green-800 mb-2">
+                                        Correct Answer:
+                                      </div>
+                                      <NumberedSequence
+                                        options={currentTask.options as any}
+                                        value={currentTask.answer}
+                                        onChange={() => {}}
+                                        disabled={true}
+                                        correctAnswer={currentTask.answer}
+                                      />
+                                    </div>
+                                  );
+                                case "grid-matching":
+                                  return (
+                                    <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md">
+                                      <div className="text-xs font-medium text-green-800 mb-2">
+                                        Correct Answer:
+                                      </div>
+                                      <GridMatching
+                                        options={currentTask.options as any}
+                                        value={currentTask.answer}
+                                        onChange={() => {}}
+                                        disabled={true}
+                                        correctAnswer={currentTask.answer}
+                                      />
+                                    </div>
+                                  );
+                                default:
+                                  return (
+                                    <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md">
+                                      <div className="text-xs font-medium text-green-800 mb-2">
+                                        Correct Answer:
+                                      </div>
+                                      <TextInput
+                                        value={currentTask.answer}
+                                        onChange={() => {}}
+                                        disabled={true}
+                                      />
+                                    </div>
+                                  );
+                              }
+                            })()}
+                          </div>
+                        )}
+
+                        {/* Existing answer input components */}
                         {(() => {
                           switch (currentTask.type) {
                             case "radio-options":
@@ -1069,6 +1180,12 @@ export function TaskPanel({
                                   value={userAnswer}
                                   onChange={setUserAnswer}
                                   disabled={showAnswer}
+                                  // Add correct answer highlight for domain experts
+                                  correctAnswer={
+                                    isDomainExpert && showAnswer
+                                      ? currentTask.answer
+                                      : undefined
+                                  }
                                 />
                               );
                             case "multiple-select":
@@ -1256,13 +1373,19 @@ export function TaskPanel({
 
           {/* Action buttons */}
           <div className="flex items-center gap-2">
-            {!showAnswer && !currentTask.completed && isDomainExpert && (
+            {isDomainExpert && !currentTask.completed && (
               <button
                 onClick={handleReveal}
-                className="flex items-center gap-1.5 px-3 py-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors"
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-md transition-colors ${
+                  showAnswer
+                    ? "bg-blue-100 text-blue-700"
+                    : "text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                }`}
               >
                 <HelpCircle className="h-4 w-4" />
-                <span className="text-sm font-medium">Hint</span>
+                <span className="text-sm font-medium">
+                  {showAnswer ? "Hide Answer" : "Show Answer"}
+                </span>
               </button>
             )}
 

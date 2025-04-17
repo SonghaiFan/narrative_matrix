@@ -195,21 +195,22 @@ export function AppHeader({
           <div className="flex items-center">
             <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
 
-            {/* Mode indicator badge */}
-            {isTrainingMode ? (
-              <span className="ml-3 px-2.5 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-800 border border-amber-300">
-                Training Mode
-              </span>
-            ) : (
-              <span className="ml-3 px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 border border-green-300">
-                Real Task
-              </span>
-            )}
+            {/* Mode indicator badge - only show in non-dashboard pages */}
+            {!isDashboard &&
+              (isTrainingMode ? (
+                <span className="ml-3 px-2.5 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-800 border border-amber-300">
+                  Training Mode
+                </span>
+              ) : (
+                <span className="ml-3 px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 border border-green-300">
+                  Real Task
+                </span>
+              ))}
           </div>
         </div>
 
-        {/* Center section with sentiment legend */}
-        {showSentimentLegend && (
+        {/* Center section with sentiment legend - only show in non-dashboard pages */}
+        {showSentimentLegend && !isDashboard && (
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <div className="flex items-center bg-gray-50 rounded-lg border border-gray-200 px-4 py-2 shadow-sm">
               <span className="text-xs font-semibold text-gray-700 mr-3">
@@ -252,25 +253,27 @@ export function AppHeader({
         )}
 
         <div className="flex items-center gap-3">
-          {/* Interaction Hints */}
-          <div className="flex items-center bg-gray-50 rounded-lg border border-gray-200 px-3 py-1.5 shadow-sm">
-            <div className="flex items-center mr-4">
-              <div className="mr-2 flex items-center justify-center">
-                <MouseFocusIcon />
+          {/* Interaction Hints - only show in non-dashboard pages */}
+          {!isDashboard && (
+            <div className="flex items-center bg-gray-50 rounded-lg border border-gray-200 px-3 py-1.5 shadow-sm">
+              <div className="flex items-center mr-4">
+                <div className="mr-2 flex items-center justify-center">
+                  <MouseFocusIcon />
+                </div>
+                <span className="text-xs font-medium text-gray-700">
+                  <span className="text-indigo-600">Left Click:</span> Focus
+                </span>
               </div>
-              <span className="text-xs font-medium text-gray-700">
-                <span className="text-indigo-600">Left Click:</span> Focus
-              </span>
-            </div>
-            <div className="flex items-center">
-              <div className="mr-2 flex items-center justify-center">
-                <MouseMarkIcon />
+              <div className="flex items-center">
+                <div className="mr-2 flex items-center justify-center">
+                  <MouseMarkIcon />
+                </div>
+                <span className="text-xs font-medium text-gray-700">
+                  <span className="text-green-600">Right Click:</span> Mark
+                </span>
               </div>
-              <span className="text-xs font-medium text-gray-700">
-                <span className="text-green-600">Right Click:</span> Mark
-              </span>
             </div>
-          </div>
+          )}
 
           {/* Additional content passed as children */}
           {children}

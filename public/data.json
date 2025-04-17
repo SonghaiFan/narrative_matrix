@@ -9,170 +9,124 @@
     "quiz_recall": [
       {
         "id": "israel-recall-1",
-        "question": "What is the total number of Palestinian and Israeli casualties from the May 2021 conflict?",
-        "answer": "over 250 Palestinians and at least 13 Israelis",
+        "question": "What political development occurred between Fatah and Hamas in 2014?",
+        "answer": "Fatah entered into a unity government with Hamas",
         "level": "Information Retrieval",
-        "completed": false,
         "type": "radio-options",
         "timeLimit": 60,
+        "prone": null,
         "options": [
-          "over 250 Palestinians and at least 13 Israelis",
-          "under 100 total casualties",
-          "between 100 and 200 total casualties",
-          "over 500 total casualties",
-          "exact numbers are unknown"
+          "Fatah entered into a unity government with Hamas",
+          "Fatah and Hamas split their territories",
+          "Fatah declared war on Hamas",
+          "Hamas surrendered control to Fatah"
         ],
-        "event_reference": 44
-      },
-      {
-        "id": "israel-recall-2",
-        "question": "Match each event with its corresponding stage in the narrative arc:",
-        "options": {
-          "leftItems": [
-            "Creation of the State of Israel",
-            "Hamas electoral victory",
-            "Hamas attack on Israel",
-            "Regional escalation with Iran and Hezbollah",
-            "US-mediated ceasefire"
-          ],
-          "rightItems": [
-            "Exposition",
-            "Rising Action",
-            "Climax",
-            "Falling Action",
-            "Resolution"
-          ],
-          "leftLabel": "Events",
-          "rightLabel": "Narrative Stages"
-        },
-        "answer": "Creation of State of Israel: Exposition, Hamas electoral victory: Rising Action, Hamas attack on Israel: Climax, Regional escalation with Iran and Hezbollah: Falling Action, US-mediated ceasefire: Resolution",
-        "level": "Pattern Recognition",
         "completed": false,
-        "type": "grid-matching",
-        "timeLimit": 180,
-        "event_reference": [12, 25, 1, 7, 2]
+        "event_reference": 28
       }
     ],
     "quiz": [
       {
         "id": "israel-1",
-        "question": "On what date did Hamas launch its attack on Israel in 2023?",
-        "answer": "October 7, 2023",
+        "question": "What political development occurred between Fatah and Hamas in 2014?",
+        "answer": "Fatah entered into a unity government with Hamas",
         "level": "Information Retrieval",
         "type": "radio-options",
         "timeLimit": 60,
+        "prone": null,
         "options": [
-          "October 5, 2023",
-          "October 7, 2023",
-          "October 9, 2023",
-          "October 12, 2023"
+          "Fatah entered into a unity government with Hamas",
+          "Fatah and Hamas split their territories",
+          "Fatah declared war on Hamas",
+          "Hamas surrendered control to Fatah"
         ],
         "completed": false,
-        "event_reference": 1
+        "event_reference": 28
       },
       {
         "id": "israel-2",
-        "question": "Which countries mediated the January 2025 ceasefire between Israel and Hamas? (Select all that apply)",
-        "answer": "The United States,Egypt,Qatar",
-        "level": "Information Retrieval",
-        "type": "multiple-select",
+        "question": "Match each event with its consequences in the May 2021 escalation:",
+        "answer": "Court ruling: Palestinian protests, Police response: Demonstrations escalate, Escalated tensions: Hamas rocket attacks",
+        "level": "Pattern Recognition",
+        "type": "grid-matching",
         "timeLimit": 90,
-        "options": [
-          "The United States",
-          "Egypt",
-          "Qatar",
-          "Jordan",
-          "Saudi Arabia",
-          "Turkey"
-        ],
+        "prone": null,
+        "options": {
+          "leftItems": [
+            "Court ruling",
+            "Police response",
+            "Escalated tensions"
+          ],
+          "rightItems": [
+            "Palestinian protests",
+            "Demonstrations escalate",
+            "Hamas rocket attacks"
+          ],
+          "leftLabel": "Events",
+          "rightLabel": "Consequences"
+        },
         "completed": false,
-        "event_reference": 2
+        "event_reference": [38, 39]
       },
       {
         "id": "israel-3",
-        "question": "Which Palestinian factions were involved in conflict after Hamas's electoral victory in 2006? (Select all that apply)",
-        "answer": "Hamas,Fatah",
+        "question": "Which entities were mentioned in the narrative about both the Oslo I and Oslo II Accords? (Select all that apply)",
+        "answer": "Israel, West Bank",
         "level": "Information Retrieval",
         "type": "multiple-select",
         "timeLimit": 90,
+        "prone": "entity",
         "options": [
-          "Hamas",
-          "Fatah",
-          "Islamic Jihad",
-          "PFLP",
-          "Palestinian Authority"
+          "Israel",
+          "Palestinian Authority",
+          "West Bank",
+          "Gaza Strip",
+          "Egypt",
+          "United States"
         ],
         "completed": false,
-        "event_reference": 25
+        "event_reference": [20, 21]
       },
       {
         "id": "israel-4",
-        "question": "Which neutral third-party organization supervised the January 2025 ceasefire implementation between Israel and Hamas?",
-        "answer": null,
-        "level": "Sanity Check",
-        "type": "radio-options",
-        "timeLimit": 60,
-        "options": [
-          "United Nations Peacekeeping Force",
-          "International Committee of the Red Cross",
-          "Arab League Monitoring Mission"
-        ],
-        "completed": false,
-        "event_reference": null
-      },
-      {
-        "id": "israel-5",
-        "question": "Which statement best describes the trend of regional conflict following Hamas's October 2023 attack?",
-        "answer": "Regional militant groups joined the conflict, increasing its scope.",
-        "level": "Pattern Recognition",
-        "type": "radio-options",
-        "timeLimit": 90,
-        "options": [
-          "Conflicts subsided over time.",
-          "Only Hamas and Israel remained in conflict.",
-          "Regional militant groups joined the conflict, increasing its scope.",
-          "International peace talks quickly ended all conflicts."
-        ],
-        "completed": false,
-        "event_reference": [7, 8, 9]
-      },
-      {
-        "id": "israel-6",
-        "question": "Arrange these historical events in chronological order according to the narrative:",
-        "answer": "1,2,3,4",
+        "question": "Arrange these entities in order of their appearance in the narrative (not real-time order) related to Egypt:",
+        "answer": "2,1,4,3",
         "level": "Pattern Recognition",
         "type": "numbered-sequence",
-        "timeLimit": 150,
+        "timeLimit": 90,
+        "prone": "entity",
         "options": {
           "events": [
             {
               "id": 1,
-              "text": "Creation of the State of Israel"
+              "text": "Jordan"
             },
             {
               "id": 2,
-              "text": "Six-Day War"
+
+              "text": "United States"
             },
             {
               "id": 3,
-              "text": "Oslo I Accords"
+              "text": "Yom Kippur War"
             },
             {
               "id": 4,
-              "text": "Hamas electoral victory"
+              "text": "East Jerusalem"
             }
           ]
         },
         "completed": false,
-        "event_reference": [12, 15, 21, 25]
+        "event_reference": [2, 13, 14, 15, 16, 17]
       },
       {
-        "id": "israel-7",
-        "question": "Which territories were captured by Israel during the 1967 Six-Day War? (Select all that apply)",
+        "id": "israel-5",
+        "question": "Which territories were affected by the 1967 Six-Day War? (Select all that apply)",
         "answer": "Sinai Peninsula,Gaza Strip,West Bank,East Jerusalem,Golan Heights",
         "level": "Information Retrieval",
         "type": "multiple-select",
-        "timeLimit": 120,
+        "timeLimit": 60,
+        "prone": null,
         "options": [
           "Sinai Peninsula",
           "Gaza Strip",
@@ -182,67 +136,138 @@
           "Lebanon"
         ],
         "completed": false,
-        "event_reference": 16
+        "event_reference": 15
+      },
+      {
+        "id": "israel-6",
+        "question": "What pattern emerges in the narrative's treatment of peace agreements?",
+        "answer": "They are often followed by new conflicts",
+        "level": "Pattern Recognition",
+        "type": "radio-options",
+        "timeLimit": 90,
+        "prone": null,
+        "options": [
+          "They are often followed by new conflicts",
+          "They lead to lasting peace",
+          "They are always mediated by the UN",
+          "They are never implemented"
+        ],
+        "completed": false,
+        "event_reference": [17, 20, 21, 41]
+      },
+      {
+        "id": "israel-7",
+        "question": "What was the main cause of the 2023 conflict according to the narrative?",
+        "answer": "Israeli government policies",
+        "level": "Information Retrieval",
+        "type": "radio-options",
+        "timeLimit": 60,
+        "prone": "topic",
+        "options": [
+          "Israeli government policies",
+          "Hamas military buildup",
+          "International pressure",
+          "Economic sanctions"
+        ],
+        "completed": false,
+        "event_reference": 44
       },
       {
         "id": "israel-8",
-        "question": "Explain one reason why Hamas's electoral victory in 2006 led to increased conflict with Israel in subsequent years.",
-        "answer": "Western nations refused to recognize Hamas due to its terrorist designation",
-        "level": "Causal Reasoning",
-        "type": "radio-options",
+        "question": "Match each phase of the conflict with its characteristics:",
+        "answer": "Initial: Local tensions, Escalation: Regional involvement, Resolution: International mediation",
+        "level": "Pattern Recognition",
+        "type": "grid-matching",
         "timeLimit": 90,
-        "options": [
-          "Western nations refused to recognize Hamas due to its terrorist designation",
-          "Internal power struggles between Palestinian factions",
-          "Expansion of settlements in disputed territories",
-          "Changes in regional military alliances"
-        ],
+        "prone": "topic",
+        "options": {
+          "leftItems": ["Initial", "Escalation", "Resolution"],
+          "rightItems": [
+            "Local tensions",
+            "Regional involvement",
+            "International mediation"
+          ],
+          "leftLabel": "Phase",
+          "rightLabel": "Characteristic"
+        },
         "completed": false,
-        "event_reference": 27
+        "event_reference": [1, 7, 8, 9]
       },
       {
         "id": "israel-9",
-        "question": "What was one major cause for Hamas's October 7, 2023 attack according to the narrative?",
-        "answer": "Israeli government policies expanding West Bank settlements and limiting judicial oversight",
-        "level": "Causal Reasoning",
+        "question": "What was the date of Hamas's electoral victory?",
+        "answer": "2006",
+        "level": "Information Retrieval",
         "type": "radio-options",
-        "timeLimit": 90,
-        "options": [
-          "Israeli government policies expanding West Bank settlements and limiting judicial oversight",
-          "Iran's direct military interventions",
-          "Hezbollah's incursion into Israel",
-          "U.S. mediation attempts"
-        ],
+        "timeLimit": 60,
+        "prone": null,
+        "options": ["2006", "2008", "2010", "2012"],
         "completed": false,
-        "event_reference": 46
+        "event_reference": 25
       },
       {
         "id": "israel-10",
-        "question": "Match each event with its corresponding stage in the narrative arc:",
-        "answer": "Creation of State of Israel: Exposition, Hamas electoral victory: Rising Action, Hamas attack on Israel: Climax, Regional escalation with Iran and Hezbollah: Falling Action, US-mediated ceasefire: Resolution",
+        "question": "Arrange these events in the order they appear in the narrative:",
+        "answer": "1,2,3,4",
         "level": "Pattern Recognition",
-        "type": "grid-matching",
-        "timeLimit": 180,
+        "type": "numbered-sequence",
+        "timeLimit": 90,
+        "prone": null,
         "options": {
-          "leftItems": [
-            "Creation of State of Israel",
-            "Hamas electoral victory",
-            "Hamas attack on Israel",
-            "Regional escalation with Iran and Hezbollah",
-            "US-mediated ceasefire"
-          ],
-          "rightItems": [
-            "Exposition",
-            "Rising Action",
-            "Climax",
-            "Falling Action",
-            "Resolution"
-          ],
-          "leftLabel": "Events",
-          "rightLabel": "Narrative Stages"
+          "events": [
+            {
+              "id": 1,
+              "text": "Background information"
+            },
+            {
+              "id": 2,
+              "text": "Initial conflict"
+            },
+            {
+              "id": 3,
+              "text": "Regional escalation"
+            },
+            {
+              "id": 4,
+              "text": "Ceasefire attempts"
+            }
+          ]
         },
         "completed": false,
-        "event_reference": [12, 25, 1, 7, 2]
+        "event_reference": null
+      },
+      {
+        "id": "israel-11",
+        "question": "Which years saw major conflicts? (Select all that apply)",
+        "answer": "1948,1967,1973,2023",
+        "level": "Information Retrieval",
+        "type": "multiple-select",
+        "timeLimit": 60,
+        "prone": "time",
+        "options": ["1948", "1967", "1973", "2023", "2014", "2006"],
+        "completed": false,
+        "event_reference": [11, 14, 16, 1]
+      },
+      {
+        "id": "israel-12",
+        "question": "Match each time period with its conflict characteristics:",
+        "answer": "1948-1967: Initial conflicts, 1967-1993: Territorial disputes, 1993-2023: Peace process and renewed conflicts",
+        "level": "Pattern Recognition",
+        "type": "grid-matching",
+        "timeLimit": 90,
+        "prone": "time",
+        "options": {
+          "leftItems": ["1948-1967", "1967-1993", "1993-2023"],
+          "rightItems": [
+            "Initial conflicts",
+            "Territorial disputes",
+            "Peace process and renewed conflicts"
+          ],
+          "leftLabel": "Period",
+          "rightLabel": "Characteristics"
+        },
+        "completed": false,
+        "event_reference": [11, 14, 16, 29, 33, 39]
       }
     ]
   },

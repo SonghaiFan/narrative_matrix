@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { AppHeader } from "@/components/features/auth/app-header";
+import { AppHeader } from "@/components/ui/app-header";
 import { ScenarioSelector } from "@/components/features/dashboard/scenario-selector";
 import { UserDataViewer } from "@/components/features/dashboard/local-storage-viewer";
 import { useAuth } from "@/contexts/auth-context";

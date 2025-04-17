@@ -12,7 +12,7 @@ export type QuizType =
   | "multiple-select"
   | "single-input";
 
-export type QuizProne = "text" | "entity" | "topic" | "time" | null;
+export type QuizProne = "entity" | "topic" | "time" | null;
 
 interface BaseQuizItem {
   id: string;
