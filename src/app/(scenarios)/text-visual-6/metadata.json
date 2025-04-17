@@ -4,7 +4,8 @@
   "icon": "BarChart3",
   "color": "#0891B2",
   "order": 2,
-  "quizOrder":  [
+  "quizOrder": {
+    "preferredOrder": [
       "ir_t_v_",
       "ir_t_n_",
       "ir_e_v_",

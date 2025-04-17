@@ -2,7 +2,7 @@
 
 import { ReactNode } from "react";
 import { ScenarioLayout } from "@/components/features/dashboard/scenario-layout";
-import { useScenarioData } from "@/components/features/dashboard/use-scenario-data";
+import { useScenarioData } from "@/contexts/use-scenario-data";
 import { useAuth } from "@/contexts/auth-context";
 
 interface ScenarioPageFactoryProps {
