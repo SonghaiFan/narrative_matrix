@@ -39,6 +39,7 @@ interface AuthContextType extends Omit<AuthState, "user"> {
   setUserScenario: (scenarioType: ScenarioType) => void;
   availableScenarios: ScenarioInfo[];
   currentScenario: ScenarioType | null;
+  isScenariosLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -77,6 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     []
   );
   const [mockUsers, setMockUsers] = useState<User[]>([BASE_DOMAIN_USER]);
+  const [isScenariosLoading, setIsScenariosLoading] = useState<boolean>(true);
 
   // Add current scenario state derived from user's default scenario
   const currentScenario: ScenarioType | null =
@@ -100,6 +102,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch (error) {
         console.error("Error fetching scenarios:", error);
         setAvailableScenarios([]);
+      } finally {
+        setIsScenariosLoading(false);
       }
     };
 
@@ -266,20 +270,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  return (
-    <AuthContext.Provider
-      value={{
-        ...authState,
-        login,
-        logout,
-        setUserScenario,
-        availableScenarios,
-        currentScenario,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = {
+    ...authState,
+    login,
+    logout,
+    setUserScenario,
+    availableScenarios,
+    currentScenario,
+    isScenariosLoading,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

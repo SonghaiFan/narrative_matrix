@@ -57,11 +57,19 @@ function VisualizationContent({
 interface VisualizationScenarioProps {
   title: string;
   is_training?: boolean;
+  metadata: NarrativeMetadata | null;
+  events: NarrativeEvent[] | null;
+  isLoading: boolean;
+  error: string | null;
 }
 
 export function VisualizationScenario({
   title,
   is_training = false,
+  metadata,
+  events,
+  isLoading,
+  error,
 }: VisualizationScenarioProps) {
   const currentTask = useTaskStore((state) => state.currentTask);
   const visual = currentTask?.visual || null;
@@ -70,8 +78,19 @@ export function VisualizationScenario({
     <ScenarioPageFactory
       title={title}
       is_training={is_training}
-      renderContent={({ data, user, is_training: isTraining }) => {
-        const { metadata, events } = data;
+      metadata={metadata}
+      events={events}
+      isLoading={isLoading}
+      error={error}
+      renderContent={({
+        metadata: factoryMetadata,
+        events: factoryEvents,
+        user,
+        is_training: factoryIsTraining,
+      }) => {
+        if (!factoryMetadata || !factoryEvents) {
+          return <div>Loading data for content...</div>;
+        }
 
         return (
           <div className="w-full h-full relative grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
@@ -84,18 +103,18 @@ export function VisualizationScenario({
                 }
               >
                 <VisualizationContent
-                  events={events}
-                  metadata={metadata}
+                  events={factoryEvents}
+                  metadata={factoryMetadata}
                   visual={visual}
                 />
               </Suspense>
             </div>
             <div className="bg-white rounded-lg shadow-sm overflow-hidden">
               <TaskPanel
-                events={events}
-                metadata={metadata}
+                events={factoryEvents}
+                metadata={factoryMetadata}
                 userRole={user?.role as "domain" | "normal"}
-                is_training={isTraining}
+                is_training={factoryIsTraining}
               />
             </div>
           </div>

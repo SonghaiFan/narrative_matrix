@@ -45,6 +45,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Started Phase 5 Testing
 - Updated migration plan with completed manual tests
 - Updated migration plan with backward compatibility implementation
+- Started Phase 6 Cleanup
+- Simplified `useScenarioData` hook logic
+- Reviewed `CenterControlContext` (no changes needed)
+- Refactored server-side metadata loading to use hardcoded map
 
 ### Deprecated
 
@@ -52,11 +56,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- N/A
+- Old static route `/text-visual/page.tsx`
+- Individual `/text-visual-X` scenario metadata folders
 
 ### Fixed
 
-- N/A
+- Resolved server-side fetch issue for data files (`fs` module error)
 
 ### Security
 

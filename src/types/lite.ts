@@ -39,13 +39,22 @@ export interface NarrativeEvent {
 }
 
 export interface NarrativeMetadata {
-  title: string;
+  name: string;
   description: string;
-  topic: string;
-  author: string;
-  publishDate: string;
-  imageUrl?: string | null;
-  quiz?: QuizItem[]; // Quiz questions with proper type
+  type: string;
+  subtype?: string;
+  icon?: string;
+  color?: string;
+  order?: number;
+  topic?: {
+    main_topic: string;
+    sub_topics: string[];
+  };
+  // Add missing properties as optional
+  studyType?: string;
+  quiz?: any[]; // Or a more specific QuizItem type if available
+  quiz_recall?: any[]; // Or a more specific QuizItem type if available
+  quiz_order_preference?: string; // e.g., 'default', 'reverse', etc.
 }
 
 export interface NarrativeMatrixData {

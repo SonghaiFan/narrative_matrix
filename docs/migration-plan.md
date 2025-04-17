@@ -128,8 +128,21 @@ This document outlines the step-by-step migration plan to implement dynamic rout
 - [x] Verify backward compatibility (Client-side redirects implemented for old routes)
 - [ ] Set up test for all scenarios (Automated tests pending)
 
-### Phase 6: Cleanup
+## Phase 6: Cleanup (Renamed from Migration Steps Step 4)
 
-1. [ ] Once verified, gradually phase out old routes
-2. [ ] Keep backward compatibility
-3. [ ] Update documentation
+### Task 6.1: Remove Old Routes
+
+- [x] Remove `/text-visual/page.tsx`
+- [x] Consider removing `/text-visual-X` metadata folders (Decision: Removed after hardcoding metadata)
+
+### Task 6.2: Clean Up Unused/Redundant Code
+
+- [x] Simplify scenario ID detection in `useScenarioData` hook
+- [ ] Review `getScenarioFromPath` function for removal (Kept for now)
+- [x] Review `CenterControlContext` for further simplification (No changes needed)
+- [x] Refactored server metadata loading to use hardcoded map
+
+### Task 6.3: Update Documentation
+
+- [ ] Update README or other docs with new routing structure
+- [ ] Finalize CHANGELOG.md

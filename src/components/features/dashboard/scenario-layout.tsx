@@ -22,56 +22,18 @@ export function ScenarioLayout({
   isTraining = false,
   showSentimentLegend = true,
 }: ScenarioLayoutProps) {
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
 
-  // Handle authentication and navigation
+  // Original check for authentication (should remain if needed)
+  // This MUST be called before any conditional returns to follow Rules of Hooks.
   useEffect(() => {
-    if (!authLoading) {
-      // If not authenticated, redirect to login
-      if (!isAuthenticated) {
-        router.push("/");
-        return;
-      }
-
-      // For normal path handling (both user types), not applicable for dashboard
-      if (pathname !== "/dashboard" && !pathname.includes("/completion")) {
-        // Get current scenario path
-        const scenarioPath = pathname.split("/")[1];
-
-        if (
-          scenarioPath &&
-          ["pure-text", "text-visual", "text-chat", "mixed"].includes(
-            scenarioPath
-          )
-        ) {
-          // Check completion statuses from localStorage
-          const hasCompletedIntro =
-            localStorage.getItem(`hasCompletedIntro-${scenarioPath}`) ===
-            "true";
-          const hasCompletedTraining =
-            localStorage.getItem(`hasCompletedTraining-${scenarioPath}`) ===
-            "true";
-
-          // Determine if this is an intro or training page
-          const isIntroPage = pathname.endsWith("/introduction");
-          const isTrainingPage = pathname.endsWith("/training");
-
-          // Handle navigation sequence
-          if (!isIntroPage && !hasCompletedIntro) {
-            // Intro not completed, go to intro
-            router.push(`/${scenarioPath}/introduction`);
-            return;
-          } else if (!isTrainingPage && !isIntroPage && !hasCompletedTraining) {
-            // Intro completed but training not completed, go to training
-            router.push(`/${scenarioPath}/training`);
-            return;
-          }
-        }
-      }
+    if (!authLoading && !isAuthenticated) {
+      console.log("[Layout] User not authenticated, redirecting to login.");
+      router.push("/"); // Redirect to login if not authenticated
     }
-  }, [authLoading, isAuthenticated, user, router, pathname]);
+  }, [authLoading, isAuthenticated, router]);
 
   // Show loading state while checking authentication
   if (authLoading) {

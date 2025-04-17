@@ -30,6 +30,8 @@ import { useCenterControl } from "@/contexts/center-control-context";
 import React from "react";
 import { TextInput } from "./quiz-types/TextInput";
 import { useTaskStore } from "@/store/task-store";
+import { loadDataFile } from "@/lib/data-storage";
+import { NarrativeEvent, NarrativeMetadata } from "@/types/lite";
 
 interface Task {
   id: string;
@@ -67,8 +69,8 @@ interface Task {
 }
 
 interface TaskPanelProps {
-  events: any[];
-  metadata?: any;
+  events: NarrativeEvent[];
+  metadata: NarrativeMetadata;
   className?: string;
   userRole?: "domain" | "normal";
   is_training?: boolean;
@@ -77,7 +79,7 @@ interface TaskPanelProps {
 
 export function TaskPanel({
   events,
-  metadata = {},
+  metadata,
   className = "",
   userRole = "normal",
   is_training = false,
@@ -88,6 +90,7 @@ export function TaskPanel({
     toggleMarkedEvent,
     setfocusedEventId,
     clearMarkedEvents,
+    selectedScenario,
   } = useCenterControl();
   const [tasks, setTasks] = useState<QuizItem[]>([]);
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
@@ -106,6 +109,7 @@ export function TaskPanel({
   const hasCalledTimeUp = useRef(false);
   const warningShownRef = useRef(false);
   const setCurrentTask = useTaskStore((state) => state.setCurrentTask);
+  const [isLoadingQuiz, setIsLoadingQuiz] = useState(true);
 
   const isDomainExpert = userRole === "domain";
 
@@ -170,193 +174,240 @@ export function TaskPanel({
     }
   }, [userRole, is_training, tasks.length, router, metadata]);
 
-  // Generate tasks based on events data or use quiz from metadata
+  // Generate tasks based on mode (training/real) and available data
   useEffect(() => {
-    if (!events || events.length === 0) return;
+    setIsLoadingQuiz(true);
+    let mounted = true; // Prevent state update on unmounted component
 
-    // For both training mode and regular mode, use quiz questions from metadata if available
-    if (metadata?.quiz && Array.isArray(metadata.quiz)) {
-      // Use quiz questions from metadata and ensure type is set
-      const quizTasks: QuizItem[] = metadata.quiz.map(
-        (q: any, index: number) => {
-          // Select appropriate default time limit based on question type
-          let defaultTimeLimit = 60; // Default 1 minute
-          if (q.type === "grid-matching")
-            defaultTimeLimit = 180; // 3 minutes for matching
-          else if (q.type === "numbered-sequence")
-            defaultTimeLimit = 120; // 2 minutes for sequencing
-          else if (q.type === "multiple-select") defaultTimeLimit = 90; // 1.5 minutes for multiple select
+    const processQuizData = (quizData: any, isRecall = false): QuizItem[] => {
+      if (!quizData || !Array.isArray(quizData)) return [];
+      return quizData.map((q: any, index: number) => {
+        let defaultTimeLimit = 60;
+        if (q.type === "grid-matching") defaultTimeLimit = 180;
+        else if (q.type === "numbered-sequence") defaultTimeLimit = 120;
+        else if (q.type === "multiple-select") defaultTimeLimit = 90;
 
-          return {
-            id: q.id || String(index + 1),
-            level: q.level || "Information Retrieval",
-            question: q.question,
-            answer: q.answer,
-            type: q.type || "single-input",
-            options: q.options,
-            event_reference: q.event_reference || null,
-            timeLimit: q.timeLimit || defaultTimeLimit,
-            completed: false,
-            visual: q.visual || null,
-            prone: q.prone || null,
-          } as QuizItem;
-        }
-      );
+        const uniqueId = isRecall
+          ? q.id
+            ? `recall_${q.id}`
+            : `recall_${index + 1}`
+          : q.id || String(index + 1);
 
-      // Add recall questions if available
-      if (metadata.quiz_recall && Array.isArray(metadata.quiz_recall)) {
-        const recallTasks: QuizItem[] = metadata.quiz_recall.map(
-          (q: any, index: number) => {
-            let defaultTimeLimit = 60; // Default 1 minute
-            if (q.type === "grid-matching")
-              defaultTimeLimit = 180; // 3 minutes for matching
-            else if (q.type === "numbered-sequence")
-              defaultTimeLimit = 120; // 2 minutes for sequencing
-            else if (q.type === "multiple-select") defaultTimeLimit = 90; // 1.5 minutes for multiple select
+        return {
+          id: uniqueId,
+          level: q.level || "Information Retrieval",
+          question: q.question,
+          answer: q.answer,
+          type: q.type || "single-input",
+          options: q.options,
+          event_reference: q.event_reference || null,
+          timeLimit: q.timeLimit || defaultTimeLimit,
+          completed: false,
+          visual: q.visual || null,
+          prone: q.prone || null,
+        } as QuizItem;
+      });
+    };
 
-            // Ensure unique ID by adding 'recall_' prefix
-            const uniqueId = q.id ? `recall_${q.id}` : `recall_${index + 1}`;
+    const sortTasks = (
+      tasksToSort: QuizItem[],
+      preference?: string
+    ): QuizItem[] => {
+      if (!preference || preference === "default") {
+        return tasksToSort; // Default order
+      }
+      // Implement other sorting logic based on preference string if needed
+      // e.g., reverse, shuffle, specific order based on IDs in preference string
+      if (preference === "reverse") {
+        return [...tasksToSort].reverse();
+      }
+      // Add more sorting strategies as required
+      console.warn(`Unsupported quiz_order_preference: ${preference}`);
+      return tasksToSort;
+    };
 
-            return {
-              id: uniqueId,
-              level: q.level || "Information Retrieval",
-              question: q.question,
-              answer: q.answer,
-              type: q.type || "single-input",
-              options: q.options,
-              event_reference: q.event_reference || null,
-              timeLimit: q.timeLimit || defaultTimeLimit,
-              completed: false,
-              visual: q.visual || null,
-              prone: q.prone || null,
-            } as QuizItem;
+    const loadTasks = async () => {
+      let finalTasks: QuizItem[] = [];
+      let loadingError: Error | null = null;
+
+      try {
+        if (is_training) {
+          // --- Training Mode (Load from train_quiz_data.json) ---
+          console.log("[TaskPanel Quiz] Mode: Training");
+          console.log(
+            "[TaskPanel Quiz] Attempting to load: train_quiz_data.json"
+          );
+          const trainingData = await loadDataFile<{ quiz: any[] }>(
+            "train_quiz_data.json"
+          );
+          console.log("[TaskPanel Quiz] Loaded training data:", trainingData);
+          finalTasks = processQuizData(trainingData?.quiz);
+          if (!finalTasks || finalTasks.length === 0) {
+            console.warn(
+              "[TaskPanel Quiz] Training quiz file loaded but yielded no tasks."
+            );
           }
-        );
+        } else {
+          // --- Real Task Mode (Load from public/quiz_data.json first) ---
+          console.log("[TaskPanel Quiz] Mode: Real Task");
+          console.log(
+            "[TaskPanel Quiz] Attempting to load primary: public/quiz_data.json"
+          );
+          try {
+            const publicQuizData = await loadDataFile<{
+              quiz: any[];
+              quiz_recall?: any[];
+            }>("quiz_data.json");
+            console.log(
+              "[TaskPanel Quiz] Loaded primary quiz data:",
+              publicQuizData
+            );
+            let combinedTasks = processQuizData(publicQuizData?.quiz);
+            if (
+              publicQuizData?.quiz_recall &&
+              Array.isArray(publicQuizData.quiz_recall)
+            ) {
+              const recallTasks = processQuizData(
+                publicQuizData.quiz_recall,
+                true
+              );
+              combinedTasks.unshift(...recallTasks);
+            }
+            console.log(
+              "[TaskPanel Quiz] Combined tasks from public file (before sort):",
+              combinedTasks
+            );
+            // Apply default sorting (or potentially a preference if needed)
+            finalTasks = sortTasks(
+              combinedTasks,
+              metadata?.quiz_order_preference || "default"
+            );
+            console.log(
+              `[TaskPanel Quiz] Sorting preference applied: ${
+                metadata?.quiz_order_preference || "default"
+              }`
+            );
+            if (!finalTasks || finalTasks.length === 0) {
+              console.warn(
+                "[TaskPanel Quiz] public/quiz_data.json loaded but yielded no tasks. Will attempt fallback generation."
+              );
+            }
+          } catch (publicLoadError) {
+            console.error(
+              "[TaskPanel Quiz] Failed to load public/quiz_data.json. Will attempt fallback generation.",
+              publicLoadError
+            );
+            // Don't set finalTasks here, let the fallback handle it.
+          }
+        }
 
-        // Combine recall and regular tasks
-        quizTasks.unshift(...recallTasks);
+        // --- Fallback to Auto-Generation (Only for Real Task Mode if primary load failed/yielded no tasks) ---
+        if (!is_training && (!finalTasks || finalTasks.length === 0)) {
+          console.log(
+            "[TaskPanel Quiz] Fallback: Auto-generating tasks based on events."
+          );
+          // Re-introduce the auto-generation logic
+          if (events && events.length > 0) {
+            finalTasks = [
+              {
+                id: "gen-1",
+                level: "Information Retrieval",
+                type: "single-input",
+                question: "What was the date of the first major event?",
+                answer: (() => {
+                  const timeValue = events[0].temporal_anchoring?.real_time;
+                  let dateInput: string | number | Date = "";
+                  if (Array.isArray(timeValue)) {
+                    dateInput = timeValue[0]; // Use start date of range
+                  } else if (timeValue) {
+                    dateInput = timeValue;
+                  }
+                  try {
+                    return new Date(dateInput).toLocaleDateString();
+                  } catch {
+                    return "Invalid Date"; // Fallback if parsing fails
+                  }
+                })(),
+                completed: false,
+                timeLimit: 60,
+                visual: null,
+                event_reference: null,
+                prone: null,
+              },
+              {
+                id: "gen-2",
+                level: "Information Retrieval",
+                type: "radio-options",
+                question: "How many total events are in this dataset?",
+                answer: events.length.toString(),
+                options: [
+                  (events.length - 2).toString(),
+                  (events.length - 1).toString(),
+                  events.length.toString(),
+                  (events.length + 1).toString(),
+                ],
+                completed: false,
+                timeLimit: 60,
+                visual: null,
+                event_reference: null,
+                prone: null,
+              },
+              // Add more generated questions if needed
+            ] as QuizItem[];
+            console.log(
+              "[TaskPanel Quiz] Generated fallback tasks:",
+              finalTasks
+            );
+          } else {
+            console.warn(
+              "[TaskPanel Quiz] Fallback generation failed: No events data available."
+            );
+            finalTasks = []; // Ensure it's an empty array
+          }
+        }
 
-        // Double check for any remaining duplicate IDs and make them unique
+        // Ensure unique IDs after combining/sorting/generating
         const seenIds = new Set<string>();
-        quizTasks.forEach((task, index) => {
+        finalTasks.forEach((task, index) => {
           if (seenIds.has(task.id)) {
-            task.id = `${task.id}_${index}`;
+            task.id = `${task.id}_dup_${index}`;
           }
           seenIds.add(task.id);
         });
+
+        console.log(
+          "[TaskPanel Quiz] Final processed tasks (before setting state):",
+          finalTasks
+        );
+
+        if (mounted) {
+          setTasks(finalTasks);
+        }
+      } catch (err) {
+        // Catch general errors during processing (outside specific file loads)
+        console.error(
+          "[TaskPanel Quiz] General error during task loading:",
+          err
+        );
+        loadingError = err instanceof Error ? err : new Error(String(err));
+        if (mounted) {
+          setTasks([]);
+        }
+      } finally {
+        if (mounted) {
+          setIsLoadingQuiz(false);
+          // Optionally set a specific quiz error state if needed
+          // setQuizError(loadingError);
+        }
       }
+    };
 
-      setTasks(quizTasks);
-      return;
-    }
+    loadTasks();
 
-    // If no quiz questions available in metadata, create auto-generated tasks
-    const generatedTasks: QuizItem[] = [
-      {
-        id: "1",
-        level: "Information Retrieval",
-        type: "single-input",
-        question: "What was the date of the first major event?",
-        answer: new Date(
-          events[0].date || events[0].temporal_anchoring?.real_time || ""
-        ).toLocaleDateString(),
-        completed: false,
-        timeLimit: 60, // 1 minute for simple questions
-        visual: null,
-        event_reference: null,
-        prone: null,
-      },
-      {
-        id: "2",
-        level: "Information Retrieval",
-        type: "radio-options",
-        question: "How many total events are in this dataset?",
-        answer: events.length.toString(),
-        options: [
-          (events.length - 2).toString(),
-          (events.length - 1).toString(),
-          events.length.toString(),
-          (events.length + 1).toString(),
-        ],
-        completed: false,
-        timeLimit: 60, // 1 minute for simple questions
-        visual: null,
-        event_reference: null,
-        prone: null,
-      },
-      {
-        id: "3",
-        level: "Information Retrieval",
-        type: "radio-options",
-        question: "What is the main topic of this dataset?",
-        answer: metadata?.topic || events[0].topic?.main_topic || "Conflict",
-        options: [
-          metadata?.topic || events[0].topic?.main_topic || "Conflict",
-          "Politics",
-          "Economics",
-          "Technology",
-        ],
-        completed: false,
-        timeLimit: 60, // 1 minute for simple questions
-        visual: null,
-        event_reference: null,
-        prone: null,
-      },
-      {
-        id: "4",
-        level: "Pattern Recognition",
-        type: "numbered-sequence",
-        question: "Arrange these events in chronological order:",
-        answer: "1,2,3,4",
-        options: {
-          events: events.slice(0, 4).map((event, index) => ({
-            id: index + 1,
-            text: event.short_text || event.text.slice(0, 100) + "...",
-          })),
-        },
-        completed: false,
-        timeLimit: 120, // 2 minutes for more complex questions
-        visual: null,
-        prone: null,
-      },
-      {
-        id: "5",
-        level: "Pattern Recognition",
-        type: "grid-matching",
-        question: "Match the entities with their roles in the events:",
-        answer:
-          events[0].entities
-            ?.map((entity: any) => `${entity.name}: ${entity.social_role}`)
-            .join(", ") || "",
-        options: {
-          leftItems: Array.from(
-            new Set(
-              events.flatMap(
-                (event) =>
-                  event.entities?.map((entity: any) => entity.name) || []
-              )
-            )
-          ),
-          rightItems: Array.from(
-            new Set(
-              events.flatMap(
-                (event) =>
-                  event.entities?.map((entity: any) => entity.social_role) || []
-              )
-            )
-          ),
-          leftLabel: "Entities",
-          rightLabel: "Roles",
-        },
-        completed: false,
-        timeLimit: 180, // 3 minutes for complex matching questions
-        visual: null,
-        prone: null,
-      },
-    ] as QuizItem[];
-
-    setTasks(generatedTasks);
-  }, [events, metadata, is_training]);
+    return () => {
+      mounted = false; // Cleanup function to prevent state updates
+    };
+  }, [is_training, metadata, events]); // Add events to dependency array for fallback generation
 
   // Record start timestamp when current task changes
   useEffect(() => {
@@ -713,8 +764,13 @@ export function TaskPanel({
           localStorage.setItem(`hasCompletedTraining-${scenarioPath}`, "true");
 
           // Instead of immediate redirect, show confirmation modal
-          const currentPath = window.location.pathname;
-          const mainPath = currentPath.replace("/training", "");
+          // Construct the path reliably using selectedScenario
+          const scenarioId =
+            selectedScenario?.replace("text-visual-", "") || "";
+          const mainPath = scenarioId
+            ? `/text-visual/${scenarioId}`
+            : "/dashboard"; // Fallback to dashboard if ID is missing
+
           setPendingRedirectPath(mainPath);
           setShowTrainingCompleteModal(true);
         } else {
@@ -897,12 +953,25 @@ export function TaskPanel({
     return !userAnswer.trim() || markedEventIds.length === 0;
   };
 
-  if (!currentTask) {
+  if (isLoadingQuiz) {
     return (
       <div className={`flex flex-col h-full bg-white p-2 ${className}`}>
         <h2 className="text-sm font-semibold mb-2">Tasks</h2>
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-xs text-gray-500">No tasks available</p>
+          <p className="text-xs text-gray-500">Loading quiz questions...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentTask && !isLoadingQuiz) {
+    return (
+      <div className={`flex flex-col h-full bg-white p-2 ${className}`}>
+        <h2 className="text-sm font-semibold mb-2">Tasks</h2>
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-xs text-gray-500">
+            No tasks available or failed to load.
+          </p>
         </div>
       </div>
     );

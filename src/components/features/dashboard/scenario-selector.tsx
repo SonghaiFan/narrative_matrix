@@ -7,11 +7,17 @@ import { ScenarioType } from "@/types/scenario";
 import { useCenterControl } from "@/contexts/center-control-context";
 
 export function ScenarioSelector() {
-  const { user, availableScenarios, setUserScenario } = useAuth();
+  const {
+    user,
+    availableScenarios,
+    setUserScenario,
+    isScenariosLoading,
+    isLoading: isAuthLoading,
+  } = useAuth();
   const router = useRouter();
   const { selectedScenario: centerScenario, setSelectedScenario } =
     useCenterControl();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isStartingScenario, setIsStartingScenario] = useState(false);
   const { setIsLoading: setDataLoading } = useCenterControl();
 
   // Get default scenario from user if available
@@ -30,12 +36,22 @@ export function ScenarioSelector() {
         : "text-visual-1")
   );
 
-  // Keep local state in sync with context's selected scenario
+  // Sync local state with context upon initial load or context change
   useEffect(() => {
-    if (centerScenario) {
+    // Ensure scenarios are loaded and context has a value before syncing
+    if (!isScenariosLoading && centerScenario) {
       setLocalSelectedScenario(centerScenario);
+    } else if (
+      !isScenariosLoading &&
+      !centerScenario &&
+      availableScenarios.length > 0
+    ) {
+      // If context is null after loading, set local state based on available scenarios
+      setLocalSelectedScenario(
+        getUserDefaultScenario() || (availableScenarios[0].id as ScenarioType)
+      );
     }
-  }, [centerScenario]);
+  }, [centerScenario, isScenariosLoading, availableScenarios]);
 
   // Update selection in both local state and contexts
   const handleScenarioSelect = (scenarioId: ScenarioType) => {
@@ -47,24 +63,63 @@ export function ScenarioSelector() {
   const startScenario = () => {
     if (!selectedScenario) return;
 
-    setIsLoading(true);
-    setDataLoading(true);
-    setUserScenario(selectedScenario);
+    setIsStartingScenario(true);
+    // Don't set global loading here, let the target page handle its own loading
+    // setDataLoading(true);
+    setUserScenario(selectedScenario); // Set in Auth context if needed
+    // Ensure global context is updated *before* checking flags/navigating
+    setSelectedScenario(selectedScenario);
 
-    // Extract the numeric ID from the scenario string (e.g., "text-visual-8" -> "8")
-    const scenarioNumericId = selectedScenario.replace("text-visual-", "");
-    // Construct the new dynamic route path
-    const dynamicRoute = `/text-visual/${scenarioNumericId}`;
+    // --- Check Completion Status ---
+    const introKey = `hasCompletedIntro-${selectedScenario}`;
+    const trainingKey = `hasCompletedTraining-${selectedScenario}`;
+    let hasCompletedIntro = false;
+    let hasCompletedTraining = false;
 
-    console.log(`Navigating to dynamic route: ${dynamicRoute}`);
-    // Push to the dynamic route instead of the static introduction page
-    router.push(dynamicRoute);
+    // Safely check localStorage
+    if (typeof window !== "undefined") {
+      hasCompletedIntro = localStorage.getItem(introKey) === "true";
+      hasCompletedTraining = localStorage.getItem(trainingKey) === "true";
+    }
+
+    // --- Determine Target Route ---
+    let targetRoute = "";
+    const numericId = selectedScenario.replace("text-visual-", "");
+
+    if (!hasCompletedIntro) {
+      targetRoute = `/text-visual/${numericId}/introduction`;
+      console.log(
+        `[Start Scenario] Intro not complete for ${selectedScenario}. Navigating to: ${targetRoute}`
+      );
+    } else if (!hasCompletedTraining) {
+      targetRoute = `/text-visual/${numericId}/training`;
+      console.log(
+        `[Start Scenario] Training not complete for ${selectedScenario}. Navigating to: ${targetRoute}`
+      );
+    } else {
+      targetRoute = `/text-visual/${numericId}`;
+      console.log(
+        `[Start Scenario] Intro & Training complete for ${selectedScenario}. Navigating to: ${targetRoute}`
+      );
+    }
+
+    // Navigate to the determined starting point
+    router.push(targetRoute);
+    // No need to set loading back to false, navigation occurs
   };
+
+  if (isAuthLoading || isScenariosLoading) {
+    return (
+      <div className="p-4 bg-gray-50 rounded-lg text-center">
+        <p className="text-gray-500">Loading available scenarios...</p>
+      </div>
+    );
+  }
 
   if (availableScenarios.length === 0) {
     return (
-      <div className="p-4 bg-gray-50 rounded-lg">
-        <p className="text-gray-500">Loading available scenarios...</p>
+      <div className="p-4 bg-gray-50 rounded-lg text-center">
+        <p className="text-red-500">Could not load scenarios.</p>
       </div>
     );
   }
@@ -114,9 +169,9 @@ export function ScenarioSelector() {
             type="button"
             className="w-full flex justify-center items-center px-4 py-3 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             onClick={startScenario}
-            disabled={isLoading}
+            disabled={isStartingScenario}
           >
-            {isLoading ? (
+            {isStartingScenario ? (
               <>
                 <svg
                   className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"

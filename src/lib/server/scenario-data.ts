@@ -4,7 +4,330 @@ import { Quiz, QuizItem } from "@/components/features/task/quiz-types";
 import { promises as fs } from "fs";
 import path from "path";
 
-// Helper function to read JSON files directly from the public directory
+// --- Hardcoded Metadata Map ---
+// Export the map so it can be imported elsewhere
+export const allScenarioMetadataMap: Record<string, any> = {
+  "text-visual-1": {
+    name: "Text with Visualizations 1",
+    description:
+      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+    icon: "BarChart3",
+    color: "#0891B2",
+    order: 2,
+    quizOrder: {
+      preferredOrder: [
+        "ir_e_n_",
+        "ir_e_v_",
+        "ir_t_n_",
+        "ir_t_v_",
+        "ir_tm_n_",
+        "ir_tm_v_",
+        "pr_e_n_",
+        "pr_e_v_",
+        "pr_t_n_",
+        "pr_t_v_",
+        "pr_tm_n_",
+        "pr_tm_v_",
+      ],
+      description:
+        "Order: IR first, PR second. Category order: entity, topic, time. Visual order: non-visual then visual.",
+    },
+  },
+  "text-visual-2": {
+    name: "Text with Visualizations 2",
+    description:
+      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+    icon: "BarChart3",
+    color: "#0891B2",
+    order: 2,
+    quizOrder: {
+      preferredOrder: [
+        "ir_e_v_",
+        "ir_e_n_",
+        "ir_t_v_",
+        "ir_t_n_",
+        "ir_tm_v_",
+        "ir_tm_n_",
+        "pr_e_v_",
+        "pr_e_n_",
+        "pr_t_v_",
+        "pr_t_n_",
+        "pr_tm_v_",
+        "pr_tm_n_",
+      ],
+      description:
+        "Order: IR first, PR second. Category order: entity, topic, time. Visual order: visual then non-visual.",
+    },
+  },
+  "text-visual-3": {
+    name: "Text with Visualizations 3",
+    description:
+      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+    icon: "BarChart3",
+    color: "#0891B2",
+    order: 2,
+    quizOrder: {
+      preferredOrder: [
+        "ir_e_n_",
+        "ir_e_v_",
+        "ir_tm_n_",
+        "ir_tm_v_",
+        "ir_t_n_",
+        "ir_t_v_",
+        "pr_e_n_",
+        "pr_e_v_",
+        "pr_tm_n_",
+        "pr_tm_v_",
+        "pr_t_n_",
+        "pr_t_v_",
+      ],
+      description:
+        "Order: IR first, PR second. Category order: entity, time, topic. Visual order: non-visual then visual.",
+    },
+  },
+  "text-visual-4": {
+    name: "Text with Visualizations 4",
+    description:
+      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+    icon: "BarChart3",
+    color: "#0891B2",
+    order: 2,
+    quizOrder: {
+      preferredOrder: [
+        "ir_e_v_",
+        "ir_e_n_",
+        "ir_tm_v_",
+        "ir_tm_n_",
+        "ir_t_v_",
+        "ir_t_n_",
+        "pr_e_v_",
+        "pr_e_n_",
+        "pr_tm_v_",
+        "pr_tm_n_",
+        "pr_t_v_",
+        "pr_t_n_",
+      ],
+      description:
+        "Order: IR first, PR second. Category order: entity, time, topic. Visual order: visual then non-visual.",
+    },
+  },
+  "text-visual-5": {
+    name: "Text with Visualizations 5",
+    description:
+      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+    icon: "BarChart3",
+    color: "#0891B2",
+    order: 2,
+    quizOrder: {
+      preferredOrder: [
+        "ir_t_n_",
+        "ir_t_v_",
+        "ir_e_n_",
+        "ir_e_v_",
+        "ir_tm_n_",
+        "ir_tm_v_",
+        "pr_t_n_",
+        "pr_t_v_",
+        "pr_e_n_",
+        "pr_e_v_",
+        "pr_tm_n_",
+        "pr_tm_v_",
+      ],
+      description:
+        "Order: IR first, PR second. Category order: topic, entity, time. Visual order: non-visual then visual.",
+    },
+  },
+  "text-visual-6": {
+    name: "Text with Visualizations 6",
+    description:
+      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+    icon: "BarChart3",
+    color: "#0891B2",
+    order: 2,
+    quizOrder: {
+      preferredOrder: [
+        "ir_t_v_",
+        "ir_t_n_",
+        "ir_e_v_",
+        "ir_e_n_",
+        "ir_tm_v_",
+        "ir_tm_n_",
+        "pr_t_v_",
+        "pr_t_n_",
+        "pr_e_v_",
+        "pr_e_n_",
+        "pr_tm_v_",
+        "pr_tm_n_",
+      ],
+      description:
+        "Order: IR first, PR second. Category order: topic, entity, time. Visual order: visual then non-visual.",
+    },
+  },
+  "text-visual-7": {
+    name: "Text with Visualizations 7",
+    description:
+      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+    icon: "BarChart3",
+    color: "#0891B2",
+    order: 2,
+    quizOrder: {
+      preferredOrder: [
+        "ir_t_n_",
+        "ir_t_v_",
+        "ir_tm_n_",
+        "ir_tm_v_",
+        "ir_e_n_",
+        "ir_e_v_",
+        "pr_t_n_",
+        "pr_t_v_",
+        "pr_tm_n_",
+        "pr_tm_v_",
+        "pr_e_n_",
+        "pr_e_v_",
+      ],
+      description:
+        "Order: IR first, PR second. Category order: topic, time, entity. Visual order: non-visual then visual.",
+    },
+  },
+  "text-visual-8": {
+    name: "Text with Visualizations 8",
+    description:
+      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+    icon: "BarChart3",
+    color: "#0891B2",
+    order: 2,
+    quizOrder: {
+      preferredOrder: [
+        "ir_t_v_",
+        "ir_t_n_",
+        "ir_tm_v_",
+        "ir_tm_n_",
+        "ir_e_v_",
+        "ir_e_n_",
+        "pr_t_v_",
+        "pr_t_n_",
+        "pr_tm_v_",
+        "pr_tm_n_",
+        "pr_e_v_",
+        "pr_e_n_",
+      ],
+      description:
+        "Order: IR first, PR second. Category order: topic, time, entity. Visual order: visual then non-visual.",
+    },
+  },
+  "text-visual-9": {
+    name: "Text with Visualizations 9",
+    description:
+      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+    icon: "BarChart3",
+    color: "#0891B2",
+    order: 2,
+    quizOrder: {
+      preferredOrder: [
+        "ir_tm_n_",
+        "ir_tm_v_",
+        "ir_e_n_",
+        "ir_e_v_",
+        "ir_t_n_",
+        "ir_t_v_",
+        "pr_tm_n_",
+        "pr_tm_v_",
+        "pr_e_n_",
+        "pr_e_v_",
+        "pr_t_n_",
+        "pr_t_v_",
+      ],
+      description:
+        "Order: IR first, PR second. Category order: time, entity, topic. Visual order: non-visual then visual.",
+    },
+  },
+  "text-visual-10": {
+    name: "Text with Visualizations 10",
+    description:
+      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+    icon: "BarChart3",
+    color: "#0891B2",
+    order: 2,
+    quizOrder: {
+      preferredOrder: [
+        "ir_tm_v_",
+        "ir_tm_n_",
+        "ir_e_v_",
+        "ir_e_n_",
+        "ir_t_v_",
+        "ir_t_n_",
+        "pr_tm_v_",
+        "pr_tm_n_",
+        "pr_e_v_",
+        "pr_e_n_",
+        "pr_t_v_",
+        "pr_t_n_",
+      ],
+      description:
+        "Order: IR first, PR second. Category order: time, entity, topic. Visual order: visual then non-visual.",
+    },
+  },
+  "text-visual-11": {
+    name: "Text with Visualizations 11",
+    description:
+      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+    icon: "BarChart3",
+    color: "#0891B2",
+    order: 2,
+    quizOrder: {
+      preferredOrder: [
+        "ir_tm_n_",
+        "ir_tm_v_",
+        "ir_t_n_",
+        "ir_t_v_",
+        "ir_e_n_",
+        "ir_e_v_",
+        "pr_tm_n_",
+        "pr_tm_v_",
+        "pr_t_n_",
+        "pr_t_v_",
+        "pr_e_n_",
+        "pr_e_v_",
+      ],
+      description:
+        "Order: IR first, PR second. Category order: time, topic, entity. Visual order: non-visual then visual.",
+    },
+  },
+  "text-visual-12": {
+    name: "Text with Visualizations 12",
+    description:
+      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+    icon: "BarChart3",
+    color: "#0891B2",
+    order: 2,
+    quizOrder: {
+      preferredOrder: [
+        "ir_tm_v_",
+        "ir_tm_n_",
+        "ir_t_v_",
+        "ir_t_n_",
+        "ir_e_v_",
+        "ir_e_n_",
+        "pr_tm_v_",
+        "pr_tm_n_",
+        "pr_t_v_",
+        "pr_t_n_",
+        "pr_e_v_",
+        "pr_e_n_",
+      ],
+      description:
+        "Order: IR first, PR second. Category order: time, topic, entity. Visual order: visual then non-visual.",
+    },
+  },
+};
+
+// Function to get metadata from the hardcoded map
+function getScenarioMetadataFromServer(scenarioId: string): any {
+  console.log(`[Server] Getting metadata for ${scenarioId} from map.`);
+  return allScenarioMetadataMap[scenarioId] || null;
+}
+
+// --- File Reading Helper (for data/quiz files) ---
 async function readPublicJsonFile<T>(fileName: string): Promise<T> {
   const filePath = path.join(process.cwd(), "public", fileName);
   try {
@@ -21,46 +344,17 @@ async function readPublicJsonFile<T>(fileName: string): Promise<T> {
   }
 }
 
-// --- Metadata Loading ---
-
-// Function to load scenario metadata directly from its JSON file on the server
-async function loadScenarioMetadata(scenarioId: string): Promise<any> {
-  // Construct the path to the metadata file
-  const filePath = path.join(
-    process.cwd(),
-    "src",
-    "app",
-    "(scenarios)",
-    scenarioId,
-    "metadata.json"
-  );
-  try {
-    const fileContent = await fs.readFile(filePath, "utf8");
-    return JSON.parse(fileContent);
-  } catch (error) {
-    console.error(`Error loading metadata for ${scenarioId}:`, error);
-    // Fallback or throw error? For now, return null.
-    // In a real app, you might want to load default metadata or throw a not found error.
-    return null;
-  }
-}
-
-// --- Data Processing (Server-Side Equivalent of processData) ---
-
-// Server-side function to load and process scenario data including quiz ordering
+// --- Data Processing (Updated to use hardcoded metadata) ---
 async function loadAndProcessScenarioData(
   scenarioId: string,
   isTraining = false
 ): Promise<NarrativeMatrixData | null> {
   try {
-    // 1. Load the base scenario data directly using fs
+    // 1. Load base data (unchanged)
     const baseDataSource = isTraining ? "train_data.json" : "data.json";
-    // Use the new helper function
     const rawData = await readPublicJsonFile<NarrativeMatrixData>(
       baseDataSource
     );
-
-    // Ensure rawData and metadata exist
     if (!rawData) {
       console.error(`Failed to load base data from ${baseDataSource}`);
       return null;
@@ -76,18 +370,17 @@ async function loadAndProcessScenarioData(
       };
     }
 
-    // 2. Load the corresponding scenario metadata
-    const scenarioMeta = await loadScenarioMetadata(scenarioId);
+    // 2. Get scenario metadata from the hardcoded map
+    const scenarioMeta = getScenarioMetadataFromServer(scenarioId);
 
-    // 3. Load the quiz data directly using fs
+    // 3. Load quiz data (unchanged)
     const quizDataSource = isTraining
       ? "train_quiz_data.json"
       : "quiz_data.json";
-    // Use the new helper function
     const quizData = await readPublicJsonFile<Quiz>(quizDataSource);
     const loadedQuizItems = quizData?.quiz || [];
 
-    // 4. Filter and sort quiz items based on metadata (if available)
+    // 4. Filter and sort quiz items (using scenarioMeta from map)
     let finalQuizItems = loadedQuizItems;
     if (
       scenarioMeta?.quizOrder?.preferredOrder &&
@@ -95,10 +388,9 @@ async function loadAndProcessScenarioData(
     ) {
       const preferredOrder = scenarioMeta.quizOrder.preferredOrder as string[];
       console.log(
-        `[Server Scenario: ${scenarioId}] Using preferred order:`,
+        `[Server Scenario: ${scenarioId}] Using preferred order from map:`,
         preferredOrder
       );
-
       finalQuizItems.sort((a, b) => {
         const findPosition = (q: QuizItem) => {
           const pattern = q.id || (q as any).pattern || "";
@@ -112,7 +404,7 @@ async function loadAndProcessScenarioData(
       });
     }
 
-    // 5. Assign the processed quiz data to the narrative data
+    // 5. Assign processed quiz data (unchanged)
     rawData.metadata.quiz = finalQuizItems;
 
     return rawData;
@@ -125,4 +417,5 @@ async function loadAndProcessScenarioData(
   }
 }
 
-export { loadScenarioMetadata, loadAndProcessScenarioData };
+// Export the new metadata getter and the processor
+export { getScenarioMetadataFromServer, loadAndProcessScenarioData };

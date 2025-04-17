@@ -34,8 +34,8 @@ export function IntroductionFactory({
         // If both intro and training completed, go to main scenario
         router.push(redirectPath);
       } else {
-        // If only intro completed, go to training
-        router.push(`${redirectPath}/training`);
+        // If only intro completed, go to training (redirectPath already includes /training)
+        router.push(redirectPath);
       }
     }
   }, [router, storageKey, redirectPath, scenarioType]);
@@ -43,8 +43,8 @@ export function IntroductionFactory({
   const handleComplete = () => {
     // Store completion in localStorage with scenario-specific key
     localStorage.setItem(storageKey, "true");
-    // After intro completion, redirect to training
-    router.push(`${redirectPath}/training`);
+    // After intro completion, redirect (redirectPath already includes /training)
+    router.push(redirectPath);
   };
 
   return (

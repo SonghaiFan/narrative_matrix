@@ -2,36 +2,44 @@
 
 import { ReactNode } from "react";
 import { ScenarioLayout } from "@/components/features/dashboard/scenario-layout";
-import { useScenarioData } from "@/contexts/use-scenario-data";
 import { useAuth } from "@/contexts/auth-context";
+// Import specific types needed
+import { NarrativeEvent, NarrativeMetadata } from "@/types/lite";
 
 interface ScenarioPageFactoryProps {
   title: string;
   is_training?: boolean;
   showSentimentLegend?: boolean;
+  // Accept metadata and events directly
+  metadata: NarrativeMetadata | null;
+  events: NarrativeEvent[] | null;
+  isLoading: boolean;
+  error: string | null;
   renderContent: (props: {
-    data: any;
+    // Pass metadata and events to renderContent
+    metadata: NarrativeMetadata | null;
+    events: NarrativeEvent[] | null;
     user: any;
-    isLoading: boolean;
-    error: string | null;
-    fetchData: (fileName?: string) => Promise<void>;
     is_training?: boolean;
   }) => ReactNode;
 }
 
 /**
- * Factory component for creating scenario pages with consistent data loading and error handling
+ * Factory component for creating scenario pages - relies on data passed via props.
  */
 export function ScenarioPageFactory({
   title,
   is_training = false,
   showSentimentLegend = true,
+  // Destructure new props
+  metadata,
+  events,
+  isLoading,
+  error,
   renderContent,
 }: ScenarioPageFactoryProps) {
-  const { data, isLoading, error, fetchData } = useScenarioData(is_training);
   const { user } = useAuth();
 
-  // Show error state
   if (error) {
     return (
       <ScenarioLayout
@@ -45,19 +53,13 @@ export function ScenarioPageFactory({
           <div className="text-gray-700 mb-4 text-center max-w-md">
             {error || "Failed to load data"}
           </div>
-          <button
-            onClick={() => fetchData()}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Try Again
-          </button>
         </div>
       </ScenarioLayout>
     );
   }
 
-  // If no data yet, show a placeholder
-  if (!data || !data.events) {
+  // Check isLoading OR if metadata/events are null/undefined
+  if (isLoading || !metadata || !events) {
     return (
       <ScenarioLayout
         title={title}
@@ -72,15 +74,15 @@ export function ScenarioPageFactory({
     );
   }
 
-  // Render the main content
   return (
     <ScenarioLayout
       title={title}
-      isLoading={isLoading}
+      isLoading={false}
       isTraining={is_training}
       showSentimentLegend={showSentimentLegend}
     >
-      {renderContent({ data, user, isLoading, error, fetchData, is_training })}
+      {/* Pass metadata, events, user, and is_training to renderContent */}
+      {renderContent({ metadata, events, user, is_training })}
     </ScenarioLayout>
   );
 }
