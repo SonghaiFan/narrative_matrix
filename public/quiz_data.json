@@ -1,23 +1,4 @@
 {
-  "quiz_recall": [
-    {
-      "id": "ir_e_n_1",
-      "question": "What political development occurred between Fatah and Hamas in 2014?",
-      "answer": "Fatah entered into a unity government with Hamas",
-      "level": "Information Retrieval",
-      "type": "radio-options",
-      "timeLimit": 60,
-      "visual": null,
-      "options": [
-        "Fatah entered into a unity government with Hamas",
-        "Fatah and Hamas split their territories",
-        "Fatah declared war on Hamas",
-        "Hamas surrendered control to Fatah"
-      ],
-      "completed": false,
-      "event_reference": 28
-    }
-  ],
   "quiz": [
     {
       "id": "ir_e_n_1",
