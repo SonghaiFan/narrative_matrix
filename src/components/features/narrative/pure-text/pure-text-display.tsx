@@ -95,7 +95,7 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
       const entityName = placeholders[placeholder];
       result = result.replace(
         new RegExp(placeholder, "g"),
-        `<span class="font-bold" style="color: ${PURE_TEXT_CONFIG.text.colors.entityHighlight}">${entityName}</span>`
+        `<span style="color: ${PURE_TEXT_CONFIG.text.colors.entityHighlight}">${entityName}</span>`
       );
     });
 

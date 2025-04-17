@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/contexts/auth-context";
 import { CenterControlProvider } from "@/contexts/center-control-context";
 import { TooltipProvider } from "@/contexts/tooltip-context";
+import { DisableContextMenu } from "@/components/features/narrative/shared/disable-context-menu";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +33,10 @@ export default function RootLayout({
       >
         <AuthProvider>
           <CenterControlProvider>
-            <TooltipProvider>{children}</TooltipProvider>
+            <TooltipProvider>
+              <DisableContextMenu />
+              {children}
+            </TooltipProvider>
           </CenterControlProvider>
         </AuthProvider>
       </body>
