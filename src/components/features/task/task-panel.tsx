@@ -303,10 +303,7 @@ export function TaskPanel({
 
         // --- Fallback to Auto-Generation (Only for Real Task Mode if primary load failed/yielded no tasks) ---
         if (!is_training && (!finalTasks || finalTasks.length === 0)) {
-          console.log(
-            "[TaskPanel Quiz] Fallback: Auto-generating tasks based on events."
-          );
-          // Re-introduce the auto-generation logic
+          // console.log("[TaskPanel Quiz] Fallback: Auto-generating tasks based on events.");
           if (events && events.length > 0) {
             finalTasks = [
               {
@@ -354,15 +351,10 @@ export function TaskPanel({
               },
               // Add more generated questions if needed
             ] as QuizItem[];
-            console.log(
-              "[TaskPanel Quiz] Generated fallback tasks:",
-              finalTasks
-            );
+            // console.log("[TaskPanel Quiz] Generated fallback tasks:", finalTasks);
           } else {
-            console.warn(
-              "[TaskPanel Quiz] Fallback generation failed: No events data available."
-            );
-            finalTasks = []; // Ensure it's an empty array
+            // console.warn("[TaskPanel Quiz] Fallback generation failed: No events data available.");
+            finalTasks = [];
           }
         }
 
@@ -375,10 +367,7 @@ export function TaskPanel({
           seenIds.add(task.id);
         });
 
-        console.log(
-          "[TaskPanel Quiz] Final processed tasks (before setting state):",
-          finalTasks
-        );
+        // console.log("[TaskPanel Quiz] Final processed tasks (before setting state):", finalTasks);
 
         if (mounted) {
           setTasks(finalTasks);
@@ -797,6 +786,9 @@ export function TaskPanel({
         }, 1000);
       }
     }
+
+    // console.log("[TaskPanel Submit] User Answer:", userAnswer);
+    // console.log("[TaskPanel Submit] Correct Answer:", currentTask.answer);
   };
 
   const handleRestartTasks = () => {
