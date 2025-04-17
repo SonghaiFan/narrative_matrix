@@ -19,6 +19,7 @@ interface NumberedSequenceProps {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  correctAnswer?: string;
 }
 
 interface DraggableEvent extends Event {
@@ -30,6 +31,7 @@ export function NumberedSequence({
   value,
   onChange,
   disabled = false,
+  correctAnswer,
 }: NumberedSequenceProps) {
   // Initialize events with their current positions
   const initialEvents: DraggableEvent[] = Array.isArray(options)

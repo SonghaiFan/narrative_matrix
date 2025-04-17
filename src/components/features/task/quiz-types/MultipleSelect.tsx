@@ -7,6 +7,7 @@ interface MultipleSelectProps {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  correctAnswer?: string;
 }
 
 export function MultipleSelect({

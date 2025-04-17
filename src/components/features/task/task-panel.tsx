@@ -25,7 +25,6 @@ import {
   GridMatching,
   MultipleSelect,
   QuizItem,
-  QuizType,
 } from "./quiz-types";
 import { useCenterControl } from "@/contexts/center-control-context";
 import React from "react";
@@ -144,6 +143,26 @@ export function TaskPanel({
             metadata?.studyType ||
             getStudyTypeFromPath(window.location.pathname);
           router.push(`/completion?total=${tasks.length}&type=${studyType}`);
+          return;
+        }
+
+        // Get progress and skip to last completed task + 1
+        const progress = getTaskProgress(user.id);
+        if (progress && progress.answers && !is_training) {
+          const lastCompletedIndex = progress.answers.reduce(
+            (maxIndex, answer, currentIndex) => {
+              return answer.completed ? currentIndex : maxIndex;
+            },
+            -1
+          );
+
+          // Skip to the next uncompleted task
+          if (
+            lastCompletedIndex >= 0 &&
+            lastCompletedIndex < tasks.length - 1
+          ) {
+            setCurrentTaskIndex(lastCompletedIndex + 1);
+          }
         }
       } catch (error) {
         console.error("Failed to parse stored user:", error);
@@ -1235,7 +1254,7 @@ export function TaskPanel({
                                         Correct Answer:
                                       </div>
                                       <TextInput
-                                        value={currentTask.answer}
+                                        value={(currentTask as QuizItem).answer}
                                         onChange={() => {}}
                                         disabled={true}
                                       />

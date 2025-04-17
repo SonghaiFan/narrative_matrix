@@ -19,6 +19,7 @@ interface GridMatchingProps {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  correctAnswer?: string;
 }
 
 interface MatchedPair {
@@ -85,6 +86,7 @@ export function GridMatching({
   value,
   onChange,
   disabled = false,
+  correctAnswer,
 }: GridMatchingProps) {
   const {
     leftItems = [],

@@ -3,7 +3,7 @@
     {
       "id": "ukraine-1",
       "question": "Which entities are involved in more than three events in the narrative?",
-      "answer": ["Ukraine", "Russia", "United States"],
+      "answer": "Ukraine, Russia, United States",
       "level": "Information Retrieval",
       "completed": false,
       "type": "multiple-select",
@@ -27,7 +27,7 @@
         "Over $407 billion",
         "Under $100 billion"
       ],
-      "answer": null,
+      "answer": "",
       "level": "Sanity Check",
       "completed": false,
       "type": "radio-options",
