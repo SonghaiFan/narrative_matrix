@@ -147,20 +147,29 @@ function CompletionContent() {
               Your Progress
             </h2>
             <div className="text-sm text-blue-700">
-              <p>Total Questions: {searchParams.get("total") || "N/A"}</p>
-              <p>Study Type: {searchParams.get("type") || "N/A"}</p>
-              <p>Time Spent: {searchParams.get("time") || "N/A"} seconds</p>
+              <p>Total Questions: {pageData.totalTasks}</p>
+              <p>Study Type: {pageData.studyType}</p>
+              <p>Time Spent: {pageData.sessionTime} seconds</p>
             </div>
           </div>
 
           {/* Navigation buttons */}
           <div className="mt-8 flex justify-end space-x-4">
-            <button
-              onClick={() => router.push("/")}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-            >
-              Return to Dashboard
-            </button>
+            {user?.role === "domain" ? (
+              <button
+                onClick={handleBackToDashboard}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                Return to Dashboard
+              </button>
+            ) : (
+              <button
+                onClick={() => router.push("/")}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                Return Home
+              </button>
+            )}
           </div>
         </div>
       </div>
