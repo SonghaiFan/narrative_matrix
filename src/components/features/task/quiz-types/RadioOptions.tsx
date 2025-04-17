@@ -37,10 +37,7 @@ export function RadioOptions({
                 ? "bg-blue-50/50 border-blue-100"
                 : "bg-white border-transparent hover:bg-gray-50/50",
               "ring-1 ring-gray-200 hover:ring-gray-300",
-              disabled && "opacity-50 cursor-not-allowed",
-              correctAnswer && option === correctAnswer
-                ? "border-green-200 bg-green-50"
-                : "border-gray-200"
+              disabled && "opacity-50 cursor-not-allowed"
             )}
           >
             <RadioGroup.Item
@@ -73,11 +70,6 @@ export function RadioOptions({
               )}
             >
               {option}
-              {correctAnswer && option === correctAnswer && (
-                <span className="text-xs text-green-600 font-medium mt-0.5">
-                  Correct Answer
-                </span>
-              )}
             </label>
           </div>
         );
