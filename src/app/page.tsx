@@ -20,61 +20,91 @@ export default function Home() {
         return;
       }
 
-      // For normal users, check if they've completed tasks
+      // Handle normal users (Quick Login)
       if (user.role === "normal") {
         const hasCompleted = hasCompletedTasks(user.id);
 
+        // 1. Check for full completion first
         if (hasCompleted) {
-          // If tasks are completed, redirect to completion page
           const progress = getTaskProgress(user.id);
           if (progress) {
+            console.log(
+              `[Login Redirect] Normal user (${user.id}) already completed all tasks. Redirecting to /completion.`
+            );
             router.push(
               `/completion?total=${progress.totalTasks}&correct=${progress.correctTasks}&type=${progress.studyType}`
             );
             return;
+          } else {
+            console.warn(
+              `[Login Redirect] User ${user.id} completed tasks but progress not found. Redirecting to root.`
+            );
+            router.push("/"); // Fallback if progress is missing
+            return;
           }
         }
 
-        // If not completed, redirect to their default scenario's introduction
-        if (user.defaultScenario) {
-          // First check if the scenario exists in available scenarios
-          const scenarioExists = availableScenarios.some(
-            (s) => s.id === user.defaultScenario
-          );
+        // 2. Determine target scenario and check progress for text-visual
+        const scenarioId =
+          user.defaultScenario ||
+          (availableScenarios.length > 0 ? availableScenarios[0].id : null);
 
-          // If the scenario exists, use it; otherwise use the first available scenario
-          const scenarioToUse = scenarioExists
-            ? user.defaultScenario
-            : availableScenarios.length > 0
-            ? availableScenarios[0].id
-            : "pure-text";
+        if (scenarioId && scenarioId.startsWith("text-visual-")) {
+          const numericId = scenarioId.replace("text-visual-", "");
+          const introKey = `hasCompletedIntro-${scenarioId}`;
+          const trainingKey = `hasCompletedTraining-${scenarioId}`;
+          let hasCompletedIntro = false;
+          let hasCompletedTraining = false;
 
-          // Map scenario types to their correct routes
-          const routeMap = {
-            "pure-text": "/pure-text/introduction",
-            "text-visual": "/text-visual/introduction",
-            "text-chat": "/text-chat/introduction",
-            mixed: "/mixed/introduction",
-          };
+          if (typeof window !== "undefined") {
+            hasCompletedIntro = localStorage.getItem(introKey) === "true";
+            hasCompletedTraining = localStorage.getItem(trainingKey) === "true";
+          }
 
-          router.push(routeMap[scenarioToUse] || "/pure-text/introduction");
-        } else {
-          // Fallback to first available scenario if no default scenario
-          const firstScenario =
-            availableScenarios.length > 0
-              ? availableScenarios[0].id
-              : "pure-text";
-          const routeMap = {
-            "pure-text": "/pure-text/introduction",
-            "text-visual": "/text-visual/introduction",
-            "text-chat": "/text-chat/introduction",
-            mixed: "/mixed/introduction",
-          };
+          let initialRedirectPath = "";
+          if (!hasCompletedIntro) {
+            initialRedirectPath = `/text-visual/${numericId}/introduction`;
+            console.log(
+              `[Login Redirect] Normal user (${user.id}) intro incomplete for ${scenarioId}. Redirecting to: ${initialRedirectPath}`
+            );
+          } else if (!hasCompletedTraining) {
+            initialRedirectPath = `/text-visual/${numericId}/training`;
+            console.log(
+              `[Login Redirect] Normal user (${user.id}) training incomplete for ${scenarioId}. Redirecting to: ${initialRedirectPath}`
+            );
+          } else {
+            initialRedirectPath = `/text-visual/${numericId}`;
+            console.log(
+              `[Login Redirect] Normal user (${user.id}) intro & training complete for ${scenarioId}. Redirecting to: ${initialRedirectPath}`
+            );
+          }
 
-          router.push(routeMap[firstScenario] || "/pure-text/introduction");
+          router.push(initialRedirectPath);
+          return;
         }
-      }
-    }
+
+        // 3. Fallback for non-text-visual or missing scenarios
+        console.log(
+          `[Login Redirect] Fallback redirect for user ${user.id}, scenario: ${scenarioId}`
+        );
+        if (scenarioId && !scenarioId.startsWith("text-visual-")) {
+          // Handle other scenario types if necessary (e.g., push to their intro)
+          // Example: if (scenarioId.startsWith('pure-text')) router.push('/pure-text/introduction');
+          console.warn(
+            `Unhandled scenario type for redirection: ${scenarioId}`
+          );
+          router.push("/"); // Default fallback to root
+          return;
+        }
+
+        // Final fallback if scenarioId was null
+        console.warn(
+          `User ${user.id} has no valid default scenario or available scenarios.`
+        );
+        router.push("/");
+        return;
+      } // end if user.role === 'normal'
+    } // end if isAuthenticated && user
   }, [isAuthenticated, isLoading, user, router, availableScenarios]);
 
   // Show loading state
