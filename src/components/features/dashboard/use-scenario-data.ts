@@ -3,7 +3,7 @@ import { useCenterControl } from "@/contexts/center-control-context";
 import { loadDataFile } from "@/lib/data-storage";
 import { NarrativeMatrixData, NarrativeMetadata } from "@/types/lite";
 import { useAuth } from "@/contexts/auth-context";
-import { Quiz } from "@/components/features/task/quiz-types";
+import { Quiz, QuizItem } from "@/components/features/task/quiz-types";
 
 // Direct imports of scenario metadata
 // These are statically analyzed by Next.js at build time
@@ -43,7 +43,8 @@ export function useScenarioData(isTraining = false) {
   const processData = useCallback(
     async (
       rawData: NarrativeMatrixData,
-      scenarioMeta: any
+      scenarioMeta: any,
+      scenarioId: string
     ): Promise<NarrativeMatrixData> => {
       // Create a copy of the data to modify
       const processedData = { ...rawData };
@@ -63,12 +64,15 @@ export function useScenarioData(isTraining = false) {
             author: "",
             publishDate: new Date().toISOString(),
             quiz: [],
-            quiz_recall: [],
           };
         }
 
-        processedData.metadata.quiz = quizData.quiz || [];
-        processedData.metadata.quiz_recall = quizData.quiz_recall || [];
+        // Filter quiz questions to only include Information Retrieval level
+        const filteredQuiz = (quizData.quiz || []).filter(
+          (q: QuizItem) => q.level === "Information Retrieval"
+        );
+
+        processedData.metadata.quiz = filteredQuiz;
 
         // If we have scenario metadata with quizOrder, use it to sort the quiz questions
         if (
@@ -81,29 +85,22 @@ export function useScenarioData(isTraining = false) {
             .preferredOrder as string[];
 
           console.log(
-            "🔄 Using preferred order from scenario metadata:",
+            `[Scenario: ${scenarioId}] Preferred order:`,
             preferredOrder
           );
-
-          // Log original question order before sorting
           console.log(
-            "📊 Original quiz question order:",
-            processedData.metadata.quiz.map((q) => q.id || (q as any).pattern)
+            `[Scenario: ${scenarioId}] Quiz items before ordering:`,
+            processedData.metadata.quiz.map((q) => q.id)
           );
 
-          // Sort the quiz questions based on the preferred order
           processedData.metadata.quiz.sort((a, b) => {
-            // Find the position of each question in the preferred order
-            const findPosition = (q: any) => {
-              // Try to match by ID or pattern
+            const findPosition = (q: QuizItem) => {
               const pattern = q.id || (q as any).pattern || "";
-              // Find the first matching pattern in preferredOrder
               const index = preferredOrder.findIndex(
-                (p: string) =>
+                (p) =>
                   pattern.toString().startsWith(p) ||
                   pattern.toString().includes(p)
               );
-              // If no match found, place at the end
               return index === -1 ? Number.MAX_SAFE_INTEGER : index;
             };
 
@@ -111,20 +108,13 @@ export function useScenarioData(isTraining = false) {
           });
 
           console.log(
-            "✅ Quiz questions reordered according to preferredOrder:",
-            processedData.metadata.quiz.map((q) => q.id || (q as any).pattern)
-          );
-        } else {
-          console.log(
-            "⚠️ No preferred order found in scenario metadata or no quiz questions to sort"
+            `[Scenario: ${scenarioId}] Quiz items after ordering:`,
+            processedData.metadata.quiz.map((q) => q.id)
           );
         }
       } catch (error) {
-        console.error("❌ Failed to load quiz data:", error);
-        // Set empty arrays if quiz data loading fails
         if (processedData.metadata) {
           processedData.metadata.quiz = [];
-          processedData.metadata.quiz_recall = [];
         }
       }
 
@@ -135,27 +125,41 @@ export function useScenarioData(isTraining = false) {
 
   // Fetch data function
   const fetchData = async () => {
+    console.log("fetchData called with:", {
+      selectedScenario,
+      currentScenario,
+      isTraining,
+    });
     setIsLoading(true);
     setError(null);
 
     try {
       // Get the current scenario ID, prioritizing center-control context, then auth context
       const scenarioId = selectedScenario || currentScenario || "";
-      console.log("🚀 Loading data for scenario:", scenarioId);
+      console.log("Selected scenarioId:", scenarioId, {
+        fromSelected: selectedScenario,
+        fromCurrent: currentScenario,
+      });
 
-      // Get scenario metadata directly from our mapping - no network request
+      if (!scenarioId) {
+        console.warn("No scenario ID found");
+        return;
+      }
+
       const scenarioMeta = scenarioId ? getScenarioMetadata(scenarioId) : null;
+      console.log("Scenario metadata for", scenarioId, ":", scenarioMeta);
 
-      // Load the main data file
       const dataSource = isTraining ? "train_data.json" : "data.json";
-      console.log(`📂 Loading data file: ${dataSource}`);
       const loadedData = await loadDataFile<NarrativeMatrixData>(dataSource);
 
-      // Process the loaded data with the scenario metadata for ordering
-      const processedData = await processData(loadedData, scenarioMeta);
+      const processedData = await processData(
+        loadedData,
+        scenarioMeta,
+        scenarioId
+      );
       setData(processedData);
     } catch (error) {
-      console.error("❌ Failed to load data:", error);
+      console.error("Error in fetchData:", error);
       setError(error instanceof Error ? error.message : "Failed to load data");
     } finally {
       setIsLoading(false);
@@ -164,11 +168,13 @@ export function useScenarioData(isTraining = false) {
 
   // Load initial data when the component mounts or scenario changes
   useEffect(() => {
+    console.log("Scenario selection changed:", {
+      authLoading,
+      isTraining,
+      selectedScenario,
+      currentScenario,
+    });
     if (!authLoading) {
-      console.log(
-        "Loading data with scenario from context:",
-        selectedScenario || currentScenario
-      );
       fetchData();
     }
   }, [authLoading, isTraining, selectedScenario, currentScenario]);

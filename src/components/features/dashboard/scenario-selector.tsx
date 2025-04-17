@@ -48,19 +48,9 @@ export function ScenarioSelector() {
     if (!selectedScenario) return;
 
     setIsLoading(true);
-
-    // Trigger data reload by setting loading state
-    // This will cause any components using useCenterControl to re-fetch data
     setDataLoading(true);
-
-    // Update user's default scenario - this updates the auth context
     setUserScenario(selectedScenario);
-
-    // Also update center context for consistency
     setSelectedScenario(selectedScenario);
-
-    // Map scenario types to their introduction route - all go to the same page
-    // The different scenario IDs only control quiz ordering
     router.push("/text-visual/introduction");
   };
 
@@ -100,10 +90,7 @@ export function ScenarioSelector() {
               }`}
             >
               <div className="flex flex-col h-full">
-                <div
-                  className="font-medium text-sm"
-                  style={{ color: scenario.metadata.color }}
-                >
+                <div className="font-medium text-sm text-gray-900">
                   {scenario.metadata.name}
                 </div>
                 <div className="text-xs text-gray-500 mt-1">
