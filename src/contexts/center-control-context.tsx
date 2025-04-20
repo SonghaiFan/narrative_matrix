@@ -8,6 +8,8 @@ import {
   useState,
   ReactNode,
 } from "react";
+import { saveEventInteraction } from "@/lib/firebase-operations";
+import { useAuth } from "./auth-context";
 
 // Import ScenarioType
 import { ScenarioType } from "@/types/scenario";
@@ -62,13 +64,16 @@ export function CenterControlProvider({
   children: ReactNode;
   initialData?: NarrativeMatrixData | null;
 }) {
+  const { user } = useAuth();
   // Data state
   const [data, setDataState] = useState<NarrativeMatrixData | null>(
     initialData
   );
 
   // Selection states
-  const [focusedEventId, setfocusedEventId] = useState<number | null>(null);
+  const [focusedEventId, setfocusedEventIdState] = useState<number | null>(
+    null
+  );
   const [markedEventIds, setMarkedEventIds] = useState<number[]>([]);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
@@ -99,16 +104,42 @@ export function CenterControlProvider({
     // Don't clear scenario selection as it's a higher-level selection
   }, []);
 
-  // Toggle marked state for an event
-  const toggleMarkedEvent = useCallback((id: number) => {
-    setMarkedEventIds((prev) => {
-      if (prev.includes(id)) {
-        return prev.filter((eventId) => eventId !== id);
-      } else {
-        return [...prev, id];
+  // Set focused event with tracking
+  const setfocusedEventId = useCallback(
+    (id: number | null) => {
+      if (id !== null && user) {
+        saveEventInteraction(user.id, user.sessionId || user.id, {
+          eventId: id,
+          type: "focus",
+          timestamp: Date.now(),
+        });
       }
-    });
-  }, []);
+      setfocusedEventIdState(id);
+    },
+    [user]
+  );
+
+  // Toggle marked state for an event with tracking
+  const toggleMarkedEvent = useCallback(
+    (id: number) => {
+      setMarkedEventIds((prev) => {
+        const isMarked = prev.includes(id);
+        if (user) {
+          saveEventInteraction(user.id, user.sessionId || user.id, {
+            eventId: id,
+            type: isMarked ? "unmark" : "mark",
+            timestamp: Date.now(),
+          });
+        }
+        if (isMarked) {
+          return prev.filter((eventId) => eventId !== id);
+        } else {
+          return [...prev, id];
+        }
+      });
+    },
+    [user]
+  );
 
   // Clear all marked events
   const clearMarkedEvents = useCallback(() => {

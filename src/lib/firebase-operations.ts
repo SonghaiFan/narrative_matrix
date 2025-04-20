@@ -8,9 +8,6 @@ import {
   Timestamp,
   addDoc,
   serverTimestamp,
-  getDocs,
-  query,
-  where,
 } from "firebase/firestore";
 
 // User operations
@@ -121,7 +118,6 @@ export async function saveQuizResponse(
   quizData: {
     question: string;
     userAnswer: string | string[];
-    completionTime: number;
     markedEvents: number[];
     isSkipped: boolean;
     isTimeUp: boolean;
@@ -152,8 +148,9 @@ export async function saveUserSession(
   isTraining: boolean = false
 ) {
   try {
-    const sessionsRef = collection(db, "sessions");
-    const sessionDoc = await addDoc(sessionsRef, {
+    // Use the sessionId as the document ID
+    const sessionRef = doc(db, "sessions", sessionId);
+    await setDoc(sessionRef, {
       prolificId,
       sessionId,
       startTime: serverTimestamp(),
@@ -162,7 +159,7 @@ export async function saveUserSession(
       loginTime: Date.now(),
     });
     console.log("User session saved successfully");
-    return sessionDoc.id;
+    return sessionId; // Return the same sessionId since we used it as the document ID
   } catch (error) {
     console.error("Error saving user session:", error);
     return null;
@@ -171,67 +168,40 @@ export async function saveUserSession(
 
 // Function to update session with completion time and feedback
 export async function updateSessionCompletion(
-  prolificId: string,
+  sessionId: string,
   feedback: {
-    visualizationTasks: {
-      frequency: {
-        alwaysUsed: number;
-        sometimesUsed: number;
-        rarelyUsed: number;
-      };
-      helpfulness: {
-        veryHelpful: number;
-        somewhatHelpful: number;
-        notHelpful: number;
-      };
-      preferredMethod: {
-        visualization: number;
-        text: number;
-        both: number;
-      };
+    visualizationUsage: {
+      frequency: number;
+      helpfulness: number;
+      preference: number;
     };
-    textOnlyTasks: {
-      difficulty: number;
-      wouldHaveBenefitedFromVisualization: number;
+    experience: {
+      withVisualization: number;
+      withoutVisualization: number;
+      overall: number;
     };
-    overall: {
-      visualizationPreference: "always" | "sometimes" | "never";
-      visualizationImpact: "positive" | "neutral" | "negative";
-      suggestions: string;
+    visualizationRatings: {
+      entity: number;
+      topic: number;
+      time: number;
     };
-    priorExperience: number;
-    comments: string;
+    comments?: string;
   }
 ) {
   try {
-    const sessionsRef = collection(db, "sessions");
-    const q = query(
-      sessionsRef,
-      where("prolificId", "==", prolificId),
-      where("status", "==", "in_progress")
-    );
-    const querySnapshot = await getDocs(q);
-
-    if (querySnapshot.empty) {
-      throw new Error("No active session found");
-    }
-
-    const sessionDoc = querySnapshot.docs[0];
-    await updateDoc(sessionDoc.ref, {
-      status: "completed",
+    const sessionRef = doc(db, "sessions", sessionId);
+    await updateDoc(sessionRef, {
       endTime: serverTimestamp(),
+      status: "completed",
+      completionTime: Date.now(),
       feedback: {
-        visualizationTasks: feedback.visualizationTasks,
-        textOnlyTasks: feedback.textOnlyTasks,
-        overall: feedback.overall,
-        priorExperience: feedback.priorExperience,
-        comments: feedback.comments,
+        ...feedback,
         timestamp: serverTimestamp(),
       },
     });
+    console.log("Session completion updated successfully");
   } catch (error) {
     console.error("Error updating session completion:", error);
-    throw error;
   }
 }
 
@@ -242,9 +212,9 @@ export async function saveTaskTiming(
   taskData: {
     taskId: string;
     isTraining: boolean;
-    startTime: number;
-    endTime: number;
-    totalTime: number;
+    startTime: number; // timestamp in milliseconds
+    endTime: number; // timestamp in milliseconds
+    totalTime: number; // duration in seconds
   }
 ) {
   try {
@@ -258,5 +228,71 @@ export async function saveTaskTiming(
     console.log("Task timing saved successfully");
   } catch (error) {
     console.error("Error saving task timing:", error);
+  }
+}
+
+// Function to save study feedback
+export async function saveFeedback(
+  userId: string,
+  feedback: {
+    visualizationUsage: {
+      frequency: number;
+      helpfulness: number;
+      preference: number;
+    };
+    experience: {
+      withVisualization: number;
+      withoutVisualization: number;
+      overall: number;
+    };
+    visualizationRatings: {
+      entity: number;
+      topic: number;
+      time: number;
+    };
+    comments?: string;
+  }
+) {
+  try {
+    const feedbackRef = collection(db, "feedback");
+    await addDoc(feedbackRef, {
+      userId,
+      feedback,
+      timestamp: serverTimestamp(),
+      deviceInfo: {
+        userAgent: navigator.userAgent,
+        screenSize: `${window.innerWidth}x${window.innerHeight}`,
+      },
+    });
+    console.log("Feedback saved successfully");
+    return true;
+  } catch (error) {
+    console.error("Error saving feedback:", error);
+    throw error;
+  }
+}
+
+// Function to save event interaction history
+export async function saveEventInteraction(
+  prolificId: string,
+  sessionId: string,
+  interactionData: {
+    eventId: number;
+    type: "focus" | "mark" | "unmark";
+    timestamp: number;
+    taskId?: string;
+  }
+) {
+  try {
+    const eventInteractionsRef = collection(db, "eventInteractions");
+    await addDoc(eventInteractionsRef, {
+      prolificId,
+      sessionId,
+      ...interactionData,
+      timestamp: serverTimestamp(),
+    });
+    console.log("Event interaction saved successfully");
+  } catch (error) {
+    console.error("Error saving event interaction:", error);
   }
 }

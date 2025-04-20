@@ -13,6 +13,7 @@ import {
 interface BaseUser {
   id: string;
   username: string;
+  sessionId?: string;
 }
 
 interface DomainUser extends BaseUser {
@@ -117,6 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           id: "1",
           username: "domain",
           role: "domain",
+          sessionId,
         };
         setLocalStorage("user", JSON.stringify(domainUser));
         setAuthState({
@@ -134,10 +136,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         scenarioId = `text-visual-${sessionId}` as ScenarioType;
       }
 
-      // Save user session to Firebase
+      // Save user session to Firebase and get the session ID
+      let finalSessionId = sessionId;
       if (sessionId) {
-        await saveUserSession(username, sessionId);
+        const savedSessionId = await saveUserSession(username, sessionId);
+        if (savedSessionId) {
+          finalSessionId = savedSessionId;
+        }
       }
+
+      // Create normal user in Firestore
+      await createUser(username, finalSessionId || username);
 
       // All other users are normal users
       const normalUser: NormalUser = {
@@ -145,6 +154,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         username,
         role: "normal",
         defaultScenario: scenarioId,
+        sessionId: finalSessionId,
       };
 
       setLocalStorage("user", JSON.stringify(normalUser));
@@ -199,9 +209,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Update last active timestamp periodically
   useEffect(() => {
-    if (authState.user && authState.user.role === "normal") {
+    const user = authState.user;
+    if (user && user.role === "normal") {
       const interval = setInterval(() => {
-        updateUserLastActive(authState.user.id).catch(console.error);
+        updateUserLastActive(user.id).catch(console.error);
       }, 300000); // Every 5 minutes
 
       return () => clearInterval(interval);

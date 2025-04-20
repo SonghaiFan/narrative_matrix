@@ -34,41 +34,6 @@ import { loadDataFile } from "@/lib/data-storage";
 import { NarrativeEvent, NarrativeMetadata } from "@/types/lite";
 import { saveQuizResponse, saveTaskTiming } from "@/lib/firebase-operations";
 
-interface Task {
-  id: string;
-  level?: string;
-  question: string;
-  answer: string;
-  completed: boolean;
-  userAnswer?: string;
-  userEventReference?: number | number[] | null;
-  startTimestamp?: number;
-  submitTimestamp?: number;
-  completionTime?: number;
-  timeLimit: number;
-  event_reference?: number | number[] | null;
-  type?:
-    | "radio-options"
-    | "numbered-sequence"
-    | "grid-matching"
-    | "multiple-select"
-    | "single-input";
-  options?:
-    | string[]
-    | {
-        events?: Array<{ id: number; text: string }>;
-        countries?: string[];
-        roles?: string[];
-        causes?: string[];
-        effects?: string[];
-        leftItems?: string[];
-        rightItems?: string[];
-        leftLabel?: string;
-        rightLabel?: string;
-      };
-  prone?: string;
-}
-
 interface TaskPanelProps {
   events: NarrativeEvent[];
   metadata: NarrativeMetadata;
@@ -698,12 +663,6 @@ export function TaskPanel({
     const taskIndex = updatedTasks.findIndex((t) => t.id === currentTask.id);
 
     if (taskIndex !== -1) {
-      // Calculate completion time
-      const completionTime =
-        currentTask.startTimestamp && currentTask.submitTimestamp
-          ? currentTask.submitTimestamp - currentTask.startTimestamp
-          : 0;
-
       // Mark the task as completed and store the user's answer with submission timestamp
       updatedTasks[taskIndex] = {
         ...updatedTasks[taskIndex],
@@ -720,8 +679,8 @@ export function TaskPanel({
 
       setTasks(updatedTasks);
 
-      // Save to Firebase if we have a userId and not in training mode
-      if (userId && !is_training) {
+      // Save to Firebase if we have a userId
+      if (userId) {
         try {
           // Save task timing
           saveTaskTiming(userId, userId, {
@@ -729,7 +688,9 @@ export function TaskPanel({
             isTraining: is_training,
             startTime: currentTask.startTimestamp || Date.now(),
             endTime: Date.now(),
-            totalTime: completionTime,
+            totalTime: Math.round(
+              (Date.now() - (currentTask.startTimestamp || Date.now())) / 1000
+            ),
           });
 
           // Save quiz response with enhanced data
@@ -739,7 +700,6 @@ export function TaskPanel({
             {
               question: currentTask.question,
               userAnswer: updatedTasks[taskIndex].userAnswer || "",
-              completionTime: completionTime,
               markedEvents: markedEventIds,
               isSkipped,
               isTimeUp: isQuestionTimeUp,
