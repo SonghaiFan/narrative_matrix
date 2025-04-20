@@ -143,8 +143,6 @@ export function AppHeader({
 
   // Check if current path is dashboard
   const isDashboard = pathname === "/dashboard";
-  // Check if current path is a completion page
-  const isCompletionPage = pathname.startsWith("/completion");
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -296,14 +294,9 @@ export function AppHeader({
                   {user?.name?.charAt(0).toUpperCase() || "U"}
                 </span>
               </div>
-              <FontAwesomeIcon
-                icon={faChevronDown}
-                className="ml-1 text-gray-400 group-hover:text-gray-600"
-                size="xs"
-              />
             </button>
 
-            {dropdownOpen && (
+            {dropdownOpen && user?.role === "domain" && (
               <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 z-[9999] border border-gray-200">
                 <div className="px-4 py-2 text-xs text-gray-500">
                   Signed in as{" "}
@@ -329,7 +322,7 @@ export function AppHeader({
                 )}
 
                 {/* User Data Toggle - Only for domain users */}
-                {isDashboard && user?.role === "domain" && onToggleUserData && (
+                {isDashboard && onToggleUserData && (
                   <div className="px-3 py-1">
                     <button
                       onClick={() => {

@@ -4,7 +4,50 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { getTaskProgress } from "@/lib/task-progress";
-import { CheckCircle, Copy, ArrowLeft, Send } from "lucide-react";
+import { CheckCircle, Copy, ArrowLeft } from "lucide-react";
+import { updateSessionCompletion } from "@/lib/firebase-operations";
+import { StudyFeedbackForm } from "./feedback-form";
+
+interface VisualizationTaskFeedback {
+  frequency: {
+    alwaysUsed: number;
+    sometimesUsed: number;
+    rarelyUsed: number;
+  };
+  helpfulness: {
+    veryHelpful: number;
+    somewhatHelpful: number;
+    notHelpful: number;
+  };
+  preferredMethod: {
+    visualization: number;
+    text: number;
+    both: number;
+  };
+}
+
+type FrequencyKey = keyof VisualizationTaskFeedback["frequency"];
+type HelpfulnessKey = keyof VisualizationTaskFeedback["helpfulness"];
+type PreferredMethodKey = keyof VisualizationTaskFeedback["preferredMethod"];
+
+interface TextOnlyTaskFeedback {
+  difficulty: number;
+  wouldHaveBenefitedFromVisualization: number;
+}
+
+interface OverallFeedback {
+  visualizationPreference: "always" | "sometimes" | "never";
+  visualizationImpact: "positive" | "neutral" | "negative";
+  suggestions: string;
+}
+
+interface FeedbackState {
+  visualizationTasks: VisualizationTaskFeedback;
+  textOnlyTasks: TextOnlyTaskFeedback;
+  overall: OverallFeedback;
+  priorExperience: number;
+  comments: string;
+}
 
 function CompletionContent() {
   const router = useRouter();
@@ -19,7 +62,6 @@ function CompletionContent() {
   const [loading, setLoading] = useState(true);
   const [codeCopied, setCodeCopied] = useState(false);
   const [currentStep, setCurrentStep] = useState<"main" | "feedback">("main");
-  const [feedback, setFeedback] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
 
@@ -75,34 +117,21 @@ function CompletionContent() {
     setTimeout(() => setCodeCopied(false), 2000);
   };
 
-  const handleFeedbackChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setFeedback(e.target.value);
-  };
-
   const handleNext = () => {
     if (currentStep === "main") {
       setCurrentStep("feedback");
-    } else {
-      handleSubmitAll();
     }
   };
 
-  const handleSubmitAll = async () => {
+  const handleSubmitFeedback = async (feedback: any) => {
     setIsSubmitting(true);
     try {
-      // Save survey data to local storage
-      const surveyData = {
-        userId: user?.id,
-        feedback,
-        timestamp: new Date().toISOString(),
-      };
-      localStorage.setItem(
-        `survey_results_${user?.id}`,
-        JSON.stringify(surveyData)
-      );
+      if (user?.id) {
+        await updateSessionCompletion(user.id, feedback);
+      }
       setIsComplete(true);
     } catch (error) {
-      console.error("Failed to submit survey data:", error);
+      console.error("Error submitting feedback:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -196,61 +225,6 @@ function CompletionContent() {
     </>
   );
 
-  const renderFeedbackSection = () => (
-    <div className="space-y-6">
-      <div className="text-center mb-4">
-        <h2 className="text-lg font-medium text-gray-900">Feedback</h2>
-        <p className="text-sm text-gray-500">
-          Please share any additional thoughts about your experience:
-        </p>
-      </div>
-
-      <textarea
-        value={feedback}
-        onChange={handleFeedbackChange}
-        placeholder="Please provide any additional feedback about your experience with the system..."
-        className="w-full h-40 p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-      />
-
-      <button
-        onClick={handleSubmitAll}
-        disabled={isSubmitting}
-        className="w-full py-2 px-4 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 flex items-center justify-center mt-6 disabled:bg-blue-300"
-      >
-        {isSubmitting ? (
-          <span className="inline-flex items-center">
-            <svg
-              className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-            Submitting...
-          </span>
-        ) : (
-          <span className="inline-flex items-center">
-            <Send className="h-4 w-4 mr-1" />
-            Submit Feedback
-          </span>
-        )}
-      </button>
-    </div>
-  );
-
   const renderSuccessContent = () => (
     <div className="text-center">
       <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
@@ -302,11 +276,16 @@ function CompletionContent() {
             currentStep === "main" ? "max-w-md mx-auto" : "max-w-lg mx-auto"
           } w-full`}
         >
-          {isComplete
-            ? renderSuccessContent()
-            : currentStep === "main"
-            ? renderMainContent()
-            : renderFeedbackSection()}
+          {isComplete ? (
+            renderSuccessContent()
+          ) : currentStep === "main" ? (
+            renderMainContent()
+          ) : (
+            <StudyFeedbackForm
+              onSubmit={handleSubmitFeedback}
+              isSubmitting={isSubmitting}
+            />
+          )}
         </div>
       </div>
     </div>

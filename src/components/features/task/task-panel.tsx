@@ -32,6 +32,7 @@ import { TextInput } from "./quiz-types/TextInput";
 import { useTaskStore } from "@/store/task-store";
 import { loadDataFile } from "@/lib/data-storage";
 import { NarrativeEvent, NarrativeMetadata } from "@/types/lite";
+import { saveQuizResponse, saveTaskTiming } from "@/lib/firebase-operations";
 
 interface Task {
   id: string;
@@ -697,6 +698,12 @@ export function TaskPanel({
     const taskIndex = updatedTasks.findIndex((t) => t.id === currentTask.id);
 
     if (taskIndex !== -1) {
+      // Calculate completion time
+      const completionTime =
+        currentTask.startTimestamp && currentTask.submitTimestamp
+          ? currentTask.submitTimestamp - currentTask.startTimestamp
+          : 0;
+
       // Mark the task as completed and store the user's answer with submission timestamp
       updatedTasks[taskIndex] = {
         ...updatedTasks[taskIndex],
@@ -712,6 +719,40 @@ export function TaskPanel({
       };
 
       setTasks(updatedTasks);
+
+      // Save to Firebase if we have a userId and not in training mode
+      if (userId && !is_training) {
+        try {
+          // Save task timing
+          saveTaskTiming(userId, userId, {
+            taskId: currentTask.id,
+            isTraining: is_training,
+            startTime: currentTask.startTimestamp || Date.now(),
+            endTime: Date.now(),
+            totalTime: completionTime,
+          });
+
+          // Save quiz response with enhanced data
+          saveQuizResponse(
+            userId,
+            userId, // Using user ID as session ID
+            {
+              question: currentTask.question,
+              userAnswer: updatedTasks[taskIndex].userAnswer || "",
+              completionTime: completionTime,
+              markedEvents: markedEventIds,
+              isSkipped,
+              isTimeUp: isQuestionTimeUp,
+              isTraining: is_training,
+              taskId: currentTask.id,
+              startTime: currentTask.startTimestamp || Date.now(),
+              endTime: Date.now(),
+            }
+          );
+        } catch (error) {
+          console.error("Failed to save task data to Firebase:", error);
+        }
+      }
 
       // Update progress in localStorage if we have a userId and not in training mode
       if (userId && !is_training) {
@@ -786,9 +827,6 @@ export function TaskPanel({
         }, 1000);
       }
     }
-
-    // console.log("[TaskPanel Submit] User Answer:", userAnswer);
-    // console.log("[TaskPanel Submit] Correct Answer:", currentTask.answer);
   };
 
   const handleRestartTasks = () => {

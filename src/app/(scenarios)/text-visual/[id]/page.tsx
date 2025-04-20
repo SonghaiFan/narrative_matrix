@@ -4,7 +4,7 @@ import {
   getScenarioMetadataFromServer,
 } from "@/lib/server/scenario-data";
 import { notFound } from "next/navigation";
-import { ScenarioContextSync } from "@/components/features/scenario-context-sync";
+import { ScenarioContextSync } from "@/contexts/scenario-context-sync";
 
 // Define the list of available scenario IDs (excluding the 'text-visual-' prefix)
 // Based on the known directories: 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12

@@ -1,18 +1,65 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { LoginForm } from "@/components/features/auth/login-form";
 import { useAuth } from "@/contexts/auth-context";
 import { hasCompletedTasks, getTaskProgress } from "@/lib/task-progress";
+import { ConsentForm } from "@/components/features/auth/consent-from";
 
 export default function Home() {
-  const { user, isAuthenticated, isLoading, availableScenarios } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [hasConsented, setHasConsented] = useState(false);
+  const [hasExplicitlyLoggedIn, setHasExplicitlyLoggedIn] = useState(false);
 
-  // Redirect users based on role and task completion status
+  // Get Prolific parameters from URL
+  const prolificId = searchParams.get("PROLIFIC_PID");
+  const studyId = searchParams.get("STUDY_ID");
+  const sessionId = searchParams.get("SESSION_ID");
+
+  // Check if we have Prolific parameters
+  const hasProlificParams = !!prolificId;
+
+  // Check local storage for previously accepted consent
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedConsent = localStorage.getItem("hasAcceptedConsent");
+      if (savedConsent === "true") {
+        setHasConsented(true);
+      }
+    }
+  }, []);
+
+  // Handle consent checkbox changes
+  const handleConsentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.target.checked;
+    setHasConsented(isChecked);
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem("hasAcceptedConsent", isChecked ? "true" : "false");
+    }
+  };
+
+  // Check if user is already logged in
+  useEffect(() => {
+    if (!isLoading && isAuthenticated && user) {
+      setHasExplicitlyLoggedIn(true);
+    }
+  }, [isLoading, isAuthenticated, user]);
+
+  // Handle successful login from LoginForm
+  const handleSuccessfulLogin = () => {
+    setHasExplicitlyLoggedIn(true);
+  };
+
+  // Redirect users based on role - only after explicit login
+  useEffect(() => {
+    if (!hasExplicitlyLoggedIn || !hasConsented) {
+      return;
+    }
+
     if (!isLoading && isAuthenticated && user) {
       // Redirect domain users to dashboard
       if (user.role === "domain") {
@@ -20,92 +67,62 @@ export default function Home() {
         return;
       }
 
-      // Handle normal users (Quick Login)
+      // Handle normal users
       if (user.role === "normal") {
+        // Check for full completion first
         const hasCompleted = hasCompletedTasks(user.id);
-
-        // 1. Check for full completion first
         if (hasCompleted) {
           const progress = getTaskProgress(user.id);
           if (progress) {
-            console.log(
-              `[Login Redirect] Normal user (${user.id}) already completed all tasks. Redirecting to /completion.`
-            );
-            router.push(
-              `/completion?total=${progress.totalTasks}&correct=${progress.correctTasks}&type=${progress.studyType}`
-            );
-            return;
-          } else {
-            console.warn(
-              `[Login Redirect] User ${user.id} completed tasks but progress not found. Redirecting to root.`
-            );
-            router.push("/"); // Fallback if progress is missing
+            let completionUrl = `/completion?total=${progress.totalTasks}&correct=${progress.correctTasks}&type=text-visualisation`;
+
+            // Add Prolific parameters if present
+            if (hasProlificParams) {
+              if (prolificId) completionUrl += `&PROLIFIC_PID=${prolificId}`;
+              if (studyId) completionUrl += `&STUDY_ID=${studyId}`;
+              if (sessionId) completionUrl += `&SESSION_ID=${sessionId}`;
+            }
+
+            router.push(completionUrl);
             return;
           }
         }
 
-        // 2. Determine target scenario and check progress for text-visual
-        const scenarioId =
-          user.defaultScenario ||
-          (availableScenarios.length > 0 ? availableScenarios[0].id : null);
+        // Get scenario ID from user
+        const scenarioId = user.defaultScenario;
+        const numericId = scenarioId.replace("text-visual-", "");
+        const introKey = `hasCompletedIntro-${scenarioId}`;
+        const trainingKey = `hasCompletedTraining-${scenarioId}`;
+        let hasCompletedIntro = false;
+        let hasCompletedTraining = false;
 
-        if (scenarioId && scenarioId.startsWith("text-visual-")) {
-          const numericId = scenarioId.replace("text-visual-", "");
-          const introKey = `hasCompletedIntro-${scenarioId}`;
-          const trainingKey = `hasCompletedTraining-${scenarioId}`;
-          let hasCompletedIntro = false;
-          let hasCompletedTraining = false;
-
-          if (typeof window !== "undefined") {
-            hasCompletedIntro = localStorage.getItem(introKey) === "true";
-            hasCompletedTraining = localStorage.getItem(trainingKey) === "true";
-          }
-
-          let initialRedirectPath = "";
-          if (!hasCompletedIntro) {
-            initialRedirectPath = `/text-visual/${numericId}/introduction`;
-            console.log(
-              `[Login Redirect] Normal user (${user.id}) intro incomplete for ${scenarioId}. Redirecting to: ${initialRedirectPath}`
-            );
-          } else if (!hasCompletedTraining) {
-            initialRedirectPath = `/text-visual/${numericId}/training`;
-            console.log(
-              `[Login Redirect] Normal user (${user.id}) training incomplete for ${scenarioId}. Redirecting to: ${initialRedirectPath}`
-            );
-          } else {
-            initialRedirectPath = `/text-visual/${numericId}`;
-            console.log(
-              `[Login Redirect] Normal user (${user.id}) intro & training complete for ${scenarioId}. Redirecting to: ${initialRedirectPath}`
-            );
-          }
-
-          router.push(initialRedirectPath);
-          return;
+        if (typeof window !== "undefined") {
+          hasCompletedIntro = localStorage.getItem(introKey) === "true";
+          hasCompletedTraining = localStorage.getItem(trainingKey) === "true";
         }
 
-        // 3. Fallback for non-text-visual or missing scenarios
-        console.log(
-          `[Login Redirect] Fallback redirect for user ${user.id}, scenario: ${scenarioId}`
-        );
-        if (scenarioId && !scenarioId.startsWith("text-visual-")) {
-          // Handle other scenario types if necessary (e.g., push to their intro)
-          // Example: if (scenarioId.startsWith('pure-text')) router.push('/pure-text/introduction');
-          console.warn(
-            `Unhandled scenario type for redirection: ${scenarioId}`
-          );
-          router.push("/"); // Default fallback to root
-          return;
+        let initialRedirectPath = "";
+        if (!hasCompletedIntro) {
+          initialRedirectPath = `/text-visual/${numericId}/introduction`;
+        } else if (!hasCompletedTraining) {
+          initialRedirectPath = `/text-visual/${numericId}/training`;
+        } else {
+          initialRedirectPath = `/text-visual/${numericId}`;
         }
 
-        // Final fallback if scenarioId was null
-        console.warn(
-          `User ${user.id} has no valid default scenario or available scenarios.`
-        );
-        router.push("/");
+        // Add Prolific parameters to redirect if present
+        if (hasProlificParams) {
+          const separator = initialRedirectPath.includes("?") ? "&" : "?";
+          if (prolificId) initialRedirectPath += `${separator}PROLIFIC_PID=${prolificId}`;
+          if (studyId) initialRedirectPath += `&STUDY_ID=${studyId}`;
+          if (sessionId) initialRedirectPath += `&SESSION_ID=${sessionId}`;
+        }
+
+        router.push(initialRedirectPath);
         return;
-      } // end if user.role === 'normal'
-    } // end if isAuthenticated && user
-  }, [isAuthenticated, isLoading, user, router, availableScenarios]);
+      }
+    }
+  }, [isAuthenticated, isLoading, user, router, hasExplicitlyLoggedIn, hasConsented, prolificId, studyId, sessionId, hasProlificParams]);
 
   // Show loading state
   if (isLoading) {
@@ -119,108 +136,12 @@ export default function Home() {
     );
   }
 
-  // Render login form with consent for unauthenticated users
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-6xl bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Left side - Consent Form */}
-          <div className="p-8 border-b md:border-b-0 md:border-r border-gray-100">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Consent Form
-            </h2>
-
-            <div className="h-[450px] overflow-y-auto pr-4 mb-6 custom-scrollbar">
-              <div className="space-y-4">
-                <section>
-                  <h3 className="font-medium text-gray-800">
-                    Research Study Consent
-                  </h3>
-                  <p className="text-gray-600">
-                    You are invited to participate in a research study on
-                    narrative visualization. This study aims to understand how
-                    different visualization approaches help users comprehend
-                    narrative data.
-                  </p>
-                </section>
-
-                <section>
-                  <h3 className="font-medium text-gray-800">
-                    What will you be asked to do?
-                  </h3>
-                  <p className="text-gray-600">
-                    You will interact with a narrative interface, complete
-                    specific tasks, and provide feedback on your experience. The
-                    study will take approximately 20-30 minutes to complete.
-                  </p>
-                </section>
-
-                <section>
-                  <h3 className="font-medium text-gray-800">
-                    Risks and Benefits
-                  </h3>
-                  <p className="text-gray-600">
-                    There are no anticipated risks associated with this study.
-                    Benefits include contributing to research on information
-                    visualization and narrative comprehension.
-                  </p>
-                </section>
-
-                <section>
-                  <h3 className="font-medium text-gray-800">Confidentiality</h3>
-                  <p className="text-gray-600">
-                    Your responses will be kept confidential. All data will be
-                    stored securely and any published results will not include
-                    personally identifiable information.
-                  </p>
-                </section>
-
-                <section>
-                  <h3 className="font-medium text-gray-800">
-                    Voluntary Participation
-                  </h3>
-                  <p className="text-gray-600">
-                    Your participation is voluntary. You may withdraw at any
-                    time without penalty.
-                  </p>
-                </section>
-
-                <section>
-                  <h3 className="font-medium text-gray-800">
-                    Contact Information
-                  </h3>
-                  <p className="text-gray-600">
-                    If you have questions about this research, please contact
-                    the research team at songhai.fan@moansh.edu.
-                  </p>
-                </section>
-
-                <section>
-                  <h3 className="font-medium text-gray-800">Data Usage</h3>
-                  <p className="text-gray-600">
-                    The data collected in this study will be used for research
-                    purposes only. Your interactions with the interface will be
-                    recorded and analyzed to improve visualization techniques
-                    for narrative data.
-                  </p>
-                </section>
-              </div>
-            </div>
-
-            <label className="flex items-start cursor-pointer group">
-              <input
-                type="checkbox"
-                className="mt-0.5 mr-3 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                checked={hasConsented}
-                onChange={(e) => setHasConsented(e.target.checked)}
-              />
-              <span className="text-sm text-gray-600 group-hover:text-gray-800 transition-colors">
-                I have read and understand the consent form and agree to
-                participate in this study.
-              </span>
-            </label>
-          </div>
-
+          <ConsentForm onConsent={setHasConsented} />
           {/* Right side - Login Form */}
           <div className="p-8 bg-gray-50 flex flex-col">
             <div className="text-center mb-8">
@@ -232,29 +153,13 @@ export default function Home() {
 
             <div className="flex-grow flex flex-col justify-center">
               <div className="max-w-sm mx-auto w-full">
-                <LoginForm isDisabled={!hasConsented} />
-
-                {!hasConsented && (
-                  <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-md text-center">
-                    <div className="flex items-center justify-center gap-2 text-amber-700">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      <p className="text-sm font-medium">
-                        Please read and accept the consent form to proceed
-                      </p>
-                    </div>
-                  </div>
-                )}
+                <LoginForm
+                  isDisabled={!hasConsented}
+                  urlUsername={prolificId}
+                  urlSessionId={sessionId}
+                  onLoginSuccess={handleSuccessfulLogin}
+                  isProlificUser={hasProlificParams}
+                />
               </div>
             </div>
           </div>
