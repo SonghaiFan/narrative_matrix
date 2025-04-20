@@ -1,12 +1,7 @@
-// import { loadDataFile } from "@/lib/data-storage";
 import { NarrativeMatrixData } from "@/types/lite";
 import { Quiz, QuizItem } from "@/components/features/task/quiz-types";
-import { promises as fs } from "fs";
-import path from "path";
-import { getScenarioMetadata } from "../client/scenario-metadata";
 
 // --- Hardcoded Metadata Map ---
-// Export the map so it can be imported elsewhere
 export const allScenarioMetadataMap: Record<string, any> = {
   "text-visual-1": {
     name: "Text with Visualizations 1",
@@ -323,7 +318,7 @@ export const allScenarioMetadataMap: Record<string, any> = {
 };
 
 // Function to get metadata from the hardcoded map
-function getScenarioMetadataFromServer(scenarioId: string): any {
+export function getScenarioMetadata(scenarioId: string): any {
   return allScenarioMetadataMap[scenarioId] || null;
 }
 
@@ -338,185 +333,4 @@ export function getAvailableScenarios() {
     id,
     ...allScenarioMetadataMap[id],
   }));
-}
-
-// --- File Reading Helper (for data/quiz files) ---
-async function readPublicJsonFile<T>(fileName: string): Promise<T> {
-  const filePath = path.join(process.cwd(), "public", fileName);
-  try {
-    const fileContent = await fs.readFile(filePath, "utf8");
-    return JSON.parse(fileContent);
-  } catch (error) {
-    console.error(
-      `[Server] Failed to read public JSON file ${filePath}:`,
-      error
-    );
-    throw new Error(
-      `Failed to load data file ${fileName} from public dir on server`
-    );
-  }
-}
-
-// --- Data Processing ---
-export async function loadAndProcessScenarioData(
-  scenarioId: string,
-  isTraining = false
-): Promise<NarrativeMatrixData> {
-  try {
-    console.log(
-      `Loading data for scenario ${scenarioId} (training: ${isTraining})`
-    );
-
-    // Load base data from public/data.json
-    const baseDataPath = path.join(
-      process.cwd(),
-      "public",
-      isTraining ? "train_data.json" : "data.json"
-    );
-    const baseData = JSON.parse(await fs.readFile(baseDataPath, "utf-8"));
-
-    // Load quiz data from public/quiz_data.json
-    const quizDataPath = path.join(
-      process.cwd(),
-      "public",
-      isTraining ? "train_quiz_data.json" : "quiz_data.json"
-    );
-    const quizData = JSON.parse(await fs.readFile(quizDataPath, "utf-8"));
-
-    console.log(
-      `Quiz data loaded. Number of quiz items: ${quizData.quiz?.length || 0}`
-    );
-
-    // Get metadata for scenario
-    console.log(`Getting metadata for scenario ${scenarioId}`);
-    const metadata = getScenarioMetadata(scenarioId);
-    console.log(
-      `Found metadata:`,
-      JSON.stringify({
-        name: metadata?.name,
-        hasPreferredOrder: !!metadata?.quizOrder?.preferredOrder,
-      })
-    );
-
-    // Check if quiz data has the expected structure
-    if (!quizData.quiz || !Array.isArray(quizData.quiz)) {
-      console.error("Quiz data does not have expected structure:", quizData);
-      throw new Error("Quiz data does not have expected structure");
-    }
-
-    // Log the IDs of the quiz items
-    console.log(
-      "Available quiz item IDs:",
-      quizData.quiz.map((item: QuizItem) => item.id)
-    );
-
-    // SPECIAL CASE: For training mode, the IDs don't follow the expected pattern
-    // We skip reordering for training mode - training items are already in the correct order
-    if (isTraining) {
-      console.log(
-        "Training mode detected: skipping reordering based on preferred pattern"
-      );
-
-      // Create the processed data structure with original order
-      const processedData: NarrativeMatrixData = {
-        ...baseData,
-        metadata: {
-          ...baseData.metadata,
-          ...metadata,
-        },
-        quiz: {
-          ...quizData,
-        },
-      };
-
-      return processedData;
-    }
-
-    // For regular (non-training) mode, reorder based on metadata pattern
-    if (!metadata?.quizOrder?.preferredOrder) {
-      console.error(`No quiz order found for scenario ${scenarioId}`);
-      // Fall back to original order
-      const processedData: NarrativeMatrixData = {
-        ...baseData,
-        metadata: {
-          ...baseData.metadata,
-          ...metadata,
-        },
-        quiz: {
-          ...quizData,
-        },
-      };
-      return processedData;
-    }
-
-    const preferredOrder = metadata.quizOrder.preferredOrder;
-    console.log(`Preferred order for ${scenarioId}:`, preferredOrder);
-
-    // Group quiz items by their prefix
-    const prefixToItemsMap: Record<string, QuizItem[]> = {};
-
-    // For each quiz item, find which prefix it matches
-    quizData.quiz.forEach((item: QuizItem) => {
-      if (!item.id) return;
-
-      // Find the matching prefix from preferred order
-      for (const prefix of preferredOrder) {
-        if (item.id.startsWith(prefix)) {
-          // Initialize array if needed
-          if (!prefixToItemsMap[prefix]) {
-            prefixToItemsMap[prefix] = [];
-          }
-          // Add the item to the array for this prefix
-          prefixToItemsMap[prefix].push(item);
-          break;
-        }
-      }
-    });
-
-    // Create the reordered list following the preferred order
-    const reorderedQuizItems: QuizItem[] = [];
-
-    // For each prefix in the preferred order
-    for (const prefix of preferredOrder) {
-      const itemsForPrefix = prefixToItemsMap[prefix] || [];
-      if (itemsForPrefix.length > 0) {
-        // Add all items with this prefix to the reordered list
-        reorderedQuizItems.push(...itemsForPrefix);
-        console.log(
-          `Found ${itemsForPrefix.length} items for prefix ${prefix}:`,
-          itemsForPrefix.map((item) => item.id)
-        );
-      } else {
-        console.warn(`No items found for prefix ${prefix}`);
-      }
-    }
-
-    // Log the reordering results
-    console.log(
-      `Reordered items (${reorderedQuizItems.length}/${quizData.quiz.length}):`,
-      reorderedQuizItems.map((item) => item.id)
-    );
-
-    // If no items were reordered, keep the original order
-    const finalQuizItems =
-      reorderedQuizItems.length > 0 ? reorderedQuizItems : quizData.quiz;
-
-    // Create the processed data structure
-    const processedData: NarrativeMatrixData = {
-      ...baseData,
-      metadata: {
-        ...baseData.metadata,
-        ...metadata,
-      },
-      quiz: {
-        ...quizData,
-        quiz: finalQuizItems,
-      },
-    };
-
-    return processedData;
-  } catch (error) {
-    console.error("Error loading scenario data:", error);
-    throw error;
-  }
 }

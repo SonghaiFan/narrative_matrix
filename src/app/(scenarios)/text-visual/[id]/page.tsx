@@ -1,8 +1,6 @@
 import { VisualizationScenario } from "@/components/features/visualization/visualization-scenario";
-import {
-  loadAndProcessScenarioData,
-  getScenarioMetadataFromServer,
-} from "@/lib/server/scenario-data";
+import { loadAndProcessScenarioData } from "@/lib/server/scenario-data";
+import { getScenarioMetadata } from "@/lib/client/scenario-metadata";
 import { notFound } from "next/navigation";
 import { ScenarioContextSync } from "@/contexts/scenario-context-sync";
 
@@ -86,6 +84,7 @@ export default async function DynamicVisualizationPage({
         events={scenarioData.events}
         isLoading={isLoading}
         error={error}
+        quiz={scenarioData.quiz}
       />
     </>
   );
@@ -102,7 +101,7 @@ export async function generateMetadata({
   // Await params before accessing id
   const { id } = await params;
   const scenarioId = `text-visual-${id}`;
-  const metadata = getScenarioMetadataFromServer(scenarioId);
+  const metadata = getScenarioMetadata(scenarioId);
 
   // Handle case where metadata loading fails
   if (!metadata) {

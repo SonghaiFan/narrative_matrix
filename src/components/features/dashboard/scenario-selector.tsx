@@ -5,15 +5,10 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { ScenarioType } from "@/types/scenario";
 import { useCenterControl } from "@/contexts/center-control-context";
+import { getAvailableScenarios } from "@/lib/client/scenario-metadata";
 
 export function ScenarioSelector() {
-  const {
-    user,
-    availableScenarios,
-    setUserScenario,
-    isScenariosLoading,
-    isLoading: isAuthLoading,
-  } = useAuth();
+  const { user, setUserScenario, isLoading: isAuthLoading } = useAuth();
   const router = useRouter();
   const { selectedScenario: centerScenario, setSelectedScenario } =
     useCenterControl();
@@ -28,30 +23,22 @@ export function ScenarioSelector() {
     return undefined;
   };
 
+  // Get available scenarios from the hardcoded map
+  const availableScenarios = getAvailableScenarios();
+
   // Selected scenario is the user's default or the first available one
   const [selectedScenario, setLocalSelectedScenario] = useState<ScenarioType>(
-    getUserDefaultScenario() ||
-      (availableScenarios.length > 0
-        ? (availableScenarios[0].id as ScenarioType)
-        : "text-visual-1")
+    getUserDefaultScenario() || "text-visual-1"
   );
 
   // Sync local state with context upon initial load or context change
   useEffect(() => {
-    // Ensure scenarios are loaded and context has a value before syncing
-    if (!isScenariosLoading && centerScenario) {
+    if (centerScenario) {
       setLocalSelectedScenario(centerScenario);
-    } else if (
-      !isScenariosLoading &&
-      !centerScenario &&
-      availableScenarios.length > 0
-    ) {
-      // If context is null after loading, set local state based on available scenarios
-      setLocalSelectedScenario(
-        getUserDefaultScenario() || (availableScenarios[0].id as ScenarioType)
-      );
+    } else if (availableScenarios.length > 0) {
+      setLocalSelectedScenario("text-visual-1");
     }
-  }, [centerScenario, isScenariosLoading, availableScenarios]);
+  }, [centerScenario, availableScenarios]);
 
   // Update selection in both local state and contexts
   const handleScenarioSelect = (scenarioId: ScenarioType) => {
@@ -64,10 +51,7 @@ export function ScenarioSelector() {
     if (!selectedScenario) return;
 
     setIsStartingScenario(true);
-    // Don't set global loading here, let the target page handle its own loading
-    // setDataLoading(true);
-    setUserScenario(selectedScenario); // Set in Auth context if needed
-    // Ensure global context is updated *before* checking flags/navigating
+    setUserScenario(selectedScenario);
     setSelectedScenario(selectedScenario);
 
     // --- Check Completion Status ---
@@ -88,27 +72,16 @@ export function ScenarioSelector() {
 
     if (!hasCompletedIntro) {
       targetRoute = `/text-visual/${numericId}/introduction`;
-      console.log(
-        `[Start Scenario] Intro not complete for ${selectedScenario}. Navigating to: ${targetRoute}`
-      );
     } else if (!hasCompletedTraining) {
       targetRoute = `/text-visual/${numericId}/training`;
-      console.log(
-        `[Start Scenario] Training not complete for ${selectedScenario}. Navigating to: ${targetRoute}`
-      );
     } else {
       targetRoute = `/text-visual/${numericId}`;
-      console.log(
-        `[Start Scenario] Intro & Training complete for ${selectedScenario}. Navigating to: ${targetRoute}`
-      );
     }
 
-    // Navigate to the determined starting point
     router.push(targetRoute);
-    // No need to set loading back to false, navigation occurs
   };
 
-  if (isAuthLoading || isScenariosLoading) {
+  if (isAuthLoading) {
     return (
       <div className="p-4 bg-gray-50 rounded-lg text-center">
         <p className="text-gray-500">Loading available scenarios...</p>
@@ -153,7 +126,7 @@ export function ScenarioSelector() {
             >
               <div className="flex flex-col h-full">
                 <div className="font-medium text-sm text-gray-900">
-                  {scenario.metadata.name}
+                  {scenario.name}
                 </div>
                 <div className="text-xs text-gray-500 mt-1">
                   Quiz order variation #

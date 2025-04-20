@@ -25,6 +25,7 @@ import {
   GridMatching,
   MultipleSelect,
   QuizItem,
+  Quiz,
 } from "./quiz-types";
 import { useCenterControl } from "@/contexts/center-control-context";
 import React from "react";
@@ -41,6 +42,7 @@ interface TaskPanelProps {
   userRole?: "domain" | "normal";
   is_training?: boolean;
   sessionTimeLimit?: number; // Time limit in seconds
+  quiz?: Quiz; // Add quiz prop to receive pre-loaded and ordered quiz items
 }
 
 export function TaskPanel({
@@ -49,6 +51,7 @@ export function TaskPanel({
   className = "",
   userRole = "normal",
   is_training = false,
+  quiz, // Receive ordered quiz items
 }: TaskPanelProps) {
   const router = useRouter();
   const {
@@ -197,7 +200,19 @@ export function TaskPanel({
       let loadingError: Error | null = null;
 
       try {
-        if (is_training) {
+        // Check if quiz data was passed as prop (already ordered by server)
+        if (quiz && quiz.quiz && Array.isArray(quiz.quiz)) {
+          console.log("[TaskPanel Quiz] Using pre-loaded quiz data from props");
+          finalTasks = processQuizData(quiz.quiz);
+
+          if (!finalTasks || finalTasks.length === 0) {
+            console.warn(
+              "[TaskPanel Quiz] Quiz prop provided but yielded no tasks."
+            );
+          }
+        }
+        // If no quiz prop is provided, fall back to old behavior
+        else if (is_training) {
           // --- Training Mode (Load from train_quiz_data.json) ---
           console.log("[TaskPanel Quiz] Mode: Training");
           console.log(
@@ -362,7 +377,13 @@ export function TaskPanel({
     return () => {
       mounted = false; // Cleanup function to prevent state updates
     };
-  }, [is_training, metadata, events]); // Add events to dependency array for fallback generation
+  }, [
+    is_training,
+    events,
+    metadata,
+    setTasks,
+    quiz, // add quiz to the dependency array so it updates if it changes
+  ]);
 
   // Record start timestamp when current task changes
   useEffect(() => {

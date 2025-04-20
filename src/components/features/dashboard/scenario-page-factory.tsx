@@ -5,6 +5,7 @@ import { ScenarioLayout } from "@/components/features/dashboard/scenario-layout"
 import { useAuth } from "@/contexts/auth-context";
 // Import specific types needed
 import { NarrativeEvent, NarrativeMetadata } from "@/types/lite";
+import { Quiz } from "@/components/features/task/quiz-types";
 
 interface ScenarioPageFactoryProps {
   title: string;
@@ -15,12 +16,14 @@ interface ScenarioPageFactoryProps {
   events: NarrativeEvent[] | null;
   isLoading: boolean;
   error: string | null;
+  quiz?: Quiz;
   renderContent: (props: {
     // Pass metadata and events to renderContent
     metadata: NarrativeMetadata | null;
     events: NarrativeEvent[] | null;
     user: any;
     is_training?: boolean;
+    quiz?: Quiz;
   }) => ReactNode;
 }
 
@@ -36,6 +39,7 @@ export function ScenarioPageFactory({
   events,
   isLoading,
   error,
+  quiz,
   renderContent,
 }: ScenarioPageFactoryProps) {
   const { user } = useAuth();
@@ -82,7 +86,7 @@ export function ScenarioPageFactory({
       showSentimentLegend={showSentimentLegend}
     >
       {/* Pass metadata, events, user, and is_training to renderContent */}
-      {renderContent({ metadata, events, user, is_training })}
+      {renderContent({ metadata, events, user, is_training, quiz })}
     </ScenarioLayout>
   );
 }

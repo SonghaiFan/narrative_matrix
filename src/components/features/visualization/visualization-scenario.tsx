@@ -8,7 +8,7 @@ import { TaskPanel } from "@/components/features/task/task-panel";
 import { ResizableTwoColRow } from "@/components/ui/resizable-two-col-row";
 import { ScenarioPageFactory } from "@/components/features/dashboard/scenario-page-factory";
 import { useTaskStore } from "@/store/task-store";
-import { QuizVisual } from "@/components/features/task/quiz-types";
+import { QuizVisual, Quiz } from "@/components/features/task/quiz-types";
 import { NarrativeEvent, NarrativeMetadata } from "@/types/lite";
 import { Suspense } from "react";
 
@@ -61,6 +61,7 @@ interface VisualizationScenarioProps {
   events: NarrativeEvent[] | null;
   isLoading: boolean;
   error: string | null;
+  quiz?: Quiz;
 }
 
 export function VisualizationScenario({
@@ -70,6 +71,7 @@ export function VisualizationScenario({
   events,
   isLoading,
   error,
+  quiz,
 }: VisualizationScenarioProps) {
   const currentTask = useTaskStore((state) => state.currentTask);
   const visual = currentTask?.visual || null;
@@ -82,11 +84,13 @@ export function VisualizationScenario({
       events={events}
       isLoading={isLoading}
       error={error}
+      quiz={quiz}
       renderContent={({
         metadata: factoryMetadata,
         events: factoryEvents,
         user,
         is_training: factoryIsTraining,
+        quiz: factoryQuiz,
       }) => {
         if (!factoryMetadata || !factoryEvents) {
           return <div>Loading data for content...</div>;
@@ -115,6 +119,7 @@ export function VisualizationScenario({
                 metadata={factoryMetadata}
                 userRole={user?.role as "domain" | "normal"}
                 is_training={factoryIsTraining}
+                quiz={factoryQuiz}
               />
             </div>
           </div>

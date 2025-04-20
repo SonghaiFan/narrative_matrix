@@ -1,3 +1,4 @@
+import { Quiz } from "@/components/features/task/quiz-types";
 import { QuizItem } from "../components/features/task/quiz-types";
 
 export interface Entity {
@@ -60,4 +61,5 @@ export interface NarrativeMetadata {
 export interface NarrativeMatrixData {
   metadata: NarrativeMetadata;
   events: NarrativeEvent[];
+  quiz?: Quiz; // Add quiz property
 }

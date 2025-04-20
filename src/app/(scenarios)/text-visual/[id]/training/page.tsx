@@ -60,6 +60,7 @@ export default async function VisualizationTrainingPage({
       events={fetchedData.events}
       isLoading={isLoading}
       error={error}
+      quiz={fetchedData.quiz}
     />
   );
 }
