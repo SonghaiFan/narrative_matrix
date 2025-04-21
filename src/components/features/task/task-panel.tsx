@@ -34,6 +34,7 @@ import { useTaskStore } from "@/store/task-store";
 import { loadDataFile } from "@/lib/data-storage";
 import { NarrativeEvent, NarrativeMetadata } from "@/types/lite";
 import { saveQuizResponse, saveTaskTiming } from "@/lib/firebase-operations";
+import { useAuth } from "@/contexts/auth-context";
 
 interface TaskPanelProps {
   events: NarrativeEvent[];
@@ -54,6 +55,7 @@ export function TaskPanel({
   quiz, // Receive ordered quiz items
 }: TaskPanelProps) {
   const router = useRouter();
+  const { user, currentScenario } = useAuth(); // Add auth context
   const {
     markedEventIds,
     toggleMarkedEvent,
@@ -775,12 +777,43 @@ export function TaskPanel({
           localStorage.setItem(`hasCompletedTraining-${scenarioPath}`, "true");
 
           // Instead of immediate redirect, show confirmation modal
-          // Construct the path reliably using selectedScenario
-          const scenarioId =
-            selectedScenario?.replace("text-visual-", "") || "";
-          const mainPath = scenarioId
-            ? `/text-visual/${scenarioId}`
-            : "/dashboard"; // Fallback to dashboard if ID is missing
+          // Determine the scenario ID from multiple sources in order of reliability:
+          // 1. User's default scenario from auth context
+          // 2. Selected scenario from center control context
+          // 3. Parse from current URL
+          let scenarioId = "";
+
+          // 1. First try to get it from user's default scenario (most reliable)
+          if (currentScenario) {
+            scenarioId = currentScenario.replace("text-visual-", "");
+            console.log(`Using user's default scenario: ${currentScenario}`);
+          }
+          // 2. Then try selected scenario from center control
+          else if (selectedScenario) {
+            scenarioId = selectedScenario.replace("text-visual-", "");
+            console.log(`Using selected scenario: ${selectedScenario}`);
+          }
+          // 3. Finally fall back to URL parsing
+          else {
+            const pathParts = window.location.pathname.split("/");
+            // The ID should be the third part in /text-visual/{id}/training
+            if (pathParts.length >= 3) {
+              scenarioId = pathParts[2];
+              console.log(`Extracted scenario ID from URL: ${scenarioId}`);
+            }
+          }
+
+          // Ensure we have a valid scenario ID
+          if (!scenarioId) {
+            console.warn(
+              "Could not determine scenario ID, using default scenario 1"
+            );
+            scenarioId = "1"; // Default to scenario 1 if all else fails
+          }
+
+          // Construct the path to the main scenario
+          const mainPath = `/text-visual/${scenarioId}`;
+          console.log(`Training complete, redirecting to: ${mainPath}`);
 
           setPendingRedirectPath(mainPath);
           setShowTrainingCompleteModal(true);

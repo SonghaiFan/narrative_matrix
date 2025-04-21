@@ -5,7 +5,6 @@ import { ScenarioType } from "@/types/scenario";
 import {
   createUser,
   updateUserLastActive,
-  createSession,
   endSession,
   saveUserSession,
 } from "@/lib/firebase-operations";
