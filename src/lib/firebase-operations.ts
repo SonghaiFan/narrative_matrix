@@ -38,30 +38,41 @@ export async function updateUserLastActive(prolificId: string) {
 // Session operations
 export async function createSession(
   prolificId: string,
-  sessionId: string,
-  scenarioType: string
+  scenarioType: string,
+  existingSessionId?: string
 ) {
-  const sessionRef = doc(db, "sessions", sessionId);
+  // Use existing ID if provided (for continuity) or generate a truly unique session ID
+  const uniqueSessionId =
+    existingSessionId ||
+    `${prolificId}_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+  const sessionRef = doc(db, "sessions", uniqueSessionId);
   await setDoc(sessionRef, {
     prolificId,
-    sessionId,
+    sessionId: uniqueSessionId,
+    scenarioId: scenarioType, // Store which scenario this is for
     startTime: serverTimestamp(),
     status: "active",
-    scenarioType,
     deviceInfo: {
       userAgent: navigator.userAgent,
       screenSize: `${window.innerWidth}x${window.innerHeight}`,
     },
   });
-  return sessionRef;
+
+  return { sessionRef, sessionId: uniqueSessionId };
 }
 
-export async function endSession(sessionId: string) {
-  const sessionRef = doc(db, "sessions", sessionId);
-  await updateDoc(sessionRef, {
-    endTime: serverTimestamp(),
-    status: "completed",
-  });
+export async function endSession(uniqueSessionId: string) {
+  try {
+    const sessionRef = doc(db, "sessions", uniqueSessionId);
+    await updateDoc(sessionRef, {
+      endTime: serverTimestamp(),
+      status: "completed",
+    });
+    console.log("Session ended successfully");
+  } catch (error) {
+    console.error("Error ending session:", error);
+  }
 }
 
 // Task response operations
@@ -114,7 +125,7 @@ export async function logUserInteraction(
 // Simple function to save a quiz response
 export async function saveQuizResponse(
   prolificId: string,
-  sessionId: string,
+  uniqueSessionId: string,
   quizData: {
     question: string;
     userAnswer: string | string[];
@@ -131,7 +142,7 @@ export async function saveQuizResponse(
     const quizResponsesRef = collection(db, "quizResponses");
     await addDoc(quizResponsesRef, {
       prolificId,
-      sessionId,
+      sessionId: uniqueSessionId,
       ...quizData,
       timestamp: serverTimestamp(),
     });
@@ -144,22 +155,28 @@ export async function saveQuizResponse(
 // Simple function to save user session
 export async function saveUserSession(
   prolificId: string,
-  sessionId: string,
+  scenarioNumber: string,
   isTraining: boolean = false
 ) {
   try {
-    // Use the sessionId as the document ID
-    const sessionRef = doc(db, "sessions", sessionId);
+    // Generate a unique session ID rather than using the scenarioNumber directly
+    const uniqueSessionId = `${prolificId}_${scenarioNumber}_${Date.now()}_${Math.random()
+      .toString(36)
+      .substring(2, 7)}`;
+
+    // Use the unique ID as the document ID
+    const sessionRef = doc(db, "sessions", uniqueSessionId);
     await setDoc(sessionRef, {
       prolificId,
-      sessionId,
+      sessionId: uniqueSessionId,
+      scenarioNumber, // Store the original scenario number separately
       startTime: serverTimestamp(),
       status: "active",
       isTraining,
       loginTime: Date.now(),
     });
-    console.log("User session saved successfully");
-    return sessionId; // Return the same sessionId since we used it as the document ID
+    console.log("User session saved successfully with ID:", uniqueSessionId);
+    return uniqueSessionId; // Return the unique session ID
   } catch (error) {
     console.error("Error saving user session:", error);
     return null;
@@ -168,7 +185,7 @@ export async function saveUserSession(
 
 // Function to update session with completion time and feedback
 export async function updateSessionCompletion(
-  sessionId: string,
+  uniqueSessionId: string,
   feedback: {
     visualizationUsage: {
       frequency: number;
@@ -189,7 +206,7 @@ export async function updateSessionCompletion(
   }
 ) {
   try {
-    const sessionRef = doc(db, "sessions", sessionId);
+    const sessionRef = doc(db, "sessions", uniqueSessionId);
     await updateDoc(sessionRef, {
       endTime: serverTimestamp(),
       status: "completed",
@@ -208,7 +225,7 @@ export async function updateSessionCompletion(
 // Function to save task timing
 export async function saveTaskTiming(
   prolificId: string,
-  sessionId: string,
+  uniqueSessionId: string,
   taskData: {
     taskId: string;
     isTraining: boolean;
@@ -221,7 +238,7 @@ export async function saveTaskTiming(
     const taskTimingsRef = collection(db, "taskTimings");
     await addDoc(taskTimingsRef, {
       prolificId,
-      sessionId,
+      sessionId: uniqueSessionId,
       ...taskData,
       timestamp: serverTimestamp(),
     });
@@ -275,7 +292,7 @@ export async function saveFeedback(
 // Function to save event interaction history
 export async function saveEventInteraction(
   prolificId: string,
-  sessionId: string,
+  uniqueSessionId: string,
   interactionData: {
     eventId: number;
     type: "focus" | "mark" | "unmark";
@@ -287,7 +304,7 @@ export async function saveEventInteraction(
     const eventInteractionsRef = collection(db, "eventInteractions");
     await addDoc(eventInteractionsRef, {
       prolificId,
-      sessionId,
+      sessionId: uniqueSessionId,
       ...interactionData,
       timestamp: serverTimestamp(),
     });

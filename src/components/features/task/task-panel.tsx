@@ -705,8 +705,24 @@ export function TaskPanel({
       // Save to Firebase if we have a userId
       if (userId) {
         try {
+          // Get the unique session ID from user object
+          const storedUser = localStorage.getItem("user");
+          let uniqueSessionId = "";
+
+          if (storedUser) {
+            try {
+              const parsedUser = JSON.parse(storedUser);
+              uniqueSessionId = parsedUser.sessionId || userId;
+            } catch (e) {
+              console.error("Error parsing stored user:", e);
+              uniqueSessionId = userId; // Fallback to userId if parsing fails
+            }
+          } else {
+            uniqueSessionId = userId; // Fallback to userId if no stored user
+          }
+
           // Save task timing
-          saveTaskTiming(userId, userId, {
+          saveTaskTiming(userId, uniqueSessionId, {
             taskId: currentTask.id,
             isTraining: is_training,
             startTime: currentTask.startTimestamp || Date.now(),
@@ -719,7 +735,7 @@ export function TaskPanel({
           // Save quiz response with enhanced data
           saveQuizResponse(
             userId,
-            userId, // Using user ID as session ID
+            uniqueSessionId, // Using unique session ID
             {
               question: currentTask.question,
               userAnswer: updatedTasks[taskIndex].userAnswer || "",

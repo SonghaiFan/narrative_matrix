@@ -129,23 +129,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      // Determine scenario based on sessionId
+      // Determine scenario based on sessionId (which might be a scenario number)
       let scenarioId: ScenarioType = "text-visual-1"; // Default scenario
+      let scenarioNumber = "1";
+
       if (sessionId && sessionId.match(/^\d+$/)) {
+        scenarioNumber = sessionId;
         scenarioId = `text-visual-${sessionId}` as ScenarioType;
       }
 
-      // Save user session to Firebase and get the session ID
-      let finalSessionId = sessionId;
-      if (sessionId) {
-        const savedSessionId = await saveUserSession(username, sessionId);
-        if (savedSessionId) {
-          finalSessionId = savedSessionId;
-        }
+      // Save user session to Firebase and get a unique session ID
+      // Note: the sessionId parameter might actually be a scenario number from URL
+      let uniqueSessionId: string | null = null;
+      try {
+        uniqueSessionId = await saveUserSession(username, scenarioNumber);
+        console.log("Created unique session ID:", uniqueSessionId);
+      } catch (error) {
+        console.error("Failed to create unique session ID:", error);
       }
 
       // Create normal user in Firestore
-      await createUser(username, finalSessionId || username);
+      await createUser(username, uniqueSessionId || username);
 
       // All other users are normal users
       const normalUser: NormalUser = {
@@ -153,7 +157,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         username,
         role: "normal",
         defaultScenario: scenarioId,
-        sessionId: finalSessionId,
+        sessionId: uniqueSessionId || undefined,
       };
 
       setLocalStorage("user", JSON.stringify(normalUser));

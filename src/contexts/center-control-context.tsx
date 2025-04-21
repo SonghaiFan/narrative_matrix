@@ -108,11 +108,18 @@ export function CenterControlProvider({
   const setfocusedEventId = useCallback(
     (id: number | null) => {
       if (id !== null && user) {
-        saveEventInteraction(user.id, user.sessionId || user.id, {
-          eventId: id,
-          type: "focus",
-          timestamp: Date.now(),
-        });
+        try {
+          // Get the unique session ID from user object
+          const uniqueSessionId = user.sessionId || user.id;
+
+          saveEventInteraction(user.id, uniqueSessionId, {
+            eventId: id,
+            type: "focus",
+            timestamp: Date.now(),
+          });
+        } catch (error) {
+          console.error("Error saving event focus interaction:", error);
+        }
       }
       setfocusedEventIdState(id);
     },
@@ -125,11 +132,18 @@ export function CenterControlProvider({
       setMarkedEventIds((prev) => {
         const isMarked = prev.includes(id);
         if (user) {
-          saveEventInteraction(user.id, user.sessionId || user.id, {
-            eventId: id,
-            type: isMarked ? "unmark" : "mark",
-            timestamp: Date.now(),
-          });
+          try {
+            // Get the unique session ID from user object
+            const uniqueSessionId = user.sessionId || user.id;
+
+            saveEventInteraction(user.id, uniqueSessionId, {
+              eventId: id,
+              type: isMarked ? "unmark" : "mark",
+              timestamp: Date.now(),
+            });
+          } catch (error) {
+            console.error("Error saving event mark/unmark interaction:", error);
+          }
         }
         if (isMarked) {
           return prev.filter((eventId) => eventId !== id);
