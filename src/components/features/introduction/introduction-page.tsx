@@ -2,125 +2,328 @@
 
 import { useState } from "react";
 import { ScenarioType } from "@/types/scenario";
+import Image from "next/image";
 
-// Define introduction content for each scenario type
-const introductionContent = {
-  "pure-text": [
-    {
-      title: "Welcome to the Text-Based Study",
-      content:
-        "Thank you for participating in our user study. This study aims to understand how text-based approaches help users comprehend narrative data.",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", // Example URL - replace with actual video
-    },
-    {
-      title: "Text Interface Overview",
-      content:
-        "In this study, you will read and analyze narrative content in a text-only format, complete specific tasks, and interact with the interface at your own pace.",
-    },
-    {
-      title: "Text Features",
-      content:
-        "You will be presented with a narrative interface that includes text content, a task panel, and navigation controls. The interface focuses on clear textual presentation.",
-    },
-    {
-      title: "Getting Started",
-      content:
-        "When you're ready, click the button below to begin. You cannot return to this introduction once you begin.",
-    },
-  ],
-  "text-visual": [
-    {
-      title: "Welcome to the Text-Visual Study",
-      content:
-        "Thank you for participating in our user study. This study aims to understand how visual approaches help users comprehend narrative data.",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", // Example URL - replace with actual video
-    },
-    {
-      title: "Text-Visual Interface Overview",
-      content:
-        "In this study, you will explore narrative content through visualizations, complete specific tasks, and interact with the interface at your own pace.",
-    },
-    {
-      title: "Visual Features",
-      content:
-        "You will be presented with a narrative interface that includes visual representations, interactive elements, a task panel, and navigation controls.",
-    },
-    {
-      title: "Getting Started",
-      content:
-        "When you're ready, click the button below to begin. You cannot return to this introduction once you begin.",
-    },
-  ],
-  "text-chat": [
-    {
-      title: "Welcome to the Text-Chat Study",
-      content:
-        "Thank you for participating in our user study. This study aims to understand how text-based chat interfaces help users comprehend narrative data.",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", // Example URL - replace with actual video
-    },
-    {
-      title: "Text-Chat Interface Overview",
-      content:
-        "In this study, you will interact with narrative content through a chat interface, complete specific tasks, and engage with the system at your own pace.",
-    },
-    {
-      title: "Chat Features",
-      content:
-        "You will be presented with a chat interface that allows you to ask questions and receive responses about the narrative content, alongside a task panel and navigation controls.",
-    },
-    {
-      title: "Getting Started",
-      content:
-        "When you're ready, click the button below to begin. You cannot return to this introduction once you begin.",
-    },
-  ],
-  mixed: [
-    {
-      title: "Welcome to the Mixed Study",
-      content:
-        "Thank you for participating in our user study. This study aims to understand how visual representations with chat capabilities help users comprehend narrative data.",
-      videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", // Example URL - replace with actual video
-    },
-    {
-      title: "Mixed Interface Overview",
-      content:
-        "In this study, you will explore narrative content through visualizations and a chat interface, complete specific tasks, and interact at your own pace.",
-    },
-    {
-      title: "Combined Features",
-      content:
-        "You will be presented with an interface that combines visual representations with chat capabilities, allowing you to both see and ask about narrative elements.",
-    },
-    {
-      title: "Getting Started",
-      content:
-        "When you're ready, click the button below to begin. You cannot return to this introduction once you begin.",
-    },
-  ],
-};
+interface IntroductionStep {
+  title: string;
+  content: React.ReactNode;
+  videoUrl?: string;
+  image?: string;
+}
 
-// Default generic content as fallback
-const defaultSteps = [
+// Define introduction content
+const introductionSteps: IntroductionStep[] = [
   {
-    title: "Welcome to the Study",
-    content:
-      "Thank you for participating in our user study. This study aims to understand how different approaches help users comprehend narrative data.",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", // Example URL - replace with actual video
-  },
-  {
-    title: "Study Overview",
-    content:
-      "In this study, you will read and analyze narrative content, complete specific tasks, and interact with the interface at your own pace.",
+    title: "Welcome to the Narrative Metrics Training Walkthrough",
+    content: (
+      <div className="space-y-4">
+        <p className="font-medium">
+          In this short guide, we'll show you how to navigate and interact with
+          the <strong>three-panel interface</strong> designed to support
+          narrative understanding in complex tasks.
+        </p>
+      </div>
+    ),
   },
   {
     title: "Interface Overview",
-    content:
-      "You will be presented with a narrative interface that includes content, a task panel, and navigation controls.",
+    content: (
+      <div className="space-y-4">
+        <p>The interface is composed of three key panels:</p>
+        <ul className="list-none space-y-2">
+          <li>
+            • The <strong>Visualisation Panel</strong> (left)
+          </li>
+          <li>
+            • The <strong>Text Panel</strong> (center)
+          </li>
+          <li>
+            • The <strong>Task Panel</strong> (right)
+          </li>
+        </ul>
+      </div>
+    ),
+    image: "/images/overview.png",
   },
   {
-    title: "Getting Started",
-    content:
-      "When you're ready, click the button below to begin. You cannot return to this introduction once you begin.",
+    title: "Visualisation Panel",
+    content: (
+      <div className="space-y-4">
+        <p>
+          We have three types of visualisations that share common semantic
+          visual elements:
+        </p>
+
+        <div className="grid grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-medium mb-2">Shared Visual Elements</h4>
+              <ul className="list-none space-y-2">
+                <li>
+                  • <strong>Nodes</strong> represent events, with consistent
+                  sentiment colors:
+                </li>
+                <ul className="list-none pl-6 space-y-1">
+                  <li>
+                    - <span className="text-green-500 font-medium">Green</span>{" "}
+                    for Positive events
+                  </li>
+                  <li>
+                    - <span className="text-gray-500 font-medium">Grey</span>{" "}
+                    for Neutral events
+                  </li>
+                  <li>
+                    -{" "}
+                    <span className="text-orange-500 font-medium">Orange</span>{" "}
+                    for Negative events
+                  </li>
+                </ul>
+                <li className="mt-2">
+                  • <strong>Tracks</strong> (grey bars) connect related events
+                  by:
+                </li>
+                <ul className="list-none pl-6 space-y-1">
+                  <li>- Entity involvement</li>
+                  <li>- Topic association</li>
+                  <li>- Narrative sequence</li>
+                </ul>
+              </ul>
+            </div>
+          </div>
+
+          <div className="space-y-4 border-l pl-6">
+            <div>
+              <h4 className="font-medium mb-2">Three Visualisation</h4>
+              <ul className="list-none space-y-4">
+                <li>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <strong className="block mb-1">1. Entity Swimlane</strong>
+                    <p className="text-sm text-gray-600">
+                      Shows how entities interact across the narrative timeline
+                    </p>
+                  </div>
+                </li>
+                <li>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <strong className="block mb-1">2. Topic Stream</strong>
+                    <p className="text-sm text-gray-600">
+                      Groups events by their topics, with clustered nodes
+                      showing related events
+                    </p>
+                  </div>
+                </li>
+                <li>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <strong className="block mb-1">3. Story Time</strong>
+                    <p className="text-sm text-gray-600">
+                      Maps events to their real-world chronological order
+                    </p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+    image: "/images/visualisation.png",
+  },
+  {
+    title: "Entity Swimlane",
+    content: (
+      <div className="space-y-4">
+        <p>
+          In the <strong>Entity Swimlane</strong>:
+        </p>
+        <ul className="list-none space-y-2">
+          <li>
+            • The <strong>Y-axis</strong> represents{" "}
+            <strong>narrative time</strong>
+          </li>
+          <li>
+            • The <strong>X-axis</strong> shows{" "}
+            <strong>different entities</strong>
+          </li>
+        </ul>
+        <p>
+          Each node, or pair of connected nodes, corresponds to an event from
+          the text.
+        </p>
+        <p>For example:</p>
+        <ul className="list-none space-y-2 pl-4">
+          <li>
+            • A connected node between Entity A and B at narrative time 1
+            indicates the event mentioned both entities in the first paragraph.
+          </li>
+          <li>
+            • A single node on Entity A at time 2 indicates an event that only
+            involved Entity A, described in a later paragraph.
+          </li>
+        </ul>
+      </div>
+    ),
+    image: "/images/entity_intro.png",
+  },
+  {
+    title: "Topic Stream",
+    content: (
+      <div className="space-y-4">
+        <p>
+          In the <strong>Topic Stream</strong>:
+        </p>
+        <ul className="list-none space-y-2">
+          <li>• Each track represents a topic</li>
+          <li>• Each node marks a related event</li>
+        </ul>
+        <p>
+          You may see a <strong>clustered node</strong> with a number — this
+          means multiple events happened close together under the same topic
+          (e.g., around January 2024).
+        </p>
+        <ul className="list-none space-y-2">
+          <li>• Click to expand and align them vertically on the timeline</li>
+          <li>• Click outside the canvas to close the group view</li>
+        </ul>
+      </div>
+    ),
+    image: "/images/topic_intro.png",
+  },
+  {
+    title: "Story Time",
+    content: (
+      <div className="space-y-4">
+        <p>
+          In <strong>Story Time</strong>:
+        </p>
+        <p>
+          • Each node maps an event based on its{" "}
+          <strong>real-world timeline</strong>.
+        </p>
+        <p>For instance:</p>
+        <ul className="list-none space-y-2 pl-4">
+          <li>
+            • A single node at January 2024 reflects an event in the first
+            paragraph.
+          </li>
+          <li>
+            • An elongated node starting from February to March indicates a
+            continuing event described in the third paragraph.
+          </li>
+        </ul>
+      </div>
+    ),
+    image: "/images/time_intro.png",
+  },
+  {
+    title: "Interactions",
+    content: (
+      <div className="space-y-4">
+        <p>
+          There are <strong>two types of interaction</strong>:
+        </p>
+        <div className="space-y-4">
+          <div>
+            <h4 className="font-medium">Focus (Left Click)</h4>
+            <p>
+              Click on any text, node, or visual element to{" "}
+              <strong>focus</strong> it across the panels.
+            </p>
+            <p>
+              A <strong>blue guideline</strong> will help you trace the
+              connection between the text and its corresponding visual element.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-medium">Mark (Right Click)</h4>
+            <p>
+              Use right-click to <strong>mark an event</strong> that supports
+              your answer.
+            </p>
+            <p>
+              This is especially important when justifying your reasoning during
+              task completion.
+            </p>
+          </div>
+        </div>
+      </div>
+    ),
+    image: "/images/interaction.gif",
+  },
+  {
+    title: "📄 Text Panels",
+    content: (
+      <div className="space-y-4">
+        <div>
+          <p className="font-medium">
+            In the <strong>Text Panel</strong>, you can:
+          </p>
+          <ul className="list-none space-y-2 pl-4">
+            <li>
+              • <strong>Read the full article</strong>, organized paragraphs
+              (events) by narrative sequence
+            </li>
+            <li>
+              • Use the <strong>search function</strong> to highlight key terms
+              and locate relevant events instantly
+            </li>
+          </ul>
+        </div>
+      </div>
+    ),
+    image: "/images/text_search.gif",
+  },
+  {
+    title: "Task",
+    content: (
+      <div className="space-y-4">
+        <div>
+          <p className="font-medium">
+            Your task is to use the <strong>Text Panel</strong>—with or without
+            visual support—to answer questions shown in the{" "}
+            <strong>Task Panel</strong>.
+          </p>
+          <p>
+            Each question comes with a <strong>time limit</strong> and requires
+            close reading.
+          </p>
+        </div>
+        <p>Please remember three key rules:</p>
+        <ol className="list-none space-y-3">
+          <li className="flex items-start space-x-2">
+            <span className="text-green-500 font-bold">1.</span>
+            <span>
+              <strong>Base your answers only on the text</strong>, not on prior
+              knowledge—details may differ from real-world facts.
+            </span>
+          </li>
+          <li className="flex items-start space-x-2">
+            <span className="text-red-500 font-bold">2.</span>
+            <span>
+              <strong>If you cannot find the information</strong>, click
+              "Information Not Found" to skip the question.
+            </span>
+          </li>
+          <li className="flex items-start space-x-2">
+            <span className="text-blue-500 font-bold">3.</span>
+            <span>
+              <strong>You must mark the supporting event(s)</strong> in the
+              visualisation. This helps us understand how you arrived at your
+              response.
+            </span>
+          </li>
+        </ol>
+      </div>
+    ),
+  },
+  {
+    title: "🚀 Let's Get Started",
+    content: (
+      <div className="space-y-4 text-center">
+        <p>Thank you for completing this introduction.</p>
+        <p className="font-medium">You're now ready to begin your training.</p>
+        <p className="font-bold">Good luck!</p>
+      </div>
+    ),
   },
 ];
 
@@ -148,60 +351,68 @@ interface IntroductionPageProps {
 
 export function IntroductionPage({
   onComplete,
-  scenarioType = "pure-text",
+  scenarioType = "text-visual-1",
 }: IntroductionPageProps) {
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Get the appropriate steps based on scenario type
-  const steps =
-    scenarioType && introductionContent[scenarioType]
-      ? introductionContent[scenarioType]
-      : defaultSteps;
-
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
+    if (currentStep < introductionSteps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
       onComplete();
     }
   };
 
-  const currentStepData = steps[currentStep];
+  const currentStepData = introductionSteps[currentStep];
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center">
-      <div className="bg-white rounded-lg shadow-sm p-6 max-w-md w-full mx-auto">
-        <div className="text-sm font-medium text-blue-600 mb-1">
-          Step {currentStep + 1} of {steps.length}
+    <div className="absolute inset-0 flex items-center justify-center bg-black/5">
+      <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full mx-auto">
+        <div className="text-sm font-medium text-blue-600 mb-2">
+          Step {currentStep + 1} of {introductionSteps.length}
         </div>
 
-        <h2 className="text-xl font-semibold text-gray-900 mb-3">
+        <h2 className="text-2xl font-semibold text-gray-900 mb-4">
           {currentStepData.title}
         </h2>
 
-        <p className="text-gray-600 mb-4 text-sm">{currentStepData.content}</p>
+        {/* Render image if exists */}
+        {currentStepData.image && (
+          <div className="relative w-full h-80 mb-6 rounded-lg overflow-hidden border border-gray-100">
+            <Image
+              src={currentStepData.image}
+              alt={currentStepData.title}
+              fill
+              className="object-contain"
+            />
+          </div>
+        )}
+
+        <div className="text-gray-600 text-base prose prose-sm max-w-none">
+          {currentStepData.content}
+        </div>
 
         {/* Render YouTube video if URL exists */}
         {currentStepData.videoUrl && (
           <YouTubeVideo url={currentStepData.videoUrl} />
         )}
 
-        <div className="flex justify-between items-center">
-          <div className="flex space-x-1">
-            {steps.map((_, index) => (
+        <div className="flex justify-between items-center mt-8">
+          <div className="flex space-x-1.5">
+            {introductionSteps.map((_, index: number) => (
               <div
                 key={index}
-                className={`w-2 h-2 rounded-full ${
-                  index === currentStep ? "bg-blue-500" : "bg-gray-300"
+                className={`w-2.5 h-2.5 rounded-full ${
+                  index === currentStep ? "bg-blue-500" : "bg-gray-200"
                 }`}
               />
             ))}
           </div>
           <button
             onClick={handleNext}
-            className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50"
+            className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
-            {currentStep === steps.length - 1 ? "Begin" : "Next"}
+            {currentStep === introductionSteps.length - 1 ? "Begin" : "Next"}
           </button>
         </div>
       </div>
