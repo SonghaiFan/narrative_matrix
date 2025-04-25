@@ -94,7 +94,7 @@
     },
     {
       "index": 3,
-      "text": "The Israeli government officially approved the proposal, and the first hostage release began on January 19.",
+      "text": "The Israeli government officially approved the proposal, and the first hostage release began on January 19 2023.",
       "short_text": "The Israeli government officially approved the proposal, and the first hostage release began on January 19.",
       "lead_title": null,
       "temporal_anchoring": {
@@ -204,8 +204,8 @@
         }
       ],
       "topic": {
-        "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war", "peace negotiations"],
+        "main_topic": "politics",
+        "sub_topic": ["national government", "parties and movements"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 6
@@ -245,7 +245,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "weaponry"],
+        "sub_topic": ["war", "armed conflict", "weaponry"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 8
@@ -677,7 +677,7 @@
       "short_text": "The Camp David Accords improved relations between Israel and its neighbors but did not resolve Palestinian self-determination issues.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": ["1978-9-17", "1982"],
+        "real_time": "1978-9-17",
         "narrative_time": 18
       },
       "entities": [
@@ -712,7 +712,7 @@
       "short_text": "In 1987, hundreds of thousands of Palestinians in the West Bank and Gaza Strip rose up against the Israeli government in the first intifada.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": ["1987-01-01", "1993-09-13"],
+        "real_time": ["1987-12-01", "1993-09-13"],
         "narrative_time": 19
       },
       "entities": [
@@ -952,7 +952,7 @@
       "short_text": "The United States and European Union did not recognize Hamas' electoral victory due to its designation as a terrorist organization by Western governments.",
       "lead_title": null,
       "temporal_anchoring": {
-        "real_time": ["1993-01-01", "2006-12-31"],
+        "real_time": "1993-01-01",
         "narrative_time": 25
       },
       "entities": [
@@ -1134,7 +1134,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["war"],
+        "sub_topic": ["armed conflict"],
         "sentiment": {
           "polarity": "negative",
           "intensity": 8

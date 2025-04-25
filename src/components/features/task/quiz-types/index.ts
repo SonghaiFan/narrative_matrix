@@ -2,7 +2,6 @@
 export type QuizLevel =
   | "Information Retrieval"
   | "Pattern Recognition"
-  | "Causal Reasoning"
   | "Sanity Check";
 
 export type QuizType =

@@ -76,6 +76,8 @@ export function TaskPanel({
   const [pendingRedirectPath, setPendingRedirectPath] = useState("");
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [showTimeWarningModal, setShowTimeWarningModal] = useState(false);
+  const [showIncorrectAnswerModal, setShowIncorrectAnswerModal] =
+    useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const hasCalledTimeUp = useRef(false);
   const warningShownRef = useRef(false);
@@ -558,12 +560,6 @@ export function TaskPanel({
     resumeTimer();
   }, [resumeTimer]);
 
-  // Function to handle submit from time warning
-  const handleSubmitFromWarning = useCallback(() => {
-    setShowTimeWarningModal(false);
-    handleTimeUp();
-  }, []);
-
   // Function to handle when question time is up (only for non-domain users)
   const handleTimeUp = () => {
     if (currentTask && !currentTask.completed && userRole !== "domain") {
@@ -678,6 +674,16 @@ export function TaskPanel({
 
   const processSubmission = (isSkipped = false, isQuestionTimeUp = false) => {
     if (!currentTask) return;
+
+    // For training mode, check if the answer is correct before proceeding
+    if (is_training && !isSkipped && !isQuestionTimeUp) {
+      const isCorrect = checkAnswer(currentTask, userAnswer);
+      if (!isCorrect) {
+        // Show the incorrect answer modal with the correct answer for training
+        setShowIncorrectAnswerModal(true);
+        return;
+      }
+    }
 
     setIsSubmitting(true);
 
@@ -1011,6 +1017,93 @@ export function TaskPanel({
 
     // For any type of answer
     return !userAnswer.trim() || markedEventIds.length === 0;
+  };
+
+  // Add helper function to check answers
+  const checkAnswer = (task: QuizItem, answer: string): boolean => {
+    if (!answer.trim()) return false;
+
+    // Helper function to normalize strings for comparison
+    const normalize = (str: string) =>
+      str.toLowerCase().trim().replace(/\s+/g, " ");
+
+    switch (task.type) {
+      case "radio-options": {
+        // For radio options, do a normalized string comparison
+        const normalizedCorrect = normalize(task.answer);
+        const normalizedUser = normalize(answer);
+        return normalizedCorrect === normalizedUser;
+      }
+
+      case "multiple-select": {
+        // Split by comma, normalize each item, and sort for consistent comparison
+        const normalizeAndSort = (str: string) =>
+          str
+            .split(",")
+            .map((item) => normalize(item))
+            .filter(Boolean)
+            .sort();
+
+        const correctItems = normalizeAndSort(task.answer);
+        const userItems = normalizeAndSort(answer);
+
+        if (correctItems.length !== userItems.length) return false;
+
+        return correctItems.every((item, index) => item === userItems[index]);
+      }
+
+      case "numbered-sequence": {
+        // Remove all spaces and compare directly since it's just numbers
+        const cleanCorrect = task.answer.replace(/\s+/g, "");
+        const cleanUser = answer.replace(/\s+/g, "");
+        return cleanCorrect === cleanUser;
+      }
+
+      case "grid-matching": {
+        try {
+          // For grid matching with format "Key: Value, Key2: Value2"
+          const parseGridString = (str: string) => {
+            const pairs = str.split(",").map((pair) => pair.trim());
+            return pairs.reduce((acc, pair) => {
+              const [key, value] = pair.split(":").map((s) => normalize(s));
+              acc[key] = value;
+              return acc;
+            }, {} as Record<string, string>);
+          };
+
+          // If the answer is already in JSON format, try parsing it
+          try {
+            const correctGrid = JSON.parse(task.answer);
+            const userGrid = JSON.parse(answer);
+            return JSON.stringify(correctGrid) === JSON.stringify(userGrid);
+          } catch {
+            // If JSON parsing fails, try the string format
+            const correctPairs = parseGridString(task.answer);
+            const userPairs = parseGridString(answer);
+
+            const correctKeys = Object.keys(correctPairs).sort();
+            const userKeys = Object.keys(userPairs).sort();
+
+            if (correctKeys.length !== userKeys.length) return false;
+
+            return correctKeys.every(
+              (key) => correctPairs[key] === userPairs[key]
+            );
+          }
+        } catch {
+          return false;
+        }
+      }
+
+      default: {
+        // For single-input text and any other types
+        const unknownTask = task as { answer: unknown };
+        if (typeof unknownTask.answer === "string") {
+          return normalize(unknownTask.answer) === normalize(answer);
+        }
+        return false;
+      }
+    }
   };
 
   if (isLoadingQuiz) {
@@ -1736,8 +1829,7 @@ export function TaskPanel({
                   Time Warning
                 </h3>
                 <p className="text-xs text-gray-500 mt-1">
-                  You have only 20 seconds remaining. The timer is now paused.
-                  Would you like to submit now or continue?
+                  You have only 20 seconds remaining.
                 </p>
               </div>
               <button
@@ -1752,13 +1844,57 @@ export function TaskPanel({
                 onClick={handleCloseTimeWarning}
                 className="px-3 py-1.5 text-xs border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
               >
-                Continue Working
+                Continue
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Incorrect Answer Modal for Training Mode */}
+      {showIncorrectAnswerModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-4">
+            <div className="flex items-start mb-3">
+              <div className="flex-shrink-0 mr-3">
+                <AlertCircle className="h-5 w-5 text-red-500" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-medium text-gray-900">
+                  Incorrect Answer
+                </h3>
+                <p className="text-xs text-gray-500 mt-1">
+                  Your answer is not correct. Please review the information
+                  carefully and try again.
+                </p>
+                {/* Show the correct answer in training mode */}
+                <div className="mt-3 p-2 bg-blue-50 rounded-md">
+                  <p className="text-xs font-medium text-blue-800">
+                    Correct Answer:
+                  </p>
+                  <p className="text-xs text-blue-700 mt-1">
+                    {currentTask?.answer}
+                  </p>
+                </div>
+                <ul className="text-xs text-gray-500 mt-3 list-disc ml-4">
+                  <li>Read all events thoroughly</li>
+                  <li>Mark the relevant events that contain the answer</li>
+                  <li>Double-check your answer before submitting</li>
+                </ul>
+              </div>
               <button
-                onClick={handleSubmitFromWarning}
-                className="px-3 py-1.5 text-xs bg-red-600 text-white rounded-md hover:bg-red-700"
+                onClick={() => setShowIncorrectAnswerModal(false)}
+                className="flex-shrink-0 ml-1 text-gray-400 hover:text-gray-500"
               >
-                Submit Now
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => setShowIncorrectAnswerModal(false)}
+                className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                Try Again
               </button>
             </div>
           </div>

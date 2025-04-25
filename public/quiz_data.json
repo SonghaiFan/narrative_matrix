@@ -2,7 +2,7 @@
   "quiz": [
     {
       "id": "ir_e_n_1",
-      "question": "Which countries helped arrange the January 15, 2025 ceasefire between Israel and Hamas? (Select all that apply)",
+      "question": "Based on the narrative, which countries helped ceasefire between Israel and Hamas? (Select all that apply)",
       "answer": "United States,Egypt,Qatar",
       "level": "Information Retrieval",
       "type": "multiple-select",
@@ -22,22 +22,22 @@
     },
     {
       "id": "pr_e_n_2",
-      "question": "Match each group or leader with their specific action mentioned in the text:",
-      "answer": "Hamas: Launched attack on October 7, 2023, Fatah: Controlled Palestinian Authority in West Bank, Netanyahu: Led Israel's coalition government in 2022",
+      "question": "Based on the narrative, match each entity with their specific action:",
+      "answer": "Hamas: Launched attack on October 7 2023, Fatah: Controlled Palestinian Authority in West Bank, Netanyahu: Led Israel's most far-right and religious government in 2022",
       "level": "Pattern Recognition",
       "type": "grid-matching",
       "timeLimit": 90,
       "visual": null,
       "prone": "entity",
       "options": {
-        "leftItems": ["Hamas", "Fatah", "Netanyahu"],
+        "leftItems": ["Fatah", "Hamas", "Netanyahu"],
         "rightItems": [
-          "Launched attack on October 7, 2023",
+          "Launched attack on October 7 2023",
           "Controlled Palestinian Authority in West Bank",
-          "Led Israel's coalition government in 2022",
+          "Led Israel's most far-right and religious government in 2022",
           "Signed peace agreement with Egypt"
         ],
-        "leftLabel": "Group/Leader",
+        "leftLabel": "Entity",
         "rightLabel": "Action"
       },
       "completed": false,
@@ -45,73 +45,65 @@
     },
     {
       "id": "ir_e_v_3",
-      "question": "According to the text, which groups attacked U.S. military positions in Iraq and Syria? (Select all that apply)",
-      "answer": "Houthi rebels,Iran-backed groups",
+      "question": "Which entity appears in nearly every event across the narrative",
+      "answer": "Israel",
       "level": "Information Retrieval",
       "type": "multiple-select",
-      "timeLimit": 90,
+      "timeLimit": 60,
       "visual": "entity",
       "prone": "entity",
-      "options": [
-        "Houthi rebels",
-        "Iran-backed groups",
-        "Hezbollah",
-        "Hamas",
-        "Israel",
-        "Syria"
-      ],
+      "options": ["Hamas", "Israel", "Syria"],
       "completed": false,
-      "event_reference": 8
+      "event_reference": 999
     },
     {
       "id": "pr_e_v_4",
-      "question": "Place these groups in the exact order they are mentioned in the text when describing regional escalations after October 7:",
-      "answer": "2,1,3",
+      "question": "Based on the narrative, arrange these entities in the order they most frequently co-occur with West Bank, from most to least.",
+      "answer": "2,4,3,1",
       "level": "Pattern Recognition",
       "type": "numbered-sequence",
-      "timeLimit": 90,
+      "timeLimit": 120,
       "visual": "entity",
       "prone": "entity",
       "options": {
         "events": [
           {
             "id": 1,
-            "text": "Houthi rebels"
+            "text": "Hamas"
           },
           {
             "id": 2,
-            "text": "Hezbollah"
+            "text": "Israel"
           },
           {
             "id": 3,
-            "text": "Iran"
+            "text": "Gaza"
+          },
+          {
+            "id": 4,
+            "text": "Palestinian"
           }
         ]
       },
       "completed": false,
-      "event_reference": [7, 8, 9]
+      "event_reference": [12, 20, 22, 23, 34]
     },
     {
       "id": "ir_t_n_5",
-      "question": "What specific action did the Trump administration take regarding Palestinian aid?",
-      "answer": "Canceled funding for the UN Relief and Works Agency",
+      "question": "When was the first civil unrest (dissatisfaction among the general population as evidenced by rallies, strikes, demonstrations or sabotage.) mentioned in the narrative?",
+      "answer": "1987",
       "level": "Information Retrieval",
       "type": "radio-options",
       "timeLimit": 60,
       "visual": null,
       "prone": "topic",
-      "options": [
-        "Increased funding for Palestinian refugees",
-        "Established new funding for Gaza reconstruction",
-        "Canceled funding for the UN Relief and Works Agency",
-        "Created a new Palestinian aid program"
-      ],
+      "options": ["1947", "1967", "1987", "2000"],
       "completed": false,
-      "event_reference": 35
+      "event_reference": 19
     },
     {
       "id": "pr_t_n_6",
-      "question": "Based on the text, what typically happens after peace agreements in this conflict?",
+      "question": "Based on the narrative, what typically happens after peace agreements?",
       "answer": "They are followed by new rounds of conflict",
       "level": "Pattern Recognition",
       "type": "radio-options",
@@ -129,61 +121,56 @@
     },
     {
       "id": "ir_t_v_7",
-      "question": "According to the text, what specific event started the first Arab-Israeli War?",
-      "answer": "The creation of the State of Israel",
+      "question": "Base on the narrative, what best describes the topic of the events during 1980 to 1995 involving Palestinian and Israel?",
+      "answer": "Peace negotiations: Negotiations intended to bring an end to a conflict.",
       "level": "Information Retrieval",
       "type": "radio-options",
-      "timeLimit": 60,
+      "timeLimit": 120,
       "visual": "topic",
       "prone": "topic",
       "options": [
-        "The UN Partition Plan vote",
-        "The British withdrawal",
-        "The creation of the State of Israel",
-        "Arab forces attacking Israeli settlements"
+        "Civil unrest: Dissatisfaction among the general population as evidenced by rallies, strikes, demonstrations or sabotage.",
+        "Armed conflict: Disputes between opposing groups involving the use of weaponry, but not formally declared a war.",
+        "National government: Actions or instability within a country's ruling body e.g. leadership crisis.",
+        "Peace negotiations: Negotiations intended to bring an end to a conflict."
       ],
       "completed": false,
-      "event_reference": 11
+      "event_reference": [19, 22, 26]
     },
     {
       "id": "pr_t_v_8",
-      "question": "Match each time period with the main events that happened during that time according to the text:",
-      "answer": "1947-1949: Israel's creation and first Arab-Israeli War, 1967-1979: Six-Day War and Camp David Accords, 1993-2006: Oslo Accords and Hamas electoral victory",
+      "question": "Based on the narrative, match each topic with one of its most prominent time periods. (War: A formal declaration of hostilities by one country against another; Peace negotiations: Negotiations intended to bring an end to a conflict.)",
+      "answer": "War: 1948-1973,Peace negotiations: 1979-2025,Civil unrest: 1987-2005",
       "level": "Pattern Recognition",
       "type": "grid-matching",
-      "timeLimit": 90,
+      "timeLimit": 120,
       "visual": "topic",
       "prone": "topic",
       "options": {
-        "leftItems": ["1947-1949", "1967-1979", "1993-2006"],
-        "rightItems": [
-          "Israel's creation and first Arab-Israeli War",
-          "Six-Day War and Camp David Accords",
-          "Oslo Accords and Hamas electoral victory",
-          "Second Intifada and barrier wall construction"
-        ],
-        "leftLabel": "Years",
-        "rightLabel": "Events"
+        "leftItems": ["War", "Peace negotiations", "Civil unrest"],
+        "rightItems": ["1948-1973", "1979-2025", "1987-2005"],
+        "leftLabel": "Topics",
+        "rightLabel": "Time Periods"
       },
       "completed": false,
-      "event_reference": [10, 11, 12, 14, 15, 16, 17, 20, 21, 24]
+      "event_reference": [11, 12, 13, 14, 16, 17, 20, 21, 2, 19, 22]
     },
     {
       "id": "ir_tm_n_9",
-      "question": "In what specific year did Israel take control of the West Bank and Gaza Strip?",
-      "answer": "1967",
+      "question": "Based on the narrative, how long did the second intifada last?",
+      "answer": "5 years",
       "level": "Information Retrieval",
       "type": "radio-options",
       "timeLimit": 60,
       "visual": null,
       "prone": "time",
-      "options": ["1948", "1956", "1967", "1973"],
+      "options": ["2 years", "3 years", "5 years", "7 years"],
       "completed": false,
-      "event_reference": 15
+      "event_reference": 22
     },
     {
       "id": "pr_tm_n_10",
-      "question": "Put these events in the exact chronological order they occurred according to the text:",
+      "question": "Based on the narrative, put these events in the exact chronological order they occurred according to the text:",
       "answer": "2,4,1,3",
       "level": "Pattern Recognition",
       "type": "numbered-sequence",
@@ -215,38 +202,48 @@
     },
     {
       "id": "ir_tm_v_11",
-      "question": "In which years were peace agreements or normalization accords signed? (Select all mentioned in the text)",
-      "answer": "1979,1993,1995,2020",
+      "question": "Based on the narrative, which event is the most prominent flashback—that is, it appears later in the narrative sequence but refers to a moment much earlier in real-world time?",
+      "answer": "UN Partition Plan adopted",
       "level": "Information Retrieval",
-      "type": "multiple-select",
+      "type": "radio-options",
       "timeLimit": 60,
       "visual": "time",
       "prone": "time",
-      "options": ["1979", "1993", "1995", "2000", "2014", "2020"],
+      "options": [
+        "Hamas's attack on Israel",
+        "The Six-Day War",
+        "UN Partition Plan adopted",
+        "Formation of unity government"
+      ],
       "completed": false,
-      "event_reference": [17, 20, 21, 36]
+      "event_reference": [1, 10, 14, 28]
     },
     {
       "id": "pr_tm_v_12",
-      "question": "Match each event with the exact year or time period it happened according to the text:",
-      "answer": "Second Intifada: 2000-2005, Hamas winning elections: 2006, Abraham Accords signing: 2020",
-      "level": "Pattern Recognition",
+      "question": "Match each major event with its most directly associated aftermath or resolution.",
+      "answer": "Six-Day War: Camp David Accords,First Intifada: Oslo I Accords,Hamas-Fatah conflict  (2006–2011): Formation of unity government",
       "type": "grid-matching",
-      "timeLimit": 90,
+      "level": "Pattern Recognition",
+      "timeLimit": 120,
       "visual": "time",
       "prone": "time",
       "options": {
         "leftItems": [
-          "Second Intifada",
-          "Hamas winning elections",
-          "Abraham Accords signing"
+          "Six-Day War",
+          "First Intifada",
+          "Hamas-Fatah conflict (2006–2011)"
         ],
-        "rightItems": ["2000-2005", "2006", "2020", "1987-1993"],
-        "leftLabel": "Event",
-        "rightLabel": "Year/Period"
+        "rightItems": [
+          "Oslo I Accords",
+          "Formation of unity government",
+          "Oslo II Accords",
+          "Camp David Accords"
+        ],
+        "leftLabel": "Events",
+        "rightLabel": "Resolutions"
       },
       "completed": false,
-      "event_reference": [22, 24, 36]
+      "event_reference": [14, 16, 19, 20, 24, 17, 21, 23, 27, 28]
     }
   ]
 }
