@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { getTaskProgress } from "@/lib/task-progress";
 import { CheckCircle, Copy, ArrowLeft, Send } from "lucide-react";
 import { saveFeedback } from "@/lib/firebase-operations";
+import Image from "next/image";
 
 function CompletionContent() {
   const router = useRouter();
@@ -260,7 +261,7 @@ function CompletionContent() {
     value: number,
     onChange: (value: number) => void,
     error: boolean,
-    label: string,
+    label: React.ReactNode,
     leftLabel: string,
     rightLabel: string
   ) => (
@@ -511,7 +512,15 @@ function CompletionContent() {
             feedback.visualizationRatings.entity,
             (value) => handleVisualizationRatingChange("entity", value),
             validationErrors.entity,
-            "Entity Visualization",
+            <span className="flex items-center gap-2">
+              <Image
+                src="/icons/entity-pre.png"
+                alt="Entity Visualization"
+                width={128}
+                height={128}
+              />
+              Entity Visualization
+            </span>,
             "Not Helpful",
             "Very Helpful"
           )}
@@ -520,7 +529,15 @@ function CompletionContent() {
             feedback.visualizationRatings.topic,
             (value) => handleVisualizationRatingChange("topic", value),
             validationErrors.topic,
-            "Topic Visualization",
+            <span className="flex items-center gap-2">
+              <Image
+                src="/icons/topic-pre.png"
+                alt="Topic Visualization"
+                width={128}
+                height={128}
+              />
+              Topic Visualization
+            </span>,
             "Not Helpful",
             "Very Helpful"
           )}
@@ -529,7 +546,15 @@ function CompletionContent() {
             feedback.visualizationRatings.time,
             (value) => handleVisualizationRatingChange("time", value),
             validationErrors.time,
-            "Time Visualization",
+            <span className="flex items-center gap-2">
+              <Image
+                src="/icons/time-pre.png"
+                alt="Time Visualization"
+                width={128}
+                height={128}
+              />
+              Time Visualization
+            </span>,
             "Not Helpful",
             "Very Helpful"
           )}
