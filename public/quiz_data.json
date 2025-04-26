@@ -66,7 +66,7 @@
       "answer": "2,4,3,1",
       "level": "Pattern Recognition",
       "type": "numbered-sequence",
-      "timeLimit": 120,
+      "timeLimit": 180,
       "visual": "entity",
       "prone": "entity",
       "options": {
@@ -133,7 +133,7 @@
       "answer": "Peace negotiations",
       "level": "Information Retrieval",
       "type": "multiple-select",
-      "timeLimit": 120,
+      "timeLimit": 180,
       "visual": "topic",
       "prone": "topic",
       "options": [
@@ -152,7 +152,7 @@
       "answer": "War: 1948-1973,Civil unrest: 1987-2005, Armed conflict: 2014-2023",
       "level": "Pattern Recognition",
       "type": "grid-matching",
-      "timeLimit": 120,
+      "timeLimit": 180,
       "visual": "topic",
       "prone": "topic",
       "options": {
@@ -218,7 +218,7 @@
       "answer": "UN Partition Plan adopted",
       "level": "Information Retrieval",
       "type": "radio-options",
-      "timeLimit": 60,
+      "timeLimit": 90,
       "visual": "time",
       "prone": "time",
       "options": [
@@ -237,7 +237,7 @@
       "answer": "Six-Day War: Camp David Accords,First Intifada: Oslo I Accords,Hamas-Fatah conflict  (2006–2011): Formation of unity government",
       "type": "grid-matching",
       "level": "Pattern Recognition",
-      "timeLimit": 120,
+      "timeLimit": 180,
       "visual": "time",
       "prone": "time",
       "options": {
