@@ -519,6 +519,12 @@ function CompletionContent() {
                 width={128}
                 height={128}
               />
+              <Image
+                src="/icons/entity-icon.png"
+                alt="Entity Visualization"
+                width={128}
+                height={128}
+              />
               Entity Visualization
             </span>,
             "Not Helpful",
@@ -536,6 +542,12 @@ function CompletionContent() {
                 width={128}
                 height={128}
               />
+              <Image
+                src="/icons/topic-icon.png"
+                alt="Topic Visualization"
+                width={128}
+                height={128}
+              />
               Topic Visualization
             </span>,
             "Not Helpful",
@@ -549,6 +561,12 @@ function CompletionContent() {
             <span className="flex items-center gap-2">
               <Image
                 src="/icons/time-pre.png"
+                alt="Time Visualization"
+                width={128}
+                height={128}
+              />
+              <Image
+                src="/icons/time-icon.png"
                 alt="Time Visualization"
                 width={128}
                 height={128}
