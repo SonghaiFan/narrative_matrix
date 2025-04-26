@@ -702,8 +702,6 @@ export function TaskPanel({
         completed: true,
         userAnswer: isSkipped
           ? "Information not specified in the text"
-          : isQuestionTimeUp && !userAnswer.trim()
-          ? "Time expired before answer was submitted"
           : userAnswer,
         userEventReference:
           markedEventIds.length > 0 ? [...markedEventIds] : null,
