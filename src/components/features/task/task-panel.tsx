@@ -1211,12 +1211,12 @@ export function TaskPanel({
             <div
               key={task.id}
               onClick={() =>
-                isDomainExpert || !task.completed
+                isDomainExpert && !task.completed
                   ? setCurrentTaskIndex(idx)
                   : null
               }
               className={`w-2 h-2 rounded-full ${
-                isDomainExpert || !task.completed
+                isDomainExpert && !task.completed
                   ? "cursor-pointer"
                   : "cursor-default"
               } ${
