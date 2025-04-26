@@ -5,9 +5,13 @@ import Clarity from "@microsoft/clarity";
 
 export function ClarityAnalytics() {
   useEffect(() => {
-    // Initialize Clarity with your project ID
-    // Replace 'YOUR_PROJECT_ID' with your actual Clarity project ID
-    Clarity.init("ra9bak84l9");
+    try {
+      console.log("Initializing Microsoft Clarity...");
+      Clarity.init("ra9bak84l9");
+      console.log("Microsoft Clarity initialized successfully");
+    } catch (error) {
+      console.error("Failed to initialize Microsoft Clarity:", error);
+    }
   }, []);
 
   return null;
