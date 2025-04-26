@@ -153,7 +153,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Create normal user in Firestore
-      await createUser(username, uniqueSessionId || username);
+      await createUser(username, uniqueSessionId || username, scenarioId);
 
       // All other users are normal users
       const normalUser: NormalUser = {

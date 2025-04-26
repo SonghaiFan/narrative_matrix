@@ -134,6 +134,13 @@ export function UsabilityTest({ onComplete }: UsabilityTestProps) {
           >
             {rightClickDone ? "Right Click Verified" : "Right-Click Here"}
           </button>
+          {!rightClickDone && (
+            <div className="mt-2 text-xs text-gray-500">
+              On Mac, right-click is often a <b>two-finger tap</b> on the
+              trackpad, a click in the <b>bottom-right corner</b>, or{" "}
+              <b>Control+Click</b>.
+            </div>
+          )}
           {!rightClickDone && showRightClickHint && (
             <p className="mt-2 text-xs text-gray-500">
               Hint: Press and hold the right mouse button, or use two fingers on

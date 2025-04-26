@@ -12,6 +12,7 @@ import {
 export async function createUser(
   prolificId: string,
   sessionId: string,
+  senarioId: string,
   role: "normal" | "domain" = "normal"
 ) {
   const userRef = doc(db, "users", prolificId);
@@ -21,7 +22,7 @@ export async function createUser(
     role,
     createdAt: serverTimestamp(),
     lastActive: serverTimestamp(),
-    currentScenario: "text-visual-1", // Default scenario
+    currentScenario: senarioId,
   });
   return userRef;
 }
