@@ -525,7 +525,7 @@ function CompletionContent() {
                 width={128}
                 height={128}
               />
-              Entity Visualization
+              Entity Swimlane
             </span>,
             "Not Helpful",
             "Very Helpful"
@@ -548,7 +548,7 @@ function CompletionContent() {
                 width={128}
                 height={128}
               />
-              Topic Visualization
+              Topic Stream
             </span>,
             "Not Helpful",
             "Very Helpful"
@@ -571,7 +571,7 @@ function CompletionContent() {
                 width={128}
                 height={128}
               />
-              Time Visualization
+              Story Time
             </span>,
             "Not Helpful",
             "Very Helpful"

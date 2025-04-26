@@ -1098,11 +1098,6 @@ export function TaskPanel({
     }
   };
 
-  const handleMarkAllEvents = () => {
-    clearMarkedEvents();
-    toggleMarkedEvent(999); // Use 999 to represent all events
-  };
-
   if (isLoadingQuiz) {
     return (
       <div className={`flex flex-col h-full bg-white p-2 ${className}`}>
@@ -1335,16 +1330,6 @@ export function TaskPanel({
                       <div className="text-xs text-blue-700 mb-2">
                         Right-click on the events that contain the information
                         for your answer to mark them.
-                      </div>
-                      {/* Add Mark All Events button */}
-                      <div className="mb-2">
-                        <button
-                          onClick={handleMarkAllEvents}
-                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
-                        >
-                          <CheckCircle className="h-3 w-3" />
-                          Mark All Events
-                        </button>
                       </div>
                       {/* Show correct reference events when answer is revealed */}
                       {isDomainExpert &&
