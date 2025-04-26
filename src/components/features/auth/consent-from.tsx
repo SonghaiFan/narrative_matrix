@@ -16,79 +16,166 @@ export function ConsentForm({
   };
 
   return (
-    <div className="p-8 border-b md:border-b-0 md:border-r border-gray-100">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Consent Form</h2>
+    <div className="p-8 border-b md:border-b-0 md:border-r border-gray-100 max-w-2xl mx-auto">
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">Consent Form</h2>
 
-      <div className="h-[450px] overflow-y-auto pr-4 mb-6 custom-scrollbar">
-        <div className="space-y-4">
-          <section>
-            <h3 className="font-medium text-gray-800">
-              Research Study Consent
-            </h3>
-            <p className="text-gray-600">
-              You are invited to participate in a research study on narrative
-              visualization. This study aims to understand how different
-              visualization approaches help users comprehend narrative data.
-            </p>
-          </section>
+      <div className="h-[500px] overflow-y-auto pr-4 mb-6 custom-scrollbar space-y-6">
+        <section>
+          <h3 className="font-semibold text-gray-800 mb-1">
+            Invitation to Participate in the Study
+          </h3>
+          <p className="text-gray-700">
+            You are invited to participate in a study titled{" "}
+            <strong>"Towards narrative understanding"</strong> conducted by the
+            Department of Human Centred Computing, Monash University. Please
+            read this explanatory statement before deciding whether to
+            participate. For further information, contact the researchers via
+            the email addresses provided below.
+          </p>
+        </section>
 
-          <section>
-            <h3 className="font-medium text-gray-800">
-              What will you be asked to do?
-            </h3>
-            <p className="text-gray-600">
-              You will interact with a narrative interface, complete specific
-              tasks, and provide feedback on your experience. The study will
-              take approximately 20-30 minutes to complete.
-            </p>
-          </section>
+        <section>
+          <h3 className="font-semibold text-gray-800 mb-1">Project Details</h3>
+          <ul className="text-gray-700 list-disc pl-5 space-y-1">
+            <li>
+              <strong>Project ID:</strong> 36056
+            </li>
+            <li>
+              <strong>Project Title:</strong> Sketching Narrative Structures
+            </li>
+          </ul>
+          <div className="mt-2">
+            <strong>Student Investigator:</strong>
+            <div className="ml-4">
+              Songhai Fan (
+              <a
+                href="mailto:songhai.fan@monash.edu"
+                className="text-blue-600 underline"
+              >
+                songhai.fan@monash.edu
+              </a>
+              )
+            </div>
+          </div>
+          <div className="mt-2">
+            <strong>Co-Investigators:</strong>
+            <ul className="ml-4 list-disc pl-5">
+              <li>
+                Dr. Ying Yang (
+                <a
+                  href="mailto:ying.yang@monash.edu"
+                  className="text-blue-600 underline"
+                >
+                  ying.yang@monash.edu
+                </a>
+                )
+              </li>
+              <li>
+                Assoc Professor Simon Angus (
+                <a
+                  href="mailto:simon.angus@monash.edu"
+                  className="text-blue-600 underline"
+                >
+                  simon.angus@monash.edu
+                </a>
+                )
+              </li>
+              <li>
+                Professor Helen Purchase (
+                <a
+                  href="mailto:helen.purchase@monash.edu"
+                  className="text-blue-600 underline"
+                >
+                  helen.purchase@monash.edu
+                </a>
+                )
+              </li>
+              <li>
+                Professor Tim Dwyer (
+                <a
+                  href="mailto:tim.dwyer@monash.edu"
+                  className="text-blue-600 underline"
+                >
+                  tim.dwyer@monash.edu
+                </a>
+                )
+              </li>
+            </ul>
+          </div>
+        </section>
 
-          <section>
-            <h3 className="font-medium text-gray-800">Risks and Benefits</h3>
-            <p className="text-gray-600">
-              There are no anticipated risks associated with this study.
-              Benefits include contributing to research on information
-              visualization and narrative comprehension.
-            </p>
-          </section>
+        <section>
+          <h3 className="font-semibold text-gray-800 mb-1">
+            What Does the Research Involve?
+          </h3>
+          <ul className="text-gray-700 list-disc pl-5 space-y-1">
+            <li>Provide a Prolific ID</li>
+            <li>
+              Participate in a user study involving visualisations and narrative
+              structures
+            </li>
+            <li>
+              Finish tasks and answer questions based on the text or
+              visualisation
+            </li>
+            <li>Complete a survey</li>
+          </ul>
+          <p className="text-gray-700 mt-2">
+            Your participation is entirely voluntary and you may withdraw at any
+            stage without any implications.
+          </p>
+        </section>
 
-          <section>
-            <h3 className="font-medium text-gray-800">Confidentiality</h3>
-            <p className="text-gray-600">
-              Your responses will be kept confidential. All data will be stored
-              securely and any published results will not include personally
-              identifiable information.
-            </p>
-          </section>
+        <section>
+          <h3 className="font-semibold text-gray-800 mb-1">
+            Why Were You Chosen for this Research?
+          </h3>
+          <p className="text-gray-700">
+            You have been invited to participate in this research because your
+            experience and opinions are valuable to our study.
+          </p>
+        </section>
 
-          <section>
-            <h3 className="font-medium text-gray-800">
-              Voluntary Participation
-            </h3>
-            <p className="text-gray-600">
-              Your participation is voluntary. You may withdraw at any time
-              without penalty.
-            </p>
-          </section>
+        <section>
+          <h3 className="font-semibold text-gray-800 mb-1">
+            Confidentiality and Data Storage
+          </h3>
+          <p className="text-gray-700">
+            The confidentiality of your data is a priority. Any personally
+            identifiable information will not be shared with anyone not involved
+            in this project. All data collected will be stored securely and will
+            be retained for five years after the completion of the study.
+          </p>
+        </section>
 
-          <section>
-            <h3 className="font-medium text-gray-800">Contact Information</h3>
-            <p className="text-gray-600">
-              If you have questions about this research, please contact the
-              research team at songhai.fan@moansh.edu.
-            </p>
-          </section>
+        <section>
+          <h3 className="font-semibold text-gray-800 mb-1">AI Tools Usage</h3>
+          <p className="text-gray-700">
+            <strong>
+              Use of any AI tools (such as ChatGPT, Copilot, Gemini, or similar)
+              is strictly prohibited during this study.
+            </strong>{" "}
+            All responses and actions must be your own work. If you are found to
+            have used AI assistance, your participation and data may be excluded
+            from the study results.
+          </p>
+        </section>
 
-          <section>
-            <h3 className="font-medium text-gray-800">Data Usage</h3>
-            <p className="text-gray-600">
-              The data collected in this study will be used for research
-              purposes only. Your interactions with the interface will be
-              recorded and analyzed to improve visualization techniques for
-              narrative data.
-            </p>
-          </section>
-        </div>
+        <section>
+          <h3 className="font-semibold text-gray-800 mb-1">Complaints</h3>
+          <p className="text-gray-700">
+            Should you have any concerns or complaints about the conduct of the
+            project, you are welcome to contact the Executive Officer, Monash
+            University Human Research Ethics (MUHREC) at{" "}
+            <a
+              href="mailto:muhrec@monash.edu"
+              className="text-blue-600 underline"
+            >
+              muhrec@monash.edu
+            </a>{" "}
+            or +61 3 9905 2052.
+          </p>
+        </section>
       </div>
 
       <label className="flex items-start cursor-pointer group">
@@ -98,7 +185,7 @@ export function ConsentForm({
           checked={hasConsented}
           onChange={handleConsentChange}
         />
-        <span className="text-sm text-gray-600 group-hover:text-gray-800 transition-colors">
+        <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">
           I have read and understand the consent form and agree to participate
           in this study.
         </span>
