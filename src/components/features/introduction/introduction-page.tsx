@@ -231,10 +231,10 @@ const introductionSteps: IntroductionStep[] = [
           </li>
           <li>
             • An elongated node starting from February to March indicates a
-            continuing event described in the third paragraph.
+            continuing event described in the second paragraph.
           </li>
         </ul>
-        <p className="text-sm text-gray-600 mt-2">
+        <p>
           This visualization helps you see how the narrative order differs from
           the actual timeline of events.
         </p>
@@ -280,7 +280,7 @@ const introductionSteps: IntroductionStep[] = [
     image: "/images/interaction.gif",
   },
   {
-    title: "📄 Text Panels",
+    title: "Text Panels",
     content: (
       <div className="space-y-4">
         <div>
@@ -313,8 +313,10 @@ const introductionSteps: IntroductionStep[] = [
             <strong>Task Panel</strong>.
           </p>
           <p>
-            Each question comes with a <strong>time limit</strong> and requires
-            close reading.
+            Each question comes with a <strong>time limit</strong>. Without
+            visualizations, you'll need to read quickly and efficiently. When
+            visualizations are available, take advantage of them to help locate
+            relevant information more rapidly.
           </p>
         </div>
         <p>Please remember three key rules:</p>

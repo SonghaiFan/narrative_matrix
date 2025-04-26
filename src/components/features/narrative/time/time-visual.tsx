@@ -518,7 +518,15 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       .call(yAxis)
       .style("font-size", `${TIME_CONFIG.axis.fontSize}px`)
       .call((g) => g.select(".domain").remove())
-      .call((g) => g.selectAll(".tick line").attr("stroke", "#94a3b8"));
+      .call((g) => g.selectAll(".tick line").attr("stroke", "#94a3b8"))
+      .append("text")
+      .attr("class", "axis-label")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -height / 2)
+      .attr("y", -40)
+      .attr("fill", "#64748b")
+      .attr("text-anchor", "middle")
+      .text("Narrative Time");
 
     // Add lead titles
     renderLeadTitles(g, leadTitlePoints, yScale, width);
