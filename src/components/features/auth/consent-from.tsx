@@ -26,7 +26,7 @@ export function ConsentForm({
           </h3>
           <p className="text-gray-700">
             You are invited to participate in a study titled{" "}
-            <strong>"Towards narrative understanding"</strong> conducted by the
+            <strong>"Sketching Narrative Structures"</strong> conducted by the
             Department of Human Centred Computing, Monash University. Please
             read this explanatory statement before deciding whether to
             participate. For further information, contact the researchers via
