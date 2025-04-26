@@ -18,6 +18,7 @@ export type QuizProne = "entity" | "topic" | "time" | null;
 interface BaseQuizItem {
   id: string;
   question: string;
+  questionCaption?: string;
   answer: string;
   level: QuizLevel;
   completed: boolean;

@@ -46,7 +46,7 @@ function CompletionContent() {
   >({});
 
   // Fixed completion code for Prolific
-  const completionCode = `PROLIFIC-PUR-4529`;
+  const completionCode = `CAAXOZX6`;
 
   useEffect(() => {
     if (!user) {

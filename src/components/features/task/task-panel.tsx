@@ -179,6 +179,7 @@ export function TaskPanel({
           completed: false,
           visual: q.visual || null,
           prone: q.prone || null,
+          questionCaption: q.questionCaption || "",
         } as QuizItem;
       });
     };
@@ -316,6 +317,7 @@ export function TaskPanel({
                 visual: null,
                 event_reference: null,
                 prone: null,
+                questionCaption: "",
               },
               {
                 id: "gen-2",
@@ -334,6 +336,7 @@ export function TaskPanel({
                 visual: null,
                 event_reference: null,
                 prone: null,
+                questionCaption: "",
               },
               // Add more generated questions if needed
             ] as QuizItem[];
@@ -1272,6 +1275,11 @@ export function TaskPanel({
                     <div className="text-normal font-medium text-gray-900">
                       {currentTask.question}
                     </div>
+                    {currentTask.questionCaption && (
+                      <div className="text-xs text-gray-500 mt-1">
+                        {currentTask.questionCaption}
+                      </div>
+                    )}
                   </div>
                 </div>
 
