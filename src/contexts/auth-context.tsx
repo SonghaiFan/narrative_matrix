@@ -6,7 +6,7 @@ import {
   createUser,
   updateUserLastActive,
   endSession,
-  saveUserSession,
+  createSession,
 } from "@/lib/firebase-operations";
 
 interface BaseUser {
@@ -142,7 +142,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Note: the sessionId parameter might actually be a scenario number from URL
       let uniqueSessionId: string | null = null;
       try {
-        uniqueSessionId = await saveUserSession(username, scenarioNumber);
+        const { sessionId } = await createSession(username, scenarioId, {
+          isTraining: false,
+          includeDeviceInfo: true,
+        });
+        uniqueSessionId = sessionId;
         console.log("Created unique session ID:", uniqueSessionId);
       } catch (error) {
         console.error("Failed to create unique session ID:", error);

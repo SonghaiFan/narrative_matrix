@@ -33,7 +33,7 @@ import { TextInput } from "./quiz-types/TextInput";
 import { useTaskStore } from "@/store/task-store";
 import { loadDataFile } from "@/lib/data-storage";
 import { NarrativeEvent, DatasetMetadata } from "@/types/lite";
-import { saveQuizResponse, saveTaskTiming } from "@/lib/firebase-operations";
+import { saveQuizResponse } from "@/lib/firebase-operations";
 import { useAuth } from "@/contexts/auth-context";
 
 interface TaskPanelProps {
@@ -728,17 +728,6 @@ export function TaskPanel({
           } else {
             uniqueSessionId = userId; // Fallback to userId if no stored user
           }
-
-          // Save task timing
-          saveTaskTiming(userId, uniqueSessionId, {
-            taskId: currentTask.id,
-            isTraining: is_training,
-            startTime: currentTask.startTimestamp || Date.now(),
-            endTime: Date.now(),
-            totalTime: Math.round(
-              (Date.now() - (currentTask.startTimestamp || Date.now())) / 1000
-            ),
-          });
 
           // Save quiz response with enhanced data
           saveQuizResponse(

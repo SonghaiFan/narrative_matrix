@@ -8,7 +8,6 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { saveEventInteraction } from "@/lib/firebase-operations";
 import { useAuth } from "./auth-context";
 
 // Import ScenarioType
@@ -105,55 +104,21 @@ export function CenterControlProvider({
   }, []);
 
   // Set focused event with tracking
-  const setfocusedEventId = useCallback(
-    (id: number | null) => {
-      if (id !== null && user) {
-        try {
-          // Get the unique session ID from user object
-          const uniqueSessionId = user.sessionId || user.id;
-
-          saveEventInteraction(user.id, uniqueSessionId, {
-            eventId: id,
-            type: "focus",
-            timestamp: Date.now(),
-          });
-        } catch (error) {
-          console.error("Error saving event focus interaction:", error);
-        }
-      }
-      setfocusedEventIdState(id);
-    },
-    [user]
-  );
+  const setfocusedEventId = useCallback((id: number | null) => {
+    setfocusedEventIdState(id);
+  }, []);
 
   // Toggle marked state for an event with tracking
-  const toggleMarkedEvent = useCallback(
-    (id: number) => {
-      setMarkedEventIds((prev) => {
-        const isMarked = prev.includes(id);
-        if (user) {
-          try {
-            // Get the unique session ID from user object
-            const uniqueSessionId = user.sessionId || user.id;
-
-            saveEventInteraction(user.id, uniqueSessionId, {
-              eventId: id,
-              type: isMarked ? "unmark" : "mark",
-              timestamp: Date.now(),
-            });
-          } catch (error) {
-            console.error("Error saving event mark/unmark interaction:", error);
-          }
-        }
-        if (isMarked) {
-          return prev.filter((eventId) => eventId !== id);
-        } else {
-          return [...prev, id];
-        }
-      });
-    },
-    [user]
-  );
+  const toggleMarkedEvent = useCallback((id: number) => {
+    setMarkedEventIds((prev) => {
+      const isMarked = prev.includes(id);
+      if (isMarked) {
+        return prev.filter((eventId) => eventId !== id);
+      } else {
+        return [...prev, id];
+      }
+    });
+  }, []);
 
   // Clear all marked events
   const clearMarkedEvents = useCallback(() => {
