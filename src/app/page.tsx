@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { LoginForm } from "@/components/features/auth/login-form";
 import { useAuth } from "@/contexts/auth-context";
 import { hasCompletedTasks, getTaskProgress } from "@/lib/task-progress";
 import { ConsentForm } from "@/components/features/auth/consent-from";
 
-export default function Home() {
+function HomeContent() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -31,16 +31,6 @@ export default function Home() {
       }
     }
   }, []);
-
-  // Handle consent checkbox changes
-  const handleConsentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const isChecked = e.target.checked;
-    setHasConsented(isChecked);
-
-    if (typeof window !== "undefined") {
-      localStorage.setItem("hasAcceptedConsent", isChecked ? "true" : "false");
-    }
-  };
 
   // Check if user is already logged in
   useEffect(() => {
@@ -113,7 +103,8 @@ export default function Home() {
         // Add Prolific parameters to redirect if present
         if (hasProlificParams) {
           const separator = initialRedirectPath.includes("?") ? "&" : "?";
-          if (prolificId) initialRedirectPath += `${separator}PROLIFIC_PID=${prolificId}`;
+          if (prolificId)
+            initialRedirectPath += `${separator}PROLIFIC_PID=${prolificId}`;
           if (studyId) initialRedirectPath += `&STUDY_ID=${studyId}`;
           if (sessionId) initialRedirectPath += `&SESSION_ID=${sessionId}`;
         }
@@ -122,19 +113,18 @@ export default function Home() {
         return;
       }
     }
-  }, [isAuthenticated, isLoading, user, router, hasExplicitlyLoggedIn, hasConsented, prolificId, studyId, sessionId, hasProlificParams]);
-
-  // Show loading state
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  }, [
+    isAuthenticated,
+    isLoading,
+    user,
+    router,
+    hasExplicitlyLoggedIn,
+    hasConsented,
+    prolificId,
+    studyId,
+    sessionId,
+    hasProlificParams,
+  ]);
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col items-center justify-center p-4">
@@ -166,5 +156,22 @@ export default function Home() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <HomeContent />
+    </Suspense>
   );
 }

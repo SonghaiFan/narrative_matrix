@@ -1,6 +1,6 @@
 "use client";
 
-import { Entity, NarrativeEvent, NarrativeMetadata } from "@/types/lite";
+import { Entity, NarrativeEvent, DatasetMetadata } from "@/types/lite";
 import { useMemo, useRef, useEffect, useState, useCallback } from "react";
 import { PURE_TEXT_CONFIG } from "./pure-text-config";
 import { useCenterControl } from "@/contexts/center-control-context";
@@ -14,7 +14,7 @@ import {
 
 interface PureTextDisplayProps {
   events: NarrativeEvent[];
-  metadata?: NarrativeMetadata;
+  metadata?: DatasetMetadata;
 }
 
 export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {

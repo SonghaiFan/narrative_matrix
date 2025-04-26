@@ -4,16 +4,15 @@ import { ScenarioType } from "@/types/scenario";
 import { NarrativeMatrixData } from "@/types/lite";
 
 interface VisualizationTrainingPageProps {
-  params: Promise<{ id: string }> | { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function VisualizationTrainingPage({
-  params: paramsPromise,
+  params,
 }: VisualizationTrainingPageProps) {
-  // Await the params to get the id
-  const params = await paramsPromise;
-
-  const scenarioId = `text-visual-${params.id}` as ScenarioType;
+  // Await params before using
+  const awaitedParams = await params;
+  const scenarioId = `text-visual-${awaitedParams.id}` as ScenarioType;
   const isTraining = true;
   let isLoading = true;
   let error: string | null = null;

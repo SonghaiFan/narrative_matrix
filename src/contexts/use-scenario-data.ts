@@ -3,7 +3,6 @@ import { useCenterControl } from "@/contexts/center-control-context";
 import { loadDataFile } from "@/lib/data-storage";
 import { NarrativeMatrixData } from "@/types/lite";
 import { useAuth } from "@/contexts/auth-context";
-import { ScenarioType } from "@/types/scenario";
 
 /**
  * Custom hook for handling client-side data loading aspects IF NEEDED.
@@ -25,8 +24,8 @@ export function useScenarioData(isTraining = false) {
       if (stored && stored.startsWith("text-visual-")) {
         setForcedScenario(stored);
       } else {
-        localStorage.setItem("currentScenario", "text-visual-8");
-        setForcedScenario("text-visual-8");
+        localStorage.setItem("currentScenario", "text-visual-1");
+        setForcedScenario("text-visual-1");
       }
     }
   }, []);
@@ -55,7 +54,7 @@ export function useScenarioData(isTraining = false) {
       (selectedScenario as string) ||
       forcedScenario ||
       currentScenario ||
-      "text-visual-8";
+      "text-visual-1";
 
     console.log(
       "[useScenarioData] Selected scenarioId for data fetch:",

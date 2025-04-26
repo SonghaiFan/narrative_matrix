@@ -51,8 +51,8 @@
       "completed": false,
       "type": "grid-matching",
       "timeLimit": 10,
-      "visual": "topic",
-      "prone": "topic",
+      "visual": "time",
+      "prone": "time",
       "event_reference": [1, 2, 3, 4, 5]
     },
     {
@@ -71,20 +71,20 @@
       "completed": false,
       "type": "numbered-sequence",
       "timeLimit": 10,
-      "visual": "time",
-      "prone": "time",
+      "visual": "topic",
+      "prone": "topic",
       "event_reference": [1, 4, 5, 6]
     },
     {
       "id": "ukraine-5",
-      "question": "Match each time period with its dominant topic:",
+      "question": "Match each time period with its dominant topic (Diplomacy: The use of verbal and written skills for persuading others to your point of view; War: A formal declaration of hostilities by one country against another; Peace Negotiations: Negotiations intended to bring an end to a conflict.)",
       "options": {
-        "leftItems": ["2022-2023", "2024-2025"],
-        "rightItems": ["Diplomacy", "War", "Both topics equally"],
+        "leftItems": ["2022-2024", "2025"],
+        "rightItems": ["Diplomacy", "War", "Peace Negotiations"],
         "leftLabel": "Period",
         "rightLabel": "Dominant Topic"
       },
-      "answer": "2022-2023: War, 2024-2025: Both topics equally",
+      "answer": "2022-2023: War, 2025: Peace Negotiations,  2025: Diplomacy",
       "level": "Pattern Recognition",
       "completed": false,
       "type": "grid-matching",

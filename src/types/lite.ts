@@ -39,27 +39,31 @@ export interface NarrativeEvent {
   topic: Topic;
 }
 
-export interface NarrativeMetadata {
-  name: string;
-  description: string;
-  type: string;
-  subtype?: string;
-  icon?: string;
-  color?: string;
-  order?: number;
-  topic?: {
-    main_topic: string;
-    sub_topics: string[];
+// Scenario Metadata - UI and configuration for each scenario
+export interface ScenarioMetadata {
+  id: string; // e.g., "text-visual-1"
+  name: string; // Display name
+  description: string; // Scenario description
+  quizOrder: {
+    preferredOrder: string[];
+    description: string;
   };
-  // Add missing properties as optional
-  studyType?: string;
-  quiz?: any[]; // Or a more specific QuizItem type if available
-  quiz_recall?: any[]; // Or a more specific QuizItem type if available
-  quiz_order_preference?: string; // e.g., 'default', 'reverse', etc.
+}
+
+// Dataset Metadata - Content metadata for the narrative
+export interface DatasetMetadata {
+  title: string; // e.g., "Ukraine Conflict"
+  description: string; // Content description
+  topic: string; // Main topic
+  author: string;
+  publishDate: string;
+  imageUrl?: string | null;
+  studyType?: string; // e.g., "text-visual"
+  quiz_order_preference?: string; // e.g., "default"
 }
 
 export interface NarrativeMatrixData {
-  metadata: NarrativeMetadata;
+  metadata: DatasetMetadata;
   events: NarrativeEvent[];
-  quiz?: Quiz; // Add quiz property
+  quiz?: Quiz;
 }

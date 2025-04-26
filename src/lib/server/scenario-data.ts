@@ -1,6 +1,6 @@
 // import { loadDataFile } from "@/lib/data-storage";
 import { NarrativeMatrixData } from "@/types/lite";
-import { Quiz, QuizItem } from "@/components/features/task/quiz-types";
+import { QuizItem } from "@/components/features/task/quiz-types";
 import { promises as fs } from "fs";
 import path from "path";
 import { getScenarioMetadata } from "../client/scenario-metadata";

@@ -8,7 +8,6 @@ import { getSentimentColor } from "@/components/features/narrative/shared/color-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
-  faChevronDown,
   faHome,
   faPencilAlt,
   faSignOutAlt,
@@ -284,14 +283,14 @@ export function AppHeader({
               aria-haspopup="true"
             >
               <div className="flex flex-col items-end mr-3">
-                <span className="font-medium">{user?.name}</span>
+                <span className="font-medium">{user?.username}</span>
                 <span className="text-xs text-gray-500 capitalize">
                   {user?.role}
                 </span>
               </div>
               <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
                 <span className="text-blue-800 font-medium">
-                  {user?.name?.charAt(0).toUpperCase() || "U"}
+                  {user?.username?.charAt(0).toUpperCase() || "U"}
                 </span>
               </div>
             </button>

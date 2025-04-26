@@ -9,12 +9,12 @@ import { ResizableTwoColRow } from "@/components/ui/resizable-two-col-row";
 import { ScenarioPageFactory } from "@/components/features/dashboard/scenario-page-factory";
 import { useTaskStore } from "@/store/task-store";
 import { QuizVisual, Quiz } from "@/components/features/task/quiz-types";
-import { NarrativeEvent, NarrativeMetadata } from "@/types/lite";
+import { NarrativeEvent, DatasetMetadata } from "@/types/lite";
 import { Suspense } from "react";
 
 interface VisualizationContentProps {
   events: NarrativeEvent[];
-  metadata: NarrativeMetadata;
+  metadata: DatasetMetadata;
   visual: QuizVisual | null;
 }
 
@@ -57,7 +57,7 @@ function VisualizationContent({
 interface VisualizationScenarioProps {
   title: string;
   is_training?: boolean;
-  metadata: NarrativeMetadata | null;
+  metadata: DatasetMetadata | null;
   events: NarrativeEvent[] | null;
   isLoading: boolean;
   error: string | null;

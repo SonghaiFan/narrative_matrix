@@ -32,13 +32,13 @@ import React from "react";
 import { TextInput } from "./quiz-types/TextInput";
 import { useTaskStore } from "@/store/task-store";
 import { loadDataFile } from "@/lib/data-storage";
-import { NarrativeEvent, NarrativeMetadata } from "@/types/lite";
+import { NarrativeEvent, DatasetMetadata } from "@/types/lite";
 import { saveQuizResponse, saveTaskTiming } from "@/lib/firebase-operations";
 import { useAuth } from "@/contexts/auth-context";
 
 interface TaskPanelProps {
   events: NarrativeEvent[];
-  metadata: NarrativeMetadata;
+  metadata: DatasetMetadata;
   className?: string;
   userRole?: "domain" | "normal";
   is_training?: boolean;
@@ -110,15 +110,16 @@ export function TaskPanel({
         const user = JSON.parse(storedUser);
         setUserId(user.id);
 
+        // Get studyType from metadata or path
+        const studyType =
+          metadata?.studyType || getStudyTypeFromPath(window.location.pathname);
+
         // If normal user has already completed tasks and not in training mode, redirect to completion page
         if (
           userRole === "normal" &&
           hasCompletedTasks(user.id) &&
           !is_training
         ) {
-          const studyType =
-            metadata?.studyType ||
-            getStudyTypeFromPath(window.location.pathname);
           router.push(`/completion?total=${tasks.length}&type=${studyType}`);
           return;
         }
@@ -901,6 +902,7 @@ export function TaskPanel({
   const navigateToCompletionPage = () => {
     if (!userId) return;
 
+    // Get studyType from metadata or path
     const studyType =
       metadata?.studyType || getStudyTypeFromPath(window.location.pathname);
 

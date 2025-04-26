@@ -38,7 +38,17 @@ export const useQuizStore = create<QuizState>((set) => ({
       await saveQuizResponse(prolificId, sessionId, {
         question: quiz.question,
         userAnswer: answer,
-        completionTime: time,
+        markedEvents: Array.isArray(quiz.event_reference)
+          ? quiz.event_reference
+          : quiz.event_reference
+          ? [quiz.event_reference]
+          : [],
+        isSkipped: false,
+        isTimeUp: false,
+        isTraining: false,
+        taskId: quiz.id,
+        startTime: quiz.startTimestamp || Date.now(),
+        endTime: quiz.submitTimestamp || Date.now(),
       });
     } catch (error) {
       console.error("Failed to save quiz response:", error);

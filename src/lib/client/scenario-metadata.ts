@@ -1,15 +1,12 @@
-import { NarrativeMatrixData } from "@/types/lite";
-import { Quiz, QuizItem } from "@/components/features/task/quiz-types";
+import { ScenarioMetadata } from "@/types/lite";
 
 // --- Hardcoded Metadata Map ---
-export const allScenarioMetadataMap: Record<string, any> = {
+export const allScenarioMetadataMap: Record<string, ScenarioMetadata> = {
   "text-visual-1": {
+    id: "text-visual-1",
     name: "Text with Visualizations 1",
     description:
       "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    icon: "BarChart3",
-    color: "#0891B2",
-    order: 2,
     quizOrder: {
       preferredOrder: [
         "ir_e_n_",
@@ -30,12 +27,10 @@ export const allScenarioMetadataMap: Record<string, any> = {
     },
   },
   "text-visual-2": {
+    id: "text-visual-2",
     name: "Text with Visualizations 2",
     description:
       "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    icon: "BarChart3",
-    color: "#0891B2",
-    order: 2,
     quizOrder: {
       preferredOrder: [
         "ir_e_v_",
@@ -56,12 +51,10 @@ export const allScenarioMetadataMap: Record<string, any> = {
     },
   },
   "text-visual-3": {
+    id: "text-visual-3",
     name: "Text with Visualizations 3",
     description:
       "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    icon: "BarChart3",
-    color: "#0891B2",
-    order: 2,
     quizOrder: {
       preferredOrder: [
         "ir_e_n_",
@@ -82,12 +75,10 @@ export const allScenarioMetadataMap: Record<string, any> = {
     },
   },
   "text-visual-4": {
+    id: "text-visual-4",
     name: "Text with Visualizations 4",
     description:
       "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    icon: "BarChart3",
-    color: "#0891B2",
-    order: 2,
     quizOrder: {
       preferredOrder: [
         "ir_e_v_",
@@ -108,12 +99,10 @@ export const allScenarioMetadataMap: Record<string, any> = {
     },
   },
   "text-visual-5": {
+    id: "text-visual-5",
     name: "Text with Visualizations 5",
     description:
       "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    icon: "BarChart3",
-    color: "#0891B2",
-    order: 2,
     quizOrder: {
       preferredOrder: [
         "ir_t_n_",
@@ -134,12 +123,10 @@ export const allScenarioMetadataMap: Record<string, any> = {
     },
   },
   "text-visual-6": {
+    id: "text-visual-6",
     name: "Text with Visualizations 6",
     description:
       "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    icon: "BarChart3",
-    color: "#0891B2",
-    order: 2,
     quizOrder: {
       preferredOrder: [
         "ir_t_v_",
@@ -160,12 +147,10 @@ export const allScenarioMetadataMap: Record<string, any> = {
     },
   },
   "text-visual-7": {
+    id: "text-visual-7",
     name: "Text with Visualizations 7",
     description:
       "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    icon: "BarChart3",
-    color: "#0891B2",
-    order: 2,
     quizOrder: {
       preferredOrder: [
         "ir_t_n_",
@@ -186,12 +171,10 @@ export const allScenarioMetadataMap: Record<string, any> = {
     },
   },
   "text-visual-8": {
+    id: "text-visual-8",
     name: "Text with Visualizations 8",
     description:
       "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    icon: "BarChart3",
-    color: "#0891B2",
-    order: 2,
     quizOrder: {
       preferredOrder: [
         "ir_t_v_",
@@ -212,12 +195,10 @@ export const allScenarioMetadataMap: Record<string, any> = {
     },
   },
   "text-visual-9": {
+    id: "text-visual-9",
     name: "Text with Visualizations 9",
     description:
       "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    icon: "BarChart3",
-    color: "#0891B2",
-    order: 2,
     quizOrder: {
       preferredOrder: [
         "ir_tm_n_",
@@ -238,12 +219,10 @@ export const allScenarioMetadataMap: Record<string, any> = {
     },
   },
   "text-visual-10": {
+    id: "text-visual-10",
     name: "Text with Visualizations 10",
     description:
       "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    icon: "BarChart3",
-    color: "#0891B2",
-    order: 2,
     quizOrder: {
       preferredOrder: [
         "ir_tm_v_",
@@ -264,12 +243,10 @@ export const allScenarioMetadataMap: Record<string, any> = {
     },
   },
   "text-visual-11": {
+    id: "text-visual-11",
     name: "Text with Visualizations 11",
     description:
       "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    icon: "BarChart3",
-    color: "#0891B2",
-    order: 2,
     quizOrder: {
       preferredOrder: [
         "ir_tm_n_",
@@ -290,12 +267,10 @@ export const allScenarioMetadataMap: Record<string, any> = {
     },
   },
   "text-visual-12": {
+    id: "text-visual-12",
     name: "Text with Visualizations 12",
     description:
       "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    icon: "BarChart3",
-    color: "#0891B2",
-    order: 2,
     quizOrder: {
       preferredOrder: [
         "ir_tm_v_",
@@ -318,7 +293,9 @@ export const allScenarioMetadataMap: Record<string, any> = {
 };
 
 // Function to get metadata from the hardcoded map
-export function getScenarioMetadata(scenarioId: string): any {
+export function getScenarioMetadata(
+  scenarioId: string
+): ScenarioMetadata | null {
   return allScenarioMetadataMap[scenarioId] || null;
 }
 
@@ -328,9 +305,6 @@ export function getAvailableScenarioIds(): string[] {
 }
 
 // Function to get all available scenarios with their metadata
-export function getAvailableScenarios() {
-  return Object.keys(allScenarioMetadataMap).map((id) => ({
-    id,
-    ...allScenarioMetadataMap[id],
-  }));
+export function getAvailableScenarios(): ScenarioMetadata[] {
+  return Object.values(allScenarioMetadataMap);
 }

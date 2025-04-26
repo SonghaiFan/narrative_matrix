@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { ScenarioLayout } from "@/components/features/dashboard/scenario-layout";
 import { useAuth } from "@/contexts/auth-context";
 // Import specific types needed
-import { NarrativeEvent, NarrativeMetadata } from "@/types/lite";
+import { NarrativeEvent, DatasetMetadata } from "@/types/lite";
 import { Quiz } from "@/components/features/task/quiz-types";
 
 interface ScenarioPageFactoryProps {
@@ -12,14 +12,14 @@ interface ScenarioPageFactoryProps {
   is_training?: boolean;
   showSentimentLegend?: boolean;
   // Accept metadata and events directly
-  metadata: NarrativeMetadata | null;
+  metadata: DatasetMetadata | null;
   events: NarrativeEvent[] | null;
   isLoading: boolean;
   error: string | null;
   quiz?: Quiz;
   renderContent: (props: {
     // Pass metadata and events to renderContent
-    metadata: NarrativeMetadata | null;
+    metadata: DatasetMetadata | null;
     events: NarrativeEvent[] | null;
     user: any;
     is_training?: boolean;

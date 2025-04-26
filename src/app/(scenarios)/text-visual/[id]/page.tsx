@@ -1,32 +1,6 @@
 import { VisualizationScenario } from "@/components/features/visualization/visualization-scenario";
 import { loadAndProcessScenarioData } from "@/lib/server/scenario-data";
-import { getScenarioMetadata } from "@/lib/client/scenario-metadata";
-import { notFound } from "next/navigation";
 import { ScenarioContextSync } from "@/contexts/scenario-context-sync";
-
-// Define the list of available scenario IDs (excluding the 'text-visual-' prefix)
-// Based on the known directories: 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
-const availableScenarioIds = [
-  "1",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "10",
-  "11",
-  "12",
-];
-
-// This function tells Next.js which dynamic routes to pre-render at build time
-export async function generateStaticParams() {
-  // Map the list of IDs to the format required by Next.js
-  return availableScenarioIds.map((id) => ({
-    id: id,
-  }));
-}
 
 // Define the props type, including the dynamic route parameter `id`
 interface ScenarioPageProps {
@@ -68,8 +42,8 @@ export default async function DynamicVisualizationPage({
     // notFound();
   }
 
-  // Determine the title, using metadata.name, fallback to "Scenario X"
-  const title = scenarioData.metadata.name || `Scenario ${awaitedParams.id}`;
+  // Determine the title, using metadata.title, fallback to "Scenario X"
+  const title = scenarioData.metadata.title || `Scenario ${awaitedParams.id}`;
 
   return (
     <>
@@ -88,33 +62,4 @@ export default async function DynamicVisualizationPage({
       />
     </>
   );
-}
-
-// --- Metadata Generation ---
-
-// This async function generates metadata for the page
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  // Await params before accessing id
-  const { id } = await params;
-  const scenarioId = `text-visual-${id}`;
-  const metadata = getScenarioMetadata(scenarioId);
-
-  // Handle case where metadata loading fails
-  if (!metadata) {
-    return {
-      title: "Scenario Not Found",
-      description: "The requested scenario could not be found.",
-    };
-  }
-
-  // Return the title and description from the loaded metadata
-  return {
-    title: metadata.name || `Scenario ${id}`,
-    description: metadata.description || "An interactive narrative scenario.",
-    // We can add more metadata here like OpenGraph tags later
-  };
 }
