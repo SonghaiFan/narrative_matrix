@@ -6,6 +6,7 @@ import { LoginForm } from "@/components/features/auth/login-form";
 import { useAuth } from "@/contexts/auth-context";
 import { hasCompletedTasks, getTaskProgress } from "@/lib/task-progress";
 import { ConsentForm } from "@/components/features/auth/consent-from";
+import { UsabilityTest } from "@/components/features/auth/usability-test";
 
 function HomeContent() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -13,6 +14,7 @@ function HomeContent() {
   const searchParams = useSearchParams();
   const [hasConsented, setHasConsented] = useState(false);
   const [hasExplicitlyLoggedIn, setHasExplicitlyLoggedIn] = useState(false);
+  const [hasPassedMouseTest, setHasPassedMouseTest] = useState(false);
 
   // Get Prolific parameters from URL
   const prolificId = searchParams.get("PROLIFIC_PID");
@@ -129,31 +131,37 @@ function HomeContent() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-6xl bg-white rounded-xl shadow-lg overflow-hidden">
-        <div className="grid grid-cols-1 md:grid-cols-2">
-          {/* Left side - Consent Form */}
-          <ConsentForm onConsent={setHasConsented} />
-          {/* Right side - Login Form */}
-          <div className="p-8 bg-gray-50 flex flex-col">
-            <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold text-gray-900">
-                Narrative Matrix
-              </h1>
-              <p className="text-gray-500">User Study Platform</p>
-            </div>
+        {!hasPassedMouseTest ? (
+          <div className="p-8">
+            <UsabilityTest onComplete={() => setHasPassedMouseTest(true)} />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2">
+            {/* Left side - Consent Form */}
+            <ConsentForm onConsent={setHasConsented} />
+            {/* Right side - Login Form */}
+            <div className="p-8 bg-gray-50 flex flex-col">
+              <div className="text-center mb-8">
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Narrative Matrix
+                </h1>
+                <p className="text-gray-500">User Study Platform</p>
+              </div>
 
-            <div className="flex-grow flex flex-col justify-center">
-              <div className="max-w-sm mx-auto w-full">
-                <LoginForm
-                  isDisabled={!hasConsented}
-                  urlUsername={prolificId}
-                  urlSessionId={sessionId}
-                  onLoginSuccess={handleSuccessfulLogin}
-                  isProlificUser={hasProlificParams}
-                />
+              <div className="flex-grow flex flex-col justify-center">
+                <div className="max-w-sm mx-auto w-full">
+                  <LoginForm
+                    isDisabled={!hasConsented}
+                    urlUsername={prolificId}
+                    urlSessionId={sessionId}
+                    onLoginSuccess={handleSuccessfulLogin}
+                    isProlificUser={hasProlificParams}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </main>
   );

@@ -99,7 +99,9 @@ const introductionSteps: IntroductionStep[] = [
                   <div className="bg-gray-50 p-3 rounded-lg">
                     <strong className="block mb-1">1. Entity Swimlane</strong>
                     <p className="text-sm text-gray-600">
-                      Shows how entities interact across the narrative timeline
+                      Shows how entities interact across the narrative sequence
+                      (the order in which writers present events in news
+                      articles).
                     </p>
                   </div>
                 </li>
@@ -108,7 +110,8 @@ const introductionSteps: IntroductionStep[] = [
                     <strong className="block mb-1">2. Topic Stream</strong>
                     <p className="text-sm text-gray-600">
                       Groups events by their topics, with clustered nodes
-                      showing related events
+                      showing related events along real-world chronological
+                      order.
                     </p>
                   </div>
                 </li>
@@ -116,7 +119,9 @@ const introductionSteps: IntroductionStep[] = [
                   <div className="bg-gray-50 p-3 rounded-lg">
                     <strong className="block mb-1">3. Story Time</strong>
                     <p className="text-sm text-gray-600">
-                      Maps events to their real-world chronological order
+                      Maps events to their real-world chronological order vs
+                      narrative sequence (the order in which writers present
+                      events in news articles).
                     </p>
                   </div>
                 </li>
@@ -138,11 +143,13 @@ const introductionSteps: IntroductionStep[] = [
         <ul className="list-none space-y-2">
           <li>
             • The <strong>Y-axis</strong> represents{" "}
-            <strong>narrative time</strong>
+            <strong>narrative sequence</strong> (the order in which events
+            appear in the text, from top to bottom)
           </li>
           <li>
             • The <strong>X-axis</strong> shows{" "}
-            <strong>different entities</strong>
+            <strong>different entities</strong> (people, organizations, or
+            concepts involved in the story)
           </li>
         </ul>
         <p>
@@ -152,12 +159,12 @@ const introductionSteps: IntroductionStep[] = [
         <p>For example:</p>
         <ul className="list-none space-y-2 pl-4">
           <li>
-            • A connected node between Entity A and B at narrative time 1
+            • A connected node between Entity A and B at narrative sequence 1
             indicates the event mentioned both entities in the first paragraph.
           </li>
           <li>
-            • A single node on Entity A at time 2 indicates an event that only
-            involved Entity A, described in a later paragraph.
+            • A single node on Entity A at sequence 2 indicates an event that
+            only involved Entity A, described in a later paragraph.
           </li>
         </ul>
       </div>
@@ -172,6 +179,15 @@ const introductionSteps: IntroductionStep[] = [
           In the <strong>Topic Stream</strong>:
         </p>
         <ul className="list-none space-y-2">
+          <li>
+            • The <strong>Y-axis</strong> represents{" "}
+            <strong>real-world chronological time</strong> (when events actually
+            happened)
+          </li>
+          <li>
+            • The <strong>X-axis</strong> shows{" "}
+            <strong>different topics</strong> (themes or subjects of the events)
+          </li>
           <li>• Each track represents a topic</li>
           <li>• Each node marks a related event</li>
         </ul>
@@ -195,10 +211,18 @@ const introductionSteps: IntroductionStep[] = [
         <p>
           In <strong>Story Time</strong>:
         </p>
-        <p>
-          • Each node maps an event based on its{" "}
-          <strong>real-world timeline</strong>.
-        </p>
+        <ul className="list-none space-y-2">
+          <li>
+            • The <strong>Y-axis</strong> represents{" "}
+            <strong>narrative sequence</strong> (the order in which events
+            appear in the text)
+          </li>
+          <li>
+            • The <strong>X-axis</strong> shows{" "}
+            <strong>real-world chronological time</strong> (when events actually
+            happened)
+          </li>
+        </ul>
         <p>For instance:</p>
         <ul className="list-none space-y-2 pl-4">
           <li>
@@ -210,6 +234,10 @@ const introductionSteps: IntroductionStep[] = [
             continuing event described in the third paragraph.
           </li>
         </ul>
+        <p className="text-sm text-gray-600 mt-2">
+          This visualization helps you see how the narrative order differs from
+          the actual timeline of events.
+        </p>
       </div>
     ),
     image: "/images/time_intro.png",
@@ -229,15 +257,17 @@ const introductionSteps: IntroductionStep[] = [
               <strong>focus</strong> it across the panels.
             </p>
             <p>
-              A <strong>blue guideline</strong> will help you trace the
-              connection between the text and its corresponding visual element.
+              A <strong className="text-blue-500">blue guideline</strong> will
+              help you trace the connection between the text and its
+              corresponding visual element.
             </p>
           </div>
           <div>
             <h4 className="font-medium">Mark (Right Click)</h4>
             <p>
               Use right-click to <strong>mark an event</strong> that supports
-              your answer.
+              your answer. The marked event will have a{" "}
+              <strong className="text-blue-500">blue border</strong>.
             </p>
             <p>
               This is especially important when justifying your reasoning during

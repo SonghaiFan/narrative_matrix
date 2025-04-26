@@ -1111,6 +1111,11 @@ export function TaskPanel({
     }
   };
 
+  const handleMarkAllEvents = () => {
+    clearMarkedEvents();
+    toggleMarkedEvent(999); // Use 999 to represent all events
+  };
+
   if (isLoadingQuiz) {
     return (
       <div className={`flex flex-col h-full bg-white p-2 ${className}`}>
@@ -1344,6 +1349,16 @@ export function TaskPanel({
                         Right-click on the events that contain the information
                         for your answer to mark them.
                       </div>
+                      {/* Add Mark All Events button */}
+                      <div className="mb-2">
+                        <button
+                          onClick={handleMarkAllEvents}
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
+                        >
+                          <CheckCircle className="h-3 w-3" />
+                          Mark All Events
+                        </button>
+                      </div>
                       {/* Show correct reference events when answer is revealed */}
                       {isDomainExpert &&
                         showAnswer &&
@@ -1373,6 +1388,19 @@ export function TaskPanel({
                         {markedEventIds.length === 0 ? (
                           <div className="text-xs text-gray-500 bg-white px-3 py-1.5 rounded-md border border-gray-200">
                             No events marked yet
+                          </div>
+                        ) : markedEventIds.includes(999) ? (
+                          <div className="flex items-center gap-1 text-xs text-blue-600 bg-white px-3 py-1.5 rounded-md border border-blue-300 cursor-pointer hover:bg-blue-50">
+                            <span>All Events</span>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleMarkedEvent(999);
+                              }}
+                              className="ml-2 text-blue-400 hover:text-blue-600"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
                           </div>
                         ) : (
                           markedEventIds.map((eventId) => (
@@ -1828,7 +1856,7 @@ export function TaskPanel({
 
       {/* Time Warning Modal */}
       {showTimeWarningModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-4">
             <div className="flex items-start mb-3">
               <div className="flex-shrink-0 mr-3">
@@ -1839,7 +1867,9 @@ export function TaskPanel({
                   Time Warning
                 </h3>
                 <p className="text-xs text-gray-500 mt-1">
-                  You have only 20 seconds remaining.
+                  You have only 20 seconds remaining. Please finish your task
+                  soon, otherwise it will automatically move to the next
+                  question.
                 </p>
               </div>
               <button
