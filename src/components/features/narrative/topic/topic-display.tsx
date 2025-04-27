@@ -27,7 +27,7 @@ export function TopicDisplay({ events, metadata }: TopicDisplayProps) {
 
   return (
     <VisualizationDisplay
-      title="Topic Flow"
+      title="Topic Stream"
       isEmpty={!events.length}
       headerContent={
         <div

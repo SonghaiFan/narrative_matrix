@@ -85,7 +85,7 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
 
   return (
     <VisualizationDisplay
-      title="Entities"
+      title="Entity Swimlane"
       isEmpty={!events.length}
       headerContent={
         <div

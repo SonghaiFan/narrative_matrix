@@ -94,36 +94,29 @@ const introductionSteps: IntroductionStep[] = [
           <div className="space-y-4 border-l pl-6">
             <div>
               <h4 className="font-medium mb-2">Three Visualisation</h4>
-              <ul className="list-none space-y-4">
+              <ul className="list-none space-y-1">
                 <li>
-                  <div className="bg-gray-50 p-3 rounded-lg">
-                    <strong className="block mb-1">1. Entity Swimlane</strong>
-                    <p className="text-sm text-gray-600">
-                      Shows how entities interact across the narrative sequence
-                      (the order in which writers present events in news
-                      articles).
-                    </p>
-                  </div>
+                  <strong className="block mb-1">1. Entity Swimlane</strong>
+                  <p className="text-sm text-gray-600">
+                    Shows how entities interact across the narrative sequence
+                    (the order in which writers present events in news
+                    articles).
+                  </p>
                 </li>
                 <li>
-                  <div className="bg-gray-50 p-3 rounded-lg">
-                    <strong className="block mb-1">2. Topic Stream</strong>
-                    <p className="text-sm text-gray-600">
-                      Groups events by their topics, with clustered nodes
-                      showing related events along real-world chronological
-                      order.
-                    </p>
-                  </div>
+                  <strong className="block mb-1">2. Topic Stream</strong>
+                  <p className="text-sm text-gray-600">
+                    Groups events by their topics, with clustered nodes showing
+                    related events along real-world chronological order.
+                  </p>
                 </li>
                 <li>
-                  <div className="bg-gray-50 p-3 rounded-lg">
-                    <strong className="block mb-1">3. Story Time</strong>
-                    <p className="text-sm text-gray-600">
-                      Maps events to their real-world chronological order vs
-                      narrative sequence (the order in which writers present
-                      events in news articles).
-                    </p>
-                  </div>
+                  <strong className="block mb-1">3. Story Time</strong>
+                  <p className="text-sm text-gray-600">
+                    Maps events to their real-world chronological order vs
+                    narrative sequence (the order in which writers present
+                    events in news articles).
+                  </p>
                 </li>
               </ul>
             </div>
