@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SHARED_CONFIG } from "../shared/visualization-config";
+import { ArrowDownToLine } from "lucide-react";
 
 type EntityAttribute = string;
 
@@ -91,24 +92,12 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
           className="flex items-center gap-2"
           style={{ height: `${SHARED_CONFIG.header.height * 0.8}px` }}
         >
-          {/* <Select
-            value={selectedAttribute}
-            onValueChange={setSelectedAttribute}
-          >
-            <SelectTrigger
-              className="text-xs w-[140px] min-h-0"
-              style={{ height: `${SHARED_CONFIG.header.height * 0.7}px` }}
-            >
-              <SelectValue placeholder="Select attribute" />
-            </SelectTrigger>
-            <SelectContent>
-              {availableAttributes.map((attr) => (
-                <SelectItem key={attr} value={attr} className="text-xs py-1">
-                  {formatAttributeLabel(attr)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select> */}
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <ArrowDownToLine className="w-3 h-3" />
+            <span>
+              Left click column name to focus and move to first position
+            </span>
+          </div>
         </div>
       }
     >

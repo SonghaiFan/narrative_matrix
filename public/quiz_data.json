@@ -2,52 +2,54 @@
   "quiz": [
     {
       "id": "ir_e_n_1",
-      "question": "Based on the narrative, which countries helped ceasefire between Israel and Hamas? (Select all that apply)",
+      "question": "Which entity appears more frequently in events across the narrative compared to the other two options?",
       "questionCaption": "",
-      "answer": "United States,Egypt,Qatar",
+      "answer": "Egypt",
       "level": "Information Retrieval",
-      "type": "multiple-select",
+      "type": "radio-options",
       "timeLimit": 60,
       "visual": null,
       "prone": "entity",
-      "options": [
-        "United States",
-        "Egypt",
-        "Qatar",
-        "Jordan",
-        "Saudi Arabia",
-        "Turkey"
-      ],
+      "options": ["Jordan", "Egypt", "Qatar"],
       "completed": false,
-      "event_reference": 2
+      "event_reference": [2, 13, 14, 16, 17, 30]
     },
     {
       "id": "pr_e_n_2",
-      "question": "Based on the narrative, match each entity with their specific action:",
+      "question": "Based on the narrative, arrange these entities in the order they most frequently co-occur with Gaza, from most to least.",
       "questionCaption": "",
-      "answer": "Hamas: Launched attack on October 7 2023, Fatah: Controlled Palestinian Authority in West Bank, Netanyahu: Led Israel's most far-right and religious government in 2022",
+      "answer": "2,1,4,3",
       "level": "Pattern Recognition",
-      "type": "grid-matching",
-      "timeLimit": 90,
+      "type": "numbered-sequence",
+      "timeLimit": 180,
       "visual": null,
       "prone": "entity",
       "options": {
-        "leftItems": ["Fatah", "Hamas", "Netanyahu"],
-        "rightItems": [
-          "Launched attack on October 7 2023",
-          "Controlled Palestinian Authority in West Bank",
-          "Led Israel's most far-right and religious government in 2022",
-          "Signed peace agreement with Egypt"
-        ],
-        "leftLabel": "Entity",
-        "rightLabel": "Action"
+        "events": [
+          {
+            "id": 1,
+            "text": "Hamas"
+          },
+          {
+            "id": 2,
+            "text": "Israel"
+          },
+          {
+            "id": 3,
+            "text": "Palestinian (Goverment)"
+          },
+          {
+            "id": 4,
+            "text": "Palestinians (Public)"
+          }
+        ]
       },
       "completed": false,
-      "event_reference": [1, 34, 43]
+      "event_reference": [1, 2, 5, 12, 19, 20, 25, 29, 30, 32, 33, 34]
     },
     {
       "id": "ir_e_v_3",
-      "question": "Which entity appears in nearly every event across the narrative",
+      "question": "Which entity appears more frequently in events across the narrative compared to the other two options?",
       "questionCaption": "",
       "answer": "Israel",
       "level": "Information Retrieval",
@@ -57,7 +59,10 @@
       "prone": "entity",
       "options": ["Hamas", "Israel", "Syria"],
       "completed": false,
-      "event_reference": 999
+      "event_reference": [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 29, 30, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44
+      ]
     },
     {
       "id": "pr_e_v_4",
@@ -85,17 +90,16 @@
           },
           {
             "id": 4,
-
             "text": "Palestinians (Public)"
           }
         ]
       },
       "completed": false,
-      "event_reference": [12, 20, 22, 23, 34]
+      "event_reference": [12, 19, 20, 21, 22, 23, 31, 34, 44]
     },
     {
       "id": "ir_t_n_5",
-      "question": "When was the first civil unrest mentioned in the narrative?",
+      "question": "When was the first event related to civil unrest mentioned in the narrative",
       "questionCaption": "Civil Unrest : dissatisfaction among the general population as evidenced by rallies, strikes, demonstrations or sabotage.",
       "answer": "1987",
       "level": "Information Retrieval",
@@ -103,61 +107,56 @@
       "timeLimit": 60,
       "visual": null,
       "prone": "topic",
-      "options": ["1947", "1967", "1987", "2000"],
+      "options": ["1967", "1987", "2000"],
       "completed": false,
       "event_reference": 19
     },
     {
       "id": "pr_t_n_6",
-      "question": "Based on the narrative, what typically happens after peace agreements?",
-      "questionCaption": "",
-      "answer": "They are followed by new rounds of conflict",
+      "question": "Based on the narrative, match each topic with one of its most prominent time periods. ",
+      "questionCaption": "Civil unrest: Dissatisfaction among the general population as evidenced by rallies, strikes, demonstrations or sabotage. War: A formal declaration of hostilities by one country against another.",
+      "answer": "War: 1948-1949,Civil unrest: 1987-2005",
       "level": "Pattern Recognition",
-      "type": "radio-options",
-      "timeLimit": 90,
+      "type": "grid-matching",
+      "timeLimit": 180,
       "visual": null,
       "prone": "topic",
-      "options": [
-        "They lead to lasting peace",
-        "They are immediately broken by Israel",
-        "They are followed by new rounds of conflict",
-        "They result in major territorial exchanges"
-      ],
+      "options": {
+        "leftItems": ["War", "Civil unrest"],
+        "rightItems": ["1948-1949", "1987-2005"],
+        "leftLabel": "Topics",
+        "rightLabel": "Time Periods"
+      },
       "completed": false,
       "event_reference": [20, 21, 29, 30, 31, 39, 40, 41]
     },
     {
       "id": "ir_t_v_7",
-      "question": "Base on the narrative, what best describes the topic of the events during 1980 to 2005 involving Palestinian and Israel? (Select all that apply)",
-      "questionCaption": "Civil unrest: Dissatisfaction among the general population as evidenced by rallies, strikes, demonstrations or sabotage. Armed conflict: Disputes between opposing groups involving the use of weaponry, but not formally declared a war. National government: Actions or instability within the ruling body of a nation. Peace negotiations: Negotiations intended to bring an end to a conflict.",
-      "answer": "Peace negotiations",
+      "question": "When was the last event related to civil unrest mentioned in the narrative",
+      "questionCaption": "Civil Unrest : dissatisfaction among the general population as evidenced by rallies, strikes, demonstrations or sabotage.",
+      "answer": "1987",
       "level": "Information Retrieval",
-      "type": "multiple-select",
-      "timeLimit": 180,
-      "visual": "topic",
+      "type": "radio-options",
+      "timeLimit": 60,
+      "visual": null,
       "prone": "topic",
-      "options": [
-        "Civil unrest",
-        "Armed conflict",
-        "National government",
-        "Peace negotiations"
-      ],
+      "options": ["2005", "2021", "2022"],
       "completed": false,
-      "event_reference": [19, 22, 26]
+      "event_reference": 38
     },
     {
       "id": "pr_t_v_8",
       "question": "Based on the narrative, match each topic with one of its most prominent time periods. ",
-      "questionCaption": "Civil unrest: Dissatisfaction among the general population as evidenced by rallies, strikes, demonstrations or sabotage. War: A formal declaration of hostilities by one country against another. Armed conflict: Disputes between opposing groups involving the use of weaponry, but not formally declared a war.",
-      "answer": "War: 1948-1973,Civil unrest: 1987-2005, Armed conflict: 2014-2023",
+      "questionCaption": " War: A formal declaration of hostilities by one country against another. Armed conflict: Disputes between opposing groups involving the use of weaponry, but not formally declared a war.",
+      "answer": "War: 1967-1973, Armed conflict: 2014-2023",
       "level": "Pattern Recognition",
       "type": "grid-matching",
       "timeLimit": 180,
       "visual": "topic",
       "prone": "topic",
       "options": {
-        "leftItems": ["War", "Civil unrest", "Armed conflict"],
-        "rightItems": ["1948-1973", "2014-2023", "1987-2005"],
+        "leftItems": ["War", "Armed conflict"],
+        "rightItems": ["1967-1973", "2014-2023"],
         "leftLabel": "Topics",
         "rightLabel": "Time Periods"
       },
@@ -166,47 +165,37 @@
     },
     {
       "id": "ir_tm_n_9",
-      "question": "Based on the narrative, how long did the second intifada last?",
-      "questionCaption": "",
-      "answer": "5 years",
+      "question": "Based on the narrative, which event is the most prominent flashback?",
+      "questionCaption": "A flashback is when a narrative jumps back in time to describe an earlier event. Look for events that are mentioned later in the narrative text but occurred much earlier historically.",
+      "answer": "Hamas has been considered a terrorist organization by western governments",
       "level": "Information Retrieval",
       "type": "radio-options",
-      "timeLimit": 60,
+      "timeLimit": 90,
       "visual": null,
       "prone": "time",
-      "options": ["2 years", "3 years", "5 years", "7 years"],
+      "options": [
+        "Hamas won the Palestinian Authority's parliamentary elections",
+        "Hamas has been considered a terrorist organization by western governments",
+        "Military confrontation between the Israeli military and Hamas"
+      ],
       "completed": false,
       "event_reference": 22
     },
     {
       "id": "pr_tm_n_10",
-      "question": "Based on the narrative, put these events in the exact chronological order they occurred according to the text:",
-      "questionCaption": "",
-      "answer": "2,4,1,3",
+      "question": "Match each major event with its most directly associated aftermath or resolution.",
+      "questionCaption": "An aftermath is the consequence or result that follows an event, while a resolution is how a conflict or problem was settled or concluded. Look for events and their corresponding outcomes in the narrative.",
+      "answer": "Yom Kippur War: Camp David Accords,Oslo I Accords: Oslo II Accords",
       "level": "Pattern Recognition",
-      "type": "numbered-sequence",
-      "timeLimit": 90,
+      "type": "grid-matching",
+      "timeLimit": 180,
       "visual": null,
       "prone": "time",
       "options": {
-        "events": [
-          {
-            "id": 1,
-            "text": "Oslo I Accords"
-          },
-          {
-            "id": 2,
-            "text": "Six-Day War"
-          },
-          {
-            "id": 3,
-            "text": "Second Intifada"
-          },
-          {
-            "id": 4,
-            "text": "Yom Kippur War"
-          }
-        ]
+        "leftItems": ["Yom Kippur War", "Oslo I Accords"],
+        "rightItems": ["Oslo II Accords", "Camp David Accords"],
+        "leftLabel": "Events",
+        "rightLabel": "Resolutions"
       },
       "completed": false,
       "event_reference": [14, 16, 20, 22]
@@ -214,18 +203,17 @@
     {
       "id": "ir_tm_v_11",
       "question": "Based on the narrative, which event is the most prominent flashback?",
-      "questionCaption": "A flashback is when a narrative jumps back in time to describe an earlier event. Look for events that are mentioned later in the text but occurred much earlier historically.",
-      "answer": "UN Partition Plan adopted",
+      "questionCaption": "A flashback is when a narrative jumps back in time to describe an earlier event. Look for events that are mentioned later in the narrative text but occurred much earlier historically.",
+      "answer": "The United Nations adopted Resolution 181",
       "level": "Information Retrieval",
       "type": "radio-options",
       "timeLimit": 90,
       "visual": "time",
       "prone": "time",
       "options": [
-        "Hamas's attack on Israel",
-        "The Six-Day War",
-        "UN Partition Plan adopted",
-        "Formation of unity government"
+        "Yemen's Houthi rebels have shot missiles at Israel and commercial ships in the Red Sea",
+        "Israel to withdraw forces and allow displaced residents to return to northern Gaza",
+        "The United Nations adopted Resolution 181"
       ],
       "completed": false,
       "event_reference": [1, 10, 14, 28]
@@ -234,22 +222,16 @@
       "id": "pr_tm_v_12",
       "question": "Match each major event with its most directly associated aftermath or resolution.",
       "questionCaption": "An aftermath is the consequence or result that follows an event, while a resolution is how a conflict or problem was settled or concluded. Look for events and their corresponding outcomes in the narrative.",
-      "answer": "Six-Day War: Camp David Accords,First Intifada: Oslo I Accords,Hamas-Fatah conflict  (2006–2011): Formation of unity government",
+      "answer": "First Intifada: Oslo I Accords,Second Intifada: West Bank barrier wall construction",
       "type": "grid-matching",
       "level": "Pattern Recognition",
-      "timeLimit": 180,
+      "timeLimit": 120,
       "visual": "time",
       "prone": "time",
       "options": {
-        "leftItems": [
-          "Six-Day War",
-          "First Intifada",
-          "Hamas-Fatah conflict (2006–2011)"
-        ],
+        "leftItems": ["First Intifada", "Second Intifada"],
         "rightItems": [
-          "Oslo I Accords",
-          "Formation of unity government",
-          "Oslo II Accords",
+          "West Bank barrier wall construction",
           "Camp David Accords"
         ],
         "leftLabel": "Events",
