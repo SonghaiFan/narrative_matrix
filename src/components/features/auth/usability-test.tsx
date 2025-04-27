@@ -20,7 +20,7 @@ export function UsabilityTest({ onComplete }: UsabilityTestProps) {
       const width = window.innerWidth;
       const height = window.innerHeight;
       setScreenSize({ width, height });
-      setScreenSizeValid(width >= 1024 && height >= 768);
+      setScreenSizeValid(width >= 800 && height >= 600);
     };
 
     checkScreenSize();
@@ -74,7 +74,7 @@ export function UsabilityTest({ onComplete }: UsabilityTestProps) {
             Current size: {screenSize.width} × {screenSize.height} pixels
           </div>
           <div className="text-sm text-gray-600">
-            Minimum required: 1024 × 768 pixels
+            Minimum required: 800 × 600 pixels
           </div>
           {!screenSizeValid && (
             <p className="mt-2 text-xs text-red-500">
