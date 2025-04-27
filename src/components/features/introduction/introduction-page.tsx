@@ -345,8 +345,15 @@ const introductionSteps: IntroductionStep[] = [
     content: (
       <div className="space-y-4 text-center">
         <p>Thank you for completing this introduction.</p>
-        <p className="font-medium">You're now ready to begin your training.</p>
-        <p className="font-bold">Good luck!</p>
+        <p>
+          We understand this task is not easy and can be challenging at times.
+        </p>
+        <p className="font-medium">
+          Remember, the goal is to try your best - don't be frustrated if you
+          find some questions difficult.
+        </p>
+        <p>You're now ready to begin your training.</p>
+        <p className="font-bold">Take a deep breath and good luck!</p>
       </div>
     ),
   },
