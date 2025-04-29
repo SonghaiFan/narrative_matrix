@@ -9,29 +9,22 @@ interface PureTextSearchProps {
   events: NarrativeEvent[];
   onSearchResults: (results: NarrativeEvent[]) => void;
   onSearchQueryChange: (query: string) => void;
+  onNavigateToMatch: (direction: "next" | "prev") => void;
+  currentMatchIndex: number;
+  totalMatches: number;
 }
 
 export function PureTextSearch({
   events,
   onSearchResults,
   onSearchQueryChange,
+  onNavigateToMatch,
+  currentMatchIndex,
+  totalMatches,
 }: PureTextSearchProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const { text } = PURE_TEXT_CONFIG;
   const searchInputRef = useRef<HTMLInputElement>(null);
-
-  // Initialize Fuse search with text-only search
-  const fuse = useMemo(() => {
-    return new Fuse(events, {
-      keys: ["text"],
-      includeScore: true,
-      threshold: 0.1, // Lower threshold for more exact matching
-      ignoreLocation: true,
-      useExtendedSearch: true,
-      isCaseSensitive: false,
-      minMatchCharLength: 1,
-    });
-  }, [events]);
 
   // Override browser default search with our custom search
   useEffect(() => {
@@ -56,17 +49,10 @@ export function PureTextSearch({
     };
   }, []);
 
-  // Handle search
+  // Handle search query changes
   useEffect(() => {
-    if (searchQuery.trim() === "") {
-      onSearchResults(events);
-      onSearchQueryChange("");
-    } else {
-      const results = fuse.search(searchQuery.trim());
-      onSearchResults(results.map((result) => result.item));
-      onSearchQueryChange(searchQuery.trim());
-    }
-  }, [searchQuery, events, fuse, onSearchResults, onSearchQueryChange]);
+    onSearchQueryChange(searchQuery.trim());
+  }, [searchQuery, onSearchQueryChange]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -99,27 +85,82 @@ export function PureTextSearch({
         onChange={handleInputChange}
       />
       {searchQuery && (
-        <button
-          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-          onClick={() => setSearchQuery("")}
-        >
-          <svg
-            className="h-4 w-4"
-            style={{
-              width: `${text.iconSize}px`,
-              height: `${text.iconSize}px`,
-            }}
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center gap-2">
+          {totalMatches > 0 && (
+            <div className="text-xs text-gray-500">
+              {currentMatchIndex + 1} of {totalMatches}
+            </div>
+          )}
+          {totalMatches > 1 && (
+            <div className="flex items-center gap-1">
+              <button
+                className="text-gray-400 hover:text-gray-600"
+                onClick={() => onNavigateToMatch("prev")}
+                disabled={currentMatchIndex === 0}
+              >
+                <svg
+                  className="h-4 w-4"
+                  style={{
+                    width: `${text.iconSize}px`,
+                    height: `${text.iconSize}px`,
+                  }}
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+              <button
+                className="text-gray-400 hover:text-gray-600"
+                onClick={() => onNavigateToMatch("next")}
+                disabled={currentMatchIndex === totalMatches - 1}
+              >
+                <svg
+                  className="h-4 w-4"
+                  style={{
+                    width: `${text.iconSize}px`,
+                    height: `${text.iconSize}px`,
+                  }}
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+          )}
+          <button
+            className="text-gray-400 hover:text-gray-600"
+            onClick={() => setSearchQuery("")}
           >
-            <path
-              fillRule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
+            <svg
+              className="h-4 w-4"
+              style={{
+                width: `${text.iconSize}px`,
+                height: `${text.iconSize}px`,
+              }}
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
       )}
     </div>
   );

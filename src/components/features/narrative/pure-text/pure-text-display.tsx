@@ -27,8 +27,11 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
   } = useCenterControl();
   const eventRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [searchResults, setSearchResults] = useState<NarrativeEvent[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
+  const [searchMatches, setSearchMatches] = useState<
+    { eventId: number; matchIndex: number }[]
+  >([]);
   const { text, margin } = PURE_TEXT_CONFIG;
 
   // Sort events by narrative time
@@ -40,21 +43,52 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
     );
   }, [events]);
 
-  // Handle search results - always maintain narrative time order
-  const handleSearchResults = useCallback((results: NarrativeEvent[]) => {
-    // Sort search results by narrative time as well
-    const sortedResults = [...results].sort(
-      (a, b) =>
-        a.temporal_anchoring.narrative_time -
-        b.temporal_anchoring.narrative_time
-    );
-    setSearchResults(sortedResults);
-  }, []);
-
   // Handle search query changes for highlighting
-  const handleSearchQueryChange = useCallback((query: string) => {
-    setSearchQuery(query);
-  }, []);
+  const handleSearchQueryChange = useCallback(
+    (query: string) => {
+      setSearchQuery(query);
+      setCurrentMatchIndex(0);
+
+      if (!query.trim()) {
+        setSearchMatches([]);
+        return;
+      }
+
+      // Find all events containing the search term
+      const matches: { eventId: number; matchIndex: number }[] = [];
+      sortedEvents.forEach((event) => {
+        if (event.text.toLowerCase().includes(query.toLowerCase())) {
+          matches.push({ eventId: event.index, matchIndex: matches.length });
+        }
+      });
+      setSearchMatches(matches);
+
+      // Focus on the first match if there are any
+      if (matches.length > 0) {
+        setfocusedEventId(matches[0].eventId);
+      }
+    },
+    [sortedEvents, setfocusedEventId]
+  );
+
+  // Handle navigation between matches
+  const handleNavigateToMatch = useCallback(
+    (direction: "next" | "prev") => {
+      if (searchMatches.length === 0) return;
+
+      let newIndex = currentMatchIndex;
+      if (direction === "next") {
+        newIndex = (currentMatchIndex + 1) % searchMatches.length;
+      } else {
+        newIndex =
+          (currentMatchIndex - 1 + searchMatches.length) % searchMatches.length;
+      }
+
+      setCurrentMatchIndex(newIndex);
+      setfocusedEventId(searchMatches[newIndex].eventId);
+    },
+    [currentMatchIndex, searchMatches, setfocusedEventId]
+  );
 
   // Effect to scroll selected event into view
   useEffect(() => {
@@ -102,6 +136,20 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
     return result;
   }, []);
 
+  // Function to highlight search terms in text
+  const highlightSearchTerm = useCallback(
+    (text: string, searchQuery: string) => {
+      if (!searchQuery.trim()) return text;
+
+      const regex = new RegExp(`(${searchQuery.trim()})`, "gi");
+      return text.replace(
+        regex,
+        '<span style="background-color: yellow">$1</span>'
+      );
+    },
+    []
+  );
+
   if (!events.length) {
     return (
       <div className="h-full flex flex-col items-center justify-center">
@@ -111,17 +159,12 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
   }
 
   // Get the first event's real time date for the article header
-  // Using sortedEvents to get the chronologically first event
   const publicationDate =
     typeof metadata?.publishDate === "string"
       ? metadata.publishDate
       : typeof sortedEvents[0]?.temporal_anchoring.real_time === "string"
       ? sortedEvents[0].temporal_anchoring.real_time
       : null;
-
-  // Use sortedEvents as base, or sorted search results if search is active
-  const displayedEvents =
-    searchResults.length > 0 ? searchResults : sortedEvents;
 
   // Get the article title from metadata
   const articleTitle =
@@ -151,8 +194,11 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
         <div className="ml-auto mr-8">
           <PureTextSearch
             events={sortedEvents}
-            onSearchResults={handleSearchResults}
+            onSearchResults={() => {}} // No longer needed
             onSearchQueryChange={handleSearchQueryChange}
+            onNavigateToMatch={handleNavigateToMatch}
+            currentMatchIndex={currentMatchIndex}
+            totalMatches={searchMatches.length}
           />
         </div>
       </div>
@@ -172,7 +218,7 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
           <ArticleLayout title={articleTitle} publishDate={publicationDate}>
             {/* Display all events in a single flat list, ordered by narrative time */}
             <ArticleSection>
-              {displayedEvents.map((event) => (
+              {sortedEvents.map((event) => (
                 <div
                   key={event.index}
                   ref={(el) => {
@@ -205,6 +251,7 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
                     }}
                     highlightEntities={highlightEntities}
                     searchQuery={searchQuery}
+                    highlightSearchTerm={highlightSearchTerm}
                   />
                 </div>
               ))}

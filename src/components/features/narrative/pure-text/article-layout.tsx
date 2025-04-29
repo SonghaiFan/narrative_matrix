@@ -94,6 +94,7 @@ interface ArticleParagraphProps {
   onContextMenu: (e: React.MouseEvent) => void;
   highlightEntities: (text: string, entities: any[]) => string;
   searchQuery?: string;
+  highlightSearchTerm?: (text: string, searchQuery: string) => string;
 }
 
 export function ArticleParagraph({
@@ -104,47 +105,18 @@ export function ArticleParagraph({
   onContextMenu,
   highlightEntities,
   searchQuery = "",
+  highlightSearchTerm,
 }: ArticleParagraphProps) {
   const { text } = PURE_TEXT_CONFIG;
 
   // Process text with entities highlighted
   const processedText = highlightEntities(event.text, event.entities);
 
-  // Highlight search terms if searchQuery is provided
-  const highlightSearchTerms = (text: string, query: string) => {
-    if (!query.trim()) return text;
-
-    const terms = query.trim().split(/\s+/);
-
-    let highlightedText = text;
-
-    // Escape special characters in search terms for regex
-    terms.forEach((term) => {
-      if (term.length < 2) return; // Skip very short terms
-
-      const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const regex = new RegExp(`(${escapedTerm})`, "gi");
-
-      // Replace with highlighting, being careful not to match inside HTML tags
-      highlightedText = highlightedText.replace(
-        /(>|^)([^<]*)(<|$)/g,
-        (match, before, content, after) => {
-          const highlighted = content.replace(
-            regex,
-            '<mark class="bg-yellow-200 rounded px-0.5">$1</mark>'
-          );
-          return before + highlighted + after;
-        }
-      );
-    });
-
-    return highlightedText;
-  };
-
-  // Apply search term highlighting without timestamp
-  const finalText = searchQuery
-    ? highlightSearchTerms(processedText, searchQuery)
-    : processedText;
+  // Apply search term highlighting if searchQuery is provided
+  const finalText =
+    searchQuery && highlightSearchTerm
+      ? highlightSearchTerm(processedText, searchQuery)
+      : processedText;
 
   return (
     <div
