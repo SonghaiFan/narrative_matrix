@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useCenterControl } from "@/contexts/center-control-context";
 import { ScenarioType } from "@/types/scenario";
 import { IntroductionFactory } from "@/components/features/introduction/introduction-factory";
@@ -9,7 +9,6 @@ import { IntroductionFactory } from "@/components/features/introduction/introduc
 export default function VisualizationIntroductionPage() {
   // Get params using the hook
   const params = useParams<{ id: string }>();
-  const router = useRouter();
 
   // Ensure params.id is available before proceeding
   if (!params || typeof params.id !== "string") {

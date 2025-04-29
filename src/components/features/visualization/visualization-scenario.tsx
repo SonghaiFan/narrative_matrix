@@ -11,6 +11,7 @@ import { useTaskStore } from "@/store/task-store";
 import { QuizVisual, Quiz } from "@/components/features/task/quiz-types";
 import { NarrativeEvent, DatasetMetadata } from "@/types/lite";
 import { Suspense } from "react";
+import { Loading } from "@/components/ui/loading";
 
 interface VisualizationContentProps {
   events: NarrativeEvent[];
@@ -93,19 +94,13 @@ export function VisualizationScenario({
         quiz: factoryQuiz,
       }) => {
         if (!factoryMetadata || !factoryEvents) {
-          return <div>Loading data for content...</div>;
+          return <Loading text="Loading data for content..." />;
         }
 
         return (
           <div className="w-full h-full relative grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
             <div className="md:col-span-2 bg-white rounded-lg shadow-sm overflow-hidden">
-              <Suspense
-                fallback={
-                  <div className="h-full flex items-center justify-center">
-                    Loading visualization...
-                  </div>
-                }
-              >
+              <Suspense fallback={<Loading text="Loading visualization..." />}>
                 <VisualizationContent
                   events={factoryEvents}
                   metadata={factoryMetadata}

@@ -2,6 +2,7 @@ import { VisualizationScenario } from "@/components/features/visualization/visua
 import { loadAndProcessScenarioData } from "@/lib/server/scenario-data";
 import { ScenarioType } from "@/types/scenario";
 import { NarrativeMatrixData } from "@/types/lite";
+import { Loading } from "@/components/ui/loading";
 
 interface VisualizationTrainingPageProps {
   params: Promise<{ id: string }>;
@@ -43,11 +44,7 @@ export default async function VisualizationTrainingPage({
 
   // Handle loading/null data state
   if (!fetchedData) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-gray-500">Loading scenario data...</p>
-      </div>
-    );
+    return <Loading fullScreen text="Loading scenario data..." />;
   }
 
   // Pass the processed data and states

@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { ScenarioType } from "@/types/scenario";
 import { useCenterControl } from "@/contexts/center-control-context";
 import { getAvailableScenarios } from "@/lib/client/scenario-metadata";
+import { Loading } from "@/components/ui/loading";
 
 export function ScenarioSelector() {
   const { user, setUserScenario, isLoading: isAuthLoading } = useAuth();
@@ -84,7 +85,7 @@ export function ScenarioSelector() {
   if (isAuthLoading) {
     return (
       <div className="p-4 bg-gray-50 rounded-lg text-center">
-        <p className="text-gray-500">Loading available scenarios...</p>
+        <Loading text="Loading available scenarios..." />
       </div>
     );
   }

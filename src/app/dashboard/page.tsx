@@ -7,6 +7,7 @@ import { ScenarioSelector as DynamicScenarioSelector } from "@/components/featur
 import { UserDataViewer } from "@/components/features/dashboard/local-storage-viewer";
 import { useAuth } from "@/contexts/auth-context";
 import { useScenarioData } from "@/contexts/use-scenario-data";
+import { Loading } from "@/components/ui/loading";
 
 export interface ScenarioCardProps {
   title: string;
@@ -31,12 +32,7 @@ export default function Dashboard() {
 
   // Show loading state while checking authentication or loading data
   if (authLoading || dataLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
-        <div className="w-10 h-10 border-3 border-neutral-300 border-t-neutral-600 rounded-full animate-spin mb-2"></div>
-        <div className="text-neutral-600 text-sm">Loading...</div>
-      </div>
-    );
+    return <Loading fullScreen text="Loading..." />;
   }
 
   // Show error state if data loading failed

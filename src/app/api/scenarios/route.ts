@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { getAvailableScenarios } from "@/lib/get-scenarios";
+import { getAvailableScenarios } from "@/lib/scenarios/metadata";
 
 export async function GET() {
   try {
-    const scenarios = await getAvailableScenarios();
+    const scenarios = getAvailableScenarios();
 
     return NextResponse.json({
       scenarios,

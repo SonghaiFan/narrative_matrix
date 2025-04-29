@@ -35,6 +35,7 @@ import { loadDataFile } from "@/lib/data-storage";
 import { NarrativeEvent, DatasetMetadata } from "@/types/lite";
 import { saveQuizResponse } from "@/lib/firebase-operations";
 import { useAuth } from "@/contexts/auth-context";
+import { Loading } from "@/components/ui/loading";
 
 interface TaskPanelProps {
   events: NarrativeEvent[];
@@ -1100,11 +1101,8 @@ export function TaskPanel({
 
   if (isLoadingQuiz) {
     return (
-      <div className={`flex flex-col h-full bg-white p-2 ${className}`}>
-        <h2 className="text-sm font-semibold mb-2">Tasks</h2>
-        <div className="flex-1 flex items-center justify-center">
-          <p className="text-xs text-gray-500">Loading quiz questions...</p>
-        </div>
+      <div className="flex-1 flex items-center justify-center">
+        <Loading size="sm" text="Loading quiz questions..." />
       </div>
     );
   }

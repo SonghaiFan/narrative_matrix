@@ -2,30 +2,18 @@
  * Unified scenario type definition for the application
  * This is used across different components to ensure consistency
  */
-export type ScenarioType =
-  | "text-visual-1"
-  | "text-visual-2"
-  | "text-visual-3"
-  | "text-visual-4"
-  | "text-visual-5"
-  | "text-visual-6"
-  | "text-visual-7"
-  | "text-visual-8"
-  | "text-visual-9"
-  | "text-visual-10"
-  | "text-visual-11"
-  | "text-visual-12";
+export type ScenarioType = string;
 
 /**
  * Scenario metadata interface
  */
 export interface ScenarioMetadata {
+  id: ScenarioType;
   name: string;
   description: string;
-  order: number;
-  quizOrder?: {
+  quizOrder: {
     preferredOrder: string[];
-    description?: string;
+    description: string;
   };
 }
 
