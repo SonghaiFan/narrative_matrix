@@ -123,7 +123,7 @@
       "prone": "topic",
       "options": {
         "leftItems": ["War", "Civil unrest"],
-        "rightItems": ["1948-1949", "1987-2005"],
+        "rightItems": ["1948-1949", "1978-1979", "1987-2005"],
         "leftLabel": "Topics",
         "rightLabel": "Time Periods"
       },
@@ -156,7 +156,7 @@
       "prone": "topic",
       "options": {
         "leftItems": ["War", "Armed conflict"],
-        "rightItems": ["1967-1973", "2014-2023"],
+        "rightItems": ["1967-1973", "1993-1995", "2014-2023"],
         "leftLabel": "Topics",
         "rightLabel": "Time Periods"
       },
@@ -193,7 +193,11 @@
       "prone": "time",
       "options": {
         "leftItems": ["Yom Kippur War", "Oslo I Accords"],
-        "rightItems": ["Oslo II Accords", "Camp David Accords"],
+        "rightItems": [
+          "Oslo II Accords",
+          "Camp David Accords",
+          "West Bank barrier wall construction"
+        ],
         "leftLabel": "Events",
         "rightLabel": "Resolutions"
       },
@@ -232,7 +236,8 @@
         "leftItems": ["First Intifada", "Second Intifada"],
         "rightItems": [
           "West Bank barrier wall construction",
-          "Camp David Accords"
+          "Camp David Accords",
+          "Oslo I Accords"
         ],
         "leftLabel": "Events",
         "rightLabel": "Resolutions"
