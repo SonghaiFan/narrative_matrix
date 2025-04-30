@@ -1,25 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { resetTaskProgress, resetAllTaskProgress } from "@/lib/task-progress";
+import { useProgressStore } from "@/stores/progress-store";
+import { useTaskProgressStore } from "@/lib/task-progress";
 
 interface StorageItem {
   key: string;
   value: any;
   type: string;
-  source: "localStorage" | "cookie";
+  source: "localStorage" | "cookie" | "zustand";
   expiration?: string;
 }
 
 // List of keys that are relevant to our project
 const PROJECT_RELATED_KEYS = [
   "user",
-  "taskProgress_",
-  "studyCompleted",
-  "hasCompletedIntro",
-  "hasCompletedIntro_expiration",
-  "hasCompletedTraining_",
-  "hasCompletedTraining_expiration",
   "selectedFile",
   "selectedScenario",
   "selectedEvents",
@@ -43,8 +38,11 @@ export function UserDataViewer() {
   const [selectedItem, setSelectedItem] = useState<StorageItem | null>(null);
   const [isClient, setIsClient] = useState(false);
   const [activeTab, setActiveTab] = useState<
-    "all" | "localStorage" | "cookies"
+    "all" | "localStorage" | "cookies" | "zustand"
   >("all");
+
+  const progressStore = useProgressStore();
+  const taskProgressStore = useTaskProgressStore();
 
   // Only run on client-side
   useEffect(() => {
@@ -69,8 +67,26 @@ export function UserDataViewer() {
 
     const items: StorageItem[] = [];
 
-    // Get localStorage items
-    const keys = Object.keys(localStorage);
+    // Add Zustand store states
+    items.push({
+      key: "study-progress",
+      value: progressStore.progress,
+      type: "Study Progress Store",
+      source: "zustand",
+    });
+
+    items.push({
+      key: "task-progress",
+      value: taskProgressStore.tasks,
+      type: "Task Progress Store",
+      source: "zustand",
+    });
+
+    // Get localStorage items (excluding Zustand persisted state)
+    const keys = Object.keys(localStorage).filter(
+      (key) =>
+        !key.startsWith("task-progress") && !key.startsWith("study-progress")
+    );
 
     // Filter only project-related keys
     const relevantKeys = keys.filter((key) =>
@@ -79,59 +95,22 @@ export function UserDataViewer() {
       )
     );
 
-    // Group related localStorage items (main item and its expiration)
-    const groupedItems: Record<string, any> = {};
-
+    // Add localStorage items
     relevantKeys.forEach((key) => {
-      // Check if this is an expiration key
-      if (key.endsWith("_expiration")) {
-        const baseKey = key.replace("_expiration", "");
-        if (!groupedItems[baseKey]) {
-          groupedItems[baseKey] = {};
-        }
-
-        // Store expiration timestamp
-        const expirationTimestamp = localStorage.getItem(key);
-        if (expirationTimestamp) {
-          const expirationDate = new Date(parseInt(expirationTimestamp, 10));
-          groupedItems[baseKey].expiration = expirationDate.toLocaleString();
-          groupedItems[baseKey].expirationKey = key;
-        }
-      } else {
-        // This is a regular key
-        if (!groupedItems[key]) {
-          groupedItems[key] = {};
-        }
-
-        try {
-          groupedItems[key].value = JSON.parse(
-            localStorage.getItem(key) || "{}"
-          );
-        } catch (error) {
-          groupedItems[key].value = localStorage.getItem(key);
-        }
-
-        // Determine the type
-        if (key.startsWith("taskProgress_")) {
-          groupedItems[key].type = "Task Progress";
-        } else if (key === "user") {
-          groupedItems[key].type = "User Data";
-        } else {
-          groupedItems[key].type = "Study Data";
-        }
-      }
-    });
-
-    // Convert grouped items to StorageItem array
-    Object.entries(groupedItems).forEach(([key, data]) => {
-      if (!key.endsWith("_expiration")) {
-        // Skip expiration keys as they're already processed
+      try {
+        const value = JSON.parse(localStorage.getItem(key) || "{}");
         items.push({
           key,
-          value: data.value,
-          type: data.type || "Unknown",
+          value,
+          type: "Local Storage Data",
           source: "localStorage",
-          expiration: data.expiration,
+        });
+      } catch (error) {
+        items.push({
+          key,
+          value: localStorage.getItem(key),
+          type: "Local Storage Data",
+          source: "localStorage",
         });
       }
     });
@@ -139,10 +118,8 @@ export function UserDataViewer() {
     // Get cookie items
     const cookies = parseCookies();
     Object.entries(cookies).forEach(([name, value]) => {
-      // Only include project-related cookies or if the name is empty (which shouldn't happen)
       if (PROJECT_RELATED_COOKIES.includes(name) || name === "") {
         try {
-          // Try to parse as JSON first
           const parsedValue = JSON.parse(value);
           items.push({
             key: name,
@@ -151,7 +128,6 @@ export function UserDataViewer() {
             source: "cookie",
           });
         } catch (error) {
-          // If not JSON, store as string
           items.push({
             key: name,
             value,
@@ -165,20 +141,25 @@ export function UserDataViewer() {
     setStorageItems(items);
   };
 
-  const handleResetItem = (key: string, source: "localStorage" | "cookie") => {
+  const handleResetItem = (
+    key: string,
+    source: "localStorage" | "cookie" | "zustand"
+  ) => {
     if (typeof window === "undefined") return;
 
-    if (source === "localStorage") {
-      if (key.startsWith("taskProgress_")) {
-        const userId = key.replace("taskProgress_", "");
-        resetTaskProgress(userId);
-      } else {
-        // Remove both the item and its expiration
-        localStorage.removeItem(key);
-        localStorage.removeItem(`${key}_expiration`);
+    if (source === "zustand") {
+      if (key === "study-progress") {
+        // Reset all study progress
+        Object.keys(progressStore.progress).forEach((key) => {
+          const [studyId, sessionId] = key.split("-");
+          progressStore.resetProgress(studyId, sessionId);
+        });
+      } else if (key === "task-progress") {
+        taskProgressStore.resetAllTaskProgress();
       }
+    } else if (source === "localStorage") {
+      localStorage.removeItem(key);
     } else if (source === "cookie") {
-      // Delete the cookie by setting its expiration date to the past
       document.cookie = `${key}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
     }
 
@@ -192,14 +173,19 @@ export function UserDataViewer() {
         "Are you sure you want to reset all user progress? This cannot be undone."
       )
     ) {
-      // Reset all localStorage progress
-      resetAllTaskProgress();
+      // Reset Zustand stores
+      Object.keys(progressStore.progress).forEach((key) => {
+        const [studyId, sessionId] = key.split("-");
+        progressStore.resetProgress(studyId, sessionId);
+      });
+      taskProgressStore.resetAllTaskProgress();
 
-      // Remove all introduction completion flags from localStorage
-      localStorage.removeItem("hasCompletedIntro");
-      localStorage.removeItem("hasCompletedIntro_expiration");
+      // Reset localStorage (excluding Zustand state)
+      PROJECT_RELATED_KEYS.forEach((key) => {
+        localStorage.removeItem(key);
+      });
 
-      // Reset all cookies
+      // Reset cookies
       PROJECT_RELATED_COOKIES.forEach((cookieName) => {
         document.cookie = `${cookieName}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
       });
@@ -215,9 +201,7 @@ export function UserDataViewer() {
 
   const filteredItems = storageItems.filter((item) => {
     if (activeTab === "all") return true;
-    if (activeTab === "localStorage") return item.source === "localStorage";
-    if (activeTab === "cookies") return item.source === "cookie";
-    return true;
+    return item.source === activeTab;
   });
 
   if (!isClient) {
@@ -265,6 +249,16 @@ export function UserDataViewer() {
               }`}
             >
               All Data
+            </button>
+            <button
+              onClick={() => setActiveTab("zustand")}
+              className={`py-2 px-4 text-sm font-medium ${
+                activeTab === "zustand"
+                  ? "border-b-2 border-blue-500 text-blue-600"
+                  : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              Zustand Stores
             </button>
             <button
               onClick={() => setActiveTab("localStorage")}
@@ -320,11 +314,6 @@ export function UserDataViewer() {
                         </div>
                         <div className="text-xs text-gray-500">
                           {item.type} ({item.source})
-                          {item.expiration && (
-                            <span className="ml-2">
-                              Expires: {item.expiration}
-                            </span>
-                          )}
                         </div>
                       </div>
                       <button
@@ -362,17 +351,6 @@ export function UserDataViewer() {
                       </div>
                     </div>
 
-                    {selectedItem.expiration && (
-                      <div className="mb-4">
-                        <div className="text-xs font-medium text-gray-500 mb-1">
-                          Expiration
-                        </div>
-                        <div className="text-sm text-gray-900 font-mono bg-gray-50 p-2 rounded">
-                          {selectedItem.expiration}
-                        </div>
-                      </div>
-                    )}
-
                     <div className="mb-4">
                       <div className="text-xs font-medium text-gray-500 mb-1">
                         Type
@@ -389,7 +367,9 @@ export function UserDataViewer() {
                       <div className="text-sm text-gray-900">
                         {selectedItem.source === "localStorage"
                           ? "Local Storage"
-                          : "Cookie"}
+                          : selectedItem.source === "cookie"
+                          ? "Cookie"
+                          : "Zustand Store"}
                       </div>
                     </div>
 

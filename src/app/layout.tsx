@@ -36,7 +36,7 @@ export default function RootLayout({
           <CenterControlProvider>
             <TooltipProvider>
               <DisableContextMenu />
-              <ClarityAnalytics />
+              {/* <ClarityAnalytics /> */}
               {children}
             </TooltipProvider>
           </CenterControlProvider>

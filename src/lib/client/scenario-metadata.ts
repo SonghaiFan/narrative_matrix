@@ -1,310 +1,85 @@
 import { ScenarioMetadata } from "@/types/lite";
 
-// --- Hardcoded Metadata Map ---
-export const allScenarioMetadataMap: Record<string, ScenarioMetadata> = {
-  "text-visual-1": {
-    id: "text-visual-1",
-    name: "Text with Visualizations 1",
-    description:
-      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    quizOrder: {
-      preferredOrder: [
-        "ir_e_n_",
-        "ir_e_v_",
-        "ir_t_n_",
-        "ir_t_v_",
-        "ir_tm_n_",
-        "ir_tm_v_",
-        "pr_e_n_",
-        "pr_e_v_",
-        "pr_t_n_",
-        "pr_t_v_",
-        "pr_tm_n_",
-        "pr_tm_v_",
-      ],
-      description:
-        "Order: IR first, PR second. Category order: entity, topic, time. Visual order: non-visual then visual.",
-    },
-  },
-  "text-visual-2": {
-    id: "text-visual-2",
-    name: "Text with Visualizations 2",
-    description:
-      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    quizOrder: {
-      preferredOrder: [
-        "ir_e_v_",
-        "ir_e_n_",
-        "ir_t_v_",
-        "ir_t_n_",
-        "ir_tm_v_",
-        "ir_tm_n_",
-        "pr_e_v_",
-        "pr_e_n_",
-        "pr_t_v_",
-        "pr_t_n_",
-        "pr_tm_v_",
-        "pr_tm_n_",
-      ],
-      description:
-        "Order: IR first, PR second. Category order: entity, topic, time. Visual order: visual then non-visual.",
-    },
-  },
-  "text-visual-3": {
-    id: "text-visual-3",
-    name: "Text with Visualizations 3",
-    description:
-      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    quizOrder: {
-      preferredOrder: [
-        "ir_e_n_",
-        "ir_e_v_",
-        "ir_tm_n_",
-        "ir_tm_v_",
-        "ir_t_n_",
-        "ir_t_v_",
-        "pr_e_n_",
-        "pr_e_v_",
-        "pr_tm_n_",
-        "pr_tm_v_",
-        "pr_t_n_",
-        "pr_t_v_",
-      ],
-      description:
-        "Order: IR first, PR second. Category order: entity, time, topic. Visual order: non-visual then visual.",
-    },
-  },
-  "text-visual-4": {
-    id: "text-visual-4",
-    name: "Text with Visualizations 4",
-    description:
-      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    quizOrder: {
-      preferredOrder: [
-        "ir_e_v_",
-        "ir_e_n_",
-        "ir_tm_v_",
-        "ir_tm_n_",
-        "ir_t_v_",
-        "ir_t_n_",
-        "pr_e_v_",
-        "pr_e_n_",
-        "pr_tm_v_",
-        "pr_tm_n_",
-        "pr_t_v_",
-        "pr_t_n_",
-      ],
-      description:
-        "Order: IR first, PR second. Category order: entity, time, topic. Visual order: visual then non-visual.",
-    },
-  },
-  "text-visual-5": {
-    id: "text-visual-5",
-    name: "Text with Visualizations 5",
-    description:
-      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    quizOrder: {
-      preferredOrder: [
-        "ir_t_n_",
-        "ir_t_v_",
-        "ir_e_n_",
-        "ir_e_v_",
-        "ir_tm_n_",
-        "ir_tm_v_",
-        "pr_t_n_",
-        "pr_t_v_",
-        "pr_e_n_",
-        "pr_e_v_",
-        "pr_tm_n_",
-        "pr_tm_v_",
-      ],
-      description:
-        "Order: IR first, PR second. Category order: topic, entity, time. Visual order: non-visual then visual.",
-    },
-  },
-  "text-visual-6": {
-    id: "text-visual-6",
-    name: "Text with Visualizations 6",
-    description:
-      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    quizOrder: {
-      preferredOrder: [
-        "ir_t_v_",
-        "ir_t_n_",
-        "ir_e_v_",
-        "ir_e_n_",
-        "ir_tm_v_",
-        "ir_tm_n_",
-        "pr_t_v_",
-        "pr_t_n_",
-        "pr_e_v_",
-        "pr_e_n_",
-        "pr_tm_v_",
-        "pr_tm_n_",
-      ],
-      description:
-        "Order: IR first, PR second. Category order: topic, entity, time. Visual order: visual then non-visual.",
-    },
-  },
-  "text-visual-7": {
-    id: "text-visual-7",
-    name: "Text with Visualizations 7",
-    description:
-      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    quizOrder: {
-      preferredOrder: [
-        "ir_t_n_",
-        "ir_t_v_",
-        "ir_tm_n_",
-        "ir_tm_v_",
-        "ir_e_n_",
-        "ir_e_v_",
-        "pr_t_n_",
-        "pr_t_v_",
-        "pr_tm_n_",
-        "pr_tm_v_",
-        "pr_e_n_",
-        "pr_e_v_",
-      ],
-      description:
-        "Order: IR first, PR second. Category order: topic, time, entity. Visual order: non-visual then visual.",
-    },
-  },
-  "text-visual-8": {
-    id: "text-visual-8",
-    name: "Text with Visualizations 8",
-    description:
-      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    quizOrder: {
-      preferredOrder: [
-        "ir_t_v_",
-        "ir_t_n_",
-        "ir_tm_v_",
-        "ir_tm_n_",
-        "ir_e_v_",
-        "ir_e_n_",
-        "pr_t_v_",
-        "pr_t_n_",
-        "pr_tm_v_",
-        "pr_tm_n_",
-        "pr_e_v_",
-        "pr_e_n_",
-      ],
-      description:
-        "Order: IR first, PR second. Category order: topic, time, entity. Visual order: visual then non-visual.",
-    },
-  },
-  "text-visual-9": {
-    id: "text-visual-9",
-    name: "Text with Visualizations 9",
-    description:
-      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    quizOrder: {
-      preferredOrder: [
-        "ir_tm_n_",
-        "ir_tm_v_",
-        "ir_e_n_",
-        "ir_e_v_",
-        "ir_t_n_",
-        "ir_t_v_",
-        "pr_tm_n_",
-        "pr_tm_v_",
-        "pr_e_n_",
-        "pr_e_v_",
-        "pr_t_n_",
-        "pr_t_v_",
-      ],
-      description:
-        "Order: IR first, PR second. Category order: time, entity, topic. Visual order: non-visual then visual.",
-    },
-  },
-  "text-visual-10": {
-    id: "text-visual-10",
-    name: "Text with Visualizations 10",
-    description:
-      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    quizOrder: {
-      preferredOrder: [
-        "ir_tm_v_",
-        "ir_tm_n_",
-        "ir_e_v_",
-        "ir_e_n_",
-        "ir_t_v_",
-        "ir_t_n_",
-        "pr_tm_v_",
-        "pr_tm_n_",
-        "pr_e_v_",
-        "pr_e_n_",
-        "pr_t_v_",
-        "pr_t_n_",
-      ],
-      description:
-        "Order: IR first, PR second. Category order: time, entity, topic. Visual order: visual then non-visual.",
-    },
-  },
-  "text-visual-11": {
-    id: "text-visual-11",
-    name: "Text with Visualizations 11",
-    description:
-      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    quizOrder: {
-      preferredOrder: [
-        "ir_tm_n_",
-        "ir_tm_v_",
-        "ir_t_n_",
-        "ir_t_v_",
-        "ir_e_n_",
-        "ir_e_v_",
-        "pr_tm_n_",
-        "pr_tm_v_",
-        "pr_t_n_",
-        "pr_t_v_",
-        "pr_e_n_",
-        "pr_e_v_",
-      ],
-      description:
-        "Order: IR first, PR second. Category order: time, topic, entity. Visual order: non-visual then visual.",
-    },
-  },
-  "text-visual-12": {
-    id: "text-visual-12",
-    name: "Text with Visualizations 12",
-    description:
-      "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
-    quizOrder: {
-      preferredOrder: [
-        "ir_tm_v_",
-        "ir_tm_n_",
-        "ir_t_v_",
-        "ir_t_n_",
-        "ir_e_v_",
-        "ir_e_n_",
-        "pr_tm_v_",
-        "pr_tm_n_",
-        "pr_t_v_",
-        "pr_t_n_",
-        "pr_e_v_",
-        "pr_e_n_",
-      ],
-      description:
-        "Order: IR first, PR second. Category order: time, topic, entity. Visual order: visual then non-visual.",
-    },
-  },
-};
+let cachedMetadata: Record<string, any> | null = null;
 
-// Function to get metadata from the hardcoded map
-export function getScenarioMetadata(
+// Function to fetch metadata from JSON file
+async function fetchMetadata(): Promise<Record<string, any>> {
+  if (cachedMetadata !== null) return cachedMetadata;
+
+  try {
+    const response = await fetch("/scenario_data.json");
+    if (!response.ok) throw new Error("Failed to fetch scenario metadata");
+    const data = await response.json();
+    cachedMetadata = data;
+    return data;
+  } catch (error) {
+    console.error("Error loading scenario metadata:", error);
+    return {};
+  }
+}
+
+// Function to get metadata from the JSON file
+export async function getScenarioMetadata(
   scenarioId: string
-): ScenarioMetadata | null {
-  return allScenarioMetadataMap[scenarioId] || null;
+): Promise<ScenarioMetadata | null> {
+  const metadata = await fetchMetadata();
+  const [studyId, sessionId] = scenarioId.split("-");
+  return metadata[studyId]?.sessions[sessionId] || null;
+}
+
+// Function to get quiz order for a specific scenario
+export async function getQuizOrder(
+  studyId: string,
+  sessionId: string
+): Promise<string[] | null> {
+  const metadata = await fetchMetadata();
+  return (
+    metadata[studyId]?.sessions[sessionId]?.quizOrder?.preferredOrder || null
+  );
 }
 
 // Function to get all available scenario IDs
-export function getAvailableScenarioIds(): string[] {
-  return Object.keys(allScenarioMetadataMap);
+export async function getAvailableScenarioIds(): Promise<string[]> {
+  const metadata = await fetchMetadata();
+  const scenarios: string[] = [];
+
+  Object.entries(metadata).forEach(([studyId, studyData]) => {
+    Object.keys(studyData.sessions).forEach((sessionId) => {
+      scenarios.push(`${studyId}-${sessionId}`);
+    });
+  });
+
+  return scenarios;
 }
 
 // Function to get all available scenarios with their metadata
-export function getAvailableScenarios(): ScenarioMetadata[] {
-  return Object.values(allScenarioMetadataMap);
+export async function getAvailableScenarios(): Promise<ScenarioMetadata[]> {
+  const metadata = await fetchMetadata();
+  const scenarios: ScenarioMetadata[] = [];
+
+  Object.entries(metadata).forEach(([studyId, studyData]) => {
+    Object.entries(studyData.sessions).forEach(([sessionId, sessionData]) => {
+      scenarios.push(sessionData as ScenarioMetadata);
+    });
+  });
+
+  return scenarios;
+}
+
+// Synchronous version for initial render (uses cached data if available)
+export function getAvailableScenariosSync(): ScenarioMetadata[] {
+  if (cachedMetadata === null) {
+    // If no cached data, trigger fetch but return empty array
+    fetchMetadata();
+    return [];
+  }
+
+  const scenarios: ScenarioMetadata[] = [];
+  Object.entries(cachedMetadata).forEach(([studyId, studyData]) => {
+    Object.entries(studyData.sessions).forEach(([sessionId, sessionData]) => {
+      scenarios.push(sessionData as ScenarioMetadata);
+    });
+  });
+
+  return scenarios;
 }

@@ -27,13 +27,6 @@ export async function createUser(
   return userRef;
 }
 
-export async function updateUserLastActive(prolificId: string) {
-  const userRef = doc(db, "users", prolificId);
-  await updateDoc(userRef, {
-    lastActive: serverTimestamp(),
-  });
-}
-
 // Session operations
 export async function createSession(
   prolificId: string,

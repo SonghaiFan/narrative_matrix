@@ -22,17 +22,23 @@ export function LoginForm({
 }: LoginFormProps) {
   const [username, setUsername] = useState(urlUsername || "");
   const [error, setError] = useState<string | null>(null);
-  const { login, isLoading, error: authError } = useAuth();
+  const { login, isLoading, error: authError, isDomainUser } = useAuth();
 
-  // Effect to handle URL parameters
+  // Debug changes to isDisabled
+  useEffect(() => {
+    console.log("[LoginForm] isDisabled changed:", isDisabled);
+  }, [isDisabled]);
+
   useEffect(() => {
     if (urlUsername) {
       setUsername(urlUsername);
+      console.log("[LoginForm] Username set from URL:", urlUsername);
     }
   }, [urlUsername]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("[LoginForm] Form submitted, isDisabled:", isDisabled);
     setError(null);
 
     if (!username.trim()) {
@@ -45,29 +51,23 @@ export function LoginForm({
       return;
     }
 
-    try {
-      await login(username, urlSessionId || undefined);
-      if (onLoginSuccess) {
-        onLoginSuccess();
-      }
-    } catch (err) {
-      // Error is handled by the auth context
-    }
-  };
-
-  // Auto-login handler for URL parameters
-  const handleUrlLogin = async () => {
-    if (isDisabled) {
-      setError("Please accept the consent form first");
+    // If no URL parameters and not a domain user, prevent login
+    if (!urlUsername && !isDomainUser(username)) {
+      setError(
+        "Direct login is only available for domain users. Please use the correct study URL or login as a domain user."
+      );
       return;
     }
 
     try {
-      await login(username, urlSessionId || undefined);
+      console.log("[LoginForm] Attempting login with username:", username);
+      await login(username);
       if (onLoginSuccess) {
+        console.log("[LoginForm] Login successful, calling onLoginSuccess");
         onLoginSuccess();
       }
     } catch (err) {
+      console.error("[LoginForm] Login error:", err);
       // Error is handled by the auth context
     }
   };
@@ -77,9 +77,8 @@ export function LoginForm({
 
   return (
     <div className="space-y-4">
-      {isPreConfigured ? (
-        // Show simplified interface when URL parameters are provided
-        <div className="space-y-3">
+      <form onSubmit={handleSubmit} className="space-y-3">
+        {isPreConfigured ? (
           <div className="p-3 bg-blue-50 border border-blue-200 rounded text-sm">
             <div className="text-blue-600 space-y-1">
               {isProlificUser && (
@@ -91,16 +90,7 @@ export function LoginForm({
               )}
             </div>
           </div>
-
-          {(error || authError) && (
-            <div className="p-2 bg-red-50 text-red-700 rounded text-xs">
-              {error || authError}
-            </div>
-          )}
-        </div>
-      ) : (
-        // Show regular form if no URL parameters
-        <form onSubmit={handleSubmit} className="space-y-3">
+        ) : (
           <div>
             <label
               htmlFor="username"
@@ -108,35 +98,38 @@ export function LoginForm({
             >
               Username
             </label>
-            <input
-              id="username"
-              type="text"
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              disabled={isLoading || isDisabled}
-              className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
-            />
-          </div>
-
-          {(error || authError) && (
-            <div className="p-2 bg-red-50 text-red-700 rounded text-xs">
-              {error || authError}
+            <div className="space-y-2">
+              <input
+                id="username"
+                type="text"
+                placeholder="Enter username "
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                disabled={isLoading || isDisabled}
+                className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
+              />
             </div>
-          )}
-        </form>
-      )}
-      <button
-        onClick={handleUrlLogin}
-        className="w-full py-1.5 px-4 text-sm font-medium text-white bg-blue-600 rounded shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-blue-400 disabled:cursor-not-allowed"
-        disabled={isLoading || isDisabled}
-      >
-        {isLoading
-          ? "Logging in..."
-          : isDisabled
-          ? "Please Read and Accept Consent Form to Proceed"
-          : "Login"}
-      </button>
+          </div>
+        )}
+
+        {(error || authError) && (
+          <div className="p-2 bg-red-50 text-red-700 rounded text-xs">
+            {error || authError}
+          </div>
+        )}
+
+        <button
+          type="submit"
+          className="w-full py-1.5 px-4 text-sm font-medium text-white bg-blue-600 rounded shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-blue-400 disabled:cursor-not-allowed"
+          disabled={isLoading || isDisabled}
+        >
+          {isLoading
+            ? "Logging in..."
+            : isDisabled
+            ? "Please Read and Accept Consent Form to Proceed"
+            : "Login"}
+        </button>
+      </form>
     </div>
   );
 }

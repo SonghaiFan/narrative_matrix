@@ -1,5 +1,8 @@
 // Task progress utilities for local storage
 
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
 export interface TaskAnswer {
   questionId: string;
   question: string;
@@ -35,115 +38,111 @@ export interface TaskProgress {
   surveyData?: SurveyData;
 }
 
-// Helper functions to handle localStorage safely (with SSR support)
-const getLocalStorage = (key: string): string | null => {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem(key);
-  }
-  return null;
-};
+interface TaskProgressStore {
+  tasks: Record<string, TaskProgress>; // userId -> TaskProgress
+  getTaskProgress: (userId: string) => TaskProgress | null;
+  saveTaskProgress: (
+    userId: string,
+    progress: Omit<TaskProgress, "userId" | "lastUpdated">
+  ) => void;
+  updateTaskProgress: (
+    userId: string,
+    updates: Partial<Omit<TaskProgress, "userId" | "lastUpdated">>
+  ) => TaskProgress | null;
+  markTaskAsCompleted: (userId: string) => void;
+  hasCompletedTasks: (userId: string) => boolean;
+  resetTaskProgress: (userId: string) => void;
+  resetAllTaskProgress: () => void;
+}
 
-const setLocalStorage = (key: string, value: string): void => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(key, value);
-  }
-};
+export const useTaskProgressStore = create<TaskProgressStore>()(
+  persist(
+    (set, get) => ({
+      tasks: {},
 
-const removeLocalStorage = (key: string): void => {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem(key);
-  }
-};
+      getTaskProgress: (userId: string) => {
+        return get().tasks[userId] || null;
+      },
 
-// Get task progress from local storage
-export const getTaskProgress = (userId: string): TaskProgress | null => {
-  const progressData = getLocalStorage(`taskProgress_${userId}`);
-  if (!progressData) return null;
+      saveTaskProgress: (userId: string, progress) => {
+        set((state) => ({
+          tasks: {
+            ...state.tasks,
+            [userId]: {
+              ...progress,
+              userId,
+              lastUpdated: new Date().toISOString(),
+            },
+          },
+        }));
+      },
 
-  try {
-    return JSON.parse(progressData) as TaskProgress;
-  } catch (error) {
-    console.error("Failed to parse task progress:", error);
-    return null;
-  }
-};
+      updateTaskProgress: (userId: string, updates) => {
+        const currentProgress = get().getTaskProgress(userId);
+        if (!currentProgress) return null;
 
-// Save task progress to local storage
+        const updatedProgress: TaskProgress = {
+          ...currentProgress,
+          ...updates,
+          lastUpdated: new Date().toISOString(),
+        };
+
+        set((state) => ({
+          tasks: {
+            ...state.tasks,
+            [userId]: updatedProgress,
+          },
+        }));
+
+        return updatedProgress;
+      },
+
+      markTaskAsCompleted: (userId: string) => {
+        const currentProgress = get().getTaskProgress(userId);
+        if (currentProgress) {
+          get().updateTaskProgress(userId, { isCompleted: true });
+        }
+      },
+
+      hasCompletedTasks: (userId: string) => {
+        const progress = get().getTaskProgress(userId);
+        return progress?.isCompleted || false;
+      },
+
+      resetTaskProgress: (userId: string) => {
+        set((state) => {
+          const { [userId]: _, ...rest } = state.tasks;
+          return { tasks: rest };
+        });
+      },
+
+      resetAllTaskProgress: () => {
+        set({ tasks: {} });
+      },
+    }),
+    {
+      name: "task-progress",
+      partialize: (state) => ({ tasks: state.tasks }),
+    }
+  )
+);
+
+// Export the old function names but using the new store
+export const getTaskProgress = (userId: string) =>
+  useTaskProgressStore.getState().getTaskProgress(userId);
 export const saveTaskProgress = (
   userId: string,
   progress: Omit<TaskProgress, "userId" | "lastUpdated">
-): void => {
-  const taskProgress: TaskProgress = {
-    ...progress,
-    userId,
-    lastUpdated: new Date().toISOString(),
-  };
-
-  try {
-    setLocalStorage(`taskProgress_${userId}`, JSON.stringify(taskProgress));
-  } catch (error) {
-    console.error("Failed to save task progress:", error);
-  }
-};
-
-// Update task progress with new values
+) => useTaskProgressStore.getState().saveTaskProgress(userId, progress);
 export const updateTaskProgress = (
   userId: string,
   updates: Partial<Omit<TaskProgress, "userId" | "lastUpdated">>
-): TaskProgress | null => {
-  const currentProgress = getTaskProgress(userId);
-
-  if (!currentProgress) {
-    return null;
-  }
-
-  const updatedProgress: TaskProgress = {
-    ...currentProgress,
-    ...updates,
-    lastUpdated: new Date().toISOString(),
-  };
-
-  try {
-    setLocalStorage(`taskProgress_${userId}`, JSON.stringify(updatedProgress));
-    return updatedProgress;
-  } catch (error) {
-    console.error("Failed to update task progress:", error);
-    return null;
-  }
-};
-
-// Mark task as completed
-export const markTaskAsCompleted = (userId: string): void => {
-  const currentProgress = getTaskProgress(userId);
-
-  if (currentProgress) {
-    updateTaskProgress(userId, { isCompleted: true });
-  }
-};
-
-// Check if user has completed tasks
-export const hasCompletedTasks = (userId: string): boolean => {
-  const progress = getTaskProgress(userId);
-  return progress?.isCompleted || false;
-};
-
-// Reset task progress (for domain users)
-export const resetTaskProgress = (userId: string): void => {
-  removeLocalStorage(`taskProgress_${userId}`);
-};
-
-// Reset all task progress (admin function)
-export const resetAllTaskProgress = (): void => {
-  if (typeof window === "undefined") return;
-
-  // Get all keys from localStorage
-  const keys = Object.keys(localStorage);
-
-  // Filter keys that start with 'taskProgress_'
-  const progressKeys = keys.filter((key) => key.startsWith("taskProgress_"));
-
-  // Remove each task progress entry
-  progressKeys.forEach((key) => {
-    removeLocalStorage(key);
-  });
-};
+) => useTaskProgressStore.getState().updateTaskProgress(userId, updates);
+export const markTaskAsCompleted = (userId: string) =>
+  useTaskProgressStore.getState().markTaskAsCompleted(userId);
+export const hasCompletedTasks = (userId: string) =>
+  useTaskProgressStore.getState().hasCompletedTasks(userId);
+export const resetTaskProgress = (userId: string) =>
+  useTaskProgressStore.getState().resetTaskProgress(userId);
+export const resetAllTaskProgress = () =>
+  useTaskProgressStore.getState().resetAllTaskProgress();

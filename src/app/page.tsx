@@ -7,6 +7,8 @@ import { useAuth } from "@/contexts/auth-context";
 import { hasCompletedTasks, getTaskProgress } from "@/lib/task-progress";
 import { ConsentForm } from "@/components/features/auth/consent-from";
 import { UsabilityTest } from "@/components/features/auth/usability-test";
+import { useProlificStore } from "@/store/prolific-store";
+import { useProgressStore } from "@/stores/progress-store";
 
 function HomeContent() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -16,23 +18,18 @@ function HomeContent() {
   const [hasExplicitlyLoggedIn, setHasExplicitlyLoggedIn] = useState(false);
   const [hasPassedMouseTest, setHasPassedMouseTest] = useState(false);
 
-  // Get Prolific parameters from URL
+  // Get Prolific parameters from URL and store them
   const prolificId = searchParams.get("PROLIFIC_PID");
   const studyId = searchParams.get("STUDY_ID");
   const sessionId = searchParams.get("SESSION_ID");
+  const { setProlificParams, hasProlificParams, scenarioId } =
+    useProlificStore();
+  const { isStageCompleted } = useProgressStore();
 
-  // Check if we have Prolific parameters
-  const hasProlificParams = !!prolificId;
-
-  // Check local storage for previously accepted consent
+  // Store Prolific parameters when they change
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedConsent = localStorage.getItem("hasAcceptedConsent");
-      if (savedConsent === "true") {
-        setHasConsented(true);
-      }
-    }
-  }, []);
+    setProlificParams({ prolificId, studyId, sessionId });
+  }, [prolificId, studyId, sessionId, setProlificParams]);
 
   // Check if user is already logged in
   useEffect(() => {
@@ -66,49 +63,33 @@ function HomeContent() {
         if (hasCompleted) {
           const progress = getTaskProgress(user.id);
           if (progress) {
-            let completionUrl = `/completion?total=${progress.totalTasks}&correct=${progress.correctTasks}&type=text-visualisation`;
-
-            // Add Prolific parameters if present
-            if (hasProlificParams) {
-              if (prolificId) completionUrl += `&PROLIFIC_PID=${prolificId}`;
-              if (studyId) completionUrl += `&STUDY_ID=${studyId}`;
-              if (sessionId) completionUrl += `&SESSION_ID=${sessionId}`;
-            }
-
+            const completionUrl = `/completion?total=${progress.totalTasks}&correct=${progress.correctTasks}&type=text-visualisation`;
             router.push(completionUrl);
             return;
           }
         }
 
-        // Get scenario ID from user
-        const scenarioId = user.defaultScenario;
-        const numericId = scenarioId.replace("text-visual-", "");
-        const introKey = `hasCompletedIntro-${scenarioId}`;
-        const trainingKey = `hasCompletedTraining-${scenarioId}`;
-        let hasCompletedIntro = false;
-        let hasCompletedTraining = false;
-
-        if (typeof window !== "undefined") {
-          hasCompletedIntro = localStorage.getItem(introKey) === "true";
-          hasCompletedTraining = localStorage.getItem(trainingKey) === "true";
+        // Only proceed if we have Prolific parameters
+        if (!hasProlificParams || !studyId || !sessionId) {
+          return;
         }
+
+        // Check stage completion using the new progress store
+        const hasCompletedIntro = isStageCompleted(studyId, sessionId, {
+          type: "intro",
+        });
+        const hasCompletedTraining = isStageCompleted(studyId, sessionId, {
+          type: "training",
+          round: 1,
+        });
 
         let initialRedirectPath = "";
         if (!hasCompletedIntro) {
-          initialRedirectPath = `/text-visual/${numericId}/introduction`;
+          initialRedirectPath = `/${studyId}/${sessionId}/introduction`;
         } else if (!hasCompletedTraining) {
-          initialRedirectPath = `/text-visual/${numericId}/training`;
+          initialRedirectPath = `/${studyId}/${sessionId}/training`;
         } else {
-          initialRedirectPath = `/text-visual/${numericId}`;
-        }
-
-        // Add Prolific parameters to redirect if present
-        if (hasProlificParams) {
-          const separator = initialRedirectPath.includes("?") ? "&" : "?";
-          if (prolificId)
-            initialRedirectPath += `${separator}PROLIFIC_PID=${prolificId}`;
-          if (studyId) initialRedirectPath += `&STUDY_ID=${studyId}`;
-          if (sessionId) initialRedirectPath += `&SESSION_ID=${sessionId}`;
+          initialRedirectPath = `/${studyId}/${sessionId}`;
         }
 
         router.push(initialRedirectPath);
@@ -126,6 +107,8 @@ function HomeContent() {
     studyId,
     sessionId,
     hasProlificParams,
+    scenarioId,
+    isStageCompleted,
   ]);
 
   return (

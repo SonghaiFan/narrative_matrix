@@ -1,0 +1,260 @@
+{
+  "text-visual": {
+    "name": "Text with Visualizations",
+    "description": "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+    "sessions": {
+      "1": {
+        "id": "text-visual-1",
+        "name": "Text with Visualizations 1",
+        "quizOrder": {
+          "preferredOrder": [
+            "ir_e_n_",
+            "ir_e_v_",
+            "ir_t_n_",
+            "ir_t_v_",
+            "ir_tm_n_",
+            "ir_tm_v_",
+            "pr_e_n_",
+            "pr_e_v_",
+            "pr_t_n_",
+            "pr_t_v_",
+            "pr_tm_n_",
+            "pr_tm_v_"
+          ],
+          "description": "Order: IR first, PR second. Category order: entity, topic, time. Visual order: non-visual then visual."
+        }
+      },
+      "2": {
+        "id": "text-visual-2",
+        "name": "Text with Visualizations 2",
+        "quizOrder": {
+          "preferredOrder": [
+            "ir_e_v_",
+            "ir_e_n_",
+            "ir_t_v_",
+            "ir_t_n_",
+            "ir_tm_v_",
+            "ir_tm_n_",
+            "pr_e_v_",
+            "pr_e_n_",
+            "pr_t_v_",
+            "pr_t_n_",
+            "pr_tm_v_",
+            "pr_tm_n_"
+          ],
+          "description": "Order: IR first, PR second. Category order: entity, topic, time. Visual order: visual then non-visual."
+        }
+      },
+      "3": {
+        "id": "text-visual-3",
+        "name": "Text with Visualizations 3",
+        "quizOrder": {
+          "preferredOrder": [
+            "ir_e_n_",
+            "ir_e_v_",
+            "ir_tm_n_",
+            "ir_tm_v_",
+            "ir_t_n_",
+            "ir_t_v_",
+            "pr_e_n_",
+            "pr_e_v_",
+            "pr_tm_n_",
+            "pr_tm_v_",
+            "pr_t_n_",
+            "pr_t_v_"
+          ],
+          "description": "Order: IR first, PR second. Category order: entity, time, topic. Visual order: non-visual then visual."
+        }
+      },
+      "4": {
+        "id": "text-visual-4",
+        "name": "Text with Visualizations 4",
+        "quizOrder": {
+          "preferredOrder": [
+            "ir_e_v_",
+            "ir_e_n_",
+            "ir_tm_v_",
+            "ir_tm_n_",
+            "ir_t_v_",
+            "ir_t_n_",
+            "pr_e_v_",
+            "pr_e_n_",
+            "pr_tm_v_",
+            "pr_tm_n_",
+            "pr_t_v_",
+            "pr_t_n_"
+          ],
+          "description": "Order: IR first, PR second. Category order: entity, time, topic. Visual order: visual then non-visual."
+        }
+      },
+      "5": {
+        "id": "text-visual-5",
+        "name": "Text with Visualizations 5",
+        "quizOrder": {
+          "preferredOrder": [
+            "ir_t_n_",
+            "ir_t_v_",
+            "ir_e_n_",
+            "ir_e_v_",
+            "ir_tm_n_",
+            "ir_tm_v_",
+            "pr_t_n_",
+            "pr_t_v_",
+            "pr_e_n_",
+            "pr_e_v_",
+            "pr_tm_n_",
+            "pr_tm_v_"
+          ],
+          "description": "Order: IR first, PR second. Category order: topic, entity, time. Visual order: non-visual then visual."
+        }
+      },
+      "6": {
+        "id": "text-visual-6",
+        "name": "Text with Visualizations 6",
+        "quizOrder": {
+          "preferredOrder": [
+            "ir_t_v_",
+            "ir_t_n_",
+            "ir_e_v_",
+            "ir_e_n_",
+            "ir_tm_v_",
+            "ir_tm_n_",
+            "pr_t_v_",
+            "pr_t_n_",
+            "pr_e_v_",
+            "pr_e_n_",
+            "pr_tm_v_",
+            "pr_tm_n_"
+          ],
+          "description": "Order: IR first, PR second. Category order: topic, entity, time. Visual order: visual then non-visual."
+        }
+      },
+      "7": {
+        "id": "text-visual-7",
+        "name": "Text with Visualizations 7",
+        "quizOrder": {
+          "preferredOrder": [
+            "ir_t_n_",
+            "ir_t_v_",
+            "ir_tm_n_",
+            "ir_tm_v_",
+            "ir_e_n_",
+            "ir_e_v_",
+            "pr_t_n_",
+            "pr_t_v_",
+            "pr_tm_n_",
+            "pr_tm_v_",
+            "pr_e_n_",
+            "pr_e_v_"
+          ],
+          "description": "Order: IR first, PR second. Category order: topic, time, entity. Visual order: non-visual then visual."
+        }
+      },
+      "8": {
+        "id": "text-visual-8",
+        "name": "Text with Visualizations 8",
+        "quizOrder": {
+          "preferredOrder": [
+            "ir_t_v_",
+            "ir_t_n_",
+            "ir_tm_v_",
+            "ir_tm_n_",
+            "ir_e_v_",
+            "ir_e_n_",
+            "pr_t_v_",
+            "pr_t_n_",
+            "pr_tm_v_",
+            "pr_tm_n_",
+            "pr_e_v_",
+            "pr_e_n_"
+          ],
+          "description": "Order: IR first, PR second. Category order: topic, time, entity. Visual order: visual then non-visual."
+        }
+      },
+      "9": {
+        "id": "text-visual-9",
+        "name": "Text with Visualizations 9",
+        "quizOrder": {
+          "preferredOrder": [
+            "ir_tm_n_",
+            "ir_tm_v_",
+            "ir_e_n_",
+            "ir_e_v_",
+            "ir_t_n_",
+            "ir_t_v_",
+            "pr_tm_n_",
+            "pr_tm_v_",
+            "pr_e_n_",
+            "pr_e_v_",
+            "pr_t_n_",
+            "pr_t_v_"
+          ],
+          "description": "Order: IR first, PR second. Category order: time, entity, topic. Visual order: non-visual then visual."
+        }
+      },
+      "10": {
+        "id": "text-visual-10",
+        "name": "Text with Visualizations 10",
+        "quizOrder": {
+          "preferredOrder": [
+            "ir_tm_v_",
+            "ir_tm_n_",
+            "ir_e_v_",
+            "ir_e_n_",
+            "ir_t_v_",
+            "ir_t_n_",
+            "pr_tm_v_",
+            "pr_tm_n_",
+            "pr_e_v_",
+            "pr_e_n_",
+            "pr_t_v_",
+            "pr_t_n_"
+          ],
+          "description": "Order: IR first, PR second. Category order: time, entity, topic. Visual order: visual then non-visual."
+        }
+      },
+      "11": {
+        "id": "text-visual-11",
+        "name": "Text with Visualizations 11",
+        "quizOrder": {
+          "preferredOrder": [
+            "ir_tm_n_",
+            "ir_tm_v_",
+            "ir_t_n_",
+            "ir_t_v_",
+            "ir_e_n_",
+            "ir_e_v_",
+            "pr_tm_n_",
+            "pr_tm_v_",
+            "pr_t_n_",
+            "pr_t_v_",
+            "pr_e_n_",
+            "pr_e_v_"
+          ],
+          "description": "Order: IR first, PR second. Category order: time, topic, entity. Visual order: non-visual then visual."
+        }
+      },
+      "12": {
+        "id": "text-visual-12",
+        "name": "Text with Visualizations 12",
+        "quizOrder": {
+          "preferredOrder": [
+            "ir_tm_v_",
+            "ir_tm_n_",
+            "ir_t_v_",
+            "ir_t_n_",
+            "ir_e_v_",
+            "ir_e_n_",
+            "pr_tm_v_",
+            "pr_tm_n_",
+            "pr_t_v_",
+            "pr_t_n_",
+            "pr_e_v_",
+            "pr_e_n_"
+          ],
+          "description": "Order: IR first, PR second. Category order: time, topic, entity. Visual order: visual then non-visual."
+        }
+      }
+    }
+  }
+}

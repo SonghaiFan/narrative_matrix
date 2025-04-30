@@ -18,6 +18,10 @@ interface CenterControlContextType {
   data: NarrativeMatrixData | null;
   setData: (data: NarrativeMatrixData) => void;
 
+  // Scenario state
+  scenario: ScenarioType | null;
+  setScenario: (scenario: ScenarioType | null) => void;
+
   // Focused event state
   focusedEventId: number | null;
   setfocusedEventId: (id: number | null) => void;
@@ -36,10 +40,6 @@ interface CenterControlContextType {
   // Selected topic state
   selectedTopic: string | null;
   setSelectedTopic: (topic: string | null) => void;
-
-  // Selected scenario state
-  selectedScenario: ScenarioType | null;
-  setSelectedScenario: (scenario: ScenarioType | null) => void;
 
   // Loading and error states
   isLoading: boolean;
@@ -76,9 +76,7 @@ export function CenterControlProvider({
   const [markedEventIds, setMarkedEventIds] = useState<number[]>([]);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
-  const [selectedScenario, setSelectedScenario] = useState<ScenarioType | null>(
-    null
-  );
+  const [scenario, setScenario] = useState<string | null>(null);
 
   // Loading and error states
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -137,6 +135,8 @@ export function CenterControlProvider({
     // Data state
     data,
     setData,
+    scenario,
+    setScenario,
 
     // Selection states
     focusedEventId,
@@ -150,8 +150,6 @@ export function CenterControlProvider({
     setSelectedEntityId,
     selectedTopic,
     setSelectedTopic,
-    selectedScenario,
-    setSelectedScenario,
 
     // Loading and error states
     isLoading,

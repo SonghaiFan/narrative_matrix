@@ -31,11 +31,12 @@ import { useCenterControl } from "@/contexts/center-control-context";
 import React from "react";
 import { TextInput } from "./quiz-types/TextInput";
 import { useTaskStore } from "@/store/task-store";
-import { loadDataFile } from "@/lib/data-storage";
 import { NarrativeEvent, DatasetMetadata } from "@/types/lite";
 import { saveQuizResponse } from "@/lib/firebase-operations";
 import { useAuth } from "@/contexts/auth-context";
-import { Loading } from "@/components/ui/loading";
+import { Loading } from "@/components/ui/loading-spring";
+import { useProgressStore } from "@/stores/progress-store";
+import { useTaskProgressStore } from "@/lib/task-progress";
 
 interface TaskPanelProps {
   events: NarrativeEvent[];
@@ -84,6 +85,10 @@ export function TaskPanel({
   const warningShownRef = useRef(false);
   const setCurrentTask = useTaskStore((state) => state.setCurrentTask);
   const [isLoadingQuiz, setIsLoadingQuiz] = useState(true);
+
+  // Replace localStorage with Zustand stores
+  const taskProgress = useTaskProgressStore();
+  const studyProgress = useProgressStore();
 
   const isDomainExpert = userRole === "domain";
 
@@ -218,74 +223,52 @@ export function TaskPanel({
             );
           }
         }
-        // If no quiz prop is provided, fall back to old behavior
+        // If no quiz prop is provided, fall back to API calls
         else if (is_training) {
-          // --- Training Mode (Load from train_quiz_data.json) ---
+          // --- Training Mode (Load from API) ---
           console.log("[TaskPanel Quiz] Mode: Training");
-          console.log(
-            "[TaskPanel Quiz] Attempting to load: train_quiz_data.json"
+          const response = await fetch(
+            `/api/data?study_id=${selectedScenario}&session_id=1&type=training`
           );
-          const trainingData = await loadDataFile<{ quiz: any[] }>(
-            "train_quiz_data.json"
-          );
-          // console.log("[TaskPanel Quiz] Loaded training data:", trainingData);
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const trainingData = await response.json();
           finalTasks = processQuizData(trainingData?.quiz);
+
           if (!finalTasks || finalTasks.length === 0) {
             console.warn(
-              "[TaskPanel Quiz] Training quiz file loaded but yielded no tasks."
+              "[TaskPanel Quiz] Training quiz data loaded but yielded no tasks."
             );
           }
         } else {
-          // --- Real Task Mode (Load from public/quiz_data.json first) ---
+          // --- Real Task Mode (Load from API) ---
           console.log("[TaskPanel Quiz] Mode: Real Task");
-          console.log(
-            "[TaskPanel Quiz] Attempting to load primary: public/quiz_data.json"
-          );
           try {
-            const publicQuizData = await loadDataFile<{
-              quiz: any[];
-              quiz_recall?: any[];
-            }>("quiz_data.json");
-            // console.log(
-            //   "[TaskPanel Quiz] Loaded primary quiz data:",
-            //   publicQuizData
-            // );
-            let combinedTasks = processQuizData(publicQuizData?.quiz);
-            if (
-              publicQuizData?.quiz_recall &&
-              Array.isArray(publicQuizData.quiz_recall)
-            ) {
-              const recallTasks = processQuizData(
-                publicQuizData.quiz_recall,
-                true
-              );
-              combinedTasks.unshift(...recallTasks);
-            }
-            // console.log(
-            //   "[TaskPanel Quiz] Combined tasks from public file (before sort):",
-            //   combinedTasks
-            // );
-            // Apply default sorting (or potentially a preference if needed)
-            finalTasks = sortTasks(
-              combinedTasks,
-              metadata?.quiz_order_preference || "default"
+            const response = await fetch(
+              `/api/data?study_id=${selectedScenario}&session_id=1&type=quiz`
             );
-            // console.log(
-            //   `[TaskPanel Quiz] Sorting preference applied: ${
-            //     metadata?.quiz_order_preference || "default"
-            //   }`
-            // );
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const quizData = await response.json();
+            finalTasks = processQuizData(quizData?.quiz);
+
             if (!finalTasks || finalTasks.length === 0) {
               console.warn(
-                "[TaskPanel Quiz] public/quiz_data.json loaded but yielded no tasks. Will attempt fallback generation."
+                "[TaskPanel Quiz] Quiz data loaded but yielded no tasks."
               );
             }
-          } catch (publicLoadError) {
-            console.error(
-              "[TaskPanel Quiz] Failed to load public/quiz_data.json. Will attempt fallback generation.",
-              publicLoadError
-            );
-            // Don't set finalTasks here, let the fallback handle it.
+          } catch (error) {
+            console.error("[TaskPanel Quiz] Error loading quiz data:", error);
+            loadingError =
+              error instanceof Error
+                ? error
+                : new Error("Failed to load quiz data");
           }
         }
 
@@ -362,13 +345,10 @@ export function TaskPanel({
         if (mounted) {
           setTasks(finalTasks);
         }
-      } catch (err) {
-        // Catch general errors during processing (outside specific file loads)
-        console.error(
-          "[TaskPanel Quiz] General error during task loading:",
-          err
-        );
-        loadingError = err instanceof Error ? err : new Error(String(err));
+      } catch (error) {
+        console.error("[TaskPanel Quiz] Error in loadTasks:", error);
+        loadingError =
+          error instanceof Error ? error : new Error("Failed to load tasks");
         if (mounted) {
           setTasks([]);
         }
@@ -379,9 +359,17 @@ export function TaskPanel({
           // setQuizError(loadingError);
         }
       }
+
+      return { tasks: finalTasks, error: loadingError };
     };
 
-    loadTasks();
+    const { tasks: loadedTasks, error } = await loadTasks();
+
+    if (error) {
+      console.error("Error loading tasks:", error.message);
+    } else {
+      setTasks(loadedTasks);
+    }
 
     return () => {
       mounted = false; // Cleanup function to prevent state updates
@@ -678,17 +666,7 @@ export function TaskPanel({
   };
 
   const processSubmission = (isSkipped = false, isQuestionTimeUp = false) => {
-    if (!currentTask) return;
-
-    // For training mode, check if the answer is correct before proceeding
-    if (is_training && !isSkipped && !isQuestionTimeUp) {
-      const isCorrect = checkAnswer(currentTask, userAnswer);
-      if (!isCorrect) {
-        // Show the incorrect answer modal with the correct answer for training
-        setShowIncorrectAnswerModal(true);
-        return;
-      }
-    }
+    if (!currentTask || !user?.id) return;
 
     setIsSubmitting(true);
 
@@ -697,7 +675,7 @@ export function TaskPanel({
     const taskIndex = updatedTasks.findIndex((t) => t.id === currentTask.id);
 
     if (taskIndex !== -1) {
-      // Mark the task as completed and store the user's answer with submission timestamp
+      // Mark the task as completed and store the user's answer
       updatedTasks[taskIndex] = {
         ...updatedTasks[taskIndex],
         completed: true,
@@ -711,51 +689,11 @@ export function TaskPanel({
 
       setTasks(updatedTasks);
 
-      // Save to Firebase if we have a userId
-      if (userId) {
-        try {
-          // Get the unique session ID from user object
-          const storedUser = localStorage.getItem("user");
-          let uniqueSessionId = "";
-
-          if (storedUser) {
-            try {
-              const parsedUser = JSON.parse(storedUser);
-              uniqueSessionId = parsedUser.sessionId || userId;
-            } catch (e) {
-              console.error("Error parsing stored user:", e);
-              uniqueSessionId = userId; // Fallback to userId if parsing fails
-            }
-          } else {
-            uniqueSessionId = userId; // Fallback to userId if no stored user
-          }
-
-          // Save quiz response with enhanced data
-          saveQuizResponse(
-            userId,
-            uniqueSessionId, // Using unique session ID
-            {
-              question: currentTask.question,
-              userAnswer: updatedTasks[taskIndex].userAnswer || "",
-              markedEvents: markedEventIds,
-              isSkipped,
-              isTimeUp: isQuestionTimeUp,
-              isTraining: is_training,
-              taskId: currentTask.id,
-              startTime: currentTask.startTimestamp || Date.now(),
-              endTime: Date.now(),
-            }
-          );
-        } catch (error) {
-          console.error("Failed to save task data to Firebase:", error);
-        }
-      }
-
-      // Update progress in localStorage if we have a userId and not in training mode
-      if (userId && !is_training) {
+      // Update progress in Zustand store
+      if (!is_training) {
         const completedCount = updatedTasks.filter((t) => t.completed).length;
 
-        updateTaskProgress(userId, {
+        taskProgress.updateTaskProgress(user.id, {
           totalTasks: tasks.length,
           completedTasks: completedCount,
           correctTasks: 0,
@@ -785,70 +723,17 @@ export function TaskPanel({
       const allCompleted = updatedTasks.every((task) => task.completed);
 
       if (allCompleted) {
-        if (is_training) {
-          // For training mode, set training completion in localStorage with scenario-specific key
-          const scenarioPath = window.location.pathname.split("/")[1];
-          localStorage.setItem(`hasCompletedTraining-${scenarioPath}`, "true");
-
-          // Instead of immediate redirect, show confirmation modal
-          // Determine the scenario ID from multiple sources in order of reliability:
-          // 1. User's default scenario from auth context
-          // 2. Selected scenario from center control context
-          // 3. Parse from current URL
-          let scenarioId = "";
-
-          // 1. First try to get it from user's default scenario (most reliable)
-          if (currentScenario) {
-            scenarioId = currentScenario.replace("text-visual-", "");
-            console.log(`Using user's default scenario: ${currentScenario}`);
-          }
-          // 2. Then try selected scenario from center control
-          else if (selectedScenario) {
-            scenarioId = selectedScenario.replace("text-visual-", "");
-            console.log(`Using selected scenario: ${selectedScenario}`);
-          }
-          // 3. Finally fall back to URL parsing
-          else {
-            const pathParts = window.location.pathname.split("/");
-            // The ID should be the third part in /text-visual/{id}/training
-            if (pathParts.length >= 3) {
-              scenarioId = pathParts[2];
-              console.log(`Extracted scenario ID from URL: ${scenarioId}`);
-            }
-          }
-
-          // Ensure we have a valid scenario ID
-          if (!scenarioId) {
-            console.warn(
-              "Could not determine scenario ID, using default scenario 1"
-            );
-            scenarioId = "1"; // Default to scenario 1 if all else fails
-          }
-
-          // Construct the path to the main scenario
-          const mainPath = `/text-visual/${scenarioId}`;
-          console.log(`Training complete, redirecting to: ${mainPath}`);
-
-          setPendingRedirectPath(mainPath);
+        if (isDomainExpert) {
+          // For domain experts, show completion modal
           setShowTrainingCompleteModal(true);
-        } else {
-          // For regular mode, navigate to completion page
-          setTimeout(() => {
-            navigateToCompletionPage();
-          }, 1000);
+        } else if (!is_training) {
+          // For normal users in main task, navigate to completion
+          navigateToCompletionPage();
         }
       } else {
-        // Otherwise, move to the next task after a short delay
+        // Move to next task after a short delay
         setTimeout(() => {
-          // Move to next task (which will also clear marked events)
-          if (currentTaskIndex < tasks.length - 1) {
-            setCurrentTaskIndex(currentTaskIndex + 1);
-            setShowAnswer(false);
-            setUserAnswer(tasks[currentTaskIndex + 1].userAnswer || "");
-            // Clear marked events
-            clearMarkedEvents();
-          }
-
+          handleNext();
           setUserAnswer("");
           setShowAnswer(false);
           setIsSubmitting(false);
@@ -891,14 +776,13 @@ export function TaskPanel({
 
   // Function to navigate to completion page
   const navigateToCompletionPage = () => {
-    if (!userId) return;
+    if (!user?.id) return;
 
-    // Get studyType from metadata or path
     const studyType =
       metadata?.studyType || getStudyTypeFromPath(window.location.pathname);
 
-    // Save final progress to localStorage
-    saveTaskProgress(userId, {
+    // Save final progress
+    taskProgress.saveTaskProgress(user.id, {
       totalTasks: tasks.length,
       completedTasks: tasks.filter((t) => t.completed).length,
       correctTasks: 0,
@@ -921,12 +805,10 @@ export function TaskPanel({
 
     // For normal users, mark as completed
     if (userRole === "normal") {
-      markTaskAsCompleted(userId);
+      taskProgress.markTaskAsCompleted(user.id);
     }
 
-    console.log("Redirecting to completion page...");
-
-    // Use router for navigation
+    // Navigate to completion page
     router.push(
       `/completion?total=${tasks.length}&type=${studyType}&time=${
         timeLeft ? timeLeft : 0
@@ -938,10 +820,18 @@ export function TaskPanel({
   const handleConfirmTrainingComplete = () => {
     setShowTrainingCompleteModal(false);
 
-    // Mark training as completed in localStorage for both completion and skipping
     if (is_training) {
-      const scenarioPath = window.location.pathname.split("/")[1];
-      localStorage.setItem(`hasCompletedTraining-${scenarioPath}`, "true");
+      // Get study and session from URL
+      const [study, id] = window.location.pathname.split("/").filter(Boolean);
+
+      // Mark training stage as complete
+      studyProgress.markStageCompleted(study, id, {
+        type: "training",
+        round: parseInt(
+          new URLSearchParams(window.location.search).get("round") || "1",
+          10
+        ),
+      });
     }
 
     // Redirect to the main task page

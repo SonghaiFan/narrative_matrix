@@ -4,47 +4,47 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { IntroductionPage } from "./introduction-page";
 import { ScenarioType } from "@/types/scenario";
+import {
+  isStageComplete,
+  markCurrentStageComplete,
+  getNextRoute,
+} from "@/lib/navigation";
 
 interface IntroductionFactoryProps {
+  studyId: string;
+  sessionId: string;
   scenarioType: ScenarioType;
-  redirectPath: string;
 }
 
 /**
  * A factory component that creates introduction pages for different scenarios
- * with consistent local storage handling and redirection logic
+ * with consistent progress tracking and navigation
  */
 export function IntroductionFactory({
+  studyId,
+  sessionId,
   scenarioType,
-  redirectPath,
 }: IntroductionFactoryProps) {
   const router = useRouter();
-  // Create scenario-specific storage key
-  const storageKey = `hasCompletedIntro-${scenarioType}`;
 
   // Check if user has already completed introduction for this scenario
   useEffect(() => {
-    const hasCompletedIntro = localStorage.getItem(storageKey) === "true";
+    const hasCompletedIntro = isStageComplete(studyId, sessionId, {
+      type: "intro",
+    });
     if (hasCompletedIntro) {
-      // Check if training is completed
-      const hasCompletedTraining =
-        localStorage.getItem(`hasCompletedTraining-${scenarioType}`) === "true";
-
-      if (hasCompletedTraining) {
-        // If both intro and training completed, go to main scenario
-        router.push(redirectPath);
-      } else {
-        // If only intro completed, go to training (redirectPath already includes /training)
-        router.push(redirectPath);
-      }
+      // Get the next route based on current progress
+      const nextRoute = getNextRoute(studyId, sessionId);
+      router.push(nextRoute);
     }
-  }, [router, storageKey, redirectPath, scenarioType]);
+  }, [router, studyId, sessionId]);
 
   const handleComplete = () => {
-    // Store completion in localStorage with scenario-specific key
-    localStorage.setItem(storageKey, "true");
-    // After intro completion, redirect (redirectPath already includes /training)
-    router.push(redirectPath);
+    // Mark intro as completed in the progress store
+    markCurrentStageComplete(studyId, sessionId, { type: "intro" });
+    // Get the next route (should be training)
+    const nextRoute = getNextRoute(studyId, sessionId);
+    router.push(nextRoute);
   };
 
   return (

@@ -1,178 +1,123 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { ScenarioType } from "@/types/scenario";
-import { useCenterControl } from "@/contexts/center-control-context";
-import { getAvailableScenarios } from "@/lib/client/scenario-metadata";
-import { Loading } from "@/components/ui/loading";
+import {
+  getAvailableScenarios,
+  getAvailableScenariosSync,
+} from "@/lib/client/scenario-metadata";
+import { useProlificStore } from "@/store/prolific-store";
+import { getLocalStorage } from "@/utils/local-storage";
+import { ScenarioType, parseScenarioId } from "@/types/scenario";
+import { ScenarioMetadata } from "@/types/lite";
 
 export function ScenarioSelector() {
-  const { user, setUserScenario, isLoading: isAuthLoading } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
-  const { selectedScenario: centerScenario, setSelectedScenario } =
-    useCenterControl();
-  const [isStartingScenario, setIsStartingScenario] = useState(false);
-  const { setIsLoading: setDataLoading } = useCenterControl();
+  const { setProlificParams } = useProlificStore();
 
-  // Get default scenario from user if available
-  const getUserDefaultScenario = (): ScenarioType | undefined => {
-    if (user && "defaultScenario" in user) {
-      return user.defaultScenario;
+  // Get initial scenarios from sync function to avoid flash of no content
+  const [availableScenarios, setAvailableScenarios] = useState<
+    ScenarioMetadata[]
+  >(getAvailableScenariosSync());
+
+  // Fetch scenarios asynchronously
+  useEffect(() => {
+    async function loadScenarios() {
+      const scenarios = await getAvailableScenarios();
+      setAvailableScenarios(scenarios);
     }
-    return undefined;
-  };
+    loadScenarios();
+  }, []);
 
-  // Get available scenarios from the hardcoded map
-  const availableScenarios = getAvailableScenarios();
-
-  // Selected scenario is the user's default or the first available one
-  const [selectedScenario, setLocalSelectedScenario] = useState<ScenarioType>(
-    getUserDefaultScenario() || "text-visual-1"
+  const [selectedScenario, setSelectedScenario] = useState<ScenarioType | null>(
+    (availableScenarios[0]?.id as ScenarioType) || null
   );
 
-  // Sync local state with context upon initial load or context change
+  // Update selected scenario when available scenarios change
   useEffect(() => {
-    if (centerScenario) {
-      setLocalSelectedScenario(centerScenario);
-    } else if (availableScenarios.length > 0) {
-      setLocalSelectedScenario("text-visual-1");
+    if (availableScenarios.length > 0 && !selectedScenario) {
+      setSelectedScenario(availableScenarios[0].id as ScenarioType);
     }
-  }, [centerScenario, availableScenarios]);
-
-  // Update selection in both local state and contexts
-  const handleScenarioSelect = (scenarioId: ScenarioType) => {
-    setLocalSelectedScenario(scenarioId);
-    setSelectedScenario(scenarioId);
-  };
+  }, [availableScenarios, selectedScenario]);
 
   // Start the selected scenario
   const startScenario = () => {
     if (!selectedScenario) return;
 
-    setIsStartingScenario(true);
-    setUserScenario(selectedScenario);
-    setSelectedScenario(selectedScenario);
+    try {
+      // Use the parseScenarioId utility to safely split the scenario ID
+      const { studyId, sessionId } = parseScenarioId(selectedScenario);
 
-    // --- Check Completion Status ---
-    const introKey = `hasCompletedIntro-${selectedScenario}`;
-    const trainingKey = `hasCompletedTraining-${selectedScenario}`;
-    let hasCompletedIntro = false;
-    let hasCompletedTraining = false;
+      // Update Prolific store with the scenario ID
+      setProlificParams({
+        prolificId: user?.id || null,
+        studyId,
+        sessionId: sessionId.toString(),
+      });
 
-    // Safely check localStorage
-    if (typeof window !== "undefined") {
-      hasCompletedIntro = localStorage.getItem(introKey) === "true";
-      hasCompletedTraining = localStorage.getItem(trainingKey) === "true";
+      // --- Check Completion Status ---
+      const introKey = `hasCompletedIntro-${selectedScenario}`;
+      const trainingKey = `hasCompletedTraining-${selectedScenario}`;
+      const hasCompletedIntro = getLocalStorage(introKey) === "true";
+      const hasCompletedTraining = getLocalStorage(trainingKey) === "true";
+
+      // --- Determine Target Route ---
+      let targetRoute = `/${studyId}/${sessionId}`;
+
+      // If intro not completed, go to intro
+      if (!hasCompletedIntro) {
+        targetRoute = `${targetRoute}/intro`;
+      }
+      // If intro completed but training not completed, go to training
+      else if (!hasCompletedTraining) {
+        targetRoute = `${targetRoute}/training`;
+      }
+
+      // Navigate to the appropriate route
+      router.push(targetRoute);
+    } catch (error) {
+      console.error("Error starting scenario:", error);
     }
-
-    // --- Determine Target Route ---
-    let targetRoute = "";
-    const numericId = selectedScenario.replace("text-visual-", "");
-
-    if (!hasCompletedIntro) {
-      targetRoute = `/text-visual/${numericId}/introduction`;
-    } else if (!hasCompletedTraining) {
-      targetRoute = `/text-visual/${numericId}/training`;
-    } else {
-      targetRoute = `/text-visual/${numericId}`;
-    }
-
-    router.push(targetRoute);
   };
 
-  if (isAuthLoading) {
-    return (
-      <div className="p-4 bg-gray-50 rounded-lg text-center">
-        <Loading text="Loading available scenarios..." />
-      </div>
-    );
-  }
-
-  if (availableScenarios.length === 0) {
-    return (
-      <div className="p-4 bg-gray-50 rounded-lg text-center">
-        <p className="text-red-500">Could not load scenarios.</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
-      <div className="p-4 border-b border-gray-100">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-lg font-bold text-gray-900 mb-1">
-              Quiz Ordering Variations
-            </h2>
-            <p className="text-xs text-gray-500">
-              Select a variation to determine the order of quiz questions
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="p-4">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {availableScenarios.map((scenario) => (
-            <div
-              key={scenario.id}
-              onClick={() => handleScenarioSelect(scenario.id as ScenarioType)}
-              className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                selectedScenario === scenario.id
-                  ? "border-blue-500 bg-blue-50"
-                  : "border-gray-200 hover:bg-gray-50"
-              }`}
-            >
-              <div className="flex flex-col h-full">
-                <div className="font-medium text-sm text-gray-900">
-                  {scenario.name}
-                </div>
-                <div className="text-xs text-gray-500 mt-1">
-                  Quiz order variation #
-                  {scenario.id.replace("text-visual-", "")}
-                </div>
-              </div>
-            </div>
-          ))}
+    <div className="max-w-2xl mx-auto">
+      <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
+        <div className="p-4 border-b border-gray-100">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Select Scenario
+          </h2>
+          <p className="text-sm text-gray-500">
+            Choose a scenario to begin your session
+          </p>
         </div>
 
-        <div className="mt-6">
-          <button
-            type="button"
-            className="w-full flex justify-center items-center px-4 py-3 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onClick={startScenario}
-            disabled={isStartingScenario}
+        <div className="p-4">
+          <select
+            value={selectedScenario || ""}
+            onChange={(e) =>
+              setSelectedScenario(e.target.value as ScenarioType)
+            }
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            {isStartingScenario ? (
-              <>
-                <svg
-                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Starting...
-              </>
-            ) : (
-              "Start Selected Scenario"
-            )}
-          </button>
+            {availableScenarios.map((scenario) => (
+              <option key={scenario.id} value={scenario.id}>
+                {scenario.name}
+              </option>
+            ))}
+          </select>
+
+          <div className="mt-4">
+            <button
+              onClick={startScenario}
+              disabled={!selectedScenario}
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Start Scenario
+            </button>
+          </div>
         </div>
       </div>
     </div>

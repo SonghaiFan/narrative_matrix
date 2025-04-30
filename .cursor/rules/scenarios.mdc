@@ -1,0 +1,14 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+in this app, we have STUDY_ID, which can be string, "text-visual", etc...
+
+and we have SESSION_ID, which is 1,2,3,4
+
+they combine togerther we have scenario_id, for example "text-visual-1"
+
+they either extracted form url, or select from selctor when user is domain
+
+when scenario_id is "text-visual-1", we goes to /text-visual/1 after login

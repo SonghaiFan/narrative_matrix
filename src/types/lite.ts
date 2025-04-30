@@ -61,9 +61,3 @@ export interface DatasetMetadata {
   studyType?: string; // e.g., "text-visual"
   quiz_order_preference?: string; // e.g., "default"
 }
-
-export interface NarrativeMatrixData {
-  metadata: DatasetMetadata;
-  events: NarrativeEvent[];
-  quiz?: Quiz;
-}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { getTaskProgress } from "@/lib/task-progress";
@@ -8,7 +8,7 @@ import { CheckCircle, Copy, ArrowLeft, Send } from "lucide-react";
 import { saveFeedback } from "@/lib/firebase-operations";
 import Image from "next/image";
 
-function CompletionContent() {
+export default function CompletionPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useAuth();
@@ -18,7 +18,6 @@ function CompletionContent() {
     sessionTime: 0,
   });
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const [codeCopied, setCodeCopied] = useState(false);
   const [currentStep, setCurrentStep] = useState<"main" | "feedback">("main");
   const [feedback, setFeedback] = useState({
@@ -62,7 +61,6 @@ function CompletionContent() {
       const totalTasks = parseInt(totalParam, 10);
       if (isNaN(totalTasks) || totalTasks <= 0) {
         setError("Invalid task count");
-        setLoading(false);
         return;
       }
 
@@ -71,7 +69,6 @@ function CompletionContent() {
         studyType: "text-visual",
         sessionTime,
       });
-      setLoading(false);
     } else if (user) {
       const progress = getTaskProgress(user.id);
       if (progress) {
@@ -80,14 +77,11 @@ function CompletionContent() {
           studyType: "text-visual",
           sessionTime: progress.totalSessionTime || 0,
         });
-        setLoading(false);
       } else {
         setError("No completion data found");
-        setLoading(false);
       }
     } else {
       setError("Missing required parameters");
-      setLoading(false);
     }
   }, [searchParams, user, router]);
 
@@ -292,17 +286,6 @@ function CompletionContent() {
       {error && <p className="text-xs text-red-500">Please provide a rating</p>}
     </div>
   );
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-sm text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (error) {
     return (
@@ -647,23 +630,5 @@ function CompletionContent() {
         </div>
       </div>
     </div>
-  );
-}
-
-// Loading fallback component
-function LoadingFallback() {
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="w-12 h-12 border-3 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-    </div>
-  );
-}
-
-// Main page component that wraps the content in Suspense
-export default function CompletionRoute() {
-  return (
-    <Suspense fallback={<LoadingFallback />}>
-      <CompletionContent />
-    </Suspense>
   );
 }

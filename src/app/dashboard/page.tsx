@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppHeader } from "@/components/ui/app-header";
-import { ScenarioSelector as DynamicScenarioSelector } from "@/components/features/dashboard/scenario-selector";
+import { ScenarioSelector } from "@/components/features/dashboard/scenario-selector";
 import { UserDataViewer } from "@/components/features/dashboard/local-storage-viewer";
 import { useAuth } from "@/contexts/auth-context";
-import { useScenarioData } from "@/contexts/use-scenario-data";
-import { Loading } from "@/components/ui/loading";
+import { Loading } from "@/components/ui/loading-spring";
 
 export interface ScenarioCardProps {
   title: string;
@@ -20,7 +19,8 @@ export interface ScenarioCardProps {
 export default function Dashboard() {
   const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
-  const { data, isLoading: dataLoading, error } = useScenarioData(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Protect the dashboard page
   useEffect(() => {
@@ -30,8 +30,8 @@ export default function Dashboard() {
     }
   }, [user, authLoading, router]);
 
-  // Show loading state while checking authentication or loading data
-  if (authLoading || dataLoading) {
+  // Show loading state while checking authentication
+  if (authLoading || isLoading) {
     return <Loading fullScreen text="Loading..." />;
   }
 
@@ -66,7 +66,7 @@ export default function Dashboard() {
 
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="max-w-2xl mx-auto mb-8">
-          <DynamicScenarioSelector />
+          <ScenarioSelector />
         </div>
 
         <div className="mt-8">

@@ -11,7 +11,7 @@ import { useTaskStore } from "@/store/task-store";
 import { QuizVisual, Quiz } from "@/components/features/task/quiz-types";
 import { NarrativeEvent, DatasetMetadata } from "@/types/lite";
 import { Suspense } from "react";
-import { Loading } from "@/components/ui/loading";
+import { Loading } from "@/components/ui/loading-spring";
 
 interface VisualizationContentProps {
   events: NarrativeEvent[];

@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { TooltipProvider } from "@/contexts/tooltip-context";
 import { AppHeader } from "@/components/ui/app-header";
-import { Loading } from "@/components/ui/loading";
+import { Loading } from "@/components/ui/loading-spring";
 
 interface ScenarioLayoutProps {
   children: ReactNode;

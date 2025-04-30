@@ -378,14 +378,15 @@ const YouTubeVideo = ({ url }: { url: string }) => {
 
 interface IntroductionPageProps {
   onComplete: () => void;
-  scenarioType?: ScenarioType;
+  scenarioType: ScenarioType;
 }
 
 export function IntroductionPage({
   onComplete,
-  scenarioType = "text-visual-1",
+  scenarioType,
 }: IntroductionPageProps) {
   const [currentStep, setCurrentStep] = useState(0);
+  const [hasWatchedVideo, setHasWatchedVideo] = useState(false);
 
   const handleNext = () => {
     if (currentStep < introductionSteps.length - 1) {
@@ -395,56 +396,79 @@ export function IntroductionPage({
     }
   };
 
+  const handleBack = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
   const currentStepData = introductionSteps[currentStep];
+  const isLastStep = currentStep === introductionSteps.length - 1;
+  const showVideo = Boolean(currentStepData.videoUrl);
+  const showImage = Boolean(currentStepData.image);
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-black/5">
-      <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full mx-auto">
-        <div className="text-sm font-medium text-blue-600 mb-2">
-          Step {currentStep + 1} of {introductionSteps.length}
+    <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+      {/* Progress bar */}
+      <div className="w-full bg-gray-100 h-2">
+        <div
+          className="bg-blue-500 h-2 transition-all duration-300"
+          style={{
+            width: `${((currentStep + 1) / introductionSteps.length) * 100}%`,
+          }}
+        />
+      </div>
+
+      <div className="p-8">
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            {currentStepData.title}
+          </h2>
+          <div className="prose max-w-none">{currentStepData.content}</div>
         </div>
 
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-          {currentStepData.title}
-        </h2>
-
-        {/* Render image if exists */}
-        {currentStepData.image && (
-          <div className="relative w-full h-80 mb-6 rounded-lg overflow-hidden border border-gray-100">
-            <Image
-              src={currentStepData.image}
-              alt={currentStepData.title}
-              fill
-              className="object-contain"
-            />
-          </div>
-        )}
-
-        <div className="text-gray-600 text-base prose prose-sm max-w-none">
-          {currentStepData.content}
-        </div>
-
-        {/* Render YouTube video if URL exists */}
-        {currentStepData.videoUrl && (
-          <YouTubeVideo url={currentStepData.videoUrl} />
-        )}
-
-        <div className="flex justify-between items-center mt-8">
-          <div className="flex space-x-1.5">
-            {introductionSteps.map((_, index: number) => (
-              <div
-                key={index}
-                className={`w-2.5 h-2.5 rounded-full ${
-                  index === currentStep ? "bg-blue-500" : "bg-gray-200"
-                }`}
+        {showImage && currentStepData.image && (
+          <div className="mb-8 relative">
+            <div className="relative h-[400px] w-full">
+              <Image
+                src={currentStepData.image}
+                alt={currentStepData.title}
+                fill
+                className="object-contain"
               />
-            ))}
+            </div>
           </div>
+        )}
+
+        {showVideo && currentStepData.videoUrl && (
+          <div className="mb-8">
+            <YouTubeVideo url={currentStepData.videoUrl} />
+          </div>
+        )}
+
+        <div className="flex justify-between items-center">
+          <button
+            onClick={handleBack}
+            className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+              currentStep === 0
+                ? "text-gray-400 cursor-not-allowed"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
+            disabled={currentStep === 0}
+          >
+            Back
+          </button>
+
           <button
             onClick={handleNext}
-            className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            className={`px-6 py-2 rounded-lg font-medium ${
+              isLastStep
+                ? "bg-green-500 text-white hover:bg-green-600"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+            } transition-colors`}
+            disabled={showVideo && !hasWatchedVideo}
           >
-            {currentStep === introductionSteps.length - 1 ? "Begin" : "Next"}
+            {isLastStep ? "Complete Introduction" : "Next"}
           </button>
         </div>
       </div>

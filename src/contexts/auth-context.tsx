@@ -1,63 +1,51 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { ScenarioType } from "@/types/scenario";
 import {
-  createUser,
-  updateUserLastActive,
-  endSession,
-  createSession,
-} from "@/lib/firebase-operations";
+  getLocalStorage,
+  setLocalStorage,
+  removeLocalStorage,
+} from "@/utils/local-storage";
 
-interface BaseUser {
+interface User {
   id: string;
   username: string;
+  role: "domain" | "normal";
+  studyId?: string;
   sessionId?: string;
 }
 
-interface DomainUser extends BaseUser {
-  role: "domain";
-}
+// List of allowed domain usernames
+const DOMAIN_USERS = [
+  "domain",
+  "admin",
+  "researcher",
+  "experimenter",
+  "supervisor",
+];
 
-interface NormalUser extends BaseUser {
-  role: "normal";
-  defaultScenario: ScenarioType;
-}
-
-type User = DomainUser | NormalUser;
+// Predefined study participants
+const STUDY_PARTICIPANTS: Record<
+  string,
+  { studyId: string; sessionId: string }
+> = {
+  "participant-1": { studyId: "text-visual", sessionId: "1" },
+  "participant-2": { studyId: "text-visual", sessionId: "2" },
+  "participant-3": { studyId: "text-visual", sessionId: "3" },
+  "participant-4": { studyId: "text-visual", sessionId: "4" },
+};
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
-  login: (username: string, sessionId?: string) => Promise<void>;
+  login: (username: string) => Promise<void>;
   logout: () => void;
-  setUserScenario: (scenarioType: ScenarioType) => void;
-  currentScenario: ScenarioType | null;
+  isDomainUser: (username: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// Helper functions for localStorage
-const getLocalStorage = (key: string): string | null => {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem(key);
-  }
-  return null;
-};
-
-const setLocalStorage = (key: string, value: string): void => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(key, value);
-  }
-};
-
-const removeLocalStorage = (key: string): void => {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem(key);
-  }
-};
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authState, setAuthState] = useState<{
@@ -72,16 +60,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     error: null,
   });
 
-  // Add current scenario state derived from user's default scenario
-  const currentScenario: ScenarioType | null =
-    authState.user && "defaultScenario" in authState.user
-      ? authState.user.defaultScenario
-      : null;
-
   // Check for existing session on mount
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
     const storedUser = getLocalStorage("user");
     if (storedUser) {
       try {
@@ -107,66 +87,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const login = async (username: string, sessionId?: string) => {
+  // Helper function to check if a username is a domain user
+  const isDomainUser = (username: string): boolean => {
+    return DOMAIN_USERS.includes(username.toLowerCase());
+  };
+
+  const login = async (username: string) => {
     setAuthState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      // Check for domain user
-      if (username === "domain") {
-        const domainUser: DomainUser = {
-          id: "1",
-          username: "domain",
-          role: "domain",
-          sessionId,
+      let user: User;
+
+      // Check if it's a predefined participant
+      const participantInfo = STUDY_PARTICIPANTS[username];
+      if (participantInfo) {
+        user = {
+          id: username,
+          username,
+          role: "normal",
+          studyId: participantInfo.studyId,
+          sessionId: participantInfo.sessionId,
         };
-        setLocalStorage("user", JSON.stringify(domainUser));
-        setAuthState({
-          user: domainUser,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-        });
-        return;
+      } else if (isDomainUser(username)) {
+        // Domain user
+        user = {
+          id: username.toLowerCase(),
+          username: username.toLowerCase(),
+          role: "domain",
+        };
+      } else {
+        throw new Error(
+          "Invalid username. Please use a valid domain username or participant ID."
+        );
       }
 
-      // Determine scenario based on sessionId (which might be a scenario number)
-      let scenarioId: ScenarioType = "text-visual-1"; // Default scenario
-      let scenarioNumber = "1";
-
-      if (sessionId && sessionId.match(/^\d+$/)) {
-        scenarioNumber = sessionId;
-        scenarioId = `text-visual-${sessionId}` as ScenarioType;
-      }
-
-      // Save user session to Firebase and get a unique session ID
-      // Note: the sessionId parameter might actually be a scenario number from URL
-      let uniqueSessionId: string | null = null;
-      try {
-        const { sessionId } = await createSession(username, scenarioId, {
-          isTraining: false,
-          includeDeviceInfo: true,
-        });
-        uniqueSessionId = sessionId;
-        console.log("Created unique session ID:", uniqueSessionId);
-      } catch (error) {
-        console.error("Failed to create unique session ID:", error);
-      }
-
-      // Create normal user in Firestore
-      await createUser(username, uniqueSessionId || username, scenarioId);
-
-      // All other users are normal users
-      const normalUser: NormalUser = {
-        id: username,
-        username,
-        role: "normal",
-        defaultScenario: scenarioId,
-        sessionId: uniqueSessionId || undefined,
-      };
-
-      setLocalStorage("user", JSON.stringify(normalUser));
+      setLocalStorage("user", JSON.stringify(user));
       setAuthState({
-        user: normalUser,
+        user,
         isAuthenticated: true,
         isLoading: false,
         error: null,
@@ -182,29 +139,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const setUserScenario = (scenarioType: ScenarioType) => {
-    if (authState.user && authState.user.role === "normal") {
-      const updatedUser: NormalUser = {
-        ...authState.user,
-        defaultScenario: scenarioType,
-      };
-
-      setAuthState({
-        ...authState,
-        user: updatedUser,
-      });
-
-      setLocalStorage("user", JSON.stringify(updatedUser));
-    }
-  };
-
   const logout = () => {
-    const user = authState.user;
-    if (user && user.role === "normal") {
-      // End session in Firebase
-      endSession(user.id).catch(console.error);
-    }
-
     removeLocalStorage("user");
     setAuthState({
       user: null,
@@ -214,24 +149,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  // Update last active timestamp periodically
-  useEffect(() => {
-    const user = authState.user;
-    if (user && user.role === "normal") {
-      const interval = setInterval(() => {
-        updateUserLastActive(user.id).catch(console.error);
-      }, 300000); // Every 5 minutes
-
-      return () => clearInterval(interval);
-    }
-  }, [authState.user]);
-
   const value = {
     ...authState,
     login,
     logout,
-    setUserScenario,
-    currentScenario,
+    isDomainUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
