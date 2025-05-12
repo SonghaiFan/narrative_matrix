@@ -32,6 +32,7 @@ interface BaseQuizItem {
   submitTimestamp?: number;
   userAnswer?: string;
   userEventReference?: number | number[] | null;
+  isTimeExpired?: boolean;
 }
 
 export interface MultipleSelectQuiz extends BaseQuizItem {

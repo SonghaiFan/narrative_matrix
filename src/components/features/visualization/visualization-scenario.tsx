@@ -6,12 +6,13 @@ import { TopicDisplay } from "@/components/features/narrative/topic/topic-displa
 import { PureTextDisplay } from "@/components/features/narrative/pure-text/pure-text-display";
 import { TaskPanel } from "@/components/features/task/task-panel";
 import { ResizableTwoColRow } from "@/components/ui/resizable-two-col-row";
-import { ScenarioPageFactory } from "@/components/features/dashboard/scenario-page-factory";
+import { ScenarioPageFactory } from "@/components/features/visualization/scenario-page-factory";
 import { useTaskStore } from "@/store/task-store";
 import { QuizVisual, Quiz } from "@/components/features/task/quiz-types";
 import { NarrativeEvent, DatasetMetadata } from "@/types/lite";
-import { Suspense } from "react";
-import { Loading } from "@/components/ui/loading";
+import { Suspense, useEffect } from "react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useNavigationStore } from "@/store/navigation-store";
 
 interface VisualizationContentProps {
   events: NarrativeEvent[];
@@ -76,6 +77,14 @@ export function VisualizationScenario({
 }: VisualizationScenarioProps) {
   const currentTask = useTaskStore((state) => state.currentTask);
   const visual = currentTask?.visual || null;
+  const { setCurrentScenario } = useNavigationStore();
+
+  // Set the current scenario in the navigation store
+  useEffect(() => {
+    if (metadata?.studyType) {
+      setCurrentScenario(metadata.studyType as any);
+    }
+  }, [metadata, setCurrentScenario]);
 
   return (
     <ScenarioPageFactory
@@ -94,13 +103,15 @@ export function VisualizationScenario({
         quiz: factoryQuiz,
       }) => {
         if (!factoryMetadata || !factoryEvents) {
-          return <Loading text="Loading data for content..." />;
+          return <LoadingSpinner text="Loading data for content..." />;
         }
 
         return (
           <div className="w-full h-full relative grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
             <div className="md:col-span-2 bg-white rounded-lg shadow-sm overflow-hidden">
-              <Suspense fallback={<Loading text="Loading visualization..." />}>
+              <Suspense
+                fallback={<LoadingSpinner text="Loading visualization..." />}
+              >
                 <VisualizationContent
                   events={factoryEvents}
                   metadata={factoryMetadata}

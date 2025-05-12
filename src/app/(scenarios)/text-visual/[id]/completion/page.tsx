@@ -1,17 +1,23 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, useParams } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { getTaskProgress } from "@/lib/task-progress";
 import { CheckCircle, Copy, ArrowLeft, Send } from "lucide-react";
 import { saveFeedback } from "@/lib/firebase-operations";
 import Image from "next/image";
+import { useNavigationStore } from "@/store/navigation-store";
+import { ScenarioType } from "@/types/scenario";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 function CompletionContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const params = useParams<{ id: string }>();
   const { user } = useAuth();
+  const { setCurrentScenario, completeCurrentStage } = useNavigationStore();
+
   const [pageData, setPageData] = useState({
     totalTasks: 0,
     studyType: "text-visual",
@@ -49,10 +55,17 @@ function CompletionContent() {
   const completionCode = `C5QC5X93`;
 
   useEffect(() => {
-    if (!user) {
-      router.push("/");
-      return;
+    // Set current scenario from URL parameter
+    if (params && params.id) {
+      const scenarioId = `text-visual-${params.id}` as ScenarioType;
+      setCurrentScenario(scenarioId);
+
+      // Mark this stage as complete in the navigation store
+      completeCurrentStage();
     }
+
+    // In simplified mode, we don't need to redirect if no user
+    // Instead, just use default or parameter data
 
     const totalParam = searchParams.get("total");
     const sessionTimeParam = searchParams.get("time");
@@ -73,6 +86,7 @@ function CompletionContent() {
       });
       setLoading(false);
     } else if (user) {
+      // If user exists, try to get progress
       const progress = getTaskProgress(user.id);
       if (progress) {
         setPageData({
@@ -82,14 +96,31 @@ function CompletionContent() {
         });
         setLoading(false);
       } else {
-        setError("No completion data found");
+        // Use defaults if no progress found
+        setPageData({
+          totalTasks: 10, // Default task count
+          studyType: "text-visual",
+          sessionTime: 0,
+        });
         setLoading(false);
       }
     } else {
-      setError("Missing required parameters");
+      // No user but also no error - just use defaults
+      setPageData({
+        totalTasks: 10, // Default task count
+        studyType: "text-visual",
+        sessionTime: 0,
+      });
       setLoading(false);
     }
-  }, [searchParams, user, router]);
+  }, [
+    searchParams,
+    user,
+    router,
+    params,
+    setCurrentScenario,
+    completeCurrentStage,
+  ]);
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(completionCode);
@@ -189,42 +220,16 @@ function CompletionContent() {
 
     setIsSubmitting(true);
     try {
-      // Get user ID from localStorage
-      console.log("Getting user data from localStorage...");
-      const storedUser = localStorage.getItem("user");
-      console.log("Stored user data:", storedUser);
-
-      const userData = storedUser ? JSON.parse(storedUser) : null;
-      console.log("Parsed user data:", userData);
-
-      const userId = userData?.id || user?.id;
-      console.log("Using user ID:", userId);
-
-      if (!userId) {
-        console.log("No user ID found, throwing error");
-        throw new Error("No user ID found");
-      }
-
-      // Save feedback to Firebase
-      console.log("Saving feedback to Firebase...");
-      await saveFeedback(userId, feedback);
-      console.log("Feedback saved successfully to Firebase");
-
-      // Save survey data to local storage
-      console.log("Saving survey data to localStorage...");
-      const surveyData = {
-        userId,
-        feedback,
-        timestamp: new Date().toISOString(),
-      };
-      console.log("Survey data to save:", surveyData);
-
-      localStorage.setItem(
-        `survey_results_${userId}`,
-        JSON.stringify(surveyData)
+      // In simplified mode, we don't actually need to save to Firebase or localStorage
+      console.log(
+        "SIMPLIFIED MODE: No actual data saving, just logging feedback"
       );
-      console.log("Survey data saved to localStorage");
+      console.log("Feedback data:", feedback);
 
+      // Just simulate a short delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Mark completion
       console.log("Setting isComplete to true...");
       setIsComplete(true);
       console.log("isComplete set to true");
@@ -296,10 +301,7 @@ function CompletionContent() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-sm text-gray-600">Loading...</p>
-        </div>
+        <LoadingSpinner size="md" text="Loading..." />
       </div>
     );
   }
@@ -650,19 +652,10 @@ function CompletionContent() {
   );
 }
 
-// Loading fallback component
-function LoadingFallback() {
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="w-12 h-12 border-3 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-    </div>
-  );
-}
-
 // Main page component that wraps the content in Suspense
 export default function CompletionRoute() {
   return (
-    <Suspense fallback={<LoadingFallback />}>
+    <Suspense fallback={<LoadingSpinner size="md" text="Loading..." />}>
       <CompletionContent />
     </Suspense>
   );

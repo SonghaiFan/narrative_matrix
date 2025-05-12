@@ -11,7 +11,7 @@ import { useAuth } from "@/contexts/auth-context";
  */
 export function useScenarioData(isTraining = false) {
   const { selectedScenario } = useCenterControl();
-  const { currentScenario, isLoading: authLoading } = useAuth();
+  const { scenarioId } = useAuth();
   const [data, setData] = useState<NarrativeMatrixData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +42,7 @@ export function useScenarioData(isTraining = false) {
   const fetchData = useCallback(async () => {
     console.log("[useScenarioData] fetchData called with:", {
       selectedScenario,
-      currentScenario,
+      scenarioId,
       forcedScenario,
       isTraining,
     });
@@ -50,15 +50,15 @@ export function useScenarioData(isTraining = false) {
     setError(null);
 
     // Determine scenario ID based on context/localStorage/auth/fallback
-    const scenarioId =
+    const scenarioIdForData =
       (selectedScenario as string) ||
       forcedScenario ||
-      currentScenario ||
+      scenarioId ||
       "text-visual-1";
 
     console.log(
       "[useScenarioData] Selected scenarioId for data fetch:",
-      scenarioId
+      scenarioIdForData
     );
 
     try {
@@ -80,7 +80,7 @@ export function useScenarioData(isTraining = false) {
     }
   }, [
     selectedScenario,
-    currentScenario,
+    scenarioId,
     forcedScenario,
     isTraining,
     setIsLoading,
@@ -91,25 +91,15 @@ export function useScenarioData(isTraining = false) {
   // Effect to trigger fetch
   useEffect(() => {
     console.log("[useScenarioData] Effect triggered:", {
-      authLoading,
+      scenarioId,
       selectedScenario,
-      currentScenario,
-      forcedScenario,
     });
-    if (!authLoading) {
-      fetchData();
-    }
-  }, [
-    authLoading,
-    selectedScenario,
-    currentScenario,
-    forcedScenario,
-    fetchData,
-  ]);
+    fetchData();
+  }, [scenarioId, selectedScenario, fetchData]);
 
   return {
     data,
-    isLoading: isLoading || authLoading,
+    isLoading: isLoading,
     error,
     fetchData, // Expose fetchData if needed by components
   };

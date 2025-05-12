@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import { ScenarioLayout } from "@/components/features/dashboard/scenario-layout";
+import { ScenarioLayout } from "@/components/features/visualization/scenario-layout";
 import { useAuth } from "@/contexts/auth-context";
 // Import specific types needed
 import { NarrativeEvent, DatasetMetadata } from "@/types/lite";
@@ -21,7 +21,9 @@ interface ScenarioPageFactoryProps {
     // Pass metadata and events to renderContent
     metadata: DatasetMetadata | null;
     events: NarrativeEvent[] | null;
-    user: any;
+    userId: string;
+    scenarioId: string;
+    role: string;
     is_training?: boolean;
     quiz?: Quiz;
   }) => ReactNode;
@@ -42,7 +44,7 @@ export function ScenarioPageFactory({
   quiz,
   renderContent,
 }: ScenarioPageFactoryProps) {
-  const { user } = useAuth();
+  const { userId, scenarioId, role } = useAuth();
 
   if (error) {
     return (
@@ -85,8 +87,16 @@ export function ScenarioPageFactory({
       isTraining={is_training}
       showSentimentLegend={showSentimentLegend}
     >
-      {/* Pass metadata, events, user, and is_training to renderContent */}
-      {renderContent({ metadata, events, user, is_training, quiz })}
+      {/* Pass metadata, events, userId, scenarioId, role, and is_training to renderContent */}
+      {renderContent({
+        metadata,
+        events,
+        userId,
+        scenarioId,
+        role,
+        is_training,
+        quiz,
+      })}
     </ScenarioLayout>
   );
 }

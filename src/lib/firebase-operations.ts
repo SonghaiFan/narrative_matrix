@@ -1,40 +1,20 @@
-import { db } from "./firebase";
-import {
-  collection,
-  doc,
-  setDoc,
-  updateDoc,
-  addDoc,
-  serverTimestamp,
-} from "firebase/firestore";
+// Mock Firebase operations
 
-// User operations
 export async function createUser(
   prolificId: string,
   sessionId: string,
   senarioId: string,
   role: "normal" | "domain" = "normal"
 ) {
-  const userRef = doc(db, "users", prolificId);
-  await setDoc(userRef, {
-    prolificId,
-    sessionId,
-    role,
-    createdAt: serverTimestamp(),
-    lastActive: serverTimestamp(),
-    currentScenario: senarioId,
-  });
-  return userRef;
+  console.log("MOCK: createUser", { prolificId, sessionId, senarioId, role });
+  return { id: prolificId };
 }
 
 export async function updateUserLastActive(prolificId: string) {
-  const userRef = doc(db, "users", prolificId);
-  await updateDoc(userRef, {
-    lastActive: serverTimestamp(),
-  });
+  console.log("MOCK: updateUserLastActive", { prolificId });
+  return true;
 }
 
-// Session operations
 export async function createSession(
   prolificId: string,
   scenarioType: string,
@@ -44,53 +24,17 @@ export async function createSession(
     includeDeviceInfo?: boolean;
   } = {}
 ) {
-  const {
-    existingSessionId,
-    isTraining = false,
-    includeDeviceInfo = true,
-  } = options;
-
-  // Use existing ID if provided (for continuity) or generate a truly unique session ID
-  const uniqueSessionId = existingSessionId || `${prolificId}_${Date.now()}`;
-
-  const sessionRef = doc(db, "sessions", uniqueSessionId);
-
-  const sessionData: any = {
-    prolificId,
-    sessionId: uniqueSessionId,
-    scenarioId: scenarioType,
-    startTime: serverTimestamp(),
-    status: "active",
-    isTraining,
-    loginTime: Date.now(),
-  };
-
-  if (includeDeviceInfo) {
-    sessionData.deviceInfo = {
-      userAgent: navigator.userAgent,
-      screenSize: `${window.innerWidth}x${window.innerHeight}`,
-    };
-  }
-
-  await setDoc(sessionRef, sessionData);
-  console.log("Session created successfully with ID:", uniqueSessionId);
-  return { sessionRef, sessionId: uniqueSessionId };
+  console.log("MOCK: createSession", { prolificId, scenarioType, options });
+  const uniqueSessionId =
+    options.existingSessionId || `${prolificId}_${Date.now()}`;
+  return { sessionRef: { id: uniqueSessionId }, sessionId: uniqueSessionId };
 }
 
 export async function endSession(uniqueSessionId: string) {
-  try {
-    const sessionRef = doc(db, "sessions", uniqueSessionId);
-    await updateDoc(sessionRef, {
-      endTime: serverTimestamp(),
-      status: "completed",
-    });
-    console.log("Session ended successfully");
-  } catch (error) {
-    console.error("Error ending session:", error);
-  }
+  console.log("MOCK: endSession", { uniqueSessionId });
+  return true;
 }
 
-// Simple function to save a quiz response
 export async function saveQuizResponse(
   prolificId: string,
   uniqueSessionId: string,
@@ -106,21 +50,14 @@ export async function saveQuizResponse(
     endTime: number;
   }
 ) {
-  try {
-    const quizResponsesRef = collection(db, "quizResponses");
-    await addDoc(quizResponsesRef, {
-      prolificId,
-      sessionId: uniqueSessionId,
-      ...quizData,
-      timestamp: serverTimestamp(),
-    });
-    console.log("Quiz response saved successfully");
-  } catch (error) {
-    console.error("Error saving quiz response:", error);
-  }
+  console.log("MOCK: saveQuizResponse", {
+    prolificId,
+    uniqueSessionId,
+    quizData,
+  });
+  return true;
 }
 
-// Function to update session with completion time and feedback
 export async function updateSessionCompletion(
   uniqueSessionId: string,
   feedback: {
@@ -142,24 +79,10 @@ export async function updateSessionCompletion(
     comments?: string;
   }
 ) {
-  try {
-    const sessionRef = doc(db, "sessions", uniqueSessionId);
-    await updateDoc(sessionRef, {
-      endTime: serverTimestamp(),
-      status: "completed",
-      completionTime: Date.now(),
-      feedback: {
-        ...feedback,
-        timestamp: serverTimestamp(),
-      },
-    });
-    console.log("Session completion updated successfully");
-  } catch (error) {
-    console.error("Error updating session completion:", error);
-  }
+  console.log("MOCK: updateSessionCompletion", { uniqueSessionId, feedback });
+  return true;
 }
 
-// Function to save study feedback
 export async function saveFeedback(
   userId: string,
   feedback: {
@@ -181,21 +104,6 @@ export async function saveFeedback(
     comments?: string;
   }
 ) {
-  try {
-    const feedbackRef = collection(db, "feedback");
-    await addDoc(feedbackRef, {
-      userId,
-      feedback,
-      timestamp: serverTimestamp(),
-      deviceInfo: {
-        userAgent: navigator.userAgent,
-        screenSize: `${window.innerWidth}x${window.innerHeight}`,
-      },
-    });
-    console.log("Feedback saved successfully");
-    return true;
-  } catch (error) {
-    console.error("Error saving feedback:", error);
-    throw error;
-  }
+  console.log("MOCK: saveFeedback", { userId, feedback });
+  return true;
 }

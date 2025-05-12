@@ -4,47 +4,51 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { IntroductionPage } from "./introduction-page";
 import { ScenarioType } from "@/types/scenario";
+import { useNavigationStore } from "@/store/navigation-store";
 
 interface IntroductionFactoryProps {
   scenarioType: ScenarioType;
-  redirectPath: string;
 }
 
 /**
  * A factory component that creates introduction pages for different scenarios
- * with consistent local storage handling and redirection logic
+ * with consistent navigation between stages using the navigation store
  */
 export function IntroductionFactory({
   scenarioType,
-  redirectPath,
 }: IntroductionFactoryProps) {
   const router = useRouter();
-  // Create scenario-specific storage key
-  const storageKey = `hasCompletedIntro-${scenarioType}`;
+  const {
+    setCurrentScenario,
+    isStageCompleted,
+    completeCurrentStage,
+    goToStage,
+    goToNextStage,
+  } = useNavigationStore();
+
+  // Set the current scenario in the navigation store
+  useEffect(() => {
+    setCurrentScenario(scenarioType);
+  }, [scenarioType, setCurrentScenario]);
 
   // Check if user has already completed introduction for this scenario
   useEffect(() => {
-    const hasCompletedIntro = localStorage.getItem(storageKey) === "true";
-    if (hasCompletedIntro) {
-      // Check if training is completed
-      const hasCompletedTraining =
-        localStorage.getItem(`hasCompletedTraining-${scenarioType}`) === "true";
+    // If intro is already completed, redirect to the next stage
+    if (isStageCompleted(scenarioType, "intro")) {
+      const targetUrl = isStageCompleted(scenarioType, "training")
+        ? goToStage("tasks") // If training is completed, go to tasks
+        : goToStage("training"); // Otherwise go to training
 
-      if (hasCompletedTraining) {
-        // If both intro and training completed, go to main scenario
-        router.push(redirectPath);
-      } else {
-        // If only intro completed, go to training (redirectPath already includes /training)
-        router.push(redirectPath);
-      }
+      router.push(targetUrl);
     }
-  }, [router, storageKey, redirectPath, scenarioType]);
+  }, [router, scenarioType, isStageCompleted, goToStage]);
 
   const handleComplete = () => {
-    // Store completion in localStorage with scenario-specific key
-    localStorage.setItem(storageKey, "true");
-    // After intro completion, redirect (redirectPath already includes /training)
-    router.push(redirectPath);
+    // Mark introduction as complete in the navigation store
+    completeCurrentStage();
+
+    // Navigate to the next stage (training)
+    router.push(goToNextStage());
   };
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function ConsentForm({
   onConsent,
@@ -10,13 +10,15 @@ export function ConsentForm({
   const [hasConsented, setHasConsented] = useState(false);
 
   const handleConsentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const isChecked = e.target.checked;
-    setHasConsented(isChecked);
-    onConsent(isChecked);
+    setHasConsented(e.target.checked);
+  };
+
+  const handleContinue = () => {
+    if (hasConsented) onConsent(true);
   };
 
   return (
-    <div className="p-8 border-b md:border-b-0 md:border-r border-gray-100 max-w-2xl mx-auto">
+    <div className="p-8 max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold text-gray-900 mb-4">Consent Form</h2>
 
       <div className="h-[500px] overflow-y-auto pr-4 mb-6 custom-scrollbar space-y-6">
@@ -190,6 +192,15 @@ export function ConsentForm({
           in this study.
         </span>
       </label>
+
+      <button
+        type="button"
+        onClick={handleContinue}
+        disabled={!hasConsented}
+        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
+      >
+        Continue
+      </button>
     </div>
   );
 }

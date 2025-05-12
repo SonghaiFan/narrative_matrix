@@ -1,6 +1,9 @@
-import { ScenarioMetadata } from "@/types/lite";
+import { ScenarioMetadata, ScenarioInfo, ScenarioType } from "@/types/scenario";
 
-// --- Hardcoded Metadata Map ---
+/**
+ * Central source of truth for all scenario metadata
+ * This map contains all the scenarios available in the application
+ */
 export const allScenarioMetadataMap: Record<string, ScenarioMetadata> = {
   "text-visual-1": {
     id: "text-visual-1",
@@ -292,19 +295,53 @@ export const allScenarioMetadataMap: Record<string, ScenarioMetadata> = {
   },
 };
 
-// Function to get metadata from the hardcoded map
+/**
+ * Get metadata for a specific scenario
+ */
 export function getScenarioMetadata(
   scenarioId: string
 ): ScenarioMetadata | null {
   return allScenarioMetadataMap[scenarioId] || null;
 }
 
-// Function to get all available scenario IDs
+/**
+ * Get all available scenario IDs
+ */
 export function getAvailableScenarioIds(): string[] {
   return Object.keys(allScenarioMetadataMap);
 }
 
-// Function to get all available scenarios with their metadata
+/**
+ * Get all available scenarios with their metadata
+ */
 export function getAvailableScenarios(): ScenarioMetadata[] {
   return Object.values(allScenarioMetadataMap);
+}
+
+/**
+ * Get all available scenarios with additional info structure
+ */
+export function getAvailableScenariosWithInfo(): ScenarioInfo[] {
+  return getAvailableScenarios().map((scenario) => ({
+    id: scenario.id,
+    metadata: scenario,
+  }));
+}
+
+/**
+ * Get the name of a scenario from its type
+ */
+export function getScenarioName(type: ScenarioType): string {
+  const scenario = getAvailableScenarios().find((s) => s.id === type);
+  return scenario?.name || `Scenario ${type.replace("text-visual-", "")}`;
+}
+
+/**
+ * Get an array of scenarios with just their ID and name
+ */
+export function getScenariosWithNames() {
+  return getAvailableScenarios().map((scenario) => ({
+    id: scenario.id,
+    name: scenario.name,
+  }));
 }

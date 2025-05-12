@@ -1,237 +1,83 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { ScenarioType } from "@/types/scenario";
-import {
-  createUser,
-  updateUserLastActive,
-  endSession,
-  createSession,
-} from "@/lib/firebase-operations";
-
-interface BaseUser {
-  id: string;
-  username: string;
-  sessionId?: string;
-}
-
-interface DomainUser extends BaseUser {
-  role: "domain";
-}
-
-interface NormalUser extends BaseUser {
-  role: "normal";
-  defaultScenario: ScenarioType;
-}
-
-type User = DomainUser | NormalUser;
 
 interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
-  login: (username: string, sessionId?: string) => Promise<void>;
-  logout: () => void;
-  setUserScenario: (scenarioType: ScenarioType) => void;
-  currentScenario: ScenarioType | null;
+  userId: string;
+  setUserId: (userId: string) => void;
+  scenarioId: string;
+  setScenarioId: (scenarioId: string) => void;
+  role: "domain" | "normal";
+  hasLoadedParams: boolean;
+  loadUrlParams: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Helper functions for localStorage
-const getLocalStorage = (key: string): string | null => {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem(key);
-  }
-  return null;
-};
-
-const setLocalStorage = (key: string, value: string): void => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(key, value);
-  }
-};
-
-const removeLocalStorage = (key: string): void => {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem(key);
-  }
-};
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [authState, setAuthState] = useState<{
-    user: User | null;
-    isAuthenticated: boolean;
-    isLoading: boolean;
-    error: string | null;
-  }>({
-    user: null,
-    isAuthenticated: false,
-    isLoading: true,
-    error: null,
-  });
+  // In dev, always domain; in prod, always normal
+  const role = process.env.NODE_ENV === "development" ? "domain" : "normal";
 
-  // Add current scenario state derived from user's default scenario
-  const currentScenario: ScenarioType | null =
-    authState.user && "defaultScenario" in authState.user
-      ? authState.user.defaultScenario
-      : null;
+  // Default values as fallbacks
+  const defaultUserId =
+    role === "domain" ? "dev-domain-user" : "prod-normal-user";
+  const defaultScenarioId = "text-visual-default";
 
-  // Check for existing session on mount
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+  const [userId, setUserId] = useState(defaultUserId);
+  const [scenarioId, setScenarioId] = useState(defaultScenarioId);
+  const [hasLoadedParams, setHasLoadedParams] = useState(false);
 
-    const storedUser = getLocalStorage("user");
-    if (storedUser) {
-      try {
-        const user = JSON.parse(storedUser) as User;
-        setAuthState({
-          user,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-        });
-      } catch (error) {
-        console.error("Failed to parse stored user:", error);
-        removeLocalStorage("user");
-        setAuthState({
-          user: null,
-          isAuthenticated: false,
-          isLoading: false,
-          error: null,
-        });
-      }
-    } else {
-      setAuthState((prev) => ({ ...prev, isLoading: false }));
-    }
-  }, []);
+  // Function to load URL parameters explicitly
+  const loadUrlParams = () => {
+    if (typeof window !== "undefined") {
+      // Check localStorage first (for manually entered values)
+      const storedUserId = localStorage.getItem("userId");
+      const storedScenarioId = localStorage.getItem("scenarioId");
 
-  const login = async (username: string, sessionId?: string) => {
-    setAuthState((prev) => ({ ...prev, isLoading: true, error: null }));
+      // Check URL parameters next
+      const params = new URLSearchParams(window.location.search);
+      const prolificPid = params.get("PROLIFIC_PID");
+      const studyId = params.get("STUDY_ID");
+      const sessionId = params.get("SESSION_ID");
 
-    try {
-      // Check for domain user
-      if (username === "domain") {
-        const domainUser: DomainUser = {
-          id: "1",
-          username: "domain",
-          role: "domain",
-          sessionId,
-        };
-        setLocalStorage("user", JSON.stringify(domainUser));
-        setAuthState({
-          user: domainUser,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-        });
-        return;
+      // Decide which values to use, with priority:
+      // 1. LocalStorage (manual input)
+      // 2. URL parameters
+      // 3. Default values
+
+      if (storedUserId) {
+        setUserId(storedUserId);
+        // Store in localStorage for persistence
+        localStorage.setItem("userId", storedUserId);
+      } else if (prolificPid) {
+        setUserId(prolificPid);
+        // Store in localStorage for persistence
+        localStorage.setItem("userId", prolificPid);
       }
 
-      // Determine scenario based on sessionId (which might be a scenario number)
-      let scenarioId: ScenarioType = "text-visual-1"; // Default scenario
-      let scenarioNumber = "1";
-
-      if (sessionId && sessionId.match(/^\d+$/)) {
-        scenarioNumber = sessionId;
-        scenarioId = `text-visual-${sessionId}` as ScenarioType;
+      if (storedScenarioId) {
+        setScenarioId(storedScenarioId);
+        // Store in localStorage for persistence
+        localStorage.setItem("scenarioId", storedScenarioId);
+      } else if (studyId && sessionId) {
+        const formattedScenarioId = `${studyId}-${sessionId}`;
+        setScenarioId(formattedScenarioId);
+        // Store in localStorage for persistence
+        localStorage.setItem("scenarioId", formattedScenarioId);
       }
 
-      // Save user session to Firebase and get a unique session ID
-      // Note: the sessionId parameter might actually be a scenario number from URL
-      let uniqueSessionId: string | null = null;
-      try {
-        const { sessionId } = await createSession(username, scenarioId, {
-          isTraining: false,
-          includeDeviceInfo: true,
-        });
-        uniqueSessionId = sessionId;
-        console.log("Created unique session ID:", uniqueSessionId);
-      } catch (error) {
-        console.error("Failed to create unique session ID:", error);
-      }
-
-      // Create normal user in Firestore
-      await createUser(username, uniqueSessionId || username, scenarioId);
-
-      // All other users are normal users
-      const normalUser: NormalUser = {
-        id: username,
-        username,
-        role: "normal",
-        defaultScenario: scenarioId,
-        sessionId: uniqueSessionId || undefined,
-      };
-
-      setLocalStorage("user", JSON.stringify(normalUser));
-      setAuthState({
-        user: normalUser,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null,
-      });
-    } catch (error) {
-      console.error("Login error:", error);
-      setAuthState({
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: error instanceof Error ? error.message : "An error occurred",
-      });
+      setHasLoadedParams(true);
     }
   };
 
-  const setUserScenario = (scenarioType: ScenarioType) => {
-    if (authState.user && authState.user.role === "normal") {
-      const updatedUser: NormalUser = {
-        ...authState.user,
-        defaultScenario: scenarioType,
-      };
-
-      setAuthState({
-        ...authState,
-        user: updatedUser,
-      });
-
-      setLocalStorage("user", JSON.stringify(updatedUser));
-    }
-  };
-
-  const logout = () => {
-    const user = authState.user;
-    if (user && user.role === "normal") {
-      // End session in Firebase
-      endSession(user.id).catch(console.error);
-    }
-
-    removeLocalStorage("user");
-    setAuthState({
-      user: null,
-      isAuthenticated: false,
-      isLoading: false,
-      error: null,
-    });
-  };
-
-  // Update last active timestamp periodically
-  useEffect(() => {
-    const user = authState.user;
-    if (user && user.role === "normal") {
-      const interval = setInterval(() => {
-        updateUserLastActive(user.id).catch(console.error);
-      }, 300000); // Every 5 minutes
-
-      return () => clearInterval(interval);
-    }
-  }, [authState.user]);
-
-  const value = {
-    ...authState,
-    login,
-    logout,
-    setUserScenario,
-    currentScenario,
+  const value: AuthContextType = {
+    userId,
+    setUserId,
+    scenarioId,
+    setScenarioId,
+    role,
+    hasLoadedParams,
+    loadUrlParams,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

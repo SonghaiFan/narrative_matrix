@@ -1,4 +1,4 @@
-// Task progress utilities for local storage
+// Mock task progress utilities without local storage
 
 export interface TaskAnswer {
   questionId: string;
@@ -35,55 +35,29 @@ export interface TaskProgress {
   surveyData?: SurveyData;
 }
 
-// Helper functions to handle localStorage safely (with SSR support)
-const getLocalStorage = (key: string): string | null => {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem(key);
-  }
-  return null;
-};
+// Mock in-memory store for task progress
+const mockTaskProgressStore: Record<string, TaskProgress> = {};
 
-const setLocalStorage = (key: string, value: string): void => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(key, value);
-  }
-};
-
-const removeLocalStorage = (key: string): void => {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem(key);
-  }
-};
-
-// Get task progress from local storage
+// Get task progress from mock store
 export const getTaskProgress = (userId: string): TaskProgress | null => {
-  const progressData = getLocalStorage(`taskProgress_${userId}`);
-  if (!progressData) return null;
-
-  try {
-    return JSON.parse(progressData) as TaskProgress;
-  } catch (error) {
-    console.error("Failed to parse task progress:", error);
-    return null;
-  }
+  console.log("MOCK: getTaskProgress", { userId });
+  return mockTaskProgressStore[userId] || null;
 };
 
-// Save task progress to local storage
+// Save task progress to mock store
 export const saveTaskProgress = (
   userId: string,
   progress: Omit<TaskProgress, "userId" | "lastUpdated">
 ): void => {
+  console.log("MOCK: saveTaskProgress", { userId, progress });
+
   const taskProgress: TaskProgress = {
     ...progress,
     userId,
     lastUpdated: new Date().toISOString(),
   };
 
-  try {
-    setLocalStorage(`taskProgress_${userId}`, JSON.stringify(taskProgress));
-  } catch (error) {
-    console.error("Failed to save task progress:", error);
-  }
+  mockTaskProgressStore[userId] = taskProgress;
 };
 
 // Update task progress with new values
@@ -91,6 +65,8 @@ export const updateTaskProgress = (
   userId: string,
   updates: Partial<Omit<TaskProgress, "userId" | "lastUpdated">>
 ): TaskProgress | null => {
+  console.log("MOCK: updateTaskProgress", { userId, updates });
+
   const currentProgress = getTaskProgress(userId);
 
   if (!currentProgress) {
@@ -103,17 +79,14 @@ export const updateTaskProgress = (
     lastUpdated: new Date().toISOString(),
   };
 
-  try {
-    setLocalStorage(`taskProgress_${userId}`, JSON.stringify(updatedProgress));
-    return updatedProgress;
-  } catch (error) {
-    console.error("Failed to update task progress:", error);
-    return null;
-  }
+  mockTaskProgressStore[userId] = updatedProgress;
+  return updatedProgress;
 };
 
 // Mark task as completed
 export const markTaskAsCompleted = (userId: string): void => {
+  console.log("MOCK: markTaskAsCompleted", { userId });
+
   const currentProgress = getTaskProgress(userId);
 
   if (currentProgress) {
@@ -123,27 +96,21 @@ export const markTaskAsCompleted = (userId: string): void => {
 
 // Check if user has completed tasks
 export const hasCompletedTasks = (userId: string): boolean => {
+  console.log("MOCK: hasCompletedTasks", { userId });
   const progress = getTaskProgress(userId);
   return progress?.isCompleted || false;
 };
 
-// Reset task progress (for domain users)
+// Reset task progress
 export const resetTaskProgress = (userId: string): void => {
-  removeLocalStorage(`taskProgress_${userId}`);
+  console.log("MOCK: resetTaskProgress", { userId });
+  delete mockTaskProgressStore[userId];
 };
 
-// Reset all task progress (admin function)
+// Reset all task progress
 export const resetAllTaskProgress = (): void => {
-  if (typeof window === "undefined") return;
-
-  // Get all keys from localStorage
-  const keys = Object.keys(localStorage);
-
-  // Filter keys that start with 'taskProgress_'
-  const progressKeys = keys.filter((key) => key.startsWith("taskProgress_"));
-
-  // Remove each task progress entry
-  progressKeys.forEach((key) => {
-    removeLocalStorage(key);
+  console.log("MOCK: resetAllTaskProgress");
+  Object.keys(mockTaskProgressStore).forEach((key) => {
+    delete mockTaskProgressStore[key];
   });
 };

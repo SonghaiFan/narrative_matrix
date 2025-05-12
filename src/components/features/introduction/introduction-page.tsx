@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import { ScenarioType } from "@/types/scenario";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 interface IntroductionStep {
   title: string;
@@ -440,12 +443,15 @@ export function IntroductionPage({
               />
             ))}
           </div>
-          <button
-            onClick={handleNext}
-            className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
-          >
-            {currentStep === introductionSteps.length - 1 ? "Begin" : "Next"}
-          </button>
+          <Button onClick={handleNext} variant="primary" size="md">
+            {currentStep === introductionSteps.length - 1 ? (
+              "Begin"
+            ) : (
+              <>
+                Next <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+              </>
+            )}
+          </Button>
         </div>
       </div>
     </div>
