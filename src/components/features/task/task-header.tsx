@@ -10,8 +10,7 @@ interface TaskHeaderProps {
   currentTaskTimeLeftFormatted: string | null;
   currentTaskTimerColorClass: string;
   isDomainExpert: boolean;
-  onSkipTraining?: () => void; // Optional: only for training + domain expert
-  onSkipToCompletion?: () => void; // Optional: only for non-training + domain expert
+  onSkipToNextStage?: () => void; // Optional: domain experts can skip to the next stage in flow
   onDotClick?: (index: number) => void; // Optional: for navigating by dots
   tasksForDots: Pick<QuizItem, "id" | "completed">[]; // Only need id and completed status for dots
 }
@@ -24,8 +23,7 @@ export function TaskHeader({
   currentTaskTimeLeftFormatted,
   currentTaskTimerColorClass,
   isDomainExpert,
-  onSkipTraining,
-  onSkipToCompletion,
+  onSkipToNextStage,
   onDotClick,
   tasksForDots,
 }: TaskHeaderProps) {
@@ -76,20 +74,12 @@ export function TaskHeader({
 
       {isDomainExpert && (
         <>
-          {isTraining && onSkipTraining && (
+          {(isTraining || !isTraining) && onSkipToNextStage && (
             <button
-              onClick={onSkipTraining}
+              onClick={onSkipToNextStage}
               className="text-xs px-2 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 flex-shrink-0"
             >
-              Skip Training
-            </button>
-          )}
-          {!isTraining && onSkipToCompletion && (
-            <button
-              onClick={onSkipToCompletion}
-              className="text-xs px-2 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 flex-shrink-0"
-            >
-              Skip to Completion
+              Skip to Next Stage
             </button>
           )}
         </>

@@ -1,0 +1,346 @@
+{
+  "scenarios": {
+    "text-visual-1": {
+      "id": "text-visual-1",
+      "name": "Text with Visualizations 1",
+      "description": "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+      "conditions": [
+        "ir_e_n_",
+        "ir_e_v_",
+        "ir_t_n_",
+        "ir_t_v_",
+        "ir_tm_n_",
+        "ir_tm_v_",
+        "pr_e_n_",
+        "pr_e_v_",
+        "pr_t_n_",
+        "pr_t_v_",
+        "pr_tm_n_",
+        "pr_tm_v_"
+      ],
+      "topic": "Israeli Palestinian Conflict",
+      "author": "Research Team",
+      "publishDate": "2025-03-13",
+      "dataSources": {
+        "eventsDataPath": "scenarios/middle-east/events.json",
+        "quizDataPath": "scenarios/middle-east/quiz.json",
+        "trainingEventsDataPath": "scenarios/middle-east/training_events.json",
+        "trainingQuizDataPath": "scenarios/middle-east/training_quiz.json"
+      },
+      "quizOrder": {
+        "preferredOrder": [
+          "ir_e_n_",
+          "ir_e_v_",
+          "ir_t_n_",
+          "ir_t_v_",
+          "ir_tm_n_",
+          "ir_tm_v_",
+          "pr_e_n_",
+          "pr_e_v_",
+          "pr_t_n_",
+          "pr_t_v_",
+          "pr_tm_n_",
+          "pr_tm_v_"
+        ],
+        "description": "Order: IR first, PR second. Category order: entity, topic, time. Visual order: non-visual then visual."
+      },
+      "quizOrderDescription": "Order: IR first, PR second. Category order: entity, topic, time. Visual order: non-visual then visual.",
+      "studyFlow": [
+        {
+          "type": "intro",
+          "title": "Introduction to Middle East Study"
+        },
+        {
+          "type": "training",
+          "title": "Training Phase",
+          "dataSources": {
+            "eventsDataPath": "scenarios/middle-east/training_events.json",
+            "quizDataPath": "scenarios/middle-east/training_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "Main Tasks",
+          "dataSources": {
+            "eventsDataPath": "scenarios/middle-east/events.json",
+            "quizDataPath": "scenarios/middle-east/quiz.json"
+          }
+        },
+        {
+          "type": "complete",
+          "title": "Study Completed"
+        }
+      ]
+    },
+    "text-visual-2": {
+      "id": "text-visual-2",
+      "name": "Text with Visualizations 2",
+      "description": "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+      "conditions": [
+        "ir_e_v_",
+        "ir_e_n_",
+        "ir_t_v_",
+        "ir_t_n_",
+        "ir_tm_v_",
+        "ir_tm_n_",
+        "pr_e_v_",
+        "pr_e_n_",
+        "pr_t_v_",
+        "pr_t_n_",
+        "pr_tm_v_",
+        "pr_tm_n_"
+      ],
+      "topic": "Israeli Palestinian Conflict",
+      "author": "Research Team",
+      "publishDate": "2025-03-13",
+      "dataSources": {
+        "eventsDataPath": "scenarios/middle-east/events.json",
+        "quizDataPath": "scenarios/middle-east/quiz.json",
+        "trainingEventsDataPath": "scenarios/middle-east/training_events.json",
+        "trainingQuizDataPath": "scenarios/middle-east/training_quiz.json"
+      },
+      "quizOrder": {
+        "preferredOrder": [
+          "ir_e_v_",
+          "ir_e_n_",
+          "ir_t_v_",
+          "ir_t_n_",
+          "ir_tm_v_",
+          "ir_tm_n_",
+          "pr_e_v_",
+          "pr_e_n_",
+          "pr_t_v_",
+          "pr_t_n_",
+          "pr_tm_v_",
+          "pr_tm_n_"
+        ],
+        "description": "Order: IR first, PR second. Category order: entity, topic, time. Visual order: visual then non-visual."
+      },
+      "quizOrderDescription": "Order: IR first, PR second. Category order: entity, topic, time. Visual order: visual then non-visual.",
+      "studyFlow": [
+        {
+          "type": "intro",
+          "title": "Introduction to Middle East Study"
+        },
+        {
+          "type": "training",
+          "title": "Training Phase",
+          "dataSources": {
+            "eventsDataPath": "scenarios/middle-east/training_events.json",
+            "quizDataPath": "scenarios/middle-east/training_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "Main Tasks",
+          "dataSources": {
+            "eventsDataPath": "scenarios/middle-east/events.json",
+            "quizDataPath": "scenarios/middle-east/quiz.json"
+          }
+        },
+        {
+          "type": "complete",
+          "title": "Study Completed"
+        }
+      ]
+    },
+    "text-visual-3": {
+      "id": "text-visual-3",
+      "name": "Text with Visualizations 3",
+      "description": "A narrative experience that combines text content with interactive data visualizations to enhance understanding.",
+      "conditions": [
+        "ir_e_n_",
+        "ir_e_v_",
+        "ir_tm_n_",
+        "ir_tm_v_",
+        "ir_t_n_",
+        "ir_t_v_",
+        "pr_e_n_",
+        "pr_e_v_",
+        "pr_tm_n_",
+        "pr_tm_v_",
+        "pr_t_n_",
+        "pr_t_v_"
+      ],
+      "topic": "Israeli Palestinian Conflict",
+      "author": "Research Team",
+      "publishDate": "2025-03-13",
+      "dataSources": {
+        "eventsDataPath": "scenarios/middle-east/events.json",
+        "quizDataPath": "scenarios/middle-east/quiz.json",
+        "trainingEventsDataPath": "scenarios/middle-east/training_events.json",
+        "trainingQuizDataPath": "scenarios/middle-east/training_quiz.json"
+      },
+      "quizOrder": {
+        "preferredOrder": [
+          "ir_e_n_",
+          "ir_e_v_",
+          "ir_tm_n_",
+          "ir_tm_v_",
+          "ir_t_n_",
+          "ir_t_v_",
+          "pr_e_n_",
+          "pr_e_v_",
+          "pr_tm_n_",
+          "pr_tm_v_",
+          "pr_t_n_",
+          "pr_t_v_"
+        ],
+        "description": "Order: IR first, PR second. Category order: entity, time, topic. Visual order: non-visual then visual."
+      },
+      "quizOrderDescription": "Order: IR first, PR second. Category order: entity, time, topic. Visual order: non-visual then visual.",
+      "studyFlow": [
+        {
+          "type": "intro",
+          "title": "Introduction to Middle East Study"
+        },
+        {
+          "type": "training",
+          "title": "Training Phase",
+          "dataSources": {
+            "eventsDataPath": "scenarios/middle-east/training_events.json",
+            "quizDataPath": "scenarios/middle-east/training_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "Main Tasks",
+          "dataSources": {
+            "eventsDataPath": "scenarios/middle-east/events.json",
+            "quizDataPath": "scenarios/middle-east/quiz.json"
+          }
+        },
+        {
+          "type": "complete",
+          "title": "Study Completed"
+        }
+      ]
+    },
+    "ukraine-conflict": {
+      "id": "ukraine-conflict",
+      "name": "Ukraine Conflict",
+      "description": "A historical account of the Russia-Ukraine conflict and its global implications",
+      "conditions": [
+        "ir_e_n_",
+        "ir_e_v_",
+        "ir_t_n_",
+        "ir_t_v_",
+        "pr_e_n_",
+        "pr_e_v_",
+        "pr_t_n_",
+        "pr_t_v_"
+      ],
+      "topic": "Ukraine Conflict",
+      "author": "Research Team",
+      "publishDate": "2025-03-13",
+      "dataSources": {
+        "eventsDataPath": "scenarios/ukraine/events.json",
+        "quizDataPath": "scenarios/ukraine/quiz.json",
+        "trainingEventsDataPath": "scenarios/ukraine/training_events.json",
+        "trainingQuizDataPath": "scenarios/ukraine/training_quiz.json"
+      },
+      "quizOrder": {
+        "preferredOrder": [
+          "ir_e_n_",
+          "ir_e_v_",
+          "ir_t_n_",
+          "ir_t_v_",
+          "pr_e_n_",
+          "pr_e_v_",
+          "pr_t_n_",
+          "pr_t_v_"
+        ],
+        "description": "Order: IR first, PR second. Category order: entity, topic. Visual order: non-visual then visual."
+      },
+      "quizOrderDescription": "Order: IR first, PR second. Category order: entity, topic. Visual order: non-visual then visual.",
+      "studyFlow": [
+        {
+          "type": "intro",
+          "title": "Introduction to Ukraine Conflict"
+        },
+        {
+          "type": "training",
+          "title": "Training Phase",
+          "dataSources": {
+            "eventsDataPath": "scenarios/ukraine/training_events.json",
+            "quizDataPath": "scenarios/ukraine/training_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "Main Tasks",
+          "dataSources": {
+            "eventsDataPath": "scenarios/ukraine/events.json",
+            "quizDataPath": "scenarios/ukraine/quiz.json"
+          }
+        },
+        {
+          "type": "complete",
+          "title": "Study Completed"
+        }
+      ]
+    },
+    "text-visual-5": {
+      "id": "text-visual-5",
+      "name": "Multi-phase Research Study",
+      "description": "A comprehensive study with multiple training and task phases to evaluate different visualization approaches.",
+      "conditions": ["ir_e_n_", "ir_e_v_", "ir_t_n_", "ir_t_v_"],
+      "topic": "Advanced Research Methodology",
+      "author": "Research Team",
+      "publishDate": "2025-03-13",
+      "dataSources": {
+        "eventsDataPath": "scenarios/multi-phase/events1.json",
+        "quizDataPath": "scenarios/multi-phase/quiz1.json",
+        "trainingEventsDataPath": "scenarios/multi-phase/training1_events.json",
+        "trainingQuizDataPath": "scenarios/multi-phase/training1_quiz.json"
+      },
+      "quizOrder": {
+        "preferredOrder": ["ir_e_n_", "ir_e_v_", "ir_t_n_", "ir_t_v_"],
+        "description": "Custom multi-phase research study with two distinct training and task phases"
+      },
+      "quizOrderDescription": "Custom multi-phase research study with two distinct training and task phases",
+      "studyFlow": [
+        {
+          "type": "intro",
+          "title": "Welcome to Multi-phase Study"
+        },
+        {
+          "type": "training",
+          "title": "Phase 1 Training",
+          "dataSources": {
+            "eventsDataPath": "scenarios/multi-phase/training1_events.json",
+            "quizDataPath": "scenarios/multi-phase/training1_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "Phase 1 Tasks",
+          "dataSources": {
+            "eventsDataPath": "scenarios/multi-phase/events1.json",
+            "quizDataPath": "scenarios/multi-phase/quiz1.json"
+          }
+        },
+        {
+          "type": "training",
+          "title": "Phase 2 Training",
+          "dataSources": {
+            "eventsDataPath": "scenarios/multi-phase/training2_events.json",
+            "quizDataPath": "scenarios/multi-phase/training2_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "Phase 2 Tasks",
+          "dataSources": {
+            "eventsDataPath": "scenarios/multi-phase/events2.json",
+            "quizDataPath": "scenarios/multi-phase/quiz2.json"
+          }
+        },
+        {
+          "type": "complete",
+          "title": "Thank You for Participating"
+        }
+      ]
+    }
+  }
+}

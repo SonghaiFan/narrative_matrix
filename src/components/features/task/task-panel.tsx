@@ -12,21 +12,7 @@ import {
   Timer,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-  saveTaskProgress,
-  updateTaskProgress,
-  markTaskAsCompleted,
-  hasCompletedTasks,
-  getTaskProgress,
-} from "@/lib/task-progress";
-import {
-  RadioOptions,
-  NumberedSequence,
-  GridMatching,
-  MultipleSelect,
-  QuizItem,
-  Quiz,
-} from "./quiz-types/index";
+import { Quiz } from "./quiz-types/index";
 import { useCenterControl } from "@/contexts/center-control-context";
 import { useAuth } from "@/contexts/auth-context";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -36,6 +22,7 @@ import { NarrativeEvent, DatasetMetadata } from "@/types/lite";
 import { useQuestionTimer } from "@/hooks/useQuestionTimer";
 import { useQuizLoader } from "@/hooks/useQuizLoader";
 import { useTaskManager } from "@/hooks/useTaskManager";
+import { useNavigationStore } from "@/store/navigation-store";
 
 // Sub-components
 import { TaskHeader } from "./task-header";
@@ -57,6 +44,7 @@ interface TaskPanelProps {
   userRole?: "domain" | "normal";
   is_training?: boolean;
   quiz?: Quiz; // Pre-loaded and ordered quiz items
+  onComplete?: () => void;
 }
 
 export function TaskPanel({
@@ -66,6 +54,7 @@ export function TaskPanel({
   userRole = "normal",
   is_training = false,
   quiz: passedInQuiz,
+  onComplete,
 }: TaskPanelProps) {
   const router = useRouter();
   const { userId, scenarioId, role } = useAuth();
@@ -75,6 +64,9 @@ export function TaskPanel({
     markedEventIds,
     selectedScenario: contextSelectedScenario,
   } = useCenterControl();
+
+  // Add navigation store hooks
+  const { goToNextStage, completeCurrentStage } = useNavigationStore();
 
   // --- State for Modals ---
   const [showConfirmSubmitModal, setShowConfirmSubmitModal] = useState(false);
@@ -186,19 +178,38 @@ export function TaskPanel({
     setShowAnswerUI((prev) => !prev);
   };
 
-  // Effect to handle completion of training
+  // Effect to handle completion of training or tasks
   useEffect(() => {
     const allTasksCompleted = tasks.every((task) => task.completed);
     if (
       allTasksCompleted &&
-      is_training &&
       currentTask?.completed &&
       currentTaskIndex === tasks.length - 1
     ) {
-      let scenarioIdForPath = scenarioId.replace("text-visual-", "");
-      const mainPath = `/text-visual/${scenarioIdForPath}`;
-      setPendingRedirectPath(mainPath);
-      setShowTrainingCompleteModal(true);
+      // Complete current stage and get next path
+      completeCurrentStage();
+
+      // If we have an external onComplete callback, use it
+      if (onComplete) {
+        if (is_training) {
+          // For training, show completion modal first, then call onComplete
+          setShowTrainingCompleteModal(true);
+        } else {
+          // For main tasks, call onComplete directly
+          onComplete();
+        }
+      } else {
+        // Legacy navigation if no onComplete is provided
+        const nextPath = goToNextStage();
+        if (is_training) {
+          // For training, show completion modal before navigation
+          setPendingRedirectPath(nextPath);
+          setShowTrainingCompleteModal(true);
+        } else {
+          // For main tasks, navigate directly
+          router.push(nextPath);
+        }
+      }
     }
   }, [
     tasks,
@@ -207,11 +218,17 @@ export function TaskPanel({
     currentTaskIndex,
     scenarioId,
     contextSelectedScenario,
+    completeCurrentStage,
+    goToNextStage,
+    router,
   ]);
 
   const handleConfirmTrainingComplete = () => {
     setShowTrainingCompleteModal(false);
-    if (pendingRedirectPath) {
+    if (onComplete) {
+      // Call the onComplete callback if provided
+      onComplete();
+    } else if (pendingRedirectPath) {
       if (is_training) {
         const scenarioPathKey =
           window.location.pathname.split("/")[1] || "unknown-scenario";
@@ -222,10 +239,22 @@ export function TaskPanel({
   };
 
   const handleDomainSkipTraining = () => {
-    const currentPath = window.location.pathname;
-    const mainPath = currentPath.replace("/training", "");
-    setPendingRedirectPath(mainPath);
-    setShowTrainingCompleteModal(true);
+    completeCurrentStage();
+    if (onComplete) {
+      // Show the training complete modal first
+      setShowTrainingCompleteModal(true);
+    } else {
+      // Dispatch an event to notify that training should be skipped
+      const event = new CustomEvent("scenario:training-complete", {
+        detail: { skipped: true },
+      });
+      window.dispatchEvent(event);
+
+      // Still show the modal as feedback to the user
+      const nextPath = goToNextStage();
+      setPendingRedirectPath(nextPath);
+      setShowTrainingCompleteModal(true);
+    }
   };
 
   // --- Footer Button Logic (Corrected) ---
@@ -312,14 +341,13 @@ export function TaskPanel({
         currentTaskTimeLeftFormatted={formattedTime}
         currentTaskTimerColorClass={timerColorClass}
         isDomainExpert={userRole === "domain"}
-        onSkipTraining={
-          is_training && userRole === "domain"
-            ? handleDomainSkipTraining
-            : undefined
-        }
-        onSkipToCompletion={
-          !is_training && userRole === "domain"
-            ? navigateToCompletionPage
+        onSkipToNextStage={
+          userRole === "domain"
+            ? () => {
+                // For both training and non-training tasks, dispatch a custom event to transition to the next stage
+                const event = new CustomEvent("scenario:skip-to-next-stage");
+                window.dispatchEvent(event);
+              }
             : undefined
         }
         onDotClick={userRole === "domain" ? goToTask : undefined} // Allow dot nav for domain experts

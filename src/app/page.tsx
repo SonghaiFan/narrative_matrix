@@ -9,6 +9,7 @@ import { useNavigationStore } from "@/store/navigation-store";
 import { useRouter } from "next/navigation";
 import { ScenarioType } from "@/types/scenario";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { getScenarioMetadata } from "@/lib/scenarios/study-config";
 
 /**
  * Manual parameter input form when URL doesn't have parameters
@@ -136,6 +137,11 @@ function HomeContent() {
   >("test");
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [useManualInput, setUseManualInput] = useState(false);
+  const [scenarioMetadata, setScenarioMetadata] = useState<{
+    name: string;
+    description: string;
+  } | null>(null);
+  const [isLoadingMetadata, setIsLoadingMetadata] = useState(false);
 
   // Hooks
   const {
@@ -148,6 +154,75 @@ function HomeContent() {
   } = useAuth();
   const router = useRouter();
   const { setCurrentScenario, goToStage } = useNavigationStore();
+
+  // Render visual representation of the study flow
+  const renderStudyFlow = (scenarioId: string) => {
+    const metadata = getScenarioMetadata(scenarioId as ScenarioType);
+    if (!metadata || !metadata.studyFlow || metadata.studyFlow.length === 0) {
+      return null;
+    }
+
+    // Determine colors for each stage type
+    const getStageColor = (type: string) => {
+      switch (type) {
+        case "intro":
+          return "bg-blue-100 text-blue-800 border-blue-200";
+        case "training":
+          return "bg-green-100 text-green-800 border-green-200";
+        case "task":
+          return "bg-purple-100 text-purple-800 border-purple-200";
+        case "complete":
+          return "bg-orange-100 text-orange-800 border-orange-200";
+        default:
+          return "bg-gray-100 text-gray-800 border-gray-200";
+      }
+    };
+
+    return (
+      <div className="mt-2 mb-3">
+        <h4 className="text-sm font-medium text-gray-700 mb-2">Study Flow:</h4>
+        <div className="flex items-center space-x-1 overflow-x-auto pb-2">
+          {metadata.studyFlow.map((stage, index) => (
+            <div key={index} className="flex items-center flex-shrink-0">
+              {/* Add connecting arrow between stages */}
+              {index > 0 && <div className="w-4 h-0.5 bg-gray-300"></div>}
+
+              {/* Display stage box */}
+              <div
+                className={`px-3 py-1 rounded border ${getStageColor(
+                  stage.type
+                )} text-xs`}
+              >
+                {stage.title || stage.type}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  // Fetch scenario metadata when reaching welcome step
+  useEffect(() => {
+    if (currentStep === "welcome" && scenarioId) {
+      setIsLoadingMetadata(true);
+      // Get metadata for the scenario
+      const metadata = getScenarioMetadata(scenarioId as ScenarioType);
+      if (metadata) {
+        setScenarioMetadata({
+          name: metadata.name,
+          description: metadata.description,
+        });
+      } else {
+        // Fallback if metadata not found
+        setScenarioMetadata({
+          name: `Scenario ${scenarioId.replace("text-visual-", "")}`,
+          description: "A narrative exploration exercise with visualization.",
+        });
+      }
+      setIsLoadingMetadata(false);
+    }
+  }, [currentStep, scenarioId]);
 
   // Handle step completion
   const handleTestComplete = () => setCurrentStep("consent");
@@ -176,7 +251,8 @@ function HomeContent() {
 
     setIsRedirecting(true);
     setCurrentScenario(scenarioId as ScenarioType);
-    const introUrl = goToStage("intro");
+    // Find the index of the intro stage (typically 0)
+    const introUrl = goToStage(0); // Update to pass the index of the first stage
     router.push(introUrl);
   };
 
@@ -233,16 +309,44 @@ function HomeContent() {
       case "welcome":
         return (
           <div className="text-center max-w-md w-full mx-auto">
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div className="mb-6 p-5 bg-green-50 border border-green-200 rounded-lg">
               <h2 className="text-xl font-semibold text-green-800 mb-2">
                 Welcome, {userId}!
               </h2>
-              <p className="text-green-700">
-                You've been assigned scenario:{" "}
-                <code className="font-mono bg-green-100 px-2 py-1 rounded">
-                  {scenarioId}
-                </code>
-              </p>
+
+              {isLoadingMetadata ? (
+                <div className="py-3">
+                  <LoadingSpinner
+                    size="sm"
+                    text="Loading scenario details..."
+                  />
+                </div>
+              ) : (
+                <>
+                  <div className="mb-3 pb-3 border-b border-green-200">
+                    <p className="text-green-700">
+                      You've been assigned scenario:{" "}
+                      <code className="font-mono bg-green-100 px-2 py-1 rounded">
+                        {scenarioId}
+                      </code>
+                    </p>
+                  </div>
+
+                  {scenarioMetadata && (
+                    <div className="text-left mt-3">
+                      <h3 className="font-medium text-green-800 mb-1">
+                        {scenarioMetadata.name}
+                      </h3>
+                      <p className="text-sm text-green-700 mb-4">
+                        {scenarioMetadata.description}
+                      </p>
+
+                      {/* Study Flow Visualization */}
+                      {scenarioId && renderStudyFlow(scenarioId)}
+                    </div>
+                  )}
+                </>
+              )}
             </div>
 
             {isRedirecting ? (

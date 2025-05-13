@@ -1,5 +1,6 @@
 import { Quiz } from "@/components/features/task/quiz-types";
 import { QuizItem } from "../components/features/task/quiz-types";
+import { ScenarioMetadata } from "./scenario";
 
 export interface Entity {
   id: string; // Unique and unified entity ID
@@ -39,17 +40,6 @@ export interface NarrativeEvent {
   topic: Topic;
 }
 
-// Scenario Metadata - UI and configuration for each scenario
-export interface ScenarioMetadata {
-  id: string; // e.g., "text-visual-1"
-  name: string; // Display name
-  description: string; // Scenario description
-  quizOrder: {
-    preferredOrder: string[];
-    description: string;
-  };
-}
-
 // Dataset Metadata - Content metadata for the narrative
 export interface DatasetMetadata {
   title: string; // e.g., "Ukraine Conflict"
@@ -60,6 +50,7 @@ export interface DatasetMetadata {
   imageUrl?: string | null;
   studyType?: string; // e.g., "text-visual"
   quiz_order_preference?: string; // e.g., "default"
+  currentFlowIndex?: number; // Current index in the study flow
 }
 
 export interface NarrativeMatrixData {

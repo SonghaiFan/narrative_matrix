@@ -1,0 +1,28 @@
+{
+  "events": [
+    {
+      "index": 1,
+      "text": "This is a placeholder for Phase 1 main task.",
+      "short_text": "Phase 1 main task placeholder",
+      "temporal_anchoring": {
+        "real_time": "2025-01-01",
+        "narrative_time": 1
+      },
+      "entities": [
+        {
+          "id": "ENTITY_1",
+          "name": "Task Entity",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "task",
+        "sub_topic": ["phase1"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 0
+        }
+      }
+    }
+  ]
+}

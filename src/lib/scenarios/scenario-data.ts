@@ -7,7 +7,7 @@ import {
   getScenarioMetadata,
   getStageDataSources,
   getAvailableScenarios as getAllScenarios,
-} from "../scenarios/study-config";
+} from "./study-config";
 import groupBy from "lodash/groupBy";
 import flatMap from "lodash/flatMap";
 
@@ -23,81 +23,71 @@ export function getAvailableScenarios() {
   });
 }
 
-/**
- * Load the scenario data for a specific flow stage
- * @param scenarioId The scenario ID
- * @param flowIndex The index of the stage in the study flow (if not provided, assumes current stage)
- * @returns The loaded and processed scenario data
- */
+// --- Data Processing ---
 export async function loadAndProcessScenarioData(
   scenarioId: string,
-  flowIndex?: number
+  isTraining = false,
+  stageIndex?: number
 ): Promise<NarrativeMatrixData> {
   try {
-    console.log(
-      `Loading data for scenario ${scenarioId} at flow index ${
-        flowIndex ?? "current"
-      }`
-    );
+    console.log(`Loading scenario data for: ${scenarioId}`);
+    console.log(`Training mode: ${isTraining}`);
+    console.log(`Stage index: ${stageIndex}`);
 
-    // Get scenario metadata
-    console.log(`Getting metadata for scenario ${scenarioId}`);
+    // Get metadata and data sources
     const metadata = getScenarioMetadata(scenarioId);
-
     if (!metadata) {
       console.error(`No metadata found for scenario ${scenarioId}`);
-      throw new Error(`No metadata found for scenario ${scenarioId}`);
+      throw new Error(`Scenario not found: ${scenarioId}`);
     }
 
-    console.log(
-      `Found metadata:`,
-      JSON.stringify({
-        name: metadata.name,
-        studyFlowLength: metadata.studyFlow?.length || 0,
-      })
-    );
+    // Get appropriate data sources based on stage
+    let eventsDataPath;
+    let quizDataPath;
 
-    // If no flow index is provided, assume we're loading the first stage
-    const stageIndex = flowIndex ?? 0;
+    if (stageIndex !== undefined) {
+      // Get data sources for a specific stage by index
+      console.log(`Loading data for specific stage index: ${stageIndex}`);
+      const stageType = isTraining ? "training" : "task";
 
-    // Get stage data from the study flow
-    const studyFlow = metadata.studyFlow || [];
-    if (stageIndex < 0 || stageIndex >= studyFlow.length) {
-      console.error(
-        `Invalid flow index: ${stageIndex} (max ${studyFlow.length - 1})`
+      // Find all stages of this type
+      const stageDataSources = getStageDataSources(
+        scenarioId,
+        stageType,
+        stageIndex
       );
-      throw new Error(`Invalid flow index: ${stageIndex}`);
+
+      if (!stageDataSources) {
+        console.error(
+          `No data sources found for ${stageType} stage at index ${stageIndex}`
+        );
+        throw new Error(`No data sources for stage ${stageType}:${stageIndex}`);
+      }
+
+      eventsDataPath = stageDataSources.eventsDataPath;
+      quizDataPath = stageDataSources.quizDataPath;
+    } else {
+      // Use default data sources based on training/task mode
+      const stageType = isTraining ? "training" : "task";
+      const stageDataSources = getStageDataSources(scenarioId, stageType);
+
+      if (!stageDataSources) {
+        console.error(`No data sources found for ${stageType} stage`);
+        throw new Error(`No data sources for stage ${stageType}`);
+      }
+
+      eventsDataPath = stageDataSources.eventsDataPath;
+      quizDataPath = stageDataSources.quizDataPath;
     }
 
-    const stageType = studyFlow[stageIndex].type;
-    console.log(`Loading stage type: ${stageType} at index ${stageIndex}`);
-
-    // Get data sources for this stage
-    const stageDataSources = getStageDataSources(
-      scenarioId,
-      stageType,
-      stageIndex
-    );
-
-    if (!stageDataSources) {
-      console.error(
-        `No data sources found for stage ${stageType} at index ${stageIndex}`
-      );
-      throw new Error(`No data sources found for stage ${stageType}`);
+    // Verify paths are available
+    if (!eventsDataPath || !quizDataPath) {
+      console.error("Missing data source paths:", {
+        eventsDataPath,
+        quizDataPath,
+      });
+      throw new Error("Missing data source paths");
     }
-
-    // Make sure we have valid paths, fallback to defaults if needed
-    const eventsDataPath =
-      stageDataSources.eventsDataPath ||
-      (stageType === "training"
-        ? metadata.dataSources.trainingEventsDataPath || "train_data.json"
-        : metadata.dataSources.eventsDataPath || "data.json");
-
-    const quizDataPath =
-      stageDataSources.quizDataPath ||
-      (stageType === "training"
-        ? metadata.dataSources.trainingQuizDataPath || "train_quiz_data.json"
-        : metadata.dataSources.quizDataPath || "quiz_data.json");
 
     console.log(`Loading events data from: ${eventsDataPath}`);
     console.log(`Loading quiz data from: ${quizDataPath}`);
@@ -123,10 +113,10 @@ export async function loadAndProcessScenarioData(
       quizData.quiz.map((item: QuizItem) => item.id)
     );
 
-    // For training stages, simply return the data without reordering
-    if (stageType === "training") {
+    // For training scenarios, simply return the data without reordering
+    if (isTraining) {
       console.log(
-        "Training stage detected: skipping reordering based on preferred pattern"
+        "Training mode detected: skipping reordering based on preferred pattern"
       );
       const processedData: NarrativeMatrixData = {
         events: baseData.events,
@@ -191,7 +181,6 @@ export async function loadAndProcessScenarioData(
         author: metadata.author || "unknown",
         publishDate: metadata.publishDate || "",
         studyType: scenarioId, // Add the scenario ID as the study type
-        currentFlowIndex: stageIndex, // Add the current flow index for reference
       },
       quiz: {
         ...quizData,

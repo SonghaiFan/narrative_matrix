@@ -17,6 +17,7 @@ interface ScenarioPageFactoryProps {
   isLoading: boolean;
   error: string | null;
   quiz?: Quiz;
+  onComplete?: () => void;
   renderContent: (props: {
     // Pass metadata and events to renderContent
     metadata: DatasetMetadata | null;
@@ -26,6 +27,7 @@ interface ScenarioPageFactoryProps {
     role: string;
     is_training?: boolean;
     quiz?: Quiz;
+    onComplete?: () => void;
   }) => ReactNode;
 }
 
@@ -42,6 +44,7 @@ export function ScenarioPageFactory({
   isLoading,
   error,
   quiz,
+  onComplete,
   renderContent,
 }: ScenarioPageFactoryProps) {
   const { userId, scenarioId, role } = useAuth();
@@ -96,6 +99,7 @@ export function ScenarioPageFactory({
         role,
         is_training,
         quiz,
+        onComplete,
       })}
     </ScenarioLayout>
   );

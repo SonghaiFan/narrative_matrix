@@ -64,6 +64,7 @@ interface VisualizationScenarioProps {
   isLoading: boolean;
   error: string | null;
   quiz?: Quiz;
+  onComplete?: () => void;
 }
 
 export function VisualizationScenario({
@@ -74,6 +75,7 @@ export function VisualizationScenario({
   isLoading,
   error,
   quiz,
+  onComplete,
 }: VisualizationScenarioProps) {
   const currentTask = useTaskStore((state) => state.currentTask);
   const visual = currentTask?.visual || null;
@@ -83,6 +85,14 @@ export function VisualizationScenario({
   useEffect(() => {
     if (metadata?.studyType) {
       setCurrentScenario(metadata.studyType as any);
+
+      // If there's a flowIndex in the metadata, we could use it for navigation state
+      if (metadata.currentFlowIndex !== undefined) {
+        // The current flow index is already set in the metadata by the data loader
+        console.log(
+          `Current flow index from metadata: ${metadata.currentFlowIndex}`
+        );
+      }
     }
   }, [metadata, setCurrentScenario]);
 
@@ -95,12 +105,16 @@ export function VisualizationScenario({
       isLoading={isLoading}
       error={error}
       quiz={quiz}
+      onComplete={onComplete}
       renderContent={({
         metadata: factoryMetadata,
         events: factoryEvents,
-        user,
+        userId,
+        scenarioId,
+        role,
         is_training: factoryIsTraining,
         quiz: factoryQuiz,
+        onComplete: factoryOnComplete,
       }) => {
         if (!factoryMetadata || !factoryEvents) {
           return <LoadingSpinner text="Loading data for content..." />;
@@ -123,9 +137,10 @@ export function VisualizationScenario({
               <TaskPanel
                 events={factoryEvents}
                 metadata={factoryMetadata}
-                userRole={user?.role as "domain" | "normal"}
+                userRole={role as "domain" | "normal"}
                 is_training={factoryIsTraining}
                 quiz={factoryQuiz}
+                onComplete={factoryOnComplete}
               />
             </div>
           </div>

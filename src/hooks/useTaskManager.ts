@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { QuizItem } from "@/components/features/task/quiz-types";
 import {
   saveTaskProgress as saveProgressToLocalStorage,
@@ -25,7 +24,7 @@ export function useTaskManager({
   userRole,
   datasetStudyType,
 }: UseTaskManagerProps) {
-  const router = useRouter();
+  // No longer need router since we're using custom events for navigation
   const { userId, scenarioId } = useAuth();
   const {
     markedEventIds,
@@ -133,10 +132,21 @@ export function useTaskManager({
     if (userRole === "normal") {
       markTasksCompletedInLocalStorage(userId);
     }
-    router.push(
-      `/completion?total=${tasks.length}&type=${studyType}&time=${finalProgress.totalSessionTime}`
-    );
-  }, [userId, tasks, userRole, router, getStudyType]);
+
+    // Dispatch a custom event for the SPA to transition to the completion stage
+    const event = new CustomEvent("scenario:complete", {
+      detail: {
+        tasks: tasks.length,
+        type: studyType,
+        time: finalProgress.totalSessionTime,
+      },
+    });
+
+    // Dispatch the event - our SPA will listen for this and handle the transition
+    window.dispatchEvent(event);
+
+    // No need for legacy router navigation anymore since completion is integrated into the SPA
+  }, [userId, tasks, userRole, getStudyType]);
 
   const handleSubmission = useCallback(
     (options: { isSkipped?: boolean; isTimeUp?: boolean }) => {
@@ -266,14 +276,18 @@ export function useTaskManager({
             "true"
           );
 
+          // Dispatch training complete event instead of directly navigating
+          const event = new CustomEvent("scenario:training-complete", {
+            detail: { scenarioId: scenarioIdForPath },
+          });
+          window.dispatchEvent(event);
+
+          // Keep the legacy approach as a fallback
           const mainRedirectPath = `/text-visual/${scenarioIdForPath}`;
           console.log(
             "Training complete. Suggested redirect:",
             mainRedirectPath
           );
-          // The parent component (TaskPanel) will need a way to know training is complete
-          // to show the modal. This hook can return a state like `isTrainingCompleted`.
-          // For now, logging and relying on parent to handle modal via other states.
           setIsSubmitting(false); // Allow UI to update for modal
         } else {
           setTimeout(() => {
@@ -304,7 +318,6 @@ export function useTaskManager({
       isTraining,
       tasks,
       currentTaskIndex,
-      router,
       scenarioId,
       contextSelectedScenario,
       clearMarkedEvents,
