@@ -1,4 +1,4 @@
-import { NarrativeEvent } from "@/types/lite";
+import { NarrativeEvent } from "@/types/data";
 import * as d3 from "d3";
 import { TOPIC_CONFIG } from "./topic-config";
 import {

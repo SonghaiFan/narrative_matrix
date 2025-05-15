@@ -1,6 +1,6 @@
 "use client";
 
-import { Entity, NarrativeEvent, DatasetMetadata } from "@/types/lite";
+import { Entity, NarrativeEvent, DatasetMetadata } from "@/types/data";
 import { useMemo, useRef, useEffect, useState, useCallback } from "react";
 import { PURE_TEXT_CONFIG } from "./pure-text-config";
 import { useCenterControl } from "@/contexts/center-control-context";

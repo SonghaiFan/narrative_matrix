@@ -1,6 +1,6 @@
-import { Loading } from "@/components/ui/loading";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 // This component will be rendered while the page is loading
 export default function LoadingPage() {
-  return <Loading fullScreen text="Loading scenario..." />;
+  return <LoadingSpinner fullPage text="Loading scenario..." />;
 }

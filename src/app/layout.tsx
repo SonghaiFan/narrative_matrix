@@ -5,7 +5,7 @@ import { AuthProvider } from "@/contexts/auth-context";
 import { CenterControlProvider } from "@/contexts/center-control-context";
 import { TooltipProvider } from "@/contexts/tooltip-context";
 import { DisableContextMenu } from "@/components/features/narrative/shared/disable-context-menu";
-import { ClarityAnalytics } from "@/components/analytics/ClarityAnalytics";
+// import { ClarityAnalytics } from "@/components/analytics/ClarityAnalytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +36,7 @@ export default function RootLayout({
           <CenterControlProvider>
             <TooltipProvider>
               <DisableContextMenu />
-              <ClarityAnalytics />
+              {/* <ClarityAnalytics /> */}
               {children}
             </TooltipProvider>
           </CenterControlProvider>

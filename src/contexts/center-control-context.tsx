@@ -1,6 +1,6 @@
 "use client";
 
-import { NarrativeEvent, NarrativeMatrixData } from "@/types/lite";
+import { NarrativeEvent, NarrativeMatrixData } from "@/types/data";
 import {
   createContext,
   useCallback,

@@ -6,7 +6,7 @@ import {
   markTaskAsCompleted as markTasksCompletedInLocalStorage,
   getTaskProgress as getProgressFromLocalStorage,
 } from "@/lib/task-progress";
-import { saveQuizResponse as saveResponseToFirebase } from "@/lib/firebase-operations";
+import { saveQuizResponse } from "@/lib/api-submission";
 import { useAuth } from "@/contexts/auth-context";
 import { useCenterControl } from "@/contexts/center-control-context";
 import { useTaskStore } from "@/store/task-store";
@@ -25,7 +25,7 @@ export function useTaskManager({
   datasetStudyType,
 }: UseTaskManagerProps) {
   // No longer need router since we're using custom events for navigation
-  const { userId, scenarioId } = useAuth();
+  const { userId, scenarioId, sessionId } = useAuth();
   const {
     markedEventIds,
     clearMarkedEvents,
@@ -39,6 +39,7 @@ export function useTaskManager({
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [userAnswer, setUserAnswer] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // No longer need a separate sessionId state since we get it from the Auth context
 
   // Initialize tasks and current index when initialTasks change
   useEffect(() => {
@@ -179,17 +180,10 @@ export function useTaskManager({
       );
 
       if (userId) {
-        const storedUser = localStorage.getItem("user");
-        let uniqueSessionId = userId; // Fallback
-        if (storedUser) {
-          try {
-            uniqueSessionId = JSON.parse(storedUser).sessionId || userId;
-          } catch (e) {
-            console.error("Error parsing stored user for session ID:", e);
-          }
-        }
+        // Use the sessionId from the Auth context - no need for localStorage
+        const uniqueSessionId = sessionId || `${userId}_${Date.now()}`;
 
-        saveResponseToFirebase(userId, uniqueSessionId, {
+        saveQuizResponse(userId, uniqueSessionId, {
           question: fullyUpdatedTask.question,
           userAnswer: fullyUpdatedTask.userAnswer || "",
           markedEvents: markedEventIds,
@@ -269,6 +263,7 @@ export function useTaskManager({
             if (pathParts.length >= 3 && pathParts[1] === "text-visual")
               scenarioIdForPath = pathParts[2];
           }
+          // Store only the completion state of the scenario training (non-sensitive)
           const scenarioPathKey =
             window.location.pathname.split("/")[1] || "unknown-scenario";
           localStorage.setItem(
@@ -315,6 +310,7 @@ export function useTaskManager({
       userAnswer,
       markedEventIds,
       userId,
+      sessionId, // Add sessionId dependency
       isTraining,
       tasks,
       currentTaskIndex,
@@ -323,7 +319,7 @@ export function useTaskManager({
       clearMarkedEvents,
       navigateToCompletionPage,
       getStudyType,
-      setTasks, // Added setTasks
+      setTasks,
     ]
   );
 

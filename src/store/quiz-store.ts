@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { QuizItem } from "@/components/features/task/quiz-types";
-import { saveQuizResponse } from "@/lib/firebase-operations";
+import { saveQuizResponse } from "@/lib/api-submission";
 
 interface QuizState {
   currentQuiz: QuizItem | null;

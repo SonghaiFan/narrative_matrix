@@ -1,9 +1,6 @@
 import { create } from "zustand";
 import { ScenarioType } from "@/types/scenario";
-import {
-  getScenarioMetadata,
-  getScenarioStudyFlow,
-} from "@/lib/scenarios/study-config";
+import { getScenarioMetadata } from "@/lib/scenarios/study-config";
 
 export type NavigationStage = "intro" | "training" | "task" | "complete";
 

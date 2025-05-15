@@ -1,4 +1,4 @@
-import { Entity, NarrativeEvent } from "@/types/lite";
+import { Entity, NarrativeEvent } from "@/types/data";
 import { VisualizationType } from "@/types/visualization";
 import * as d3 from "d3";
 import { ENTITY_CONFIG } from "./entity-config";

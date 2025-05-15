@@ -1,13 +1,19 @@
 import { useState, useEffect, useCallback } from "react";
-import { loadDataFile } from "@/lib/data-storage";
-import { QuizItem, Quiz } from "@/components/features/task/quiz-types"; // Assuming this path is correct
-import { NarrativeEvent, DatasetMetadata } from "@/types/lite";
+import { fetchScenarioData } from "@/lib/api-client";
+import { QuizItem, Quiz } from "@/components/features/task/quiz-types";
+import { NarrativeEvent, DatasetMetadata } from "@/types/data";
+
+// Extended Quiz interface to include quiz_recall field
+interface ExtendedQuiz extends Quiz {
+  quiz_recall?: any[];
+}
 
 interface UseQuizLoaderProps {
   isTraining: boolean;
   events: NarrativeEvent[] | undefined;
   datasetMetadata: DatasetMetadata | undefined;
-  passedInQuiz: Quiz | undefined; // Quiz data passed via props (already processed by server)
+  passedInQuiz: Quiz | undefined;
+  scenarioId?: string;
 }
 
 export function useQuizLoader({
@@ -15,6 +21,7 @@ export function useQuizLoader({
   events,
   datasetMetadata,
   passedInQuiz,
+  scenarioId = "text-visual-1",
 }: UseQuizLoaderProps) {
   const [tasks, setTasks] = useState<QuizItem[]>([]);
   const [isLoadingQuiz, setIsLoadingQuiz] = useState(true);
@@ -87,63 +94,53 @@ export function useQuizLoader({
               "[useQuizLoader] Quiz prop provided but yielded no tasks."
             );
           }
-        } else if (isTraining) {
-          console.log(
-            "[useQuizLoader] Mode: Training, loading train_quiz_data.json"
-          );
-          const trainingData = await loadDataFile<{ quiz: any[] }>(
-            "train_quiz_data.json"
-          );
-          finalTasks = processQuizData(trainingData?.quiz);
-          if (finalTasks.length === 0) {
-            console.warn(
-              "[useQuizLoader] Training quiz file loaded but yielded no tasks."
-            );
-          }
         } else {
+          // API-based loading
           console.log(
-            "[useQuizLoader] Mode: Real Task, loading quiz_data.json"
+            `[useQuizLoader] Loading from API for scenario ${scenarioId} (training: ${isTraining})`
           );
           try {
-            const publicQuizData = await loadDataFile<{
-              quiz: any[];
-              quiz_recall?: any[];
-            }>("quiz_data.json");
-            let combinedTasks = processQuizData(publicQuizData?.quiz);
-            if (
-              publicQuizData?.quiz_recall &&
-              Array.isArray(publicQuizData.quiz_recall)
-            ) {
-              const recallTasks = processQuizData(
-                publicQuizData.quiz_recall,
-                true
-              );
-              combinedTasks = [...recallTasks, ...combinedTasks]; // Prepend recall tasks
-            }
-            finalTasks = sortTasks(
-              combinedTasks,
-              datasetMetadata?.quiz_order_preference || "default"
+            // Use the new API endpoint to fetch data
+            const scenarioData = await fetchScenarioData(
+              scenarioId,
+              isTraining
             );
+
+            // Cast to ExtendedQuiz to handle quiz_recall property
+            const quizData = scenarioData.quiz as ExtendedQuiz;
+
+            if (quizData?.quiz && Array.isArray(quizData.quiz)) {
+              finalTasks = processQuizData(quizData.quiz);
+
+              // Handle recall quizzes if present
+              if (quizData.quiz_recall && Array.isArray(quizData.quiz_recall)) {
+                const recallTasks = processQuizData(quizData.quiz_recall, true);
+                finalTasks = [...recallTasks, ...finalTasks]; // Prepend recall tasks
+              }
+
+              // Sort tasks based on preference
+              finalTasks = sortTasks(
+                finalTasks,
+                datasetMetadata?.quiz_order_preference || "default"
+              );
+            }
+
             if (finalTasks.length === 0) {
               console.warn(
-                "[useQuizLoader] public/quiz_data.json loaded but yielded no tasks. Attempting fallback."
+                `[useQuizLoader] API loaded quiz data for ${scenarioId} but yielded no tasks. Attempting fallback.`
               );
             }
-          } catch (publicLoadError) {
+          } catch (apiError) {
             console.error(
-              "[useQuizLoader] Failed to load public/quiz_data.json. Attempting fallback.",
-              publicLoadError
+              `[useQuizLoader] Failed to load quiz data from API for ${scenarioId}`,
+              apiError
             );
             // Let fallback handle it
           }
         }
 
-        if (
-          !isTraining &&
-          finalTasks.length === 0 &&
-          events &&
-          events.length > 0
-        ) {
+        // Fallback to auto-generating tasks if no data is available
+        if (finalTasks.length === 0 && events && events.length > 0) {
           console.log(
             "[useQuizLoader] Fallback: Auto-generating tasks based on events."
           );
@@ -193,6 +190,7 @@ export function useQuizLoader({
           ] as QuizItem[];
         }
 
+        // Ensure unique IDs
         const seenIds = new Set<string>();
         finalTasks.forEach((task, index) => {
           if (seenIds.has(task.id)) {
@@ -227,6 +225,7 @@ export function useQuizLoader({
     events,
     datasetMetadata,
     passedInQuiz,
+    scenarioId,
     processQuizData,
     sortTasks,
   ]);

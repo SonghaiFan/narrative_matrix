@@ -1,6 +1,6 @@
 "use client";
 
-import { Entity, NarrativeEvent } from "@/types/lite";
+import { Entity, NarrativeEvent } from "@/types/data";
 import { useEffect, useRef, useState } from "react";
 import { formatDate } from "@/lib/utils";
 import { TooltipPosition } from "@/contexts/tooltip-context";

@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { ScenarioLayout } from "@/components/features/visualization/scenario-layout";
 import { useAuth } from "@/contexts/auth-context";
 // Import specific types needed
-import { NarrativeEvent, DatasetMetadata } from "@/types/lite";
+import { NarrativeEvent, DatasetMetadata } from "@/types/data";
 import { Quiz } from "@/components/features/task/quiz-types";
 
 interface ScenarioPageFactoryProps {

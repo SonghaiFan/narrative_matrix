@@ -1,18 +1,4 @@
-import {
-  ScenarioMetadata,
-  ScenarioDataSources,
-  StudyStage,
-} from "@/types/scenario";
-
-/**
- * Default data source paths
- */
-export const DEFAULT_DATA_SOURCES: ScenarioDataSources = {
-  eventsDataPath: "data.json",
-  quizDataPath: "quiz_data.json",
-  trainingEventsDataPath: "train_data.json",
-  trainingQuizDataPath: "train_quiz_data.json",
-};
+import { ScenarioMetadata, StudyStage } from "@/types/scenario";
 
 /**
  * Default study flow with standard progression
@@ -27,11 +13,19 @@ export const DEFAULT_STUDY_FLOW: StudyStage[] = [
     type: "training",
     title: "Training",
     description: "Practice with sample tasks",
+    dataSources: {
+      eventsDataPath: "scenarios/default/training_events.json",
+      quizDataPath: "scenarios/default/training_quiz.json",
+    },
   },
   {
     type: "task",
     title: "Main Tasks",
     description: "Complete the main study tasks",
+    dataSources: {
+      eventsDataPath: "scenarios/default/events.json",
+      quizDataPath: "scenarios/default/quiz.json",
+    },
   },
   {
     type: "complete",
@@ -58,7 +52,6 @@ export function createScenario(
     topic?: string;
     author?: string;
     publishDate?: string;
-    dataSources?: Partial<ScenarioDataSources>;
     quizOrderDescription?: string;
     studyFlow?: StudyStage[];
   } = {}
@@ -70,10 +63,6 @@ export function createScenario(
     topic: options.topic || "General Topic",
     author: options.author || "Research Team",
     publishDate: options.publishDate || new Date().toISOString().split("T")[0],
-    dataSources: {
-      ...DEFAULT_DATA_SOURCES,
-      ...options.dataSources,
-    },
     quizOrder: {
       preferredOrder,
       description:
@@ -124,10 +113,10 @@ export function createCustomStudyFlow(
  * // Create a scenario with two training and task phases
  * const customFlow = createCustomStudyFlow([
  *   { type: 'intro', title: 'Welcome' },
- *   { type: 'training', title: 'First Training', dataSources: { eventsDataPath: 'training1_events.json' } },
- *   { type: 'task', title: 'First Tasks', dataSources: { eventsDataPath: 'task1_events.json' } },
- *   { type: 'training', title: 'Second Training', dataSources: { eventsDataPath: 'training2_events.json' } },
- *   { type: 'task', title: 'Second Tasks', dataSources: { eventsDataPath: 'task2_events.json' } },
+ *   { type: 'training', title: 'First Training', dataSources: { eventsDataPath: 'training1_events.json', quizDataPath: 'training1_quiz.json' } },
+ *   { type: 'task', title: 'First Tasks', dataSources: { eventsDataPath: 'task1_events.json', quizDataPath: 'task1_quiz.json' } },
+ *   { type: 'training', title: 'Second Training', dataSources: { eventsDataPath: 'training2_events.json', quizDataPath: 'training2_quiz.json' } },
+ *   { type: 'task', title: 'Second Tasks', dataSources: { eventsDataPath: 'task2_events.json', quizDataPath: 'task2_quiz.json' } },
  *   { type: 'complete', title: 'Thank You' }
  * ]);
  *
@@ -138,9 +127,6 @@ export function createCustomStudyFlow(
  *   ['ir_e_n_', 'ir_e_v_'],
  *   {
  *     topic: 'Middle East Conflict',
- *     dataSources: {
- *       eventsDataPath: 'custom_data.json'
- *     },
  *     studyFlow: customFlow
  *   }
  * )

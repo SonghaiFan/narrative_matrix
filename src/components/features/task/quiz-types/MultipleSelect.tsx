@@ -1,3 +1,5 @@
+"use client";
+
 import * as Checkbox from "@radix-ui/react-checkbox";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";

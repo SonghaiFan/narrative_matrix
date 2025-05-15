@@ -16,7 +16,7 @@ import { Quiz } from "./quiz-types/index";
 import { useCenterControl } from "@/contexts/center-control-context";
 import { useAuth } from "@/contexts/auth-context";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { NarrativeEvent, DatasetMetadata } from "@/types/lite";
+import { NarrativeEvent, DatasetMetadata } from "@/types/data";
 
 // Custom hooks
 import { useQuestionTimer } from "@/hooks/useQuestionTimer";

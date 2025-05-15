@@ -5,16 +5,6 @@
 export type ScenarioType = string;
 
 /**
- * Data source configuration for a scenario
- */
-export interface ScenarioDataSources {
-  eventsDataPath: string;
-  quizDataPath: string;
-  trainingEventsDataPath?: string;
-  trainingQuizDataPath?: string;
-}
-
-/**
  * Study flow configuration defining the sequence of stages for a scenario
  */
 export interface StudyStage {
@@ -37,7 +27,6 @@ export interface ScenarioMetadata {
   topic?: string;
   author?: string;
   publishDate?: string;
-  dataSources: ScenarioDataSources;
   quizOrder: {
     preferredOrder: string[];
     description: string;

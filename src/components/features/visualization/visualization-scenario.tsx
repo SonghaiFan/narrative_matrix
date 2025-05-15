@@ -9,7 +9,7 @@ import { ResizableTwoColRow } from "@/components/ui/resizable-two-col-row";
 import { ScenarioPageFactory } from "@/components/features/visualization/scenario-page-factory";
 import { useTaskStore } from "@/store/task-store";
 import { QuizVisual, Quiz } from "@/components/features/task/quiz-types";
-import { NarrativeEvent, DatasetMetadata } from "@/types/lite";
+import { NarrativeEvent, DatasetMetadata } from "@/types/data";
 import { Suspense, useEffect } from "react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useNavigationStore } from "@/store/navigation-store";

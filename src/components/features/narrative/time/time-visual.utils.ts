@@ -1,4 +1,4 @@
-import { NarrativeEvent } from "@/types/lite";
+import { NarrativeEvent } from "@/types/data";
 import { TIME_CONFIG } from "./time-config";
 import * as d3 from "d3";
 import {

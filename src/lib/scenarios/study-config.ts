@@ -1,8 +1,8 @@
-import studyConfig from "./study_config.json";
+import studyConfig from "@/data/study_config.json";
 import { ScenarioMetadata, ScenarioType, StudyStage } from "@/types/scenario";
 
 /**
- * Study configuration is now loaded from a JSON file (study_config.json)
+ * Study configuration is loaded from a JSON file (study_config.json)
  * This allows for easier editing and maintenance of scenario configurations
  * without needing to modify TypeScript code.
  */
@@ -68,14 +68,6 @@ export function getAvailableScenarios(): ScenarioMetadata[] {
 }
 
 /**
- * Get the study flow for a specific scenario
- */
-export function getScenarioStudyFlow(scenarioId: string): StudyStage[] {
-  const scenario = getScenarioMetadata(scenarioId);
-  return scenario?.studyFlow || [];
-}
-
-/**
  * Get the data sources for a specific stage in a scenario
  */
 export function getStageDataSources(
@@ -86,60 +78,48 @@ export function getStageDataSources(
   const scenario = getScenarioMetadata(scenarioId);
   if (!scenario) return null;
 
+  // Two different behaviors:
+  // 1. If stageIndex is provided, get the specific stage at that index
+  // 2. If stageIndex is not provided but stageType is, find the first stage of that type
+
   let stageData = null;
 
-  // If a specific stage index is provided (for cases with multiple stages of the same type)
   if (stageIndex !== undefined) {
-    const stagesOfType = scenario.studyFlow.filter(
-      (stage) => stage.type === stageType
-    );
-    stageData = stagesOfType[stageIndex] || null;
+    // CASE 1: Get exact stage at the flow index
+    if (stageIndex >= 0 && stageIndex < scenario.studyFlow.length) {
+      const stage = scenario.studyFlow[stageIndex];
+
+      // Verify this stage matches the requested type
+      if (stage.type === stageType) {
+        stageData = stage;
+      } else {
+        console.error(
+          `[study-config] Stage at index ${stageIndex} has type ${stage.type}, but requested type is ${stageType}`
+        );
+      }
+    } else {
+      console.error(
+        `[study-config] Invalid stage index ${stageIndex} for scenario ${scenarioId} (studyFlow length: ${scenario.studyFlow.length})`
+      );
+    }
   } else {
-    // Otherwise find the first stage of the requested type
+    // CASE 2: Find first stage of requested type
     stageData =
       scenario.studyFlow.find((stage) => stage.type === stageType) || null;
   }
 
-  // Return either the stage-specific data sources or the scenario default
+  // Return the stage data sources if present
   if (stageData?.dataSources) {
+    console.log(
+      `[study-config] Found dataSources for scenario ${scenarioId}, type ${stageType}, index ${stageIndex}:`,
+      stageData.dataSources
+    );
     return stageData.dataSources;
   }
 
-  // Fallback to scenario defaults based on stage type
-  switch (stageType) {
-    case "training":
-      return {
-        eventsDataPath:
-          scenario.dataSources.trainingEventsDataPath ||
-          scenario.dataSources.eventsDataPath,
-        quizDataPath:
-          scenario.dataSources.trainingQuizDataPath ||
-          scenario.dataSources.quizDataPath,
-      };
-    case "task":
-      return {
-        eventsDataPath: scenario.dataSources.eventsDataPath,
-        quizDataPath: scenario.dataSources.quizDataPath,
-      };
-    default:
-      return null;
-  }
-}
-
-/**
- * Get scenario name from its ID
- */
-export function getScenarioName(type: ScenarioType): string {
-  const scenario = getAvailableScenarios().find((s) => s.id === type);
-  return scenario?.name || `Scenario ${type.replace("text-visual-", "")}`;
-}
-
-/**
- * Get an array of scenarios with just their ID and name
- */
-export function getScenariosWithNames() {
-  return getAvailableScenarios().map((scenario) => ({
-    id: scenario.id,
-    name: scenario.name,
-  }));
+  // No dataSources found
+  console.warn(
+    `[study-config] No dataSources found for scenario ${scenarioId}, type ${stageType}, index ${stageIndex}`
+  );
+  return null;
 }

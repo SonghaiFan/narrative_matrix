@@ -1,6 +1,4 @@
 import { Quiz } from "@/components/features/task/quiz-types";
-import { QuizItem } from "../components/features/task/quiz-types";
-import { ScenarioMetadata } from "./scenario";
 
 export interface Entity {
   id: string; // Unique and unified entity ID

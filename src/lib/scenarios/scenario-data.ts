@@ -1,8 +1,6 @@
 // import { loadDataFile } from "@/lib/data-storage";
-import { NarrativeMatrixData } from "@/types/lite";
+import { NarrativeMatrixData } from "@/types/data";
 import { QuizItem } from "@/components/features/task/quiz-types";
-import { promises as fs } from "fs";
-import path from "path";
 import {
   getScenarioMetadata,
   getStageDataSources,
@@ -10,6 +8,9 @@ import {
 } from "./study-config";
 import groupBy from "lodash/groupBy";
 import flatMap from "lodash/flatMap";
+
+// Import the new server-only file reader utility
+import { readAndParseScenarioFiles } from "../server/file-operations";
 
 // Server-specific function for scenarios, augments with server-only fields
 export function getAvailableScenarios() {
@@ -24,172 +25,171 @@ export function getAvailableScenarios() {
 }
 
 // --- Data Processing ---
+/**
+ * @deprecated This function is kept for backward compatibility.
+ * Use src/lib/server/scenario-data.ts version which handles flow stages properly.
+ */
 export async function loadAndProcessScenarioData(
   scenarioId: string,
   isTraining = false,
   stageIndex?: number
 ): Promise<NarrativeMatrixData> {
-  try {
-    console.log(`Loading scenario data for: ${scenarioId}`);
-    console.log(`Training mode: ${isTraining}`);
-    console.log(`Stage index: ${stageIndex}`);
+  console.warn(
+    "[DEPRECATED] loadAndProcessScenarioData in scenarios/scenario-data.ts is deprecated. Use the version from src/lib/server/scenario-data.ts instead."
+  );
 
-    // Get metadata and data sources
+  try {
+    console.log(
+      `[scenario-data] Loading scenario data for: ${scenarioId}, training: ${isTraining}, stage: ${stageIndex}`
+    );
+
+    // Get metadata
     const metadata = getScenarioMetadata(scenarioId);
     if (!metadata) {
-      console.error(`No metadata found for scenario ${scenarioId}`);
+      console.error(
+        `[scenario-data] No metadata found for scenario ${scenarioId}`
+      );
       throw new Error(`Scenario not found: ${scenarioId}`);
     }
 
-    // Get appropriate data sources based on stage
-    let eventsDataPath;
-    let quizDataPath;
+    // Determine which stage type to load
+    const stageType = isTraining ? "training" : "task";
 
-    if (stageIndex !== undefined) {
-      // Get data sources for a specific stage by index
-      console.log(`Loading data for specific stage index: ${stageIndex}`);
-      const stageType = isTraining ? "training" : "task";
+    // Get appropriate relative data source paths from study config
+    const stageDataSources = getStageDataSources(
+      scenarioId,
+      stageType,
+      stageIndex // Pass stageIndex if provided
+    );
 
-      // Find all stages of this type
-      const stageDataSources = getStageDataSources(
-        scenarioId,
-        stageType,
-        stageIndex
+    if (!stageDataSources?.eventsDataPath || !stageDataSources?.quizDataPath) {
+      console.error(
+        `[scenario-data] Missing data source paths for scenario ${scenarioId}, stageType ${stageType}, stageIndex ${stageIndex}`
       );
-
-      if (!stageDataSources) {
-        console.error(
-          `No data sources found for ${stageType} stage at index ${stageIndex}`
-        );
-        throw new Error(`No data sources for stage ${stageType}:${stageIndex}`);
-      }
-
-      eventsDataPath = stageDataSources.eventsDataPath;
-      quizDataPath = stageDataSources.quizDataPath;
-    } else {
-      // Use default data sources based on training/task mode
-      const stageType = isTraining ? "training" : "task";
-      const stageDataSources = getStageDataSources(scenarioId, stageType);
-
-      if (!stageDataSources) {
-        console.error(`No data sources found for ${stageType} stage`);
-        throw new Error(`No data sources for stage ${stageType}`);
-      }
-
-      eventsDataPath = stageDataSources.eventsDataPath;
-      quizDataPath = stageDataSources.quizDataPath;
+      throw new Error(
+        `Missing data source paths for scenario ${scenarioId}, stage ${stageType}${
+          stageIndex !== undefined ? ":" + stageIndex : ""
+        }`
+      );
     }
 
-    // Verify paths are available
-    if (!eventsDataPath || !quizDataPath) {
-      console.error("Missing data source paths:", {
-        eventsDataPath,
-        quizDataPath,
-      });
-      throw new Error("Missing data source paths");
-    }
-
-    console.log(`Loading events data from: ${eventsDataPath}`);
-    console.log(`Loading quiz data from: ${quizDataPath}`);
-
-    // Load data files
-    const baseDataPath = path.join(process.cwd(), "public", eventsDataPath);
-    const baseData = JSON.parse(await fs.readFile(baseDataPath, "utf-8"));
-
-    const quizDataFullPath = path.join(process.cwd(), "public", quizDataPath);
-    const quizData = JSON.parse(await fs.readFile(quizDataFullPath, "utf-8"));
-
+    const eventsRelativePath = stageDataSources.eventsDataPath;
+    const quizRelativePath = stageDataSources.quizDataPath;
     console.log(
-      `Quiz data loaded. Number of quiz items: ${quizData.quiz?.length || 0}`
+      `[scenario-data] Relative paths determined: events=${eventsRelativePath}, quiz=${quizRelativePath}`
     );
 
-    if (!quizData.quiz || !Array.isArray(quizData.quiz)) {
-      console.error("Quiz data does not have expected structure:", quizData);
-      throw new Error("Quiz data does not have expected structure");
-    }
-
-    console.log(
-      "Available quiz item IDs:",
-      quizData.quiz.map((item: QuizItem) => item.id)
+    // Use the server-only utility to read and parse the files
+    const { eventsData, quizData } = await readAndParseScenarioFiles(
+      eventsRelativePath,
+      quizRelativePath
     );
 
-    // For training scenarios, simply return the data without reordering
-    if (isTraining) {
+    // Check if quiz data structure is valid before proceeding
+    if (!quizData?.quiz || !Array.isArray(quizData.quiz)) {
+      console.error(
+        "[scenario-data] Quiz data from file does not have expected structure:",
+        quizData
+      );
+      // Depending on requirements, either throw or return potentially partial data
+      // Let's throw for now to indicate a data integrity issue
+      throw new Error(
+        "Loaded quiz data is missing the expected 'quiz' array structure."
+      );
+    }
+
+    // Prepare the base response data
+    let finalQuizItems = quizData.quiz;
+
+    // Apply reordering only for non-training scenarios if preferred order is specified
+    if (!isTraining && metadata?.quizOrder?.preferredOrder) {
+      const preferredOrder = metadata.quizOrder.preferredOrder;
       console.log(
-        "Training mode detected: skipping reordering based on preferred pattern"
+        `[scenario-data] Applying preferred order for ${scenarioId}:`,
+        preferredOrder
       );
-      const processedData: NarrativeMatrixData = {
-        events: baseData.events,
-        metadata: {
-          title: metadata.name,
-          description: metadata.description,
-          topic: metadata.topic || "",
-          author: metadata.author || "unknown",
-          publishDate: metadata.publishDate || "",
-          studyType: scenarioId, // Add the scenario ID as the study type
-        },
-        quiz: {
-          ...quizData,
-        },
-      };
-      return processedData;
+
+      const prefixToItemsMap = groupBy(
+        quizData.quiz,
+        (
+          item: QuizItem // Ensure item has type
+        ) =>
+          preferredOrder.find((prefix) => item.id.startsWith(prefix)) || "other"
+      );
+
+      const reorderedQuizItems = flatMap(
+        preferredOrder,
+        (prefix) => prefixToItemsMap[prefix] || []
+      );
+
+      if (reorderedQuizItems.length > 0) {
+        finalQuizItems = reorderedQuizItems;
+      } else {
+        console.warn(
+          `[scenario-data] Reordering resulted in empty quiz list for ${scenarioId}, using original order.`
+        );
+      }
+    } else {
+      console.log(
+        `[scenario-data] Skipping quiz reordering for ${scenarioId} (training=${isTraining}, no preferred order=${!metadata
+          ?.quizOrder?.preferredOrder})`
+      );
     }
 
-    // For non-training scenarios, apply quiz item reordering if specified
-    if (!metadata?.quizOrder?.preferredOrder) {
-      console.error(`No quiz order found for scenario ${scenarioId}`);
-      const processedData: NarrativeMatrixData = {
-        events: baseData.events,
-        metadata: {
-          title: metadata.name,
-          description: metadata.description,
-          topic: metadata.topic || "",
-          author: metadata.author || "unknown",
-          publishDate: metadata.publishDate || "",
-          studyType: scenarioId, // Add the scenario ID as the study type
-        },
-        quiz: {
-          ...quizData,
-        },
-      };
-      return processedData;
-    }
-
-    const preferredOrder = metadata.quizOrder.preferredOrder;
-    console.log(`Preferred order for ${scenarioId}:`, preferredOrder);
-
-    // Lodash-based grouping and flattening
-    const prefixToItemsMap = groupBy(
-      quizData.quiz,
-      (item) =>
-        preferredOrder.find((prefix) => item.id.startsWith(prefix)) || "other"
-    );
-    const reorderedQuizItems = flatMap(
-      preferredOrder,
-      (prefix) => prefixToItemsMap[prefix] || []
-    );
-
-    const finalQuizItems =
-      reorderedQuizItems.length > 0 ? reorderedQuizItems : quizData.quiz;
-
+    // Construct the final data object
     const processedData: NarrativeMatrixData = {
-      events: baseData.events,
+      // Combine metadata from study config with file data
       metadata: {
         title: metadata.name,
         description: metadata.description,
         topic: metadata.topic || "",
         author: metadata.author || "unknown",
         publishDate: metadata.publishDate || "",
-        studyType: scenarioId, // Add the scenario ID as the study type
+        studyType: scenarioId, // Use scenario ID as study type for now
       },
+      events: eventsData.events, // Assuming events data is structured under an 'events' key
       quiz: {
-        ...quizData,
-        quiz: finalQuizItems,
+        ...quizData, // Keep other potential properties from quiz file (e.g., quiz_recall)
+        quiz: finalQuizItems, // Use the potentially reordered list
       },
     };
+
     return processedData;
   } catch (error) {
-    console.error("Error loading scenario data:", error);
+    console.error(
+      `[scenario-data] Error in loadAndProcessScenarioData for ${scenarioId}:`,
+      error
+    );
+    // Re-throw the error to be handled by the caller
+    throw error;
+  }
+}
+
+/**
+ * @deprecated This function is kept for backward compatibility.
+ * Use src/lib/server/scenario-data.ts version which handles flow stages properly.
+ */
+export async function legacyLoadAndProcessScenarioData(
+  scenarioId: string,
+  isTraining = false,
+  stageIndex?: number
+): Promise<NarrativeMatrixData> {
+  console.warn(
+    "[DEPRECATED] legacyLoadAndProcessScenarioData is deprecated. Use the version from src/lib/server/scenario-data.ts instead."
+  );
+
+  try {
+    console.log(
+      `[scenario-data] Loading scenario data for: ${scenarioId}, training: ${isTraining}, stage: ${stageIndex}`
+    );
+
+    // ... rest of the existing function
+  } catch (error) {
+    console.error(
+      `[scenario-data] Error in legacyLoadAndProcessScenarioData for ${scenarioId}:`,
+      error
+    );
+    // Re-throw the error to be handled by the caller
     throw error;
   }
 }

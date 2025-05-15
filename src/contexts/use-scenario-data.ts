@@ -1,13 +1,12 @@
 import { useEffect, useCallback, useState } from "react";
 import { useCenterControl } from "@/contexts/center-control-context";
-import { loadDataFile } from "@/lib/data-storage";
-import { NarrativeMatrixData } from "@/types/lite";
+import { fetchScenarioData } from "@/lib/api-client";
+import { NarrativeMatrixData } from "@/types/data";
 import { useAuth } from "@/contexts/auth-context";
 
 /**
- * Custom hook for handling client-side data loading aspects IF NEEDED.
- * NOTE: For dynamic routes, primary data loading is now server-side.
- * This hook might still be used by components outside dynamic routes or for client-specific data needs.
+ * Custom hook for handling client-side data loading
+ * Refactored to use the API route for fetching scenario data
  */
 export function useScenarioData(isTraining = false) {
   const { selectedScenario } = useCenterControl();
@@ -31,14 +30,13 @@ export function useScenarioData(isTraining = false) {
   }, []);
 
   // Store the current scenario in localStorage when it changes
-  // Keep this for potential backward compatibility or other component usage
   useEffect(() => {
     if (typeof window !== "undefined" && selectedScenario) {
       localStorage.setItem("currentScenario", selectedScenario as string);
     }
   }, [selectedScenario]);
 
-  // Fetch data function - Simplified for client-side needs
+  // Fetch data function - Updated to use the API route
   const fetchData = useCallback(async () => {
     console.log("[useScenarioData] fetchData called with:", {
       selectedScenario,
@@ -62,31 +60,21 @@ export function useScenarioData(isTraining = false) {
     );
 
     try {
-      // Fetch the BASE data file client-side
-      // Quiz processing/ordering is assumed to be done server-side now
-      const dataSource = isTraining ? "train_data.json" : "data.json";
-      console.log(`[useScenarioData] Fetching client-side data: ${dataSource}`);
-      const loadedData = await loadDataFile<NarrativeMatrixData>(dataSource);
-
-      // Set the raw data (no client-side quiz processing)
+      // Fetch data from the API route instead of direct file loading
+      console.log(
+        `[useScenarioData] Fetching scenario data: ${scenarioIdForData}, training: ${isTraining}`
+      );
+      const loadedData = await fetchScenarioData(scenarioIdForData, isTraining);
       setData(loadedData);
     } catch (error) {
-      console.error("[useScenarioData] Error in client fetchData:", error);
+      console.error("[useScenarioData] Error in fetchData:", error);
       setError(
-        error instanceof Error ? error.message : "Failed to load client data"
+        error instanceof Error ? error.message : "Failed to load scenario data"
       );
     } finally {
       setIsLoading(false);
     }
-  }, [
-    selectedScenario,
-    scenarioId,
-    forcedScenario,
-    isTraining,
-    setIsLoading,
-    setError,
-    setData,
-  ]);
+  }, [selectedScenario, scenarioId, forcedScenario, isTraining]);
 
   // Effect to trigger fetch
   useEffect(() => {
@@ -99,7 +87,7 @@ export function useScenarioData(isTraining = false) {
 
   return {
     data,
-    isLoading: isLoading,
+    isLoading,
     error,
     fetchData, // Expose fetchData if needed by components
   };
