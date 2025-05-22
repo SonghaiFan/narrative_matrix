@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
-import fs from "fs/promises";
 import { NarrativeMatrixData, DatasetMetadata } from "@/types/data";
-
-// Import the study configuration
-import studyConfig from "@/lib/scenarios/study_config.json";
 import { getScenarioMetadata } from "@/lib/scenarios/study-config";
 
 // Import the new server-only file reader utility

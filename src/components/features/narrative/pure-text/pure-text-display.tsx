@@ -141,7 +141,12 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
     (text: string, searchQuery: string) => {
       if (!searchQuery.trim()) return text;
 
-      const regex = new RegExp(`(${searchQuery.trim()})`, "gi");
+      // Escape special regex characters in the search query
+      const escapedQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+      // Only avoid matching within HTML tags, but allow matching single characters
+      const regex = new RegExp(`(?![^<]*>)(${escapedQuery})`, "gi");
+
       return text.replace(
         regex,
         '<span style="background-color: yellow">$1</span>'

@@ -31,18 +31,6 @@ export function IntroductionFactory({
     setCurrentScenario(scenarioType);
   }, [scenarioType, setCurrentScenario]);
 
-  // Check if user has already completed introduction for this scenario
-  useEffect(() => {
-    // If intro is already completed, redirect to the next stage
-    if (isStageCompleted(scenarioType, "intro")) {
-      const targetUrl = isStageCompleted(scenarioType, "training")
-        ? goToStage("tasks") // If training is completed, go to tasks
-        : goToStage("training"); // Otherwise go to training
-
-      router.push(targetUrl);
-    }
-  }, [router, scenarioType, isStageCompleted, goToStage]);
-
   const handleComplete = () => {
     // Mark introduction as complete in the navigation store
     completeCurrentStage();

@@ -11,7 +11,7 @@ import { ScenarioContextSync } from "@/contexts/scenario-context-sync";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useNavigationStore } from "@/store/navigation-store";
 import { loadScenarioData } from "@/lib/server/actions";
-import { CompletionComponent } from "./CompletionComponent";
+import { CompletionPage } from "@/components/features/completion/completion-page";
 import { IntroductionPage } from "@/components/features/introduction/introduction-page";
 
 // Define the types for our different stages
@@ -338,7 +338,7 @@ export default function DynamicVisualizationClient({
         )}
 
       {currentStage === "complete" && (
-        <CompletionComponent
+        <CompletionPage
           metadata={metadata}
           scenarioId={scenarioId}
           paramId={paramId}

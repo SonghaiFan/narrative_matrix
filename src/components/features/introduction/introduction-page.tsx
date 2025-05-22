@@ -402,18 +402,18 @@ export function IntroductionPage({
 
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-black/5">
-      <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full mx-auto">
-        <div className="text-sm font-medium text-blue-600 mb-2">
+      <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 max-w-5xl w-full mx-auto">
+        <div className="text-sm font-medium text-blue-600 mb-4">
           Step {currentStep + 1} of {introductionSteps.length}
         </div>
 
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+        <h2 className="text-3xl font-bold text-gray-900 mb-6">
           {currentStepData.title}
         </h2>
 
         {/* Render image if exists */}
         {currentStepData.image && (
-          <div className="relative w-full h-80 mb-6 rounded-lg overflow-hidden border border-gray-100">
+          <div className="relative w-full h-80 mb-8 rounded-lg overflow-hidden border border-gray-100">
             <Image
               src={currentStepData.image}
               alt={currentStepData.title}
@@ -423,7 +423,7 @@ export function IntroductionPage({
           </div>
         )}
 
-        <div className="text-gray-600 text-base prose prose-sm max-w-none">
+        <div className="text-gray-600 text-lg prose prose-base max-w-none mb-8">
           {currentStepData.content}
         </div>
 
@@ -432,18 +432,18 @@ export function IntroductionPage({
           <YouTubeVideo url={currentStepData.videoUrl} />
         )}
 
-        <div className="flex justify-between items-center mt-8">
-          <div className="flex space-x-1.5">
+        <div className="flex justify-between items-center mt-10">
+          <div className="flex space-x-2">
             {introductionSteps.map((_, index: number) => (
               <div
                 key={index}
-                className={`w-2.5 h-2.5 rounded-full ${
+                className={`w-3 h-3 rounded-full ${
                   index === currentStep ? "bg-blue-500" : "bg-gray-200"
                 }`}
               />
             ))}
           </div>
-          <Button onClick={handleNext} variant="primary" size="md">
+          <Button onClick={handleNext} variant="primary" size="lg">
             {currentStep === introductionSteps.length - 1 ? (
               "Begin"
             ) : (
