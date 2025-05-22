@@ -8,11 +8,11 @@ import { notFound } from "next/navigation";
 import { Suspense, useState, useEffect } from "react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ScenarioContextSync } from "@/contexts/scenario-context-sync";
-import Link from "next/link";
-import { CheckCircle } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useNavigationStore, NavigationStage } from "@/store/navigation-store";
+import { useNavigationStore } from "@/store/navigation-store";
 import { loadScenarioData } from "@/lib/server/actions";
+import { CompletionComponent } from "./CompletionComponent";
+import { IntroductionPage } from "@/components/features/introduction/introduction-page";
 
 // Define the types for our different stages
 type StageType = "intro" | "training" | "task" | "complete";
@@ -315,12 +315,9 @@ export default function DynamicVisualizationClient({
       <ScenarioContextSync />
 
       {currentStage === "intro" && (
-        <IntroductionComponent
-          metadata={metadata}
-          scenarioId={scenarioId}
-          paramId={paramId}
-          currentIndex={stageIndex}
-          onContinue={goToNextStage}
+        <IntroductionPage
+          onComplete={goToNextStage}
+          scenarioType={scenarioId}
         />
       )}
 
@@ -348,234 +345,5 @@ export default function DynamicVisualizationClient({
         />
       )}
     </>
-  );
-}
-
-// Introduction Component
-function IntroductionComponent({
-  metadata,
-  scenarioId,
-  paramId,
-  currentIndex,
-  onContinue,
-}: {
-  metadata: any;
-  scenarioId: string;
-  paramId: string;
-  currentIndex: number;
-  onContinue: () => void;
-}) {
-  // Function to get a badge color based on stage type
-  const getStageTypeColor = (type: string) => {
-    switch (type) {
-      case "intro":
-        return "bg-blue-100 text-blue-800";
-      case "training":
-        return "bg-green-100 text-green-800";
-      case "task":
-        return "bg-purple-100 text-purple-800";
-      case "complete":
-        return "bg-orange-100 text-orange-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  // Function to format stage data sources for display
-  const formatDataSources = (stage: StudyStage) => {
-    if (!stage.dataSources) return "Default data sources";
-
-    return (
-      <div className="text-xs text-gray-600 mt-1 space-y-1">
-        {stage.dataSources.eventsDataPath && (
-          <div>
-            <span className="font-semibold">Events:</span>{" "}
-            {stage.dataSources.eventsDataPath}
-          </div>
-        )}
-        {stage.dataSources.quizDataPath && (
-          <div>
-            <span className="font-semibold">Quiz:</span>{" "}
-            {stage.dataSources.quizDataPath}
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Welcome to {metadata.name}
-          </h1>
-          <p className="text-lg text-gray-600">{metadata.description}</p>
-
-          <div className="mt-3 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
-            Scenario ID: {scenarioId}
-          </div>
-        </div>
-
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">
-            About This Study
-          </h2>
-          <p className="text-gray-700 mb-4">
-            This user study explores how different visualization approaches can
-            enhance understanding of narrative content.
-          </p>
-          <p className="text-gray-700 mb-4">
-            You will be presented with a series of tasks and questions related
-            to the content. Some will include visualizations to help you analyze
-            the information.
-          </p>
-        </div>
-
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">
-            Study Flow
-          </h2>
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-            <div className="grid grid-cols-3 gap-4 text-sm font-medium text-gray-700 mb-2">
-              <div>Stage</div>
-              <div>Description</div>
-              <div>Data Sources</div>
-            </div>
-            <div className="space-y-4">
-              {metadata.studyFlow.map((stage: StudyStage, index: number) => (
-                <div
-                  key={index}
-                  className="grid grid-cols-3 gap-4 bg-white p-3 rounded border border-gray-200"
-                >
-                  <div>
-                    <div className="flex items-center">
-                      <span className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium mr-2">
-                        {index + 1}
-                      </span>
-                      <span className="font-medium">
-                        {stage.title || "Untitled"}
-                      </span>
-                    </div>
-                    <div
-                      className={`mt-1 inline-flex items-center px-2 py-0.5 rounded text-xs ${getStageTypeColor(
-                        stage.type
-                      )}`}
-                    >
-                      {stage.type}
-                    </div>
-                    {index === currentIndex && (
-                      <div className="mt-1 text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">
-                        Current Stage
-                      </div>
-                    )}
-                  </div>
-                  <div className="text-gray-700 text-sm">
-                    {stage.description || "No description available"}
-                  </div>
-                  <div className="text-xs">{formatDataSources(stage)}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-8">
-          <h3 className="text-md font-medium text-gray-800 mb-2">
-            Scenario Metadata
-          </h3>
-          <div className="text-sm space-y-1">
-            <div>
-              <span className="font-semibold">Topic:</span> {metadata.topic}
-            </div>
-            <div>
-              <span className="font-semibold">Author:</span> {metadata.author}
-            </div>
-            <div>
-              <span className="font-semibold">Publish Date:</span>{" "}
-              {metadata.publishDate}
-            </div>
-            {/* Data sources are now defined per stage */}
-          </div>
-        </div>
-
-        <div className="flex justify-center">
-          <button
-            onClick={onContinue}
-            className="px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-md hover:bg-blue-700 transition-colors"
-          >
-            Begin Study
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Completion Component
-function CompletionComponent({
-  metadata,
-  scenarioId,
-  paramId,
-}: {
-  metadata: any;
-  scenarioId: string;
-  paramId: string;
-}) {
-  // Fixed completion code for Prolific
-  const completionCode = "C5QC5X93";
-
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full mx-auto">
-        <div className="bg-white rounded-lg shadow-sm p-8">
-          <div className="text-center">
-            <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="h-8 w-8 text-green-600" />
-            </div>
-            <h2 className="text-xl font-medium text-gray-900 mb-2">
-              Study Completed!
-            </h2>
-            <p className="text-sm text-gray-500 mb-6">
-              Thank you for participating in {metadata.name}.
-            </p>
-
-            <div className="bg-gray-50 border border-gray-100 rounded p-3 mb-6 mx-auto">
-              <h3 className="text-sm font-medium text-gray-800 mb-2">
-                Your Completion Code
-              </h3>
-              <div className="flex items-center">
-                <code className="bg-white p-2 rounded border border-gray-100 font-mono text-sm flex-grow text-center">
-                  {completionCode}
-                </code>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(completionCode);
-                    alert("Copied to clipboard!");
-                  }}
-                  className="ml-2 p-1.5 bg-gray-800 text-white rounded hover:bg-gray-700 flex items-center justify-center"
-                  aria-label="Copy completion code"
-                >
-                  Copy
-                </button>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <p className="text-sm text-gray-600">
-                Please submit this code on Prolific to complete the study.
-              </p>
-
-              <Link
-                href="/"
-                className="inline-block px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
-              >
-                Return Home
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   );
 }

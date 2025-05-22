@@ -621,7 +621,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
 
   return (
     <div
-      className="w-full h-full overflow-scroll"
+      className="w-full h-full overflow-y-scroll"
       style={{ scrollbarGutter: "stable" }}
     >
       <div className="min-w-fit">
@@ -633,7 +633,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       </div>
       <div
         ref={containerRef}
-        className="flex-1 relative overflow-x-scroll"
+        className="flex-1 relative"
         style={{ scrollbarGutter: "stable" }}
       >
         <svg ref={svgRef} className="min-w-full min-h-full" />
