@@ -491,6 +491,44 @@
         },
         { "type": "complete", "title": "Study Completed" }
       ]
+    },
+    "text-visual-0": {
+      "id": "time-topic-entity",
+      "name": "Text Visualisation demo",
+      "description": "A narrative experience with the order: Time, Topic, Entity.",
+      "topic": "Israeli Palestinian Conflict",
+      "author": "Research Team",
+      "publishDate": "2025-03-13",
+      "studyFlow": [
+        {
+          "type": "training",
+          "title": "Training Phase",
+          "dimension": "time",
+          "dataSources": {
+            "eventsDataPath": "train/training_events.json",
+            "quizDataPath": "train/time/training_quiz_demo.json"
+          }
+        },
+        {
+          "type": "training",
+          "title": "Training Phase",
+          "dimension": "time",
+          "dataSources": {
+            "eventsDataPath": "train/training_events.json",
+            "quizDataPath": "train/time/training_quiz_demo.json"
+          }
+        },
+        {
+          "type": "training",
+          "title": "Training Phase",
+          "dimension": "entity",
+          "dataSources": {
+            "eventsDataPath": "train/training_events.json",
+            "quizDataPath": "train/entity/training_quiz_demo.json"
+          }
+        },
+        { "type": "complete", "title": "Study Completed" }
+      ]
     }
   }
 }
