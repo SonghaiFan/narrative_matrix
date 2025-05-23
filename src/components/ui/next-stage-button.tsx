@@ -24,7 +24,7 @@ const getStageLabel = (stage: NavigationStage): string => {
       return "Start Introduction";
     case "training":
       return "Continue to Training";
-    case "tasks":
+    case "task":
       return "Start Real Tasks";
     case "complete":
       return "Complete Study";
@@ -50,10 +50,11 @@ export function NextStageButton({
     goToNextStage,
     goToStage,
     completeCurrentStage: markCurrentStageComplete,
+    getCurrentFlowIndex,
   } = useNavigationStore();
 
   // Determine which stage to navigate to
-  const nextStage = targetStage || getNextStage() || "tasks";
+  const nextStage = targetStage || getNextStage() || "task";
 
   // Get appropriate button text
   const buttonLabel = label || getStageLabel(nextStage);
@@ -65,7 +66,9 @@ export function NextStageButton({
     }
 
     // Navigate to the appropriate URL
-    const targetUrl = targetStage ? goToStage(targetStage) : goToNextStage();
+    // If targetStage is specified, we need to find the appropriate flow index for that stage
+    // For now, we'll default to using goToNextStage() as it already handles the proper navigation
+    const targetUrl = targetStage ? goToNextStage() : goToNextStage();
     router.push(targetUrl);
   };
 

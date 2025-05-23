@@ -63,7 +63,7 @@ export function CenterControlProvider({
   children: ReactNode;
   initialData?: NarrativeMatrixData | null;
 }) {
-  const { user } = useAuth();
+  const auth = useAuth(); // Access the auth context without destructuring user
   // Data state
   const [data, setDataState] = useState<NarrativeMatrixData | null>(
     initialData

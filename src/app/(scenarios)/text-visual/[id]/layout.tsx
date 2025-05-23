@@ -1,11 +1,14 @@
 import React from "react";
 
-export default function TextVisualLayout({
+export default async function TextVisualLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  // Await the params before using them if needed
+  await params;
+
   return <>{children}</>;
 }

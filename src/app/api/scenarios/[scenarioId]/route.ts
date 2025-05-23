@@ -23,10 +23,13 @@ interface StudyFlowStep {
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { scenarioId: string } }
+  { params }: { params: Promise<{ scenarioId: string }> }
 ) {
+  let scenarioId = "unknown"; // Initialize with a default value
+
   try {
-    const { scenarioId } = params;
+    const resolvedParams = await params;
+    scenarioId = resolvedParams.scenarioId;
 
     // Extract training status from the request query parameters
     const { searchParams } = new URL(request.url);
@@ -140,7 +143,7 @@ export async function GET(
 
     return NextResponse.json(responseData);
   } catch (error: unknown) {
-    const scenarioIdForError = params.scenarioId || "unknown"; // Get scenarioId safely
+    const scenarioIdForError = scenarioId || "unknown"; // Now scenarioId is accessible
     console.error(
       `[API Route] Error processing scenario ${scenarioIdForError}:`,
       error
