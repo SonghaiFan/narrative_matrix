@@ -21,6 +21,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "entity",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/entity/training_quiz.json"
@@ -42,6 +43,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "topic",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/topic/training_quiz.json"
@@ -63,6 +65,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "time",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/time/training_quiz.json"
@@ -100,6 +103,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "entity",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/entity/training_quiz.json"
@@ -121,6 +125,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "time",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/time/training_quiz.json"
@@ -142,6 +147,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "topic",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/topic/training_quiz.json"
@@ -179,6 +185,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "topic",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/topic/training_quiz.json"
@@ -200,6 +207,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "entity",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/entity/training_quiz.json"
@@ -221,6 +229,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "time",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/time/training_quiz.json"
@@ -258,6 +267,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "topic",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/topic/training_quiz.json"
@@ -279,6 +289,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "time",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/time/training_quiz.json"
@@ -300,6 +311,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "entity",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/entity/training_quiz.json"
@@ -337,6 +349,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "time",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/time/training_quiz.json"
@@ -358,6 +371,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "entity",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/entity/training_quiz.json"
@@ -379,6 +393,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "topic",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/topic/training_quiz.json"
@@ -416,6 +431,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "time",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/time/training_quiz.json"
@@ -437,6 +453,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "topic",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/topic/training_quiz.json"
@@ -458,6 +475,7 @@
         {
           "type": "training",
           "title": "Training Phase",
+          "dimension": "entity",
           "dataSources": {
             "eventsDataPath": "train/training_events.json",
             "quizDataPath": "train/entity/training_quiz.json"

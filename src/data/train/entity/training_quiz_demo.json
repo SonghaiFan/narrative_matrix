@@ -2,9 +2,9 @@
   "quiz": [
     {
       "id": "ir_e_v",
-      "question": "Which entity appears more frequently in events across the narrative compared to the other two options?",
+      "question": "Which entity appears less frequently in events across the narrative compared to the other two options?",
       "options": ["Ukraine", "Russia", "United States"],
-      "answer": "Ukraine",
+      "answer": "United States",
       "level": "Information Retrieval",
       "completed": false,
       "type": "radio-options",

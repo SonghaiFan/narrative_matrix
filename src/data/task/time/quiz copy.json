@@ -1,0 +1,86 @@
+{
+  "quiz": [
+    {
+      "id": "ir_tm_n",
+      "question": "Based on the narrative, which event is the most prominent flashback?",
+      "questionCaption": "A flashback is when a narrative jumps back in time to describe an earlier event. Look for events that are mentioned later in the narrative text but occurred much earlier historically.",
+      "answer": "Hamas has been considered a terrorist organization by western governments",
+      "level": "Information Retrieval",
+      "type": "radio-options",
+      "timeLimit": 100,
+      "visual": null,
+      "prone": "time",
+      "options": [
+        "Hamas won the Palestinian Authority's parliamentary elections",
+        "Hamas has been considered a terrorist organization by western governments",
+        "Military confrontation between the Israeli military and Hamas"
+      ],
+      "completed": false,
+      "event_reference": 22
+    },
+    {
+      "id": "pr_tm_n",
+      "question": "Match each major event with its most directly associated aftermath or resolution.",
+      "questionCaption": "An aftermath is the consequence or result that follows an event, while a resolution is how a conflict or problem was settled or concluded. Look for events and their corresponding outcomes in the narrative.",
+      "answer": "Yom Kippur War: Camp David Accords,Oslo I Accords: Oslo II Accords",
+      "level": "Pattern Recognition",
+      "type": "grid-matching",
+      "timeLimit": 180,
+      "visual": null,
+      "prone": "time",
+      "options": {
+        "leftItems": ["Yom Kippur War", "Oslo I Accords"],
+        "rightItems": [
+          "Oslo II Accords",
+          "Camp David Accords",
+          "West Bank barrier wall construction"
+        ],
+        "leftLabel": "Events",
+        "rightLabel": "Resolutions"
+      },
+      "completed": false,
+      "event_reference": [14, 16, 20, 22]
+    },
+    {
+      "id": "ir_tm_v",
+      "question": "Based on the narrative, which event is the most prominent flashback?",
+      "questionCaption": "A flashback is when a narrative jumps back in time to describe an earlier event. Look for events that are mentioned later in the narrative text but occurred much earlier historically.",
+      "answer": "The United Nations adopted Resolution 181",
+      "level": "Information Retrieval",
+      "type": "radio-options",
+      "timeLimit": 100,
+      "visual": "time",
+      "prone": "time",
+      "options": [
+        "Yemen's Houthi rebels have shot missiles at Israel and commercial ships in the Red Sea",
+        "Israel to withdraw forces and allow displaced residents to return to northern Gaza",
+        "The United Nations adopted Resolution 181"
+      ],
+      "completed": false,
+      "event_reference": [1, 10, 14, 28]
+    },
+    {
+      "id": "pr_tm_v",
+      "question": "Match each major event with its most directly associated aftermath or resolution.",
+      "questionCaption": "An aftermath is the consequence or result that follows an event, while a resolution is how a conflict or problem was settled or concluded. Look for events and their corresponding outcomes in the narrative.",
+      "answer": "First Intifada: Oslo I Accords,Second Intifada: West Bank barrier wall construction",
+      "type": "grid-matching",
+      "level": "Pattern Recognition",
+      "timeLimit": 120,
+      "visual": "time",
+      "prone": "time",
+      "options": {
+        "leftItems": ["First Intifada", "Second Intifada"],
+        "rightItems": [
+          "West Bank barrier wall construction",
+          "Camp David Accords",
+          "Oslo I Accords"
+        ],
+        "leftLabel": "Events",
+        "rightLabel": "Resolutions"
+      },
+      "completed": false,
+      "event_reference": [14, 16, 19, 20, 24, 17, 21, 23, 27, 28]
+    }
+  ]
+}

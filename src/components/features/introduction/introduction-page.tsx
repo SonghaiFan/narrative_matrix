@@ -51,6 +51,72 @@ const sharedIntroductionSteps: IntroductionStep[] = [
     image: "/images/overview.png",
   },
   {
+    title: "Visualisation Panel",
+    content: (
+      <div className="space-y-4">
+        <p>The Visualisation Panel helps you see the story in three ways:</p>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>
+            <strong>Entity Swimlane</strong>: See how entities interact across
+            the narrative.
+          </li>
+          <li>
+            <strong>Topic Stream</strong>: See how events are grouped by topic
+            over time.
+          </li>
+          <li>
+            <strong>Storytime</strong>: Compare the order of events in the story
+            to real-world time.
+          </li>
+        </ul>
+        <p>Shared visual elements:</p>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>
+            <strong>Nodes</strong> represent events colored by sentiment.{" "}
+            <span className="text-green-600 font-semibold">Green</span> =
+            positive, <span className="text-gray-500 font-semibold">grey</span>{" "}
+            = neutral,{" "}
+            <span className="text-orange-500 font-semibold">orange</span> =
+            negative.
+          </li>
+          <li>
+            <strong>Tracks</strong> (grey bars) connect related events by
+            entity, topic, or sequence.
+          </li>
+        </ul>
+      </div>
+    ),
+    image: "/images/visualisation.png",
+  },
+  {
+    title: "Text Panel",
+    content: (
+      <div className="space-y-2">
+        <ul className="list-disc pl-5 space-y-1">
+          <li>Read the article, organized by event.</li>
+          <li>Use search to highlight key terms and find events quickly.</li>
+        </ul>
+      </div>
+    ),
+    image: "/images/text_search.gif",
+  },
+  {
+    title: "Task Panel",
+    content: (
+      <div className="space-y-2">
+        <ul className="list-disc pl-5 space-y-1">
+          <li>
+            Answer questions about the article using the text and visual panels.
+          </li>
+          <li>Each question has a time limit.</li>
+          <li>
+            If you can't find the answer, use "Information Not Found" to skip.
+          </li>
+        </ul>
+      </div>
+    ),
+  },
+  {
     title: "Interactions",
     content: (
       <div className="space-y-6">
@@ -92,34 +158,6 @@ const sharedIntroductionSteps: IntroductionStep[] = [
       </div>
     ),
     image: "/images/interaction.gif",
-  },
-  {
-    title: "Text Panel",
-    content: (
-      <div className="space-y-2">
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Read the article, organized by event.</li>
-          <li>Use search to highlight key terms and find events quickly.</li>
-        </ul>
-      </div>
-    ),
-    image: "/images/text_search.gif",
-  },
-  {
-    title: "Task Panel",
-    content: (
-      <div className="space-y-2">
-        <ul className="list-disc pl-5 space-y-1">
-          <li>
-            Answer questions about the article using the text and visual panels.
-          </li>
-          <li>Each question has a time limit.</li>
-          <li>
-            If you can't find the answer, use "Information Not Found" to skip.
-          </li>
-        </ul>
-      </div>
-    ),
   },
 ];
 

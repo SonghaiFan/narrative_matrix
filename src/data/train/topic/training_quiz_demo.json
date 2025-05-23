@@ -2,8 +2,8 @@
   "quiz": [
     {
       "id": "ir_t_v",
-      "question": "When was the first event related to foreign aid mentioned in the narrative",
-      "questionCaption": "Foreign aid : Help provided by one nation to another.",
+      "question": "When was the first event related to peace negotiations mentioned in the narrative",
+      "questionCaption": "Peace negotiations : Negotiations intended to bring an end to a conflict.",
       "answer": "2025",
       "level": "Information Retrieval",
       "type": "radio-options",
@@ -12,7 +12,7 @@
       "prone": "topic",
       "options": ["2022", "2024", "2025"],
       "completed": false,
-      "event_reference": 5
+      "event_reference": [3, 4]
     }
   ]
 }
