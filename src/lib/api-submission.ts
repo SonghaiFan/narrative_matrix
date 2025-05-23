@@ -1,20 +1,6 @@
 /**
  * Client utility functions for interacting with submission API endpoints
- * These replace the mock Firebase operations
- * Now includes direct Firestore operations as an option
  */
-
-import {
-  createOrUpdateUser,
-  createSession as fbCreateSession,
-  updateUserLastActive as fbUpdateUserLastActive,
-  saveTaskResponse,
-  saveFeedback as fbSaveFeedback,
-  endSession as fbEndSession,
-} from "./firebase/firestore";
-
-// Flag to use Firestore instead of API endpoints
-const USE_FIRESTORE = process.env.NEXT_PUBLIC_USE_FIRESTORE !== "false";
 
 // Submit a quiz response
 export async function saveQuizResponse(
@@ -32,10 +18,6 @@ export async function saveQuizResponse(
     endTime: number;
   }
 ): Promise<boolean> {
-  if (USE_FIRESTORE) {
-    return saveTaskResponse(prolificId, sessionId, quizData);
-  }
-
   try {
     const response = await fetch("/api/submit/quiz", {
       method: "POST",
@@ -84,10 +66,6 @@ export async function saveFeedback(
     comments?: string;
   }
 ): Promise<boolean> {
-  if (USE_FIRESTORE) {
-    return fbSaveFeedback(userId, sessionId, feedback);
-  }
-
   try {
     const response = await fetch("/api/submit/feedback", {
       method: "POST",
@@ -128,20 +106,6 @@ export async function startSession(
     deviceInfo?: Record<string, any>;
   } = {}
 ): Promise<{ userId: string; sessionId: string }> {
-  if (USE_FIRESTORE) {
-    const result = await fbCreateSession(
-      prolificId,
-      studyId,
-      sessionId,
-      scenarioType,
-      options
-    );
-    return {
-      userId: result.userId,
-      sessionId: result.sessionId,
-    };
-  }
-
   try {
     const response = await fetch("/api/session/start", {
       method: "POST",
@@ -186,10 +150,6 @@ export async function endSession(
     totalTime?: number;
   }
 ): Promise<boolean> {
-  if (USE_FIRESTORE) {
-    return fbEndSession(sessionId, completionData);
-  }
-
   try {
     const response = await fetch("/api/session/end", {
       method: "POST",
@@ -215,16 +175,7 @@ export async function endSession(
 }
 
 // Legacy functions for backward compatibility
-export async function createUser(
-  prolificId: string,
-  sessionId: string,
-  scenarioId: string,
-  role: "normal" | "domain" = "normal"
-) {
-  if (USE_FIRESTORE) {
-    return createOrUpdateUser(prolificId);
-  }
-
+export async function createUser(prolificId: string) {
   console.warn("DEPRECATED: Use startSession instead of createUser");
   return { id: prolificId };
 }
@@ -235,7 +186,6 @@ export async function createSession(
   options: {
     existingSessionId?: string;
     isTraining?: boolean;
-    includeDeviceInfo?: boolean;
   } = {}
 ) {
   console.warn("DEPRECATED: Use startSession instead of createSession");
@@ -243,31 +193,12 @@ export async function createSession(
   const uniqueSessionId =
     options.existingSessionId || `${prolificId}_${Date.now()}`;
 
-  if (USE_FIRESTORE) {
-    const result = await fbCreateSession(
-      prolificId,
-      "unknown",
-      uniqueSessionId,
-      scenarioType,
-      {
-        isTraining: options.isTraining,
-      }
-    );
-    return {
-      sessionRef: { id: uniqueSessionId },
-      sessionId: uniqueSessionId,
-    };
-  }
-
-  return { sessionRef: { id: uniqueSessionId }, sessionId: uniqueSessionId };
+  return startSession(prolificId, "unknown", uniqueSessionId, scenarioType, {
+    isTraining: options.isTraining,
+  });
 }
 
 export async function updateUserLastActive(prolificId: string) {
-  if (USE_FIRESTORE) {
-    return fbUpdateUserLastActive(prolificId);
-  }
-
-  // This function is no longer needed with the new API
-  console.warn("DEPRECATED: updateUserLastActive is no longer needed");
+  console.warn("DEPRECATED: updateUserLastActive is no longer supported");
   return true;
 }

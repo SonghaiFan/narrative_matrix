@@ -19,7 +19,6 @@ interface QuizSubmission {
 
 /**
  * API handler for quiz response submissions
- * Replaces the mock saveQuizResponse function from firebase-operations.ts
  */
 export async function POST(request: NextRequest) {
   try {

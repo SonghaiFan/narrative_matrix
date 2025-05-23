@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { updateSessionStageTimings } from "@/lib/firebase/firestore";
 
 export type StudyStage =
   | "consent"
@@ -68,7 +67,6 @@ export const useStudyStore = create<StudyState>((set, get) => ({
   // Start tracking a new stage
   startStage: (stage) => {
     const startTime = Date.now();
-    const { sessionId } = get();
 
     // Update local state
     set((state) => {
@@ -80,19 +78,11 @@ export const useStudyStore = create<StudyState>((set, get) => ({
         stageTimings: newTimings,
       };
     });
-
-    // Update Firestore (if sessionId exists)
-    if (sessionId) {
-      updateSessionStageTimings(sessionId, stage, { start: startTime }).catch(
-        (err) => console.error(`Failed to record stage ${stage} start:`, err)
-      );
-    }
   },
 
   // End tracking the current stage
   endStage: (stage) => {
     const endTime = Date.now();
-    const { sessionId, stageTimings } = get();
 
     // Update local state
     set((state) => {
@@ -106,13 +96,6 @@ export const useStudyStore = create<StudyState>((set, get) => ({
         stageTimings: newTimings,
       };
     });
-
-    // Update Firestore (if sessionId exists)
-    if (sessionId) {
-      updateSessionStageTimings(sessionId, stage, { end: endTime }).catch(
-        (err) => console.error(`Failed to record stage ${stage} end:`, err)
-      );
-    }
   },
 
   // Get the current stage duration (if active)

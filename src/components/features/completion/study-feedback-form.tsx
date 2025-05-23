@@ -223,14 +223,14 @@ function VisualizationPreview({
           alt={`${type.name} Preview`}
           width={160}
           height={160}
-          className="object-contain"
+          className="object-contain w-auto h-auto"
         />
         <Image
           src={type.iconSrc}
           alt={`${type.name} Icon`}
           width={160}
           height={160}
-          className="object-contain"
+          className="object-contain w-auto h-auto"
         />
       </div>
       <RatingScale
