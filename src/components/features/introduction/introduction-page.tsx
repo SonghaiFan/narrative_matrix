@@ -196,7 +196,7 @@ const entityIntroductionSteps: IntroductionStep[] = [
         </p>
       </div>
     ),
-    videoUrl: "https://www.youtube.com/embed/ENTITY_VIDEO_ID", // Replace with actual video
+    videoUrl: "https://www.youtube.com/embed/gfqs3KeCisw", // Replace with actual video
   },
 ];
 
@@ -234,7 +234,7 @@ const topicIntroductionSteps: IntroductionStep[] = [
         </p>
       </div>
     ),
-    videoUrl: "https://www.youtube.com/embed/TOPIC_VIDEO_ID", // Replace with actual video
+    videoUrl: "https://www.youtube.com/embed/VVIqbVRb-n8", // Replace with actual video
   },
 ];
 
@@ -270,7 +270,7 @@ const timeIntroductionSteps: IntroductionStep[] = [
         <p>Watch this short video to see how Storytime works in practice.</p>
       </div>
     ),
-    videoUrl: "https://www.youtube.com/embed/TIME_VIDEO_ID", // Replace with actual video
+    videoUrl: "https://www.youtube.com/embed/RCp6UqMjWgY", // Replace with actual video
   },
 ];
 

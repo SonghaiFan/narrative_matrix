@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useStudyStore } from "@/store/study-store";
 
 export function ConsentForm({
   onConsent,
@@ -9,12 +10,32 @@ export function ConsentForm({
 }) {
   const [hasConsented, setHasConsented] = useState(false);
 
+  // Get study store functions for tracking
+  const { startStage, endStage } = useStudyStore();
+
+  // Start tracking consent stage when component mounts
+  useEffect(() => {
+    startStage("consent");
+
+    // Clean up function will run when component unmounts
+    return () => {
+      // Only end tracking if they haven't consented (otherwise endStage is called in handleContinue)
+      if (!hasConsented) {
+        endStage("consent");
+      }
+    };
+  }, []);
+
   const handleConsentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setHasConsented(e.target.checked);
   };
 
   const handleContinue = () => {
-    if (hasConsented) onConsent(true);
+    if (hasConsented) {
+      // End consent stage tracking when user consents
+      endStage("consent");
+      onConsent(true);
+    }
   };
 
   return (
