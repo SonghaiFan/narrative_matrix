@@ -1,0 +1,43 @@
+{
+  "quiz": [
+    {
+      "id": "pr_t_v",
+      "question": "Arrange the following events in chronological order:",
+      "options": {
+        "events": [
+          { "id": 1, "text": "Ukraine announces readiness for cease-fire" },
+          { "id": 2, "text": "US restoration of military aid" },
+          { "id": 3, "text": "Russia's full-scale invasion" },
+          { "id": 4, "text": "Trump's suspension of military aid" }
+        ]
+      },
+      "answer": "3, 4, 1, 2",
+      "level": "Pattern Recognition",
+      "completed": false,
+      "type": "numbered-sequence",
+      "timeLimit": 10,
+      "visual": "topic",
+      "prone": "topic",
+      "event_reference": [1, 4, 5, 6]
+    },
+    {
+      "id": "pr_t_n",
+      "question": "Match each time period with its dominant topic.",
+      "questionCaption": "War: A formal declaration of hostilities by one country against another. Peace negotiations: Negotiations intended to bring an end to a conflict.Foreign Aid: Help provided by one nation to another.",
+      "options": {
+        "leftItems": ["2022-2024", "2025"],
+        "rightItems": ["War", "Peace Negotiations"],
+        "leftLabel": "Period",
+        "rightLabel": "Dominant Topic"
+      },
+      "answer": "2022-2024: War, 2025: Peace Negotiations",
+      "level": "Pattern Recognition",
+      "completed": false,
+      "type": "grid-matching",
+      "timeLimit": 10,
+      "visual": "topic",
+      "prone": "topic",
+      "event_reference": [1, 2, 4, 5, 6]
+    }
+  ]
+}

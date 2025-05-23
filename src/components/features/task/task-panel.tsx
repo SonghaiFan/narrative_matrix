@@ -146,10 +146,14 @@ export function TaskPanel({
 
   const handleAttemptSubmit = () => {
     if (!currentTask) return;
+
+    // Check if this is a training task and the answer is incorrect
     if (is_training && !checkAnswer(currentTask, userAnswer)) {
       setShowIncorrectAnswerModal(true);
       return;
     }
+
+    // If not completed and not in answer view mode, show confirmation
     if (!isDomainExpert && !currentTask.completed && !showAnswerUI) {
       setShowConfirmSubmitModal(true);
     } else {
@@ -272,7 +276,7 @@ export function TaskPanel({
     ) {
       return true;
     }
-    return userAnswer.trim() !== "" && markedEventIds.length > 0;
+    return userAnswer.trim() !== "";
   };
 
   const isFooterSubmitButtonVisible =
@@ -372,17 +376,6 @@ export function TaskPanel({
           onMarkedEventClick={setfocusedEventId}
           onRemoveMarkedEvent={toggleMarkedEvent}
         />
-        {/* Warning if event not marked - this logic is now inside TaskAnswerInput implicitly, or can be added explicitly if needed outside */}
-        {markedEventIds.length === 0 &&
-          userAnswer.trim() &&
-          !currentTask.completed &&
-          userAnswer !== "Information not specified in the text" && (
-            <div className="bg-blue-50 border border-blue-200 rounded-md p-2 flex items-center gap-2 text-xs text-blue-800">
-              <AlertCircle className="h-4 w-4 text-blue-600 flex-shrink-0" />
-              Please mark one or more reference events before submitting, or use
-              "Information Not Found".
-            </div>
-          )}
       </div>
 
       <TaskFooter

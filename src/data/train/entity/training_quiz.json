@@ -1,0 +1,59 @@
+{
+  "quiz": [
+    {
+      "id": "ir_e_v",
+      "question": "Which entities are involved in all events in the narrative?",
+      "answer": "Ukraine",
+      "level": "Information Retrieval",
+      "completed": false,
+      "type": "multiple-select",
+      "timeLimit": 10,
+      "visual": "entity",
+      "prone": "entity",
+      "options": [
+        "Ukraine",
+        "Russia",
+        "United States",
+        "Trump",
+        "Zelenskyy",
+        "JD Vance"
+      ],
+      "event_reference": [1, 2, 3, 4, 5]
+    },
+    {
+      "id": "ir_e_v",
+      "question": "How much aid has the United States committed to Ukraine since February 24, 2022?",
+      "options": [
+        "Over $118 billion",
+        "Over $407 billion",
+        "Under $100 billion"
+      ],
+      "answer": "Information Not Found",
+      "level": "Information Retrieval",
+      "completed": false,
+      "type": "radio-options",
+      "timeLimit": 10,
+      "visual": null,
+      "prone": "entity",
+      "event_reference": []
+    },
+    {
+      "id": "pr_e_v",
+      "question": "What was the outcome of the White House meeting between President Zelenskyy, President Trump, and Vice President JD Vance?",
+      "options": [
+        "US increased military aid to Ukraine",
+        "Trump suspended US military assistance to Ukraine",
+        "A peace agreement was reached",
+        "Joint military operations were planned"
+      ],
+      "answer": "Trump suspended US military assistance to Ukraine",
+      "level": "Pattern Recognition",
+      "completed": false,
+      "type": "radio-options",
+      "timeLimit": 90,
+      "visual": "entity",
+      "prone": "entity",
+      "event_reference": [1, 3, 4, 5, 6]
+    }
+  ]
+}

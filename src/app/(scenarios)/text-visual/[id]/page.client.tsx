@@ -309,6 +309,10 @@ export default function DynamicVisualizationClient({
     return notFound();
   }
 
+  // Get current stage metadata for dimension-specific introduction
+  const currentStageMetadata = metadata.studyFlow[stageIndex];
+  const dimensionProp = currentStageMetadata?.dimension;
+
   // Render different components based on the current stage
   return (
     <>
@@ -318,6 +322,7 @@ export default function DynamicVisualizationClient({
         <IntroductionPage
           onComplete={goToNextStage}
           scenarioType={scenarioId}
+          dimension={dimensionProp}
         />
       )}
 

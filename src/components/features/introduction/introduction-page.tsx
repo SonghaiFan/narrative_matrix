@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ScenarioType } from "@/types/scenario";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -14,16 +14,15 @@ interface IntroductionStep {
   image?: string;
 }
 
-// Define introduction content
-const introductionSteps: IntroductionStep[] = [
+// Define shared introduction content
+const sharedIntroductionSteps: IntroductionStep[] = [
   {
-    title: "Welcome to the Narrative Metrics Training Walkthrough",
+    title: "Welcome",
     content: (
       <div className="space-y-4">
         <p className="font-medium">
-          In this short guide, we'll show you how to navigate and interact with
-          the <strong>three-panel interface</strong> designed to support
-          narrative understanding in complex tasks.
+          Welcome to the Narrative Matrix study. This guide will help you get
+          started quickly.
         </p>
       </div>
     ),
@@ -32,16 +31,19 @@ const introductionSteps: IntroductionStep[] = [
     title: "Interface Overview",
     content: (
       <div className="space-y-4">
-        <p>The interface is composed of three key panels:</p>
-        <ul className="list-none space-y-2">
+        <p>The interface has three main panels:</p>
+        <ul className="list-disc pl-5 space-y-1">
           <li>
-            • The <strong>Visualisation Panel</strong> (left)
+            <strong>Visualisation Panel</strong> (left, when available): See
+            event relationships and patterns visually.
           </li>
           <li>
-            • The <strong>Text Panel</strong> (center)
+            <strong>Text Panel</strong> (center): Read the article, organized by
+            event.
           </li>
           <li>
-            • The <strong>Task Panel</strong> (right)
+            <strong>Task Panel</strong> (right): Answer questions about the
+            article.
           </li>
         </ul>
       </div>
@@ -49,226 +51,42 @@ const introductionSteps: IntroductionStep[] = [
     image: "/images/overview.png",
   },
   {
-    title: "Visualisation Panel",
-    content: (
-      <div className="space-y-4">
-        <p>
-          We have three types of visualisations that share common semantic
-          visual elements:
-        </p>
-
-        <div className="grid grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <div>
-              <h4 className="font-medium mb-2">Shared Visual Elements</h4>
-              <ul className="list-none space-y-2">
-                <li>
-                  • <strong>Nodes</strong> represent events, with consistent
-                  sentiment colors:
-                </li>
-                <ul className="list-none pl-6 space-y-1">
-                  <li>
-                    - <span className="text-green-500 font-medium">Green</span>{" "}
-                    for Positive events
-                  </li>
-                  <li>
-                    - <span className="text-gray-500 font-medium">Grey</span>{" "}
-                    for Neutral events
-                  </li>
-                  <li>
-                    -{" "}
-                    <span className="text-orange-500 font-medium">Orange</span>{" "}
-                    for Negative events
-                  </li>
-                </ul>
-                <li className="mt-2">
-                  • <strong>Tracks</strong> (grey bars) connect related events
-                  by:
-                </li>
-                <ul className="list-none pl-6 space-y-1">
-                  <li>- Entity involvement</li>
-                  <li>- Topic association</li>
-                  <li>- Narrative sequence</li>
-                </ul>
-              </ul>
-            </div>
-          </div>
-
-          <div className="space-y-4 border-l pl-6">
-            <div>
-              <h4 className="font-medium mb-2">Three Visualisation</h4>
-              <ul className="list-none space-y-1">
-                <li>
-                  <strong className="block mb-1">1. Entity Swimlane</strong>
-                  <p className="text-sm text-gray-600">
-                    Shows how entities interact across the narrative sequence
-                    (the order in which writers present events in news
-                    articles).
-                  </p>
-                </li>
-                <li>
-                  <strong className="block mb-1">2. Topic Stream</strong>
-                  <p className="text-sm text-gray-600">
-                    Groups events by their topics, with clustered nodes showing
-                    related events along real-world chronological order.
-                  </p>
-                </li>
-                <li>
-                  <strong className="block mb-1">3. Story Time</strong>
-                  <p className="text-sm text-gray-600">
-                    Maps events to their real-world chronological order vs
-                    narrative sequence (the order in which writers present
-                    events in news articles).
-                  </p>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    ),
-    image: "/images/visualisation.png",
-  },
-  {
-    title: "Entity Swimlane",
-    content: (
-      <div className="space-y-4">
-        <p>
-          In the <strong>Entity Swimlane</strong>:
-        </p>
-        <ul className="list-none space-y-2">
-          <li>
-            • The <strong>Y-axis</strong> represents{" "}
-            <strong>narrative sequence</strong> (the order in which events
-            appear in the text, from top to bottom)
-          </li>
-          <li>
-            • The <strong>X-axis</strong> shows{" "}
-            <strong>different entities</strong> (people, organizations, or
-            concepts involved in the story)
-          </li>
-        </ul>
-        <p>
-          Each node, or pair of connected nodes, corresponds to an event from
-          the text.
-        </p>
-        <p>For example:</p>
-        <ul className="list-none space-y-2 pl-4">
-          <li>
-            • A connected node between Entity A and B at narrative sequence 1
-            indicates the event mentioned both entities in the first paragraph.
-          </li>
-          <li>
-            • A single node on Entity A at sequence 2 indicates an event that
-            only involved Entity A, described in a later paragraph.
-          </li>
-        </ul>
-      </div>
-    ),
-    image: "/images/entity_intro.png",
-  },
-  {
-    title: "Topic Stream",
-    content: (
-      <div className="space-y-4">
-        <p>
-          In the <strong>Topic Stream</strong>:
-        </p>
-        <ul className="list-none space-y-2">
-          <li>
-            • The <strong>Y-axis</strong> represents{" "}
-            <strong>real-world chronological time</strong> (when events actually
-            happened)
-          </li>
-          <li>
-            • The <strong>X-axis</strong> shows{" "}
-            <strong>different topics</strong> (themes or subjects of the events)
-          </li>
-          <li>• Each track represents a topic</li>
-          <li>• Each node marks a related event</li>
-        </ul>
-        <p>
-          You may see a <strong>clustered node</strong> with a number — this
-          means multiple events happened close together under the same topic
-          (e.g., around January 2024).
-        </p>
-        <ul className="list-none space-y-2">
-          <li>• Click to expand and align them vertically on the timeline</li>
-          <li>• Click outside the canvas to close the group view</li>
-        </ul>
-      </div>
-    ),
-    image: "/images/topic_intro.png",
-  },
-  {
-    title: "Story Time",
-    content: (
-      <div className="space-y-4">
-        <p>
-          In <strong>Story Time</strong>:
-        </p>
-        <ul className="list-none space-y-2">
-          <li>
-            • The <strong>Y-axis</strong> represents{" "}
-            <strong>narrative sequence</strong> (the order in which events
-            appear in the text)
-          </li>
-          <li>
-            • The <strong>X-axis</strong> shows{" "}
-            <strong>real-world chronological time</strong> (when events actually
-            happened)
-          </li>
-        </ul>
-        <p>For instance:</p>
-        <ul className="list-none space-y-2 pl-4">
-          <li>
-            • A single node at January 2024 reflects an event in the first
-            paragraph.
-          </li>
-          <li>
-            • An elongated node starting from February to March indicates a
-            continuing event described in the second paragraph.
-          </li>
-        </ul>
-        <p>
-          This visualization helps you see how the narrative order differs from
-          the actual timeline of events.
-        </p>
-      </div>
-    ),
-    image: "/images/time_intro.png",
-  },
-  {
     title: "Interactions",
     content: (
-      <div className="space-y-4">
-        <p>
-          There are <strong>two types of interaction</strong>:
-        </p>
-        <div className="space-y-4">
-          <div>
-            <h4 className="font-medium">Focus (Left Click)</h4>
-            <p>
-              Click on any text, node, or visual element to{" "}
-              <strong>focus</strong> it across the panels.
-            </p>
-            <p>
-              A <strong className="text-blue-500">blue guideline</strong> will
-              help you trace the connection between the text and its
-              corresponding visual element.
-            </p>
+      <div className="space-y-6">
+        <p>Use these actions to explore and answer questions:</p>
+        <div className="grid md:grid-cols-3 gap-4 space-y-4 md:space-y-0">
+          <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 flex flex-col">
+            <h4 className="font-semibold text-blue-700 mb-2 flex items-center">
+              <span className="mr-2">🖱️</span> Hover
+            </h4>
+            <ul className="list-disc pl-5 text-gray-700 text-base space-y-1">
+              <li>
+                Hover over a visual element to see a tooltip with details.
+              </li>
+            </ul>
           </div>
-          <div>
-            <h4 className="font-medium">Mark (Right Click)</h4>
-            <p>
-              Use right-click to <strong>mark an event</strong> that supports
-              your answer. The marked event will have a{" "}
-              <strong className="text-blue-500">blue border</strong>.
-            </p>
-            <p>
-              This is especially important when justifying your reasoning during
-              task completion.
-            </p>
+          <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 flex flex-col">
+            <h4 className="font-semibold text-blue-700 mb-2 flex items-center">
+              <span className="mr-2">🖱️</span> Focus (Left Click)
+            </h4>
+            <ul className="list-disc pl-5 text-gray-700 text-base space-y-1">
+              <li>Click a node or paragraph to focus on an event.</li>
+              <li>Highlights the event in both visualization and text.</li>
+            </ul>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 flex flex-col">
+            <h4 className="font-semibold text-blue-700 mb-2 flex items-center">
+              <span className="mr-2">🖱️</span> Mark (Right Click)
+            </h4>
+            <ul className="list-disc pl-5 text-gray-700 text-base space-y-1">
+              <li>Right-click a node or paragraph to mark an event.</li>
+              <li>
+                Marked events have a{" "}
+                <span className="text-blue-500 font-semibold">blue border</span>
+                .
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -276,119 +94,232 @@ const introductionSteps: IntroductionStep[] = [
     image: "/images/interaction.gif",
   },
   {
-    title: "Text Panels",
+    title: "Text Panel",
     content: (
-      <div className="space-y-4">
-        <div>
-          <p className="font-medium">
-            In the <strong>Text Panel</strong>, you can:
-          </p>
-          <ul className="list-none space-y-2 pl-4">
-            <li>
-              • <strong>Read the full article</strong>, organized paragraphs
-              (events) by narrative sequence
-            </li>
-            <li>
-              • Use the <strong>search function</strong> to highlight key terms
-              and locate relevant events instantly
-            </li>
-          </ul>
-        </div>
+      <div className="space-y-2">
+        <ul className="list-disc pl-5 space-y-1">
+          <li>Read the article, organized by event.</li>
+          <li>Use search to highlight key terms and find events quickly.</li>
+        </ul>
       </div>
     ),
     image: "/images/text_search.gif",
   },
   {
-    title: "Task",
+    title: "Task Panel",
     content: (
-      <div className="space-y-4">
-        <div>
-          <p className="font-medium">
-            Your task is to use the <strong>Text Panel</strong>—with or without
-            visual support—to answer questions shown in the{" "}
-            <strong>Task Panel</strong>.
-          </p>
-          <p>
-            Each question comes with a <strong>time limit</strong>. Without
-            visualizations, you'll need to read quickly and efficiently. When
-            visualizations are available, take advantage of them to help locate
-            relevant information more rapidly.
-          </p>
-        </div>
-        <p>Please remember three key rules:</p>
-        <ol className="list-none space-y-3">
-          <li className="flex items-start space-x-2">
-            <span className="text-green-500 font-bold">1.</span>
-            <span>
-              <strong>Base your answers only on the text</strong>, not on prior
-              knowledge—details may differ from real-world facts.
-            </span>
+      <div className="space-y-2">
+        <ul className="list-disc pl-5 space-y-1">
+          <li>
+            Answer questions about the article using the text and visual panels.
           </li>
-          <li className="flex items-start space-x-2">
-            <span className="text-red-500 font-bold">2.</span>
-            <span>
-              <strong>If you cannot find the information</strong>, click
-              "Information Not Found" to skip the question.
-            </span>
+          <li>Each question has a time limit.</li>
+          <li>
+            If you can't find the answer, use "Information Not Found" to skip.
           </li>
-          <li className="flex items-start space-x-2">
-            <span className="text-blue-500 font-bold">3.</span>
-            <span>
-              <strong>You must mark the supporting event(s)</strong> in the
-              visualisation. This helps us understand how you arrived at your
-              response.
-            </span>
-          </li>
-        </ol>
-      </div>
-    ),
-  },
-  {
-    title: "🚀 Let's Get Started",
-    content: (
-      <div className="space-y-4 text-center">
-        <p>Thank you for completing this introduction.</p>
-        <p>
-          We understand this task is not easy and can be challenging at times.
-        </p>
-        <p className="font-medium">
-          Remember, the goal is to try your best - don't be frustrated if you
-          find some questions difficult.
-        </p>
-        <p>You're now ready to begin your training.</p>
-        <p className="font-bold">Take a deep breath and good luck!</p>
+        </ul>
       </div>
     ),
   },
 ];
 
-// YouTube video component
-const YouTubeVideo = ({ url }: { url: string }) => {
-  if (!url) return null;
+// Entity-specific introduction steps
+const entityIntroductionSteps: IntroductionStep[] = [
+  {
+    title: "Entity Swimlane",
+    content: (
+      <div className="space-y-4">
+        <p>
+          In the <strong>Entity Swimlane</strong>:
+        </p>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>
+            <strong>Y-axis</strong>: Narrative sequence (order in the text)
+          </li>
+          <li>
+            <strong>X-axis</strong>: Entities (people, organizations, concepts)
+          </li>
+        </ul>
+        <p>
+          Each node or connection shows which entities are involved in each
+          event.
+        </p>
+      </div>
+    ),
+    image: "/images/entity_intro.png",
+  },
+  {
+    title: "Entity Swimlane: Video Guide",
+    content: (
+      <div className="space-y-2 text-center">
+        <p>
+          Watch this short video to see how the Entity Swimlane works in
+          practice.
+        </p>
+      </div>
+    ),
+    videoUrl: "https://www.youtube.com/embed/ENTITY_VIDEO_ID", // Replace with actual video
+  },
+];
 
-  return (
-    <div className="relative w-full pt-[56.25%] mb-4 rounded overflow-hidden">
-      <iframe
-        className="absolute top-0 left-0 w-full h-full"
-        src={url}
-        title="YouTube video player"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      ></iframe>
-    </div>
-  );
-};
+// Topic-specific introduction steps
+const topicIntroductionSteps: IntroductionStep[] = [
+  {
+    title: "Topic Stream",
+    content: (
+      <div className="space-y-4">
+        <p>
+          In the <strong>Topic Stream</strong>:
+        </p>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>
+            <strong>Y-axis</strong>: Topics (themes or subjects)
+          </li>
+          <li>
+            <strong>X-axis</strong>: Real-world chronological time
+          </li>
+        </ul>
+        <p>
+          Each track is a topic, and each node is a related event. Clusters show
+          multiple events close together.
+        </p>
+      </div>
+    ),
+    image: "/images/topic_intro.png",
+  },
+  {
+    title: "Topic Stream: Video Guide",
+    content: (
+      <div className="space-y-2 text-center">
+        <p>
+          Watch this short video to see how the Topic Stream works in practice.
+        </p>
+      </div>
+    ),
+    videoUrl: "https://www.youtube.com/embed/TOPIC_VIDEO_ID", // Replace with actual video
+  },
+];
+
+// Time-specific introduction steps
+const timeIntroductionSteps: IntroductionStep[] = [
+  {
+    title: "Storytime",
+    content: (
+      <div className="space-y-4">
+        <p>
+          In <strong>Storytime</strong>:
+        </p>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>
+            <strong>Y-axis</strong>: Narrative sequence (order in the text)
+          </li>
+          <li>
+            <strong>X-axis</strong>: Real-world chronological time
+          </li>
+        </ul>
+        <p>
+          See how the order of events in the story compares to when they
+          actually happened.
+        </p>
+      </div>
+    ),
+    image: "/images/time_intro.png",
+  },
+  {
+    title: "Storytime: Video Guide",
+    content: (
+      <div className="space-y-2 text-center">
+        <p>Watch this short video to see how Storytime works in practice.</p>
+      </div>
+    ),
+    videoUrl: "https://www.youtube.com/embed/TIME_VIDEO_ID", // Replace with actual video
+  },
+];
+
+// Helper to get a custom final intro step based on dimension
+function getFinalIntroStep(dimension?: "entity" | "topic" | "time" | "common") {
+  let message = "You are ready to begin.";
+  let detail = "";
+  switch (dimension) {
+    case "entity":
+      message = "Let's get started with Entity Swimlane!";
+      detail = "Focus on how entities interact in the story.";
+      break;
+    case "topic":
+      message = "Let's get started with Topic Stream!";
+      detail = "Pay attention to how topics group events.";
+      break;
+    case "time":
+      message = "Let's get started with Storytime!";
+      detail = "Notice how events unfold over time.";
+      break;
+    case "common":
+    default:
+      message = "You're ready to begin the study!";
+      detail = "Remember, you can use all panels and features to help you.";
+      break;
+  }
+  return {
+    title: "🚀 Let's Get Started",
+    content: (
+      <div className="space-y-4 text-center">
+        <p className="text-xl font-bold">{message}</p>
+        {detail && <p className="text-gray-600">{detail}</p>}
+        <p className="font-medium">
+          Do your best and use the tools provided. Good luck!
+        </p>
+      </div>
+    ),
+  };
+}
 
 interface IntroductionPageProps {
   onComplete: () => void;
   scenarioType?: ScenarioType;
+  dimension?: "entity" | "topic" | "time" | "common";
 }
 
 export function IntroductionPage({
   onComplete,
   scenarioType = "text-visual-1",
+  dimension,
 }: IntroductionPageProps) {
   const [currentStep, setCurrentStep] = useState(0);
+  const [introductionSteps, setIntroductionSteps] = useState<
+    IntroductionStep[]
+  >([]);
+
+  // Set up the introduction steps based on the dimension
+  useEffect(() => {
+    if (dimension) {
+      let dimensionSteps: IntroductionStep[] = [];
+      switch (dimension) {
+        case "entity":
+          dimensionSteps = [...entityIntroductionSteps];
+          dimensionSteps.push(getFinalIntroStep("entity"));
+          break;
+        case "topic":
+          dimensionSteps = [...topicIntroductionSteps];
+          dimensionSteps.push(getFinalIntroStep("topic"));
+          break;
+        case "time":
+          dimensionSteps = [...timeIntroductionSteps];
+          dimensionSteps.push(getFinalIntroStep("time"));
+          break;
+        case "common":
+          dimensionSteps = [...sharedIntroductionSteps];
+          break;
+        default:
+          dimensionSteps = [...sharedIntroductionSteps];
+      }
+      setIntroductionSteps(dimensionSteps);
+      setCurrentStep(0);
+    } else {
+      const steps = [...sharedIntroductionSteps];
+      setIntroductionSteps(steps);
+      setCurrentStep(0);
+    }
+  }, [dimension]);
 
   const handleNext = () => {
     if (currentStep < introductionSteps.length - 1) {
@@ -398,7 +329,19 @@ export function IntroductionPage({
     }
   };
 
-  const currentStepData = introductionSteps[currentStep];
+  // Don't render until steps are loaded
+  if (introductionSteps.length === 0) {
+    return null;
+  }
+
+  const currentStepData =
+    introductionSteps[currentStep] || introductionSteps[0];
+
+  // Safety check - if somehow we don't have valid step data, reset to first step
+  if (!currentStepData) {
+    setCurrentStep(0);
+    return null;
+  }
 
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-black/5">
@@ -457,3 +400,20 @@ export function IntroductionPage({
     </div>
   );
 }
+
+// YouTube video component
+const YouTubeVideo = ({ url }: { url: string }) => {
+  if (!url) return null;
+
+  return (
+    <div className="relative w-full pt-[56.25%] mb-4 rounded overflow-hidden">
+      <iframe
+        className="absolute top-0 left-0 w-full h-full"
+        src={url}
+        title="YouTube video player"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      ></iframe>
+    </div>
+  );
+};

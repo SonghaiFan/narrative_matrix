@@ -26,8 +26,9 @@ export function ConfirmSubmitModal({
               Confirm Submission
             </h3>
             <p className="text-xs text-gray-500 mt-1">
-              Once you submit your answer, you won't be able to go back or
-              change it. Are you sure you want to proceed?
+              Are you ready to submit your answer? You can review your marked
+              reference events if needed, but marking events is optional. Once
+              submitted, you won't be able to change your answer.
             </p>
           </div>
           <button

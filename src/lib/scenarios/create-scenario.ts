@@ -39,20 +39,16 @@ export const DEFAULT_STUDY_FLOW: StudyStage[] = [
  * @param id Scenario ID
  * @param name Scenario display name
  * @param description Scenario description
- * @param preferredOrder Preferred quiz order
- * @param options Additional options (topic, author, etc.)
  * @returns Complete scenario metadata configuration
  */
 export function createScenario(
   id: string,
   name: string,
   description: string,
-  preferredOrder: string[],
   options: {
     topic?: string;
     author?: string;
     publishDate?: string;
-    quizOrderDescription?: string;
     studyFlow?: StudyStage[];
   } = {}
 ): ScenarioMetadata {
@@ -63,11 +59,6 @@ export function createScenario(
     topic: options.topic || "General Topic",
     author: options.author || "Research Team",
     publishDate: options.publishDate || new Date().toISOString().split("T")[0],
-    quizOrder: {
-      preferredOrder,
-      description:
-        options.quizOrderDescription || "Default quiz order preference",
-    },
     studyFlow: options.studyFlow || DEFAULT_STUDY_FLOW,
   };
 }
@@ -124,7 +115,6 @@ export function createCustomStudyFlow(
  *   'text-visual-4',
  *   'Text with Visualizations 4',
  *   'A narrative experience with visualizations',
- *   ['ir_e_n_', 'ir_e_v_'],
  *   {
  *     topic: 'Middle East Conflict',
  *     studyFlow: customFlow

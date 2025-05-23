@@ -16,7 +16,6 @@ export interface StudyScenario extends Omit<ScenarioMetadata, "quizOrder"> {
     description: string;
   };
   quizOrderDescription?: string;
-  conditions?: string[];
 }
 
 /**
@@ -43,11 +42,6 @@ export function getScenarioMetadata(
   // Create a ScenarioMetadata-compatible object
   return {
     ...scenario,
-    // If quizOrder is missing, create a default one based on conditions
-    quizOrder: scenario.quizOrder || {
-      preferredOrder: scenario.conditions || [],
-      description: scenario.quizOrderDescription || "Default order",
-    },
   } as ScenarioMetadata;
 }
 

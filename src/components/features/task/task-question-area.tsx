@@ -90,17 +90,6 @@ export function TaskQuestionArea({
               </div>
             </div>
           </div>
-
-          <div className="bg-blue-50 border border-blue-200 rounded-md p-2.5">
-            <div className="flex items-start gap-2">
-              <AlertCircle className="h-3.5 w-3.5 text-blue-600 flex-shrink-0 mt-0.5" />
-              <div className="text-xs text-blue-800">
-                <span className="font-medium">Required:</span> You must select
-                the event that contains the information supporting your answer.
-                This helps us understand how you arrived at your response.
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

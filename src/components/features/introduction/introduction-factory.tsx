@@ -8,6 +8,7 @@ import { useNavigationStore } from "@/store/navigation-store";
 
 interface IntroductionFactoryProps {
   scenarioType: ScenarioType;
+  dimension?: "entity" | "topic" | "time" | "common";
 }
 
 /**
@@ -16,6 +17,7 @@ interface IntroductionFactoryProps {
  */
 export function IntroductionFactory({
   scenarioType,
+  dimension,
 }: IntroductionFactoryProps) {
   const router = useRouter();
   const {
@@ -45,6 +47,7 @@ export function IntroductionFactory({
         <IntroductionPage
           onComplete={handleComplete}
           scenarioType={scenarioType}
+          dimension={dimension}
         />
       </div>
     </div>

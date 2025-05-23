@@ -1,0 +1,22 @@
+{
+  "quiz": [
+    {
+      "id": "pr_tm_v",
+      "question": "Match each narrative section with its dominant sentiment:",
+      "options": {
+        "leftItems": ["1-3", "4", "5"],
+        "rightItems": ["Negative", "Neutral", "Positive"],
+        "leftLabel": "Narrative Section",
+        "rightLabel": "Dominant Sentiment"
+      },
+      "answer": "1-3: Negative, 4: Neutral, 5: Positive",
+      "level": "Pattern Recognition",
+      "completed": false,
+      "type": "grid-matching",
+      "timeLimit": 10,
+      "visual": "time",
+      "prone": "time",
+      "event_reference": [1, 2, 3, 4, 5]
+    }
+  ]
+}

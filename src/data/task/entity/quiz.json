@@ -1,0 +1,98 @@
+{
+  "quiz": [
+    {
+      "id": "ir_e_n",
+      "question": "Which entity appears more frequently in events across the narrative compared to the other two options?",
+      "questionCaption": "",
+      "answer": "Egypt",
+      "level": "Information Retrieval",
+      "type": "radio-options",
+      "timeLimit": 120,
+      "visual": null,
+      "prone": "entity",
+      "options": ["Jordan", "Egypt", "Qatar"],
+      "completed": false,
+      "event_reference": [2, 13, 14, 16, 17, 30]
+    },
+    {
+      "id": "pr_e_n",
+      "question": "Based on the narrative, arrange these entities in the order they most frequently co-occur with Gaza, from most to least.",
+      "questionCaption": "",
+      "answer": "2,1,4,3",
+      "level": "Pattern Recognition",
+      "type": "numbered-sequence",
+      "timeLimit": 180,
+      "visual": null,
+      "prone": "entity",
+      "options": {
+        "events": [
+          {
+            "id": 1,
+            "text": "Hamas"
+          },
+          {
+            "id": 2,
+            "text": "Israel"
+          },
+          {
+            "id": 3,
+            "text": "Palestinian (Goverment)"
+          },
+          {
+            "id": 4,
+            "text": "Palestinians (Public)"
+          }
+        ]
+      },
+      "completed": false,
+      "event_reference": [1, 2, 5, 12, 19, 20, 25, 29, 30, 32, 33, 34]
+    },
+    {
+      "id": "ir_e_v",
+      "question": "Which entity appears more frequently in events across the narrative compared to the other two options?",
+      "questionCaption": "",
+      "answer": "Israel",
+      "level": "Information Retrieval",
+      "type": "radio-options",
+      "timeLimit": 120,
+      "visual": "entity",
+      "prone": "entity",
+      "options": ["Hamas", "Israel", "Syria"],
+      "completed": false,
+      "event_reference": [999]
+    },
+    {
+      "id": "pr_e_v",
+      "question": "Based on the narrative, arrange these entities in the order they most frequently co-occur with West Bank, from most to least.",
+      "questionCaption": "",
+      "answer": "2,4,3,1",
+      "level": "Pattern Recognition",
+      "type": "numbered-sequence",
+      "timeLimit": 120,
+      "visual": "entity",
+      "prone": "entity",
+      "options": {
+        "events": [
+          {
+            "id": 1,
+            "text": "Hamas"
+          },
+          {
+            "id": 2,
+            "text": "Israel"
+          },
+          {
+            "id": 3,
+            "text": "Palestinian (Goverment)"
+          },
+          {
+            "id": 4,
+            "text": "Palestinians (Public)"
+          }
+        ]
+      },
+      "completed": false,
+      "event_reference": [12, 19, 20, 21, 22, 23, 31, 34, 44]
+    }
+  ]
+}

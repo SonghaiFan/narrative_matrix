@@ -1,0 +1,70 @@
+{
+  "quiz": [
+    {
+      "id": "ir_t_n",
+      "question": "When was the first event related to civil unrest mentioned in the narrative",
+      "questionCaption": "Civil Unrest : dissatisfaction among the general population as evidenced by rallies, strikes, demonstrations or sabotage.",
+      "answer": "1987",
+      "level": "Information Retrieval",
+      "type": "radio-options",
+      "timeLimit": 120,
+      "visual": "topic",
+      "prone": "topic",
+      "options": ["1967", "1987", "2000"],
+      "completed": false,
+      "event_reference": 19
+    },
+    {
+      "id": "pr_t_n",
+      "question": "Based on the narrative, match each topic with one of its most prominent time periods. ",
+      "questionCaption": "Civil unrest: Dissatisfaction among the general population as evidenced by rallies, strikes, demonstrations or sabotage. War: A formal declaration of hostilities by one country against another.",
+      "answer": "War: 1948-1949,Civil unrest: 1987-2005",
+      "level": "Pattern Recognition",
+      "type": "grid-matching",
+      "timeLimit": 180,
+      "visual": null,
+      "prone": "topic",
+      "options": {
+        "leftItems": ["War", "Civil unrest"],
+        "rightItems": ["1948-1949", "1978-1979", "1987-2005"],
+        "leftLabel": "Topics",
+        "rightLabel": "Time Periods"
+      },
+      "completed": false,
+      "event_reference": [20, 21, 29, 30, 31, 39, 40, 41]
+    },
+    {
+      "id": "ir_t_v",
+      "question": "When was the last event related to civil unrest mentioned in the narrative",
+      "questionCaption": "Civil Unrest : dissatisfaction among the general population as evidenced by rallies, strikes, demonstrations or sabotage.",
+      "answer": "1987",
+      "level": "Information Retrieval",
+      "type": "radio-options",
+      "timeLimit": 60,
+      "visual": null,
+      "prone": "topic",
+      "options": ["2005", "2021", "2022"],
+      "completed": false,
+      "event_reference": 38
+    },
+    {
+      "id": "pr_t_v",
+      "question": "Based on the narrative, match each topic with one of its most prominent time periods. ",
+      "questionCaption": " War: A formal declaration of hostilities by one country against another. Armed conflict: Disputes between opposing groups involving the use of weaponry, but not formally declared a war.",
+      "answer": "War: 1967-1973, Armed conflict: 2014-2023",
+      "level": "Pattern Recognition",
+      "type": "grid-matching",
+      "timeLimit": 180,
+      "visual": "topic",
+      "prone": "topic",
+      "options": {
+        "leftItems": ["War", "Armed conflict"],
+        "rightItems": ["1967-1973", "1993-1995", "2014-2023"],
+        "leftLabel": "Topics",
+        "rightLabel": "Time Periods"
+      },
+      "completed": false,
+      "event_reference": [11, 12, 13, 14, 16, 17, 20, 21, 2, 19, 22]
+    }
+  ]
+}

@@ -8,8 +8,6 @@ import {
   getStageDataSources,
   getAvailableScenarios as getAllScenarios,
 } from "../scenarios/study-config";
-import groupBy from "lodash/groupBy";
-import flatMap from "lodash/flatMap";
 
 // Import the new server-only file reader utility
 import { readAndParseScenarioFiles } from "./file-operations";
@@ -21,7 +19,6 @@ export function getAvailableScenarios() {
       id: metadata.id,
       name: metadata.name,
       description: metadata.description,
-      quizOrder: metadata.quizOrder,
     };
   });
 }
@@ -149,41 +146,12 @@ export async function loadAndProcessScenarioData(
       );
     }
 
-    // Prepare the base response data
-    let finalQuizItems = quizData.quiz;
+    // Use the original quiz items as they are in the data
+    const finalQuizItems = quizData.quiz;
 
-    // Apply reordering only for non-training scenarios if preferred order is specified
-    if (!isTraining && metadata?.quizOrder?.preferredOrder) {
-      const preferredOrder = metadata.quizOrder.preferredOrder;
-      console.log(
-        `[server/scenario-data] Applying preferred order for ${scenarioId}:`,
-        preferredOrder
-      );
-
-      const prefixToItemsMap = groupBy(
-        quizData.quiz,
-        (item: QuizItem) =>
-          preferredOrder.find((prefix) => item.id.startsWith(prefix)) || "other"
-      );
-
-      const reorderedQuizItems = flatMap(
-        preferredOrder,
-        (prefix) => prefixToItemsMap[prefix] || []
-      );
-
-      if (reorderedQuizItems.length > 0) {
-        finalQuizItems = reorderedQuizItems;
-      } else {
-        console.warn(
-          `[server/scenario-data] Reordering resulted in empty quiz list for ${scenarioId}, using original order.`
-        );
-      }
-    } else {
-      console.log(
-        `[server/scenario-data] Skipping quiz reordering for ${scenarioId} (training=${isTraining}, no preferred order=${!metadata
-          ?.quizOrder?.preferredOrder})`
-      );
-    }
+    console.log(
+      `[server/scenario-data] Using original quiz order for ${scenarioId}`
+    );
 
     // Construct the final data object, adding currentFlowIndex to metadata
     const processedData: NarrativeMatrixData = {

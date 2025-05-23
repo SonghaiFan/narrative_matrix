@@ -27,7 +27,7 @@ export interface ScenarioMetadata {
   topic?: string;
   author?: string;
   publishDate?: string;
-  quizOrder: {
+  quizOrder?: {
     preferredOrder: string[];
     description: string;
   };

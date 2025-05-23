@@ -172,72 +172,11 @@ export function TaskAnswerInput({
   return (
     <div className="bg-white border rounded-lg p-3">
       <div className="space-y-4">
-        {/* Step 1: Event Selection */}
+        {/* Answer Input Section */}
         <div>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-medium">
-              1
-            </div>
-            <h3 className="text-sm font-medium text-gray-900">
-              Mark Reference Events
-            </h3>
-          </div>
-          <div className="bg-blue-50 rounded-md p-3 border border-blue-200">
-            <div className="text-xs text-blue-700 mb-2">
-              Right-click on the events that contain the information for your
-              answer to mark them.
-            </div>
-
-            {isDomainExpert && showAnswer && currentTask.event_reference && (
-              <div className="mb-2 p-2 bg-green-50 border border-green-200 rounded-md">
-                <div className="text-xs font-medium text-green-800 mb-1">
-                  Correct Reference Events:
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {renderEventReferences(currentTask.event_reference, true)}
-                </div>
-              </div>
-            )}
-
-            <div className="flex flex-wrap gap-2">
-              {markedEventIds.length === 0 ? (
-                <div className="text-xs text-gray-500 bg-white px-3 py-1.5 rounded-md border border-gray-200">
-                  No events marked yet
-                </div>
-              ) : (
-                markedEventIds.map((eventId) => (
-                  <div
-                    key={`marked-${eventId}`}
-                    className="flex items-center gap-1 text-xs text-blue-600 bg-white px-3 py-1.5 rounded-md border border-blue-300 cursor-pointer hover:bg-blue-50"
-                    onClick={() => onMarkedEventClick(eventId)} // Focus on click
-                  >
-                    <span>Event #{eventId}</span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent parent onClick if any
-                        onRemoveMarkedEvent(eventId);
-                      }}
-                      className="ml-1 text-blue-400 hover:text-blue-600"
-                      aria-label={`Remove mark from event ${eventId}`}
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
-        {/* Step 2: Answer Input */}
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-medium">
-              2
-            </div>
-            <h3 className="text-sm font-medium text-gray-900">
-              Provide Your Answer
-            </h3>
-          </div>
+          <h3 className="text-sm font-medium text-gray-900 mb-2">
+            Your Answer
+          </h3>
 
           {!isTaskCompleted ? (
             <div>
@@ -257,12 +196,113 @@ export function TaskAnswerInput({
               <div>
                 <p className="font-medium">Answer Submitted</p>
                 <p className="mt-0.5">Your answer: {currentTask.userAnswer}</p>
-                {userEventReference && (
-                  <p className="mt-0.5">
-                    Reference Event(s):{" "}
-                    {renderEventReferences(userEventReference)}
-                  </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* References Section */}
+        <div className="border-t pt-4">
+          <h3 className="text-sm font-medium text-gray-900 mb-3">
+            Marked References
+          </h3>
+
+          {/* Domain Expert Suggested References */}
+          {isDomainExpert && showAnswer && currentTask.event_reference && (
+            <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-md">
+              <div className="text-xs font-medium text-green-800 mb-2">
+                Suggested References
+              </div>
+              <div className="space-y-2">
+                {Array.isArray(currentTask.event_reference) ? (
+                  currentTask.event_reference.map((id) => (
+                    <div
+                      key={`suggested-${id}`}
+                      className="flex items-start gap-2 text-xs text-green-800 hover:bg-green-100 p-2 rounded-md cursor-pointer"
+                      onClick={() => onMarkedEventClick(id)}
+                    >
+                      <span className="font-medium">[{id}]</span>
+                      <span>Event #{id}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div
+                    className="flex items-start gap-2 text-xs text-green-800 hover:bg-green-100 p-2 rounded-md cursor-pointer"
+                    onClick={() =>
+                      currentTask.event_reference &&
+                      onMarkedEventClick(currentTask.event_reference as number)
+                    }
+                  >
+                    <span className="font-medium">
+                      [{currentTask.event_reference}]
+                    </span>
+                    <span>Event #{currentTask.event_reference}</span>
+                  </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* User's Marked References */}
+          <div className="bg-gray-50 border border-gray-200 rounded-md">
+            <div className="p-3">
+              <div className="text-xs text-gray-600 mb-3">
+                Right-click on events to add them to your references
+              </div>
+
+              <div className="space-y-2">
+                {markedEventIds.length === 0 ? (
+                  <div className="text-xs text-gray-500 bg-white p-3 rounded-md border border-gray-200 text-center">
+                    No references marked
+                  </div>
+                ) : (
+                  markedEventIds.map((eventId, index) => (
+                    <div
+                      key={`marked-${eventId}`}
+                      className="flex items-start gap-2 bg-white p-2 rounded-md border border-gray-200 hover:border-blue-300 transition-colors"
+                    >
+                      <span className="font-medium text-xs text-gray-500 mt-0.5">
+                        [{index + 1}]
+                      </span>
+                      <div className="flex-1 flex items-center justify-between">
+                        <button
+                          onClick={() => onMarkedEventClick(eventId)}
+                          className="text-xs text-blue-600 hover:text-blue-800"
+                        >
+                          Event #{eventId}
+                        </button>
+                        <button
+                          onClick={() => onRemoveMarkedEvent(eventId)}
+                          className="text-gray-400 hover:text-gray-600"
+                          aria-label={`Remove reference ${eventId}`}
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Completed Task References Display */}
+          {isTaskCompleted && userEventReference && (
+            <div className="mt-3 p-2 rounded text-xs bg-blue-50 text-blue-800">
+              <p className="font-medium mb-1">Submitted References:</p>
+              <div className="space-y-1">
+                {(Array.isArray(userEventReference)
+                  ? userEventReference
+                  : [userEventReference]
+                ).map((id) => (
+                  <div
+                    key={`submitted-${id}`}
+                    className="flex items-center gap-2 cursor-pointer hover:text-blue-600"
+                    onClick={() => onMarkedEventClick(id)}
+                  >
+                    <span>Event #{id}</span>
+                  </div>
+                ))}
               </div>
             </div>
           )}
