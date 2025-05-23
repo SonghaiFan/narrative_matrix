@@ -86,11 +86,6 @@ export function PureTextSearch({
       />
       {searchQuery && (
         <div className="absolute inset-y-0 right-0 pr-3 flex items-center gap-2">
-          {totalMatches > 0 && (
-            <div className="text-xs text-gray-500">
-              {currentMatchIndex + 1} of {totalMatches}
-            </div>
-          )}
           {totalMatches > 1 && (
             <div className="flex items-center gap-1">
               <button
