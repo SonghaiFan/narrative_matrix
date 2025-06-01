@@ -1,0 +1,248 @@
+{
+  "events": [
+    {
+      "index": 1,
+      "text": "Hamas launched its deadly attack on Israel on October 7, 2023, prompting the Israel Defense Forces (IDF) to engage in aerial campaigns and ground operations within the Gaza Strip.",
+      "short_text": "Hamas launched a deadly attack on Israel, leading to IDF's aerial and ground operations in Gaza on October 7, 2023.",
+      "temporal_anchoring": {
+        "real_time": "2023-10-07",
+        "narrative_time": 1
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_8",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "act of terror"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 2,
+      "text": "On January 15, 2025, the United States, Egypt, and Qatar announced that they had mediated a ceasefire between Israel and Hamas to end fifteen months of fighting in Gaza.",
+      "short_text": "The United States, Egypt, and Qatar mediated a ceasefire between Israel and Hamas to end fighting in Gaza.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2025-01-15",
+        "narrative_time": 2
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_5",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_6",
+          "name": "Egypt",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_7",
+          "name": "Qatar",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "OBJECT_8",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
+        "sentiment": {
+          "polarity": "positive",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 3,
+      "text": "The Israeli government officially approved the proposal, and the first hostage release began on January 19 2023.",
+      "short_text": "The Israeli government officially approved the proposal, and the first hostage release began on January 19.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2023-01-19", "2023-01-31"],
+        "narrative_time": 3
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["human rights"],
+        "sentiment": {
+          "polarity": "positive",
+          "intensity": 4
+        }
+      }
+    },
+    {
+      "index": 4,
+      "text": "Over the next six weeks, Hamas is expected to release thirty-three of the remaining hostages, while Israel is expected to release hundreds of Palestinians from Israeli jails.",
+      "short_text": "Hamas is expected to release thirty-three hostages, and Israel is expected to release hundreds of Palestinians from jails over the next six weeks.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2023-02-01", "2023-03-15"],
+        "narrative_time": 4
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["human rights"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 3
+        }
+      }
+    },
+    {
+      "index": 5,
+      "text": "Israel would begin to withdraw forces, displaced residents would be allowed to return to northern Gaza, and 600 humanitarian aid trucks are expected to enter the territory each day.",
+      "short_text": "Israel to withdraw forces and allow displaced residents to return to northern Gaza, with 600 humanitarian aid trucks expected daily.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2023-02-01", "2023-03-15"],
+        "narrative_time": 5
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_8",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["human rights"],
+        "sentiment": {
+          "polarity": "positive",
+          "intensity": 4
+        }
+      }
+    },
+    {
+      "index": 6,
+      "text": "The second and third phases of the deal have not been negotiated but would bring a formal end to the war. Still, infighting within Israeli Prime Minister Benjamin Netanyahu\u2019s coalition suggests his government could collapse if he follows through the second and third phases of the agreement instead of resuming military operations after completing the first phase.",
+      "short_text": "Israeli Prime Minister Benjamin Netanyahu's government may collapse if he proceeds with the second and third phases of a deal to formally end the war.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2025-01-19", "2025-02-28"],
+        "narrative_time": 6
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_9",
+          "name": "Netanyahu",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["national government", "parties and movements"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 7,
+      "text": "The conflict has exacerbated regional tensions across the Middle East. The IDF launched a ground invasion of Lebanon following months of cross-border skirmishes with Hezbollah, which began striking northern Israel following Hamas\u2019s October 7 attack.",
+      "short_text": "The IDF launched a ground invasion of Lebanon after months of skirmishes with Hezbollah, following Hamas's attack on October 7.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2023-10-07", "2023-12-31"],
+        "narrative_time": 7
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_10",
+          "name": "Lebanon",
+          "social_role": "government"
+        },
+        {
+          "id": "ACTIVIST_11",
+          "name": "Hezbollah",
+          "social_role": "activist"
+        },
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    }
+  ]
+}

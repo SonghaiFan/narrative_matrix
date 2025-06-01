@@ -1,0 +1,304 @@
+{
+  "events": [
+    {
+      "index": 27,
+      "text": "Between 2006 and 2011, a series of failed peace talks and deadly confrontations culminated in an agreement to reconcile.",
+      "short_text": "Between 2006 and 2011, failed peace talks and deadly confrontations led to an agreement to reconcile.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2006-01-01", "2011-12-31"],
+        "narrative_time": 27
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "ACTIVIST_36",
+          "name": "Fatah",
+          "social_role": "activist"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 28,
+      "text": "Fatah entered into a unity government with Hamas in 2014.",
+      "short_text": "Fatah entered into a unity government with Hamas in 2014.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2014-01-01", "2014-06-30"],
+        "narrative_time": 28
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_36",
+          "name": "Fatah",
+          "social_role": "activist"
+        },
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations", "parties and movements"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 0
+        }
+      }
+    },
+    {
+      "index": 29,
+      "text": "In the summer of 2014,\u202fclashes\u202fin the Palestinian territories precipitated a\u202fmilitary confrontation\u202fbetween the Israeli military and Hamas in which Hamas fired nearly three thousand rockets at Israel, and Israel retaliated with a major offensive in Gaza.",
+      "short_text": "In the summer of 2014, clashes in the Palestinian territories led to a military confrontation between the Israeli military and Hamas, involving rocket attacks by Hamas and a major Israeli offensive in Gaza.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2014-06-01", "2014-08-26"],
+        "narrative_time": 29
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_32",
+          "name": "Palestinian",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 30,
+      "text": "The skirmish ended in late August 2014 with a\u202fcease-fire\u202fdeal brokered by Egypt, but only after 73\u202fIsraelis and 2,251\u202fPalestinians were\u202fkilled.",
+      "short_text": "The skirmish ended in late August 2014 with a cease-fire deal brokered by Egypt, resulting in 73 Israelis and 2,251 Palestinians killed.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2014-08-31",
+        "narrative_time": 30
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_45",
+          "name": "Israelis",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_6",
+          "name": "Egypt",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 31,
+      "text": "After a wave of violence between Israelis and Palestinians in 2015, Palestinian President Mahmoud Abbas of Fatah\u202fannounced\u202fthat Palestinians would no longer be bound by the territorial divisions created by the\u202fOslo Accords.",
+      "short_text": "Palestinian President Mahmoud Abbas announced that Palestinians would no longer adhere to the Oslo Accords territorial divisions after violence in 2015.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2015-09-30",
+        "narrative_time": 31
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_37",
+          "name": "Mahmoud Abbas",
+          "social_role": "government"
+        },
+        {
+          "id": "ACTIVIST_36",
+          "name": "Fatah",
+          "social_role": "activist"
+        },
+        {
+          "id": "PUBLIC_45",
+          "name": "Israelis",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_32",
+          "name": "Palestinian",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
+          "social_role": "public"
+        },
+        {
+          "id": "OBJECT_38",
+          "name": "Oslo Accords",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 32,
+      "text": "In March of 2018, Israeli troops killed 183 Palestinians and wounded 6,000 others after some Palestinians stormed the perimeter fence between the Gaza Strip and Israel and threw rocks during an otherwise peaceful demonstration.",
+      "short_text": "In March of 2018, Israeli troops killed 183 Palestinians and wounded 6,000 others during a demonstration.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2018-03-01", "2018-03-31"],
+        "narrative_time": 32
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
+          "social_role": "public"
+        },
+        {
+          "id": "OBJECT_8",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 9
+        }
+      }
+    },
+    {
+      "index": 33,
+      "text": "Just months later, Hamas militants fired over one hundred rockets into Israel, and Israel\u202fresponded\u202fwith strikes on more than fifty targets in Gaza during a twenty-four-hour\u202fflare-up.",
+      "short_text": "Hamas militants fired over one hundred rockets into Israel, which responded with strikes on more than fifty targets in Gaza during a twenty-four-hour flare-up.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2019-05-29",
+        "narrative_time": 33
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_8",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 34,
+      "text": "The tense political atmosphere resulted in a return to disunity between Fatah and Hamas, with Mahmoud Abbas\u2019 Fatah party controlling the Palestinian Authority from the West Bank and Hamas de facto ruling the Gaza Strip.",
+      "short_text": "The political tension led to disunity between Fatah and Hamas, with Fatah controlling the Palestinian Authority in the West Bank and Hamas ruling the Gaza Strip.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2017-09-21", "2018-01-31"],
+        "narrative_time": 34
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_36",
+          "name": "Fatah",
+          "social_role": "activist"
+        },
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_37",
+          "name": "Mahmoud Abbas",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_32",
+          "name": "Palestinian",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_23",
+          "name": "West Bank",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_8",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["parties and movements"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    }
+  ]
+}

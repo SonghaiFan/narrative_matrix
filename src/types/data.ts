@@ -29,7 +29,6 @@ export interface NarrativeEvent {
   index: number;
   text: string;
   short_text: string;
-  lead_title?: string; // Title before the event  started with ###
   temporal_anchoring: {
     real_time: string | [string, string] | null;
     narrative_time: number;

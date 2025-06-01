@@ -108,9 +108,10 @@ export function getScales(
   const xScale = createTimeScale(width, timeDomain);
 
   const maxNarrativeTime = Math.max(...dataPoints.map((d) => d.narrativeTime));
+  const minNarrativeTime = Math.min(...dataPoints.map((d) => d.narrativeTime));
   const yScale = d3
     .scaleLinear()
-    .domain([0, Math.ceil(maxNarrativeTime) + 1])
+    .domain([minNarrativeTime, Math.ceil(maxNarrativeTime)])
     .range([0, height])
     .nice();
 

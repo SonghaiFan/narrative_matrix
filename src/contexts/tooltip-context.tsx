@@ -60,7 +60,7 @@ export function TooltipProvider({ children }: { children: ReactNode }) {
         event,
         entity: entity || null,
         position: { x, y },
-        visible: true,
+        visible: false,
         type,
       });
     },

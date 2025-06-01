@@ -1,0 +1,269 @@
+{
+  "events": [
+    {
+      "index": 15,
+      "text": "After the war, Israel gained territorial control over the Sinai Peninsula and Gaza Strip from Egypt; the West Bank and East Jerusalem from Jordan; and the Golan Heights from Syria.",
+      "short_text": "After the war, Israel gained territorial control over the Sinai Peninsula, Gaza Strip, West Bank, East Jerusalem, and Golan Heights from Egypt, Jordan, and Syria respectively.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "1967-06-10",
+        "narrative_time": 15
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_25",
+          "name": "Sinai Peninsula",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_8",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_23",
+          "name": "West Bank",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_27",
+          "name": "East Jerusalem",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_28",
+          "name": "Golan Heights",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_6",
+          "name": "Egypt",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_24",
+          "name": "Jordan",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_16",
+          "name": "Syria",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 0
+        }
+      }
+    },
+    {
+      "index": 16,
+      "text": "Six years later, in what is referred to as the Yom Kippur War or the October War, Egypt and Syria launched\u202fa surprise two-front attack\u202fon Israel to regain their lost territory; the conflict did not result in significant gains for Egypt, Israel, or Syria, but Egyptian President Anwar al-Sadat declared the war a victory for Egypt as it allowed Egypt and Syria to\u202fnegotiate over previously ceded territory.",
+      "short_text": "In the Yom Kippur War, Egypt and Syria launched a surprise attack on Israel to regain lost territory.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["1973-10-06", "1973-10-25"],
+        "narrative_time": 16
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_6",
+          "name": "Egypt",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_16",
+          "name": "Syria",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_29",
+          "name": "Yom Kippur War",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 3
+        }
+      }
+    },
+    {
+      "index": 17,
+      "text": "Finally, in 1979, following a series of cease-fires and peace negotiations, representatives from Egypt and Israel signed the\u202fCamp David Accords,\u202fa peace treaty that ended the thirty-year conflict between Egypt and Israel.",
+      "short_text": "In 1979, representatives from Egypt and Israel signed the Camp David Accords, ending the thirty-year conflict between the two nations.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "1979-01-01",
+        "narrative_time": 17
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_6",
+          "name": "Egypt",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_30",
+          "name": "Camp David Accords",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
+        "sentiment": {
+          "polarity": "positive",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 18,
+      "text": "Even though the Camp David Accords improved relations between Israel and its neighbors, the question of Palestinian self-determination and self-governance remained unresolved.",
+      "short_text": "The Camp David Accords improved relations between Israel and its neighbors but did not resolve Palestinian self-determination issues.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "1978-9-17",
+        "narrative_time": 18
+      },
+      "entities": [
+        {
+          "id": "OBJECT_30",
+          "name": "Camp David Accords",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 2
+        }
+      }
+    },
+    {
+      "index": 19,
+      "text": "In 1987, hundreds of thousands of Palestinians living in the West Bank and Gaza Strip rose up against the Israeli government in what is known as the first intifada.",
+      "short_text": "In 1987, hundreds of thousands of Palestinians in the West Bank and Gaza Strip rose up against the Israeli government in the first intifada.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["1987-12-01", "1993-09-13"],
+        "narrative_time": 19
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
+          "social_role": "public"
+        },
+        {
+          "id": "OBJECT_23",
+          "name": "West Bank",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_8",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["civil unrest", "demonstration"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 20,
+      "text": "The 1993\u202fOslo I Accords\u202fmediated the conflict, setting up a framework for the Palestinians to govern themselves in the West Bank and Gaza, and enabled mutual recognition between the newly established Palestinian Authority and Israel\u2019s government.",
+      "short_text": "The 1993 Oslo I Accords mediated the conflict, enabling mutual recognition between the Palestinian Authority and Israel's government.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["1993-01-01", "1993-09-13"],
+        "narrative_time": 20
+      },
+      "entities": [
+        {
+          "id": "OBJECT_31",
+          "name": "Oslo I Accords",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_32",
+          "name": "Palestinian",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_23",
+          "name": "West Bank",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_8",
+          "name": "Gaza",
+          "social_role": "object"
+        },
+        {
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 2
+        }
+      }
+    }
+  ]
+}

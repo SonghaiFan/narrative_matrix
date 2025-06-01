@@ -23,7 +23,7 @@
           "title": "Training Phase",
           "dimension": "entity",
           "dataSources": {
-            "eventsDataPath": "train/training_events.json",
+            "eventsDataPath": "train/entity/training_events.json",
             "quizDataPath": "train/entity/training_quiz.json"
           }
         },
@@ -31,8 +31,16 @@
           "type": "task",
           "title": "Main Tasks",
           "dataSources": {
-            "eventsDataPath": "task/events.json",
+            "eventsDataPath": "task/entity/events.json",
             "quizDataPath": "task/entity/quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "Main Tasks",
+          "dataSources": {
+            "eventsDataPath": "task/entity/events2.json",
+            "quizDataPath": "task/entity/quiz2.json"
           }
         },
         {
@@ -45,7 +53,7 @@
           "title": "Training Phase",
           "dimension": "topic",
           "dataSources": {
-            "eventsDataPath": "train/training_events.json",
+            "eventsDataPath": "train/topic/training_events.json",
             "quizDataPath": "train/topic/training_quiz.json"
           }
         },
@@ -53,8 +61,17 @@
           "type": "task",
           "title": "Main Tasks",
           "dataSources": {
-            "eventsDataPath": "task/events.json",
+            "eventsDataPath": "task/topic/events.json",
             "quizDataPath": "task/topic/quiz.json"
+          }
+        },
+
+        {
+          "type": "task",
+          "title": "Main Tasks",
+          "dataSources": {
+            "eventsDataPath": "task/topic/events2.json",
+            "quizDataPath": "task/topic/quiz2.json"
           }
         },
         {
@@ -67,7 +84,7 @@
           "title": "Training Phase",
           "dimension": "time",
           "dataSources": {
-            "eventsDataPath": "train/training_events.json",
+            "eventsDataPath": "train/time/training_events.json",
             "quizDataPath": "train/time/training_quiz.json"
           }
         },
@@ -75,8 +92,16 @@
           "type": "task",
           "title": "Main Tasks",
           "dataSources": {
-            "eventsDataPath": "task/events.json",
+            "eventsDataPath": "task/time/events.json",
             "quizDataPath": "task/time/quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "Main Tasks",
+          "dataSources": {
+            "eventsDataPath": "task/time/events2.json",
+            "quizDataPath": "task/time/quiz2.json"
           }
         },
         { "type": "complete", "title": "Study Completed" }

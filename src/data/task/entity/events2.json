@@ -1,0 +1,283 @@
+{
+  "events": [
+    {
+      "index": 8,
+      "text": "Yemen\u2019s Houthi rebels have shot missiles at Israel and commercial ships in the Red Sea, and other Iran-backed groups have launched dozens of attacks on U.S. military positions in Iraq and Syria.",
+      "short_text": "Yemen's Houthi rebels shot missiles at Israel and commercial ships in the Red Sea, and other Iran-backed groups attacked U.S. military positions in Iraq and Syria.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2023-10-19", "2023-11-19"],
+        "narrative_time": 8
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_12",
+          "name": "Houthi rebels",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_13",
+          "name": "Red Sea",
+          "social_role": "object"
+        },
+        {
+          "id": "ACTIVIST_14",
+          "name": "Iran-backed groups",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_5",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_15",
+          "name": "Iraq",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_16",
+          "name": "Syria",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 9,
+      "text": "In April and October of 2024, Iran took the unprecedented step of attacking Israel directly, which prompted Israeli counterstrikes targeting Iranian air defenses and missile manufacturing facilities.",
+      "short_text": "In April and October of 2024, Iran attacked Israel directly, leading to Israeli counterstrikes on Iranian air defenses and missile facilities.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2024-04-01", "2024-10-31"],
+        "narrative_time": 9
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_17",
+          "name": "Iran",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "weaponry"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 10,
+      "text": "The\u202fIsraeli-Palestinian conflict\u202fdates back to the end of the nineteenth century. In 1947, the United Nations adopted\u202fResolution 181, known as the Partition Plan, which sought to divide the British Mandate of Palestine into Arab and Jewish states.",
+      "short_text": "In 1947, the United Nations adopted Resolution 181, the Partition Plan, to divide the British Mandate of Palestine into Arab and Jewish states.",
+      "temporal_anchoring": {
+        "real_time": ["1947-01-01", "1947-12-31"],
+        "narrative_time": 10
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
+          "social_role": "public"
+        },
+        {
+          "id": "GOVERNMENT_18",
+          "name": "United Nations",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_19",
+          "name": "Resolution 181",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_20",
+          "name": "Palestine",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["international relations"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 0
+        }
+      }
+    },
+    {
+      "index": 11,
+      "text": "On May 14, 1948, the State of Israel was created, sparking the first Arab-Israeli War.",
+      "short_text": "The State of Israel was created, sparking the first Arab-Israeli War.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "1948-05-14",
+        "narrative_time": 11
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 12,
+      "text": "The war ended in 1949 with Israel\u2019s victory, but 750,000 Palestinians were displaced, and the territory was divided into 3 parts: the State of Israel, the West Bank (of the Jordan River), and the Gaza Strip.",
+      "short_text": "The war ended in 1949 with Israel's victory, leading to the displacement of 750,000 Palestinians and the division of the territory into the State of Israel, the West Bank, and the Gaza Strip.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["1949-01-01", "1949-12-31"],
+        "narrative_time": 12
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
+          "social_role": "public"
+        },
+        {
+          "id": "OBJECT_22",
+          "name": "State of Israel",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_23",
+          "name": "West Bank",
+          "social_role": "object"
+        },
+        {
+          "id": "OBJECT_8",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 13,
+      "text": "Over the following years, tensions rose in the region, particularly between Israel and Egypt, Jordan, and Syria. Following the\u202f1956 Suez Crisis\u202fand Israel\u2019s invasion of the Sinai Peninsula, Egypt, Jordan, and Syria signed mutual defense pacts in anticipation of a possible mobilization of Israeli troops.",
+      "short_text": "Following the 1956 Suez Crisis, Egypt, Jordan, and Syria signed mutual defense pacts in response to Israel's invasion of the Sinai Peninsula.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["1956-10-29", "1956-12-31"],
+        "narrative_time": 13
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_6",
+          "name": "Egypt",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_24",
+          "name": "Jordan",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_16",
+          "name": "Syria",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_25",
+          "name": "Sinai Peninsula",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 14,
+      "text": "In June 1967, following\u202fa series of maneuvers\u202fby Egyptian President Abdel Gamal Nasser, Israel preemptively attacked Egyptian and Syrian air forces, starting the Six-Day War.",
+      "short_text": "In June 1967, Israel preemptively attacked Egyptian and Syrian air forces, initiating the Six-Day War.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["1967-06-01", "1967-06-10"],
+        "narrative_time": 14
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_6",
+          "name": "Egypt",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_16",
+          "name": "Syria",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    }
+  ]
+}

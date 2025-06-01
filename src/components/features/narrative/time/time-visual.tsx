@@ -526,7 +526,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       .attr("y", -40)
       .attr("fill", "#64748b")
       .attr("text-anchor", "middle")
-      .text("Narrative Time");
+      .text("Paragraph");
 
     // Add lead titles
     renderLeadTitles(g, leadTitlePoints, yScale, width);

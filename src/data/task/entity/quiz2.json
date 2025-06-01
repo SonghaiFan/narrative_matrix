@@ -1,18 +1,18 @@
 {
   "quiz": [
     {
-      "id": "ir_e_n",
+      "id": "ir_e_v",
       "question": "Which entity appears more frequently in events across the narrative compared to the other two options?",
       "questionCaption": "",
-      "answer": "Egypt",
+      "answer": "Israel",
       "level": "Information Retrieval",
       "type": "radio-options",
       "timeLimit": 120,
-      "visual": null,
+      "visual": "entity",
       "prone": "entity",
-      "options": ["Jordan", "Egypt", "Qatar"],
+      "options": ["Hamas", "Israel", "Syria"],
       "completed": false,
-      "event_reference": [2, 13, 14, 16, 17, 30]
+      "event_reference": [999]
     }
   ]
 }

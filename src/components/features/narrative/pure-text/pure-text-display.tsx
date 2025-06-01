@@ -1,11 +1,10 @@
 "use client";
 
 import { Entity, NarrativeEvent, DatasetMetadata } from "@/types/data";
-import { useMemo, useRef, useEffect, useState, useCallback } from "react";
+import { useMemo, useRef, useEffect, useCallback } from "react";
 import { PURE_TEXT_CONFIG } from "./pure-text-config";
 import { useCenterControl } from "@/contexts/center-control-context";
 import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
-import { PureTextSearch } from "./pure-text-search";
 import {
   ArticleLayout,
   ArticleSection,
@@ -27,11 +26,6 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
   } = useCenterControl();
   const eventRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
-  const [searchMatches, setSearchMatches] = useState<
-    { eventId: number; matchIndex: number }[]
-  >([]);
   const { text, margin } = PURE_TEXT_CONFIG;
 
   // Sort events by narrative time
@@ -42,53 +36,6 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
         b.temporal_anchoring.narrative_time
     );
   }, [events]);
-
-  // Handle search query changes for highlighting
-  const handleSearchQueryChange = useCallback(
-    (query: string) => {
-      setSearchQuery(query);
-      setCurrentMatchIndex(0);
-
-      if (!query.trim()) {
-        setSearchMatches([]);
-        return;
-      }
-
-      // Find all events containing the search term
-      const matches: { eventId: number; matchIndex: number }[] = [];
-      sortedEvents.forEach((event) => {
-        if (event.text.toLowerCase().includes(query.toLowerCase())) {
-          matches.push({ eventId: event.index, matchIndex: matches.length });
-        }
-      });
-      setSearchMatches(matches);
-
-      // Focus on the first match if there are any
-      if (matches.length > 0) {
-        setfocusedEventId(matches[0].eventId);
-      }
-    },
-    [sortedEvents, setfocusedEventId]
-  );
-
-  // Handle navigation between matches
-  const handleNavigateToMatch = useCallback(
-    (direction: "next" | "prev") => {
-      if (searchMatches.length === 0) return;
-
-      let newIndex = currentMatchIndex;
-      if (direction === "next") {
-        newIndex = (currentMatchIndex + 1) % searchMatches.length;
-      } else {
-        newIndex =
-          (currentMatchIndex - 1 + searchMatches.length) % searchMatches.length;
-      }
-
-      setCurrentMatchIndex(newIndex);
-      setfocusedEventId(searchMatches[newIndex].eventId);
-    },
-    [currentMatchIndex, searchMatches, setfocusedEventId]
-  );
 
   // Effect to scroll selected event into view
   useEffect(() => {
@@ -136,25 +83,6 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
     return result;
   }, []);
 
-  // Function to highlight search terms in text
-  const highlightSearchTerm = useCallback(
-    (text: string, searchQuery: string) => {
-      if (!searchQuery.trim()) return text;
-
-      // Escape special regex characters in the search query
-      const escapedQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-      // Only avoid matching within HTML tags, but allow matching single characters
-      const regex = new RegExp(`(?![^<]*>)(${escapedQuery})`, "gi");
-
-      return text.replace(
-        regex,
-        '<span style="background-color: yellow">$1</span>'
-      );
-    },
-    []
-  );
-
   if (!events.length) {
     return (
       <div className="h-full flex flex-col items-center justify-center">
@@ -177,7 +105,7 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
 
   return (
     <div className="h-full flex flex-col min-h-0">
-      {/* Header with search - sticky within parent container */}
+      {/* Header - sticky within parent container */}
       <div
         className="flex-none flex items-center px-4 py-3 border-b border-gray-100 bg-white z-10"
         style={{ height: `${SHARED_CONFIG.header.height}px` }}
@@ -195,16 +123,6 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
           >
             {events.length} event{events.length !== 1 ? "s" : ""}
           </span>
-        </div>
-        <div className="ml-auto mr-8">
-          <PureTextSearch
-            events={sortedEvents}
-            onSearchResults={() => {}} // No longer needed
-            onSearchQueryChange={handleSearchQueryChange}
-            onNavigateToMatch={handleNavigateToMatch}
-            currentMatchIndex={currentMatchIndex}
-            totalMatches={searchMatches.length}
-          />
         </div>
       </div>
 
@@ -255,8 +173,6 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
                       toggleMarkedEvent(event.index);
                     }}
                     highlightEntities={highlightEntities}
-                    searchQuery={searchQuery}
-                    highlightSearchTerm={highlightSearchTerm}
                   />
                 </div>
               ))}

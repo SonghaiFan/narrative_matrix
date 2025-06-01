@@ -50,44 +50,44 @@ const sharedIntroductionSteps: IntroductionStep[] = [
     ),
     image: "/images/overview.png",
   },
-  {
-    title: "Visualisation Panel",
-    content: (
-      <div className="space-y-4">
-        <p>The Visualisation Panel helps you see the story in three ways:</p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>
-            <strong>Entity Swimlane</strong>: See how entities interact across
-            the narrative.
-          </li>
-          <li>
-            <strong>Topic Stream</strong>: See how events are grouped by topic
-            over time.
-          </li>
-          <li>
-            <strong>Storytime</strong>: Compare the order of events in the story
-            to real-world time.
-          </li>
-        </ul>
-        <p>Shared visual elements:</p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>
-            <strong>Nodes</strong> represent events colored by sentiment.{" "}
-            <span className="text-green-600 font-semibold">Green</span> =
-            positive, <span className="text-gray-500 font-semibold">grey</span>{" "}
-            = neutral,{" "}
-            <span className="text-orange-500 font-semibold">orange</span> =
-            negative.
-          </li>
-          <li>
-            <strong>Tracks</strong> (grey bars) connect related events by
-            entity, topic, or sequence.
-          </li>
-        </ul>
-      </div>
-    ),
-    image: "/images/visualisation.png",
-  },
+  // {
+  //   title: "Visualisation Panel",
+  //   content: (
+  //     <div className="space-y-4">
+  //       <p>The Visualisation Panel helps you see the story in three ways:</p>
+  //       <ul className="list-disc pl-5 space-y-1">
+  //         <li>
+  //           <strong>Entity Swimlane</strong>: See how entities interact across
+  //           the narrative.
+  //         </li>
+  //         <li>
+  //           <strong>Topic Stream</strong>: See how events are grouped by topic
+  //           over time.
+  //         </li>
+  //         <li>
+  //           <strong>Storytime</strong>: Compare the order of events in the story
+  //           to real-world time.
+  //         </li>
+  //       </ul>
+  //       <p>Shared visual elements:</p>
+  //       <ul className="list-disc pl-5 space-y-1">
+  //         <li>
+  //           <strong>Nodes</strong> represent events colored by sentiment.{" "}
+  //           <span className="text-green-600 font-semibold">Green</span> =
+  //           positive, <span className="text-gray-500 font-semibold">grey</span>{" "}
+  //           = neutral,{" "}
+  //           <span className="text-orange-500 font-semibold">orange</span> =
+  //           negative.
+  //         </li>
+  //         <li>
+  //           <strong>Tracks</strong> (grey bars) connect related events by
+  //           entity, topic, or sequence.
+  //         </li>
+  //       </ul>
+  //     </div>
+  //   ),
+  //   image: "/images/visualisation.png",
+  // },
   {
     title: "Text Panel",
     content: (
@@ -157,7 +157,6 @@ const sharedIntroductionSteps: IntroductionStep[] = [
         </div>
       </div>
     ),
-    image: "/images/interaction.gif",
   },
 ];
 

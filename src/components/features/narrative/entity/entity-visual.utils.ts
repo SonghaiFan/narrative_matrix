@@ -193,13 +193,16 @@ export function createXScale(
 
 // Create scale for y-axis
 export function createYScale(events: NarrativeEvent[], height: number) {
+  const minTime = Math.min(
+    ...events.map((e) => e.temporal_anchoring.narrative_time)
+  );
   const maxTime = Math.max(
     ...events.map((e) => e.temporal_anchoring.narrative_time)
   );
 
   return d3
     .scaleLinear()
-    .domain([0, Math.ceil(maxTime) + 1])
+    .domain([Math.floor(minTime), Math.ceil(maxTime)])
     .range([0, height])
     .nice();
 }

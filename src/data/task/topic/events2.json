@@ -1,0 +1,279 @@
+{
+  "events": [
+    {
+      "index": 35,
+      "text": "The Donald J. Trump administration reversed longstanding U.S. policy by\u202fcanceling\u202ffunding for the UN Relief and Works Agency, which provides aid to Palestinian refugees, and\u202frelocating\u202fthe U.S.",
+      "short_text": "The Trump administration canceled funding for the UN Relief and Works Agency and relocated the U.S. embassy.embassy from Tel Aviv to Jerusalem. ",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2018-08-30", "2018-12-31"],
+        "narrative_time": 35
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_39",
+          "name": "Trump administration",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_5",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["international relations"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 36,
+      "text": "The Trump administration also helped broker the\u202fAbraham Accords, under which Bahrain and the United Arab Emirates normalized relations with Israel, becoming only the third and fourth countries in the region\u2014following Egypt in 1979 and Jordan in 1994\u2014to do so.",
+      "short_text": "The Trump administration facilitated the Abraham Accords, normalizing relations between Israel, Bahrain, and the United Arab Emirates.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2020-09-15",
+        "narrative_time": 36
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_39",
+          "name": "Trump administration",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_41",
+          "name": "Bahrain",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_42",
+          "name": "United Arab Emirates",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["international relations", "peace negotiations"],
+        "sentiment": {
+          "polarity": "positive",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 37,
+      "text": "Similar deals followed with Morocco and Sudan. Palestinian leader Mahmoud Abbas of Fatah\u202frejected\u202fthe accords, as did Hamas.",
+      "short_text": "Palestinian leader Mahmoud Abbas of Fatah and Hamas rejected the accords.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2020-10-23",
+        "narrative_time": 37
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_32",
+          "name": "Palestinian",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_37",
+          "name": "Mahmoud Abbas",
+          "social_role": "government"
+        },
+        {
+          "id": "ACTIVIST_36",
+          "name": "Fatah",
+          "social_role": "activist"
+        },
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["international relations", "political dissent"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 4
+        }
+      }
+    },
+    {
+      "index": 38,
+      "text": "In early May 2021, after a court\u202fruled\u202fin favor of the eviction of several Palestinian families from East Jerusalem properties, protests erupted, with Israeli police\u202femploying\u202fforce against demonstrators.",
+      "short_text": "In early May 2021, Israeli police used force against demonstrators protesting the court-ordered eviction of Palestinian families from East Jerusalem.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2021-05-06", "2021-05-09"],
+        "narrative_time": 38
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
+          "social_role": "public"
+        },
+        {
+          "id": "OBJECT_27",
+          "name": "East Jerusalem",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["civil unrest", "political dissent"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 39,
+      "text": "After several consecutive days of violence, Hamas, the militant group that governs Gaza, and other Palestinian\u202fmilitant groups\u202flaunched\u202fhundreds of\u202frockets\u202finto Israeli territory.",
+      "short_text": "Hamas and other Palestinian militant groups launched hundreds of rockets into Israeli territory.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2021-05-10",
+        "narrative_time": 39
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_32",
+          "name": "Palestinian",
+          "social_role": "government"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
+      }
+    },
+    {
+      "index": 40,
+      "text": "Israel responded with artillery bombardments and airstrikes, killing more than twenty Palestinians and hitting both military and non-military infrastructure,\u202fincluding residential buildings,\u202fmedia headquarters, and\u202frefugee\u202fand\u202fhealthcare facilities.",
+      "short_text": "Israel conducted artillery bombardments and airstrikes, resulting in over twenty Palestinian deaths and damage to various infrastructures.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2021-05-17", "2021-05-20"],
+        "narrative_time": 40
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "massacre"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 9
+        }
+      }
+    },
+    {
+      "index": 41,
+      "text": "After eleven days, Israel and Hamas agreed to a\u202fcease-fire, with both sides claiming victory.",
+      "short_text": "Israel and Hamas agreed to a cease-fire after eleven days of conflict, with both sides claiming victory.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2021-05-21",
+        "narrative_time": 41
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 2
+        }
+      }
+    },
+    {
+      "index": 42,
+      "text": "The fighting killed more than 250 Palestinians and at least 13 Israelis, wounded nearly 2,000 others, and displaced 72,000 Palestinians.",
+      "short_text": "The fighting resulted in over 250 Palestinian and 13 Israeli deaths, nearly 2,000 injuries, and the displacement of 72,000 Palestinians.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "2021-05-21",
+        "narrative_time": 42
+      },
+      "entities": [
+        {
+          "id": "PUBLIC_21",
+          "name": "Palestinians",
+          "social_role": "public"
+        },
+        {
+          "id": "PUBLIC_45",
+          "name": "Israelis",
+          "social_role": "public"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "massacre", "refugee"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 9
+        }
+      }
+    }
+  ]
+}

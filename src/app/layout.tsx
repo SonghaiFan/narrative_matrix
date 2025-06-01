@@ -5,6 +5,8 @@ import { AuthProvider } from "@/contexts/auth-context";
 import { CenterControlProvider } from "@/contexts/center-control-context";
 import { TooltipProvider } from "@/contexts/tooltip-context";
 import { DisableContextMenu } from "@/components/features/narrative/shared/disable-context-menu";
+import { DisableSearch } from "@/components/features/narrative/shared/disable-search";
+import { Toaster } from "sonner";
 // import { ClarityAnalytics } from "@/components/analytics/ClarityAnalytics";
 
 const geistSans = Geist({
@@ -36,6 +38,8 @@ export default function RootLayout({
           <CenterControlProvider>
             <TooltipProvider>
               <DisableContextMenu />
+              <DisableSearch />
+              <Toaster position="top-center" richColors />
               {/* <ClarityAnalytics /> */}
               {children}
             </TooltipProvider>

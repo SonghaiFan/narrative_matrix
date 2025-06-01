@@ -1,18 +1,18 @@
 {
   "quiz": [
     {
-      "id": "ir_t_n",
-      "question": "When was the last event related to civil unrest mentioned in the narrative",
+      "id": "ir_t_v",
+      "question": "When was the first event related to civil unrest mentioned in the narrative",
       "questionCaption": "Civil Unrest : dissatisfaction among the general population as evidenced by rallies, strikes, demonstrations or sabotage.",
       "answer": "1987",
       "level": "Information Retrieval",
       "type": "radio-options",
-      "timeLimit": 60,
-      "visual": null,
+      "timeLimit": 120,
+      "visual": "topic",
       "prone": "topic",
-      "options": ["2005", "2021", "2022"],
+      "options": ["1967", "1987", "2000"],
       "completed": false,
-      "event_reference": 38
+      "event_reference": 19
     }
   ]
 }

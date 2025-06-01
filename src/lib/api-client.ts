@@ -46,31 +46,3 @@ export async function fetchScenarioData(
     throw new Error(`Failed to load scenario data for ${scenarioId}`);
   }
 }
-
-/**
- * Legacy function for backward compatibility
- * @deprecated Use fetchScenarioData instead
- */
-export async function loadDataFile<T>(fileName: string): Promise<T> {
-  console.warn(
-    "[DEPRECATED] loadDataFile is deprecated. Use fetchScenarioData instead."
-  );
-
-  if (!fileName) {
-    throw new Error("No file name provided");
-  }
-
-  // Client-side or universal: Fetch from the public path
-  try {
-    const response = await fetch(`/${fileName}`);
-    if (!response.ok) {
-      throw new Error(
-        `HTTP error! status: ${response.status} ${response.statusText}`
-      );
-    }
-    return await response.json();
-  } catch (error) {
-    console.error(`[loadDataFile] Failed to fetch ${fileName}:`, error);
-    throw new Error(`Failed to load data file ${fileName}`);
-  }
-}

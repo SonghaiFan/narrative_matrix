@@ -1,27 +1,27 @@
 {
   "quiz": [
     {
-      "id": "pr_tm_n",
+      "id": "pr_tm_v",
       "question": "Match each major event with its most directly associated aftermath or resolution.",
       "questionCaption": "An aftermath is the consequence or result that follows an event, while a resolution is how a conflict or problem was settled or concluded. Look for events and their corresponding outcomes in the narrative.",
-      "answer": "Yom Kippur War: Camp David Accords,Oslo I Accords: Oslo II Accords",
-      "level": "Pattern Recognition",
+      "answer": "First Intifada: Oslo I Accords,Second Intifada: West Bank barrier wall construction",
       "type": "grid-matching",
-      "timeLimit": 180,
-      "visual": null,
+      "level": "Pattern Recognition",
+      "timeLimit": 120,
+      "visual": "time",
       "prone": "time",
       "options": {
-        "leftItems": ["Yom Kippur War", "Oslo I Accords"],
+        "leftItems": ["First Intifada", "Second Intifada"],
         "rightItems": [
-          "Oslo II Accords",
+          "West Bank barrier wall construction",
           "Camp David Accords",
-          "West Bank barrier wall construction"
+          "Oslo I Accords"
         ],
         "leftLabel": "Events",
         "rightLabel": "Resolutions"
       },
       "completed": false,
-      "event_reference": [14, 16, 20, 22]
+      "event_reference": [14, 16, 19, 20, 24, 17, 21, 23, 27, 28]
     }
   ]
 }

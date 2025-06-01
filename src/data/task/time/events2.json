@@ -1,0 +1,219 @@
+{
+  "events": [
+    {
+      "index": 21,
+      "text": "In 1995, the\u202fOslo II\u202fAccords expanded on the first agreement, adding provisions that mandated the complete withdrawal of Israel from 6 cities and 450 towns in the West Bank.",
+      "short_text": "In 1995, the Oslo II Accords mandated Israel's withdrawal from 6 cities and 450 towns in the West Bank.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["1995-01-01", "1995-12-31"],
+        "narrative_time": 21
+      },
+      "entities": [
+        {
+          "id": "OBJECT_33",
+          "name": "Oslo II Accords",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_23",
+          "name": "West Bank",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 0
+        }
+      }
+    },
+    {
+      "index": 22,
+      "text": "In 2000, sparked in part by Palestinian grievances over Israel\u2019s control over the West Bank, a stagnating peace process, and former Israeli Prime Minister Ariel Sharon\u2019s\u202fvisit\u202fto the al-Aqsa mosque\u2014the third holiest site in Islam\u2014in September 2000, Palestinians\u202flaunched\u202fthe second intifada, which would last until 2005.",
+      "short_text": "In 2000, Palestinians launched the second intifada due to grievances over Israel's control of the West Bank, a stagnating peace process, and Ariel Sharon's visit to the al-Aqsa mosque.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2000-09-01", "2005-12-31"],
+        "narrative_time": 22
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_32",
+          "name": "Palestinian",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_23",
+          "name": "West Bank",
+          "social_role": "object"
+        },
+        {
+          "id": "GOVERNMENT_34",
+          "name": "Ariel Sharon",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_35",
+          "name": "al-Aqsa mosque",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["civil unrest"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    },
+    {
+      "index": 23,
+      "text": "In response, the Israeli government approved the\u202fconstruction of a barrier wall\u202faround the West Bank in 2002, despite\u202fopposition\u202ffrom the International Court of Justice and the International Criminal Court.",
+      "short_text": "In 2002, the Israeli government approved the construction of a barrier wall around the West Bank.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2002-01-01", "2002-12-31"],
+        "narrative_time": 23
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_2",
+          "name": "Israel",
+          "social_role": "government"
+        },
+        {
+          "id": "OBJECT_23",
+          "name": "West Bank",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["national government"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 24,
+      "text": "Factionalism among the Palestinians flared up when Hamas won the Palestinian Authority\u2019s parliamentary elections in 2006, deposing longtime majority party Fatah. This gave Hamas, a political and militant movement inspired by the Palestinian Muslim Brotherhood, control of the Gaza Strip.",
+      "short_text": "Hamas won the Palestinian Authority\u2019s parliamentary elections in 2006, deposing Fatah. Hamas gained control of the Gaza Strip.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2006-01-25", "2006-12-31"],
+        "narrative_time": 24
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "GOVERNMENT_32",
+          "name": "Palestinian",
+          "social_role": "government"
+        },
+        {
+          "id": "ACTIVIST_36",
+          "name": "Fatah",
+          "social_role": "activist"
+        },
+        {
+          "id": "OBJECT_8",
+          "name": "Gaza",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["parties and movements"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 25,
+      "text": "Gaza is a small piece of land on the Mediterranean Sea that borders Egypt to the south and has been under the rule of the semi-autonomous Palestinian Authority since 1993. The United States and European Union, among others, did not acknowledge Hamas\u2019 electoral victory, as the group has been considered a terrorist organization by western governments since the late 1990s.",
+      "short_text": "The United States and European Union did not recognize Hamas' electoral victory due to its designation as a terrorist organization by Western governments.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": "1993-01-01",
+        "narrative_time": 25
+      },
+      "entities": [
+        {
+          "id": "GOVERNMENT_32",
+          "name": "Palestinian",
+          "social_role": "government"
+        },
+        {
+          "id": "GOVERNMENT_5",
+          "name": "United States",
+          "social_role": "government"
+        },
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["parties and movements"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 6
+        }
+      }
+    },
+    {
+      "index": 26,
+      "text": "Following Hamas\u2019 seizure of control, violence broke out between Hamas and Fatah.",
+      "short_text": "Violence erupted between Hamas and Fatah following Hamas' control seizure.",
+      "lead_title": null,
+      "temporal_anchoring": {
+        "real_time": ["2006-01-25", "2006-12-31"],
+        "narrative_time": 26
+      },
+      "entities": [
+        {
+          "id": "ACTIVIST_1",
+          "name": "Hamas",
+          "social_role": "activist"
+        },
+        {
+          "id": "ACTIVIST_36",
+          "name": "Fatah",
+          "social_role": "activist"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["civil unrest"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 7
+        }
+      }
+    }
+  ]
+}

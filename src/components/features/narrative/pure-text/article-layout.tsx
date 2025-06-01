@@ -93,8 +93,6 @@ interface ArticleParagraphProps {
   onClick: () => void;
   onContextMenu: (e: React.MouseEvent) => void;
   highlightEntities: (text: string, entities: any[]) => string;
-  searchQuery?: string;
-  highlightSearchTerm?: (text: string, searchQuery: string) => string;
 }
 
 export function ArticleParagraph({
@@ -104,19 +102,11 @@ export function ArticleParagraph({
   onClick,
   onContextMenu,
   highlightEntities,
-  searchQuery = "",
-  highlightSearchTerm,
 }: ArticleParagraphProps) {
   const { text } = PURE_TEXT_CONFIG;
 
   // Process text with entities highlighted
   const processedText = highlightEntities(event.text, event.entities);
-
-  // Apply search term highlighting if searchQuery is provided
-  const finalText =
-    searchQuery && highlightSearchTerm
-      ? highlightSearchTerm(processedText, searchQuery)
-      : processedText;
 
   return (
     <div
@@ -143,7 +133,7 @@ export function ArticleParagraph({
         </span>
         <span
           dangerouslySetInnerHTML={{
-            __html: finalText,
+            __html: processedText,
           }}
         />
       </div>
