@@ -532,7 +532,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     renderLeadTitles(g, leadTitlePoints, yScale, width);
 
     // Create line generator
-    const smoothLine = createLineGenerator(xScale, yScale);
+    const smoothLine = createLineGenerator(xScale, yScale, publishX);
 
     // Add narrative line connecting to the right edge of rectangles
     g.append("g")

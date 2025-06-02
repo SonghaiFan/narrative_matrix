@@ -138,7 +138,7 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
             paddingBottom: `${margin.bottom}px`,
           }}
         >
-          <ArticleLayout title={articleTitle} publishDate={publicationDate}>
+          <ArticleLayout>
             {/* Display all events in a single flat list, ordered by narrative time */}
             <ArticleSection>
               {sortedEvents.map((event) => (
@@ -148,17 +148,6 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
                     eventRefs.current[event.index] = el;
                   }}
                 >
-                  {event.lead_title && (
-                    <h2
-                      className="text-xl font-semibold text-gray-900 mt-6 mb-3"
-                      style={{
-                        fontSize: `${text.fontSize.title}px`,
-                        color: text.colors.mainTopic,
-                      }}
-                    >
-                      {event.lead_title}
-                    </h2>
-                  )}
                   <ArticleParagraph
                     event={event}
                     isSelected={focusedEventId === event.index}

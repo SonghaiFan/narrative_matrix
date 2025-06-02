@@ -1,0 +1,131 @@
+{
+  "events": [
+    {
+      "index": 1,
+      "text": "In 2014, Houthi insurgents—Shiite rebels with links to Iran—took control of Sanaa, Yemen’s capital, demanding lower fuel prices and the formation of a new government. Their move marked the beginning of Yemen’s civil war.",
+      "short_text": "Houthi rebels seized Sanaa in 2014, starting Yemen’s civil war.",
+      "temporal_anchoring": { "real_time": "2014", "narrative_time": 1 },
+      "entities": [
+        {
+          "id": "houthi_insurgents",
+          "name": "Houthi insurgents",
+          "social_role": "organization"
+        },
+        { "id": "iran", "name": "Iran", "social_role": "country" },
+        { "id": "yemen", "name": "Yemen", "social_role": "country" },
+        { "id": "sanaa", "name": "Sanaa", "social_role": "object" }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["civil war", "armed conflict"],
+        "sentiment": { "polarity": "negative", "intensity": 8 }
+      }
+    },
+    {
+      "index": 2,
+      "text": "In January 2015, after failed negotiations, Houthi rebels stormed the presidential palace, prompting President Abd Rabbu Mansour Hadi and his government to resign.",
+      "short_text": "Houthi rebels took Yemen’s presidential palace in January 2015; Hadi resigned.",
+      "temporal_anchoring": { "real_time": "2015-01", "narrative_time": 2 },
+      "entities": [
+        {
+          "id": "houthi_insurgents",
+          "name": "Houthi insurgents",
+          "social_role": "organization"
+        },
+        {
+          "id": "abd_rabbu_mansour_hadi",
+          "name": "Abd Rabbu Mansour Hadi",
+          "social_role": "person"
+        },
+        { "id": "yemen", "name": "Yemen", "social_role": "country" }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["government", "coup d'etat"],
+        "sentiment": { "polarity": "negative", "intensity": 7 }
+      }
+    },
+    {
+      "index": 3,
+      "text": "In February 2015, after fleeing Sanaa for the southern city of Aden, President Hadi rescinded his resignation. This move complicated the legitimacy of a UN-supported transitional council formed to fill the power vacuum.",
+      "short_text": "Hadi fled to Aden in Feb 2015 and rescinded resignation, complicating UN transition.",
+      "temporal_anchoring": { "real_time": "2015-02", "narrative_time": 3 },
+      "entities": [
+        {
+          "id": "abd_rabbu_mansour_hadi",
+          "name": "Abd Rabbu Mansour Hadi",
+          "social_role": "person"
+        },
+        { "id": "sanaa", "name": "Sanaa", "social_role": "object" },
+        { "id": "aden", "name": "Aden", "social_role": "object" },
+        {
+          "id": "united_nations",
+          "name": "United Nations",
+          "social_role": "organization"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["government", "peace negotiations"],
+        "sentiment": { "polarity": "neutral", "intensity": 5 }
+      }
+    },
+    {
+      "index": 4,
+      "text": "Beginning in March 2015, Saudi Arabia led a coalition of Gulf states in launching economic sanctions and air strikes against Houthi forces. The campaign was supported by U.S. intelligence and logistics.",
+      "short_text": "Saudi-led coalition began military campaign against Houthis in March 2015.",
+      "temporal_anchoring": { "real_time": "2015-03", "narrative_time": 4 },
+      "entities": [
+        {
+          "id": "saudi_arabia",
+          "name": "Saudi Arabia",
+          "social_role": "country"
+        },
+        {
+          "id": "houthi_insurgents",
+          "name": "Houthi insurgents",
+          "social_role": "organization"
+        },
+        {
+          "id": "united_states",
+          "name": "United States",
+          "social_role": "country"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["air strikes", "international military intervention"],
+        "sentiment": { "polarity": "negative", "intensity": 9 }
+      }
+    },
+    {
+      "index": 5,
+      "text": "A Houthi offensive eventually forced Hadi to flee from Aden to Saudi Arabia. Although he later attempted to return to Aden, Hadi ultimately ruled as president in exile.",
+      "short_text": "Hadi fled to Saudi Arabia and governed in exile after Houthi advance.",
+      "temporal_anchoring": { "real_time": "2015", "narrative_time": 5 },
+      "entities": [
+        {
+          "id": "abd_rabbu_mansour_hadi",
+          "name": "Abd Rabbu Mansour Hadi",
+          "social_role": "person"
+        },
+        {
+          "id": "houthi_insurgents",
+          "name": "Houthi insurgents",
+          "social_role": "organization"
+        },
+        { "id": "aden", "name": "Aden", "social_role": "object" },
+        {
+          "id": "saudi_arabia",
+          "name": "Saudi Arabia",
+          "social_role": "country"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["government", "civil war"],
+        "sentiment": { "polarity": "negative", "intensity": 8 }
+      }
+    }
+  ]
+}

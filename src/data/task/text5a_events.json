@@ -1,0 +1,97 @@
+{
+  "events": [
+    {
+      "index": 1,
+      "text": "In 2011, a U.S.-backed international intervention led to the overthrow of Libya’s long-standing authoritarian leader, sparking a prolonged period of political instability and conflict among rival factions.",
+      "short_text": "U.S.-backed intervention in 2011 toppled Libya’s authoritarian regime.",
+      "temporal_anchoring": { "real_time": "2011", "narrative_time": 1 },
+      "entities": [
+        { "id": "libya", "name": "Libya", "social_role": "country" },
+        {
+          "id": "united_states",
+          "name": "United States",
+          "social_role": "country"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["revolutions", "international military intervention"],
+        "sentiment": { "polarity": "negative", "intensity": 8 }
+      }
+    },
+    {
+      "index": 2,
+      "text": "A civil war erupted between rival political factions, which lasted for six years until a cease-fire agreement was reached in 2020. The agreement paved the way for the creation of a UN-supported Government of National Unity (GNU).",
+      "short_text": "Libya's civil war ended in 2020 with a cease-fire and formation of GNU.",
+      "temporal_anchoring": { "real_time": "2020", "narrative_time": 2 },
+      "entities": [
+        { "id": "libya", "name": "Libya", "social_role": "country" },
+        {
+          "id": "united_nations",
+          "name": "United Nations",
+          "social_role": "organization"
+        },
+        {
+          "id": "government_of_national_unity",
+          "name": "Government of National Unity",
+          "social_role": "organization"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations", "government"],
+        "sentiment": { "polarity": "positive", "intensity": 6 }
+      }
+    },
+    {
+      "index": 3,
+      "text": "National elections in Libya, originally scheduled for December 2021, were postponed indefinitely due to rival factions' failure to agree on the electoral framework. The delay has fueled political frustration and instability.",
+      "short_text": "Libya's planned 2021 elections were indefinitely postponed due to political gridlock.",
+      "temporal_anchoring": { "real_time": "2021-12", "narrative_time": 3 },
+      "entities": [
+        { "id": "libya", "name": "Libya", "social_role": "country" },
+        {
+          "id": "government_of_national_unity",
+          "name": "Government of National Unity",
+          "social_role": "organization"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["election", "government"],
+        "sentiment": { "polarity": "negative", "intensity": 7 }
+      }
+    },
+    {
+      "index": 4,
+      "text": "Despite ongoing political paralysis, violence levels in Libya have decreased significantly since 2020, contributing to an improved humanitarian situation. The number of people requiring assistance dropped from 1.3 million in 2016 to about 300,000 in 2023.",
+      "short_text": "Libya's humanitarian need declined from 1.3M in 2016 to 300K in 2023.",
+      "temporal_anchoring": {
+        "real_time": ["2016", "2023"],
+        "narrative_time": 4
+      },
+      "entities": [
+        { "id": "libya", "name": "Libya", "social_role": "country" }
+      ],
+      "topic": {
+        "main_topic": "human interest",
+        "sub_topic": ["humanitarian aid", "crisis"],
+        "sentiment": { "polarity": "positive", "intensity": 5 }
+      }
+    },
+    {
+      "index": 5,
+      "text": "Libya continues to face complex challenges, including economic instability tied to oil dependency, the proliferation of weapons, climate change, and ongoing migration crises that strain the country’s fragile governance structures.",
+      "short_text": "Libya faces threats from oil dependence, arms, climate change, and migration.",
+      "temporal_anchoring": { "real_time": "2023", "narrative_time": 5 },
+      "entities": [
+        { "id": "libya", "name": "Libya", "social_role": "country" }
+      ],
+      "topic": {
+        "main_topic": "economy, business and finance",
+        "sub_topic": ["energy resources", "migration", "climate change"],
+        "sentiment": { "polarity": "negative", "intensity": 7 }
+      }
+    }
+  ]
+}

@@ -6,4 +6,6 @@ export const TIME_CONFIG = merge({}, SHARED_CONFIG, {
     left: 60, // Reduced left margin compared to shared config
     right: 20, // Reduced right margin compared to shared config
   },
+  // Override minHeight to always use content-based height
+  minHeight: 0,
 });

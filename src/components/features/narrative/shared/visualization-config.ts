@@ -59,7 +59,7 @@ export const SHARED_CONFIG = {
     content: {
       minEntityWidth: 40, // Minimum width per entity
       entityGap: 10, // Gap between entities
-      eventHeight: 25, // Height per event
+      eventHeight: 100, // Height per event
       minEventGap: 5, // Minimum gap between events
     },
     // Container-based dimensions

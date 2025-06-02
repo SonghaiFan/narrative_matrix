@@ -22,29 +22,6 @@ export function ArticleLayout({
       className="mx-auto bg-white shadow-sm rounded-lg overflow-hidden"
       style={{ maxWidth: `${text.maxWidth}px` }}
     >
-      {title && (
-        <header className="px-4 sm:px-6 pt-6 pb-4">
-          <h1
-            className="font-bold text-gray-900 leading-tight"
-            style={{ fontSize: `${text.fontSize.title + 8}px` }}
-          >
-            {title}
-          </h1>
-          {publishDate && (
-            <div
-              className="mt-2 text-gray-500"
-              style={{ fontSize: `${text.fontSize.meta + 1}px` }}
-            >
-              {new Date(publishDate).toLocaleDateString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </div>
-          )}
-        </header>
-      )}
       <div
         className="px-4 sm:px-6 py-2"
         style={{ padding: `${text.cardPadding}px` }}
@@ -77,7 +54,7 @@ export function ArticleSection({ title, children }: ArticleSectionProps) {
         </h2>
       )}
       <div
-        className="text-gray-800 space-y-4"
+        className="text-gray-800 space-y-2"
         style={{ color: text.colors.entityHighlight }}
       >
         {children}
@@ -125,7 +102,7 @@ export function ArticleParagraph({
         className="leading-relaxed text-gray-800"
         style={{
           fontSize: `${text.fontSize.content}px`,
-          lineHeight: "1.6",
+          lineHeight: "1.4",
         }}
       >
         <span className="inline-block font-bold text-blue-600 mr-2">

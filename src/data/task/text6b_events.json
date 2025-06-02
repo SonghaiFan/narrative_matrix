@@ -1,0 +1,175 @@
+{
+  "events": [
+    {
+      "index": 1,
+      "text": "Following the 2003 U.S.-led invasion of Iraq and the dismantling of Saddam Hussein’s military and Baath Party, the country entered a prolonged period of instability, creating space for insurgent groups like the Islamic State to emerge.",
+      "short_text": "Iraq’s post-2003 instability enabled the rise of the Islamic State.",
+      "temporal_anchoring": { "real_time": "2003", "narrative_time": 1 },
+      "entities": [
+        {
+          "id": "united_states",
+          "name": "United States",
+          "social_role": "country"
+        },
+        { "id": "iraq", "name": "Iraq", "social_role": "country" },
+        {
+          "id": "islamic_state",
+          "name": "Islamic State",
+          "social_role": "organization"
+        },
+        {
+          "id": "baath_party",
+          "name": "Baath Party",
+          "social_role": "organization"
+        },
+        {
+          "id": "saddam_hussein",
+          "name": "Saddam Hussein",
+          "social_role": "person"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "revolutions"],
+        "sentiment": { "polarity": "negative", "intensity": 8 }
+      }
+    },
+    {
+      "index": 2,
+      "text": "In 2014, the Islamic State advanced into Iraq from Syria, capturing parts of Anbar province and seizing Mosul in June. The offensive marked a major escalation in the group's regional threat.",
+      "short_text": "Islamic State captured Mosul and parts of Anbar province in 2014.",
+      "temporal_anchoring": { "real_time": "2014-06", "narrative_time": 2 },
+      "entities": [
+        {
+          "id": "islamic_state",
+          "name": "Islamic State",
+          "social_role": "organization"
+        },
+        { "id": "iraq", "name": "Iraq", "social_role": "country" },
+        { "id": "syria", "name": "Syria", "social_role": "country" },
+        { "id": "mosul", "name": "Mosul", "social_role": "object" },
+        {
+          "id": "anbar_province",
+          "name": "Anbar province",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["guerrilla activity", "armed conflict"],
+        "sentiment": { "polarity": "negative", "intensity": 9 }
+      }
+    },
+    {
+      "index": 3,
+      "text": "In response to the Islamic State's gains, President Barack Obama authorized targeted air strikes in Iraq and Syria and created a global coalition of nearly eighty countries to fight the group.",
+      "short_text": "Obama authorized air strikes and built a coalition against ISIS in 2014.",
+      "temporal_anchoring": { "real_time": "2014", "narrative_time": 3 },
+      "entities": [
+        {
+          "id": "barack_obama",
+          "name": "Barack Obama",
+          "social_role": "person"
+        },
+        {
+          "id": "united_states",
+          "name": "United States",
+          "social_role": "country"
+        },
+        {
+          "id": "islamic_state",
+          "name": "Islamic State",
+          "social_role": "organization"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["air strikes", "international military intervention"],
+        "sentiment": { "polarity": "positive", "intensity": 6 }
+      }
+    },
+    {
+      "index": 4,
+      "text": "Regional forces, including up to thirty thousand Iranian troops, worked with the Iraqi army, local tribes, and Kurdish Peshmerga to retake territory from the Islamic State, successfully liberating Tikrit (April 2015), Ramadi (December 2015), Fallujah (June 2016), and Mosul (July 2017).",
+      "short_text": "Regional forces recaptured key Iraqi cities from ISIS between 2015–2017.",
+      "temporal_anchoring": {
+        "real_time": ["2015-04", "2017-07"],
+        "narrative_time": 4
+      },
+      "entities": [
+        { "id": "iraq", "name": "Iraq", "social_role": "country" },
+        { "id": "iran", "name": "Iran", "social_role": "country" },
+        {
+          "id": "islamic_state",
+          "name": "Islamic State",
+          "social_role": "organization"
+        },
+        {
+          "id": "kurdish_peshmerga",
+          "name": "Kurdish Peshmerga",
+          "social_role": "organization"
+        },
+        { "id": "tikrit", "name": "Tikrit", "social_role": "object" },
+        { "id": "ramadi", "name": "Ramadi", "social_role": "object" },
+        { "id": "fallujah", "name": "Fallujah", "social_role": "object" },
+        { "id": "mosul", "name": "Mosul", "social_role": "object" }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "foreign aid"],
+        "sentiment": { "polarity": "positive", "intensity": 7 }
+      }
+    },
+    {
+      "index": 5,
+      "text": "In early 2017, the Trump administration escalated the U.S. military presence in Iraq to accelerate the defeat of the Islamic State. The Iraqi government officially declared victory over the group in December 2017.",
+      "short_text": "Trump escalated U.S. presence in 2017; Iraq declared ISIS defeat in December.",
+      "temporal_anchoring": { "real_time": "2017", "narrative_time": 5 },
+      "entities": [
+        {
+          "id": "donald_trump",
+          "name": "Donald Trump",
+          "social_role": "person"
+        },
+        {
+          "id": "united_states",
+          "name": "United States",
+          "social_role": "country"
+        },
+        { "id": "iraq", "name": "Iraq", "social_role": "country" },
+        {
+          "id": "islamic_state",
+          "name": "Islamic State",
+          "social_role": "organization"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["military operations", "government"],
+        "sentiment": { "polarity": "positive", "intensity": 7 }
+      }
+    },
+    {
+      "index": 6,
+      "text": "Since the end of major combat in 2017, most foreign forces have withdrawn from Iraq, though a small contingent of U.S. troops remains to support counterterrorism and stabilization efforts.",
+      "short_text": "Post-2017, most foreign troops left Iraq; U.S. maintains small presence.",
+      "temporal_anchoring": {
+        "real_time": "2018",
+        "narrative_time": 6
+      },
+      "entities": [
+        { "id": "iraq", "name": "Iraq", "social_role": "country" },
+        {
+          "id": "united_states",
+          "name": "United States",
+          "social_role": "country"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["military operations", "foreign relations"],
+        "sentiment": { "polarity": "neutral", "intensity": 5 }
+      }
+    }
+  ]
+}

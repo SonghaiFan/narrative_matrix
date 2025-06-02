@@ -140,12 +140,22 @@ export function createAxes(
 // Create line generator for the path
 export function createLineGenerator(
   xScale: any, // Using any since we have a custom composite scale
-  yScale: d3.ScaleLinear<number, number>
+  yScale: d3.ScaleLinear<number, number>,
+  publishX: number // Add publish date x position as parameter
 ) {
-  return d3
-    .line<DataPoint>()
-    .defined((d) => d.hasRealTime)
-    .x((d) => getXPosition(xScale, d.realTime))
-    .y((d) => yScale(d.narrativeTime))
-    .curve(d3.curveLinear);
+  return (
+    d3
+      .line<DataPoint>()
+      // Remove the .defined() filter to connect all points
+      .x((d) => {
+        // For points with real time, use their position
+        if (d.hasRealTime) {
+          return getXPosition(xScale, d.realTime);
+        }
+        // For points without real time, use the publish date position
+        return publishX;
+      })
+      .y((d) => yScale(d.narrativeTime))
+      .curve(d3.curveLinear)
+  );
 }
