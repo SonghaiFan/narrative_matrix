@@ -165,7 +165,7 @@ export function AppHeader({
           </div>
         </div>
 
-        {/* Center section with sentiment legend */}
+        {/* Center section with sentiment legend
         {showSentimentLegend && (
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <div className="flex items-center bg-gray-50 rounded-lg border border-gray-200 px-4 py-2 shadow-sm">
@@ -206,11 +206,11 @@ export function AppHeader({
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         <div className="flex items-center gap-3">
           {/* Interaction Hints */}
-          <div className="flex items-center bg-gray-50 rounded-lg border border-gray-200 px-3 py-1.5 shadow-sm">
+          {/* <div className="flex items-center bg-gray-50 rounded-lg border border-gray-200 px-3 py-1.5 shadow-sm">
             <div className="flex items-center mr-4">
               <div className="mr-2 flex items-center justify-center">
                 <MouseFocusIcon />
@@ -227,7 +227,7 @@ export function AppHeader({
                 <span className="text-green-600">Right Click:</span> Mark
               </span>
             </div>
-          </div>
+          </div> */}
 
           {/* Additional content passed as children */}
           {children}

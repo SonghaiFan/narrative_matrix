@@ -201,14 +201,14 @@ export function TaskAnswerInput({
           )}
         </div>
 
-        {/* References Section */}
-        <div className="border-t pt-4">
-          <h3 className="text-sm font-medium text-gray-900 mb-3">
+        {/* References Section border-t*/}
+        <div className="pt-4">
+          {/* <h3 className="text-sm font-medium text-gray-900 mb-3">
             Marked References
-          </h3>
+          </h3> */}
 
           {/* Domain Expert Suggested References */}
-          {isDomainExpert && showAnswer && currentTask.event_reference && (
+          {/* {isDomainExpert && showAnswer && currentTask.event_reference && (
             <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-md">
               <div className="text-xs font-medium text-green-800 mb-2">
                 Suggested References
@@ -241,10 +241,10 @@ export function TaskAnswerInput({
                 )}
               </div>
             </div>
-          )}
+          )} */}
 
           {/* User's Marked References */}
-          <div className="bg-gray-50 border border-gray-200 rounded-md">
+          {/* <div className="bg-gray-50 border border-gray-200 rounded-md">
             <div className="p-3">
               <div className="text-xs text-gray-600 mb-3">
                 Right-click on events to add them to your references
@@ -284,10 +284,10 @@ export function TaskAnswerInput({
                 )}
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Completed Task References Display */}
-          {isTaskCompleted && userEventReference && (
+          {/* {isTaskCompleted && userEventReference && (
             <div className="mt-3 p-2 rounded text-xs bg-blue-50 text-blue-800">
               <p className="font-medium mb-1">Submitted References:</p>
               <div className="space-y-1">
@@ -305,7 +305,7 @@ export function TaskAnswerInput({
                 ))}
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>

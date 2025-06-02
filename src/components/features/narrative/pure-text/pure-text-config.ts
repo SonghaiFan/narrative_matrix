@@ -12,11 +12,11 @@ export const PURE_TEXT_CONFIG = merge({}, SHARED_CONFIG, {
   text: {
     cardSpacing: 0, // Spacing between text cards
     cardPadding: 12, // Padding within text cards
-    maxWidth: 720, // Maximum width for text content
+    maxWidth: 500, // Maximum width for text content
     // Font sizes for different text elements
     fontSize: {
       title: 18, // Size for titles
-      content: 15, // Size for main content
+      content: 17, // Size for main content
       meta: 12, // Size for metadata
     },
     // Color scheme for text view
