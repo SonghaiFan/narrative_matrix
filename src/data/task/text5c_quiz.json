@@ -162,5 +162,21 @@
         "sentiment": { "polarity": "negative", "intensity": 8 }
       }
     }
+  ],
+  "quiz": [
+    {
+      "id": "ir_t_politics_start",
+      "question": "When was the first event related to politics mentioned in the narrative?",
+      "questionCaption": "politics: peace negotiations, elections, or government formation.",
+      "answer": "2018",
+      "level": "Information Retrieval",
+      "type": "radio-options",
+      "timeLimit": 60,
+      "visual": null,
+      "prone": "topic",
+      "options": ["2018", "2019", "2015"],
+      "completed": false,
+      "event_reference": 1
+    }
   ]
 }

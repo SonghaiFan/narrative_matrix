@@ -1,0 +1,146 @@
+{
+  "events": [
+    {
+      "index": 1,
+      "text": "In the First Taiwan Strait Crisis (1954–55), the PRC shelled the Kinmen and Matsu islands near mainland China to deter the United States from signing a mutual defense treaty with Taiwan. The attempt failed, and the treaty was signed.",
+      "short_text": "In 1954–55, PRC shelled Kinmen and Matsu to deter U.S.–Taiwan defense treaty.",
+      "temporal_anchoring": {
+        "real_time": ["1954", "1955"],
+        "narrative_time": 1
+      },
+      "entities": [
+        {
+          "id": "prc",
+          "name": "People's Republic of China",
+          "social_role": "country"
+        },
+        { "id": "us", "name": "United States", "social_role": "country" },
+        { "id": "taiwan", "name": "Taiwan", "social_role": "country" },
+        { "id": "kinmen", "name": "Kinmen", "social_role": "object" },
+        { "id": "matsu", "name": "Matsu", "social_role": "object" }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "diplomacy"],
+        "sentiment": { "polarity": "negative", "intensity": 7 }
+      }
+    },
+    {
+      "index": 2,
+      "text": "Following the First Taiwan Strait Crisis, Taiwan and China established a tacit understanding of a 'median line' in the Taiwan Strait to guide military engagements and avoid accidental escalation.",
+      "short_text": "Taipei and Beijing informally agreed on 'median line' in Taiwan Strait post-crisis.",
+      "temporal_anchoring": { "real_time": "1955", "narrative_time": 2 },
+      "entities": [
+        { "id": "taiwan", "name": "Taiwan", "social_role": "country" },
+        {
+          "id": "prc",
+          "name": "People's Republic of China",
+          "social_role": "country"
+        },
+        {
+          "id": "taiwan_strait",
+          "name": "Taiwan Strait",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["diplomacy", "military doctrine"],
+        "sentiment": { "polarity": "neutral", "intensity": 5 }
+      }
+    },
+    {
+      "index": 3,
+      "text": "During the Second Taiwan Strait Crisis in 1958, the PRC resumed artillery bombardment of Kinmen. In response, the United States developed nuclear strike plans against mainland China, reflecting Cold War-era support for Taiwan by the Eisenhower administration.",
+      "short_text": "PRC shelled Kinmen in 1958; U.S. prepared nuclear response under Eisenhower.",
+      "temporal_anchoring": { "real_time": "1958", "narrative_time": 3 },
+      "entities": [
+        {
+          "id": "prc",
+          "name": "People's Republic of China",
+          "social_role": "country"
+        },
+        { "id": "us", "name": "United States", "social_role": "country" },
+        { "id": "kinmen", "name": "Kinmen", "social_role": "object" },
+        {
+          "id": "dwight_eisenhower",
+          "name": "Dwight Eisenhower",
+          "social_role": "person"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "nuclear policy"],
+        "sentiment": { "polarity": "negative", "intensity": 8 }
+      }
+    },
+    {
+      "index": 4,
+      "text": "In 1979, the United States formally ended its mutual defense treaty with Taiwan and transferred diplomatic recognition to the People's Republic of China, signaling a major shift in U.S. foreign policy.",
+      "short_text": "U.S. ended defense treaty and recognized PRC in 1979.",
+      "temporal_anchoring": { "real_time": "1979", "narrative_time": 4 },
+      "entities": [
+        { "id": "us", "name": "United States", "social_role": "country" },
+        {
+          "id": "prc",
+          "name": "People's Republic of China",
+          "social_role": "country"
+        },
+        { "id": "taiwan", "name": "Taiwan", "social_role": "country" }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["diplomacy", "foreign relations"],
+        "sentiment": { "polarity": "neutral", "intensity": 5 }
+      }
+    },
+    {
+      "index": 5,
+      "text": "In the Third Taiwan Strait Crisis (1995–96), the PRC fired live ammunition and missiles into waters near Taiwan to protest President Lee Teng-hui's visit to the United States, escalating tensions across the strait.",
+      "short_text": "PRC fired missiles near Taiwan in 1995–96 to oppose Lee Teng-hui's U.S. visit.",
+      "temporal_anchoring": {
+        "real_time": ["1995", "1996"],
+        "narrative_time": 5
+      },
+      "entities": [
+        {
+          "id": "prc",
+          "name": "People's Republic of China",
+          "social_role": "country"
+        },
+        { "id": "taiwan", "name": "Taiwan", "social_role": "country" },
+        {
+          "id": "lee_teng_hui",
+          "name": "Lee Teng-hui",
+          "social_role": "person"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["air strikes", "military exercises"],
+        "sentiment": { "polarity": "negative", "intensity": 8 }
+      }
+    }
+  ],
+  "quiz": [
+    {
+      "id": "aftermath_1",
+      "question": "What was the aftermath or resolution of the following event?\n\nIn 1954–55, PRC shelled Kinmen and Matsu to deter U.S.–Taiwan defense treaty.",
+      "questionCaption": "",
+      "answer": "Taipei and Beijing informally agreed on 'median line' in Taiwan Strait post-crisis.",
+      "level": "Comprehension",
+      "type": "radio-options",
+      "timeLimit": 120,
+      "visual": "time",
+      "prone": "time",
+      "options": [
+        "Taipei and Beijing informally agreed on 'median line' in Taiwan Strait post-crisis.",
+        "PRC fired missiles near Taiwan in 1995–96 to oppose Lee Teng-hui's U.S. visit.",
+        "U.S. ended defense treaty and recognized PRC in 1979.",
+        "PRC shelled Kinmen in 1958; U.S. prepared nuclear response under Eisenhower."
+      ],
+      "completed": false,
+      "event_reference": [1, 2]
+    }
+  ]
+}

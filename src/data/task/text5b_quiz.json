@@ -148,5 +148,21 @@
         "sentiment": { "polarity": "negative", "intensity": 9 }
       }
     }
+  ],
+  "quiz": [
+    {
+      "id": "ir_t_politics_start",
+      "question": "When was the first event related to politics mentioned in the narrative?",
+      "questionCaption": "politics: revolutions, government transitions, or institutional change.",
+      "answer": "2011",
+      "level": "Information Retrieval",
+      "type": "radio-options",
+      "timeLimit": 60,
+      "visual": null,
+      "prone": "topic",
+      "options": ["2011", "2012", "2014"],
+      "completed": false,
+      "event_reference": 1
+    }
   ]
 }

@@ -88,5 +88,26 @@
         "sentiment": { "polarity": "negative", "intensity": 7 }
       }
     }
+  ],
+  "quiz": [
+    {
+      "id": "aftermath_1",
+      "question": "What was the aftermath or resolution of the following event?\n\nIn 1949, the Kuomintang relocated to Taiwan after losing the Chinese Civil War.",
+      "questionCaption": "",
+      "answer": "In 2022, the PRC reaffirmed reunification with Taiwan as a historic mission.",
+      "level": "Comprehension",
+      "type": "radio-options",
+      "timeLimit": 120,
+      "visual": "time",
+      "prone": "time",
+      "options": [
+        "In 2022, the PRC reaffirmed reunification with Taiwan as a historic mission.",
+        "PRC conducted military exercises near Taiwan in 2022.",
+        "PRC cut ties and escalated pressure after Tsai Ing-wen rejected the '1992 Consensus' in 2016.",
+        "Ma Ying-jeou supported the '1992 Consensus,' boosting ties but raising concerns."
+      ],
+      "completed": false,
+      "event_reference": [1, 2]
+    }
   ]
 }
