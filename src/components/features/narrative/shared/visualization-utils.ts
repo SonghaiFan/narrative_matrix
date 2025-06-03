@@ -83,7 +83,12 @@ export function createTimeScale(width: number, domain: [Date, Date]) {
       // Generate ticks using the determined interval
       const ticks = tickInterval.range(domain[0], domain[1]);
 
-      // Add the end date if it's not included
+      // Ensure start date is included
+      if (ticks.length === 0 || ticks[0] > domain[0]) {
+        ticks.unshift(domain[0]);
+      }
+
+      // Ensure end date is included
       if (ticks[ticks.length - 1] < domain[1]) {
         ticks.push(domain[1]);
       }

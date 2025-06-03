@@ -123,16 +123,22 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       d3.select(svgRef.current)
         .selectAll(".parent-point, .child-point-rect")
         .attr("stroke", (d: any) => {
-          const eventIndex = d.event?.index || d.points?.[0]?.event?.index;
-          // Only marked events get blue border, not selected events
-          return isEventMarked(eventIndex)
-            ? TOPIC_CONFIG.highlight.color
-            : "black";
+          // For child nodes, check the single event; for parent nodes, check if any child is marked
+          const isMarked = d.event?.index
+            ? isEventMarked(d.event.index) // Child node
+            : d.points?.some((point: DataPoint) =>
+                isEventMarked(point.event.index)
+              ); // Parent node
+          return isMarked ? TOPIC_CONFIG.highlight.color : "black";
         })
         .attr("stroke-width", (d: any) => {
-          const eventIndex = d.event?.index || d.points?.[0]?.event?.index;
-          // Only marked events get thicker stroke, not selected events
-          return isEventMarked(eventIndex) ? 3 : TOPIC_CONFIG.point.strokeWidth;
+          // For child nodes, check the single event; for parent nodes, check if any child is marked
+          const isMarked = d.event?.index
+            ? isEventMarked(d.event.index) // Child node
+            : d.points?.some((point: DataPoint) =>
+                isEventMarked(point.event.index)
+              ); // Parent node
+          return isMarked ? 3 : TOPIC_CONFIG.point.strokeWidth;
         });
 
       const guideLine = d3.select(svgRef.current).select(".guide-lines");
@@ -402,7 +408,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .attr("transform", `translate(0,30)`)
       .call(xAxis)
       .style("font-size", `${TOPIC_CONFIG.axis.fontSize}px`)
-      .call((g) => g.select(".domain").remove())
+      .call((g) => g.select(".domain").attr("stroke", "#94a3b8"))
       .call((g) => g.selectAll(".tick line").attr("stroke", "#94a3b8"));
 
     // Create main SVG
@@ -975,12 +981,16 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           .attr("ry", ry)
           .attr("fill", getParentSentimentColor(d))
           .attr("stroke", (d: any) =>
-            isEventMarked(d.points[0].event.index)
+            d.points.some((point: DataPoint) =>
+              isEventMarked(point.event.index)
+            )
               ? TOPIC_CONFIG.highlight.color
               : "black"
           )
           .attr("stroke-width", (d: any) =>
-            isEventMarked(d.points[0].event.index)
+            d.points.some((point: DataPoint) =>
+              isEventMarked(point.event.index)
+            )
               ? 3
               : TOPIC_CONFIG.point.strokeWidth
           )
@@ -1436,8 +1446,9 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       </div>
       <div
         ref={containerRef}
-        className="flex-1 relative overflow-y-scroll"
+        className="flex-1 relative overflow-x-hidden"
         style={{
+          scrollbarWidth: "thin", // For Firefox
           scrollbarGutter: "stable",
         }}
         onClick={(e) => {

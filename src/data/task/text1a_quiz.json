@@ -136,9 +136,7 @@
       "timeLimit": 120,
       "visual": null,
       "prone": "entity",
-      "options": ["Ukraine", "Russia", "Donetsk", "Luhansk"],
-      "completed": false,
-      "event_reference": [1, 2, 3, 4, 5]
+      "options": ["Ukraine", "Russia", "Donetsk", "Luhansk"]
     }
   ]
 }
