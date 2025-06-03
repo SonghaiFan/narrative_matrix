@@ -8,10 +8,7 @@ interface UsabilityTestProps {
 }
 
 export function UsabilityTest({ onComplete }: UsabilityTestProps) {
-  const [leftClickDone, setLeftClickDone] = useState(false);
-  const [rightClickDone, setRightClickDone] = useState(false);
   const [screenSizeValid, setScreenSizeValid] = useState(false);
-  const [showRightClickHint, setShowRightClickHint] = useState(false);
   const [screenSize, setScreenSize] = useState({ width: 0, height: 0 });
 
   // Check screen size on mount and resize
@@ -28,21 +25,8 @@ export function UsabilityTest({ onComplete }: UsabilityTestProps) {
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  const handleLeftClick = () => {
-    setLeftClickDone(true);
-  };
-
-  const handleRightClick = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent context menu
-    setRightClickDone(true);
-  };
-
-  const handleContextMenu = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent context menu
-  };
-
-  // Check if all tests are complete
-  if (leftClickDone && rightClickDone && screenSizeValid) {
+  // Check if test is complete
+  if (screenSizeValid) {
     setTimeout(onComplete, 1000); // Give user time to see completion
   }
 
@@ -83,74 +67,8 @@ export function UsabilityTest({ onComplete }: UsabilityTestProps) {
           )}
         </div>
 
-        {/* Left Click Test */}
-        <div className="bg-white p-4 rounded-lg border border-gray-200">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium text-gray-900">
-              Left Click Test
-            </h3>
-            {leftClickDone ? (
-              <CheckCircle className="h-5 w-5 text-green-500" />
-            ) : (
-              <XCircle className="h-5 w-5 text-gray-300" />
-            )}
-          </div>
-          <button
-            onClick={handleLeftClick}
-            disabled={leftClickDone}
-            className={`w-full py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-              leftClickDone
-                ? "bg-green-50 text-green-700 cursor-default"
-                : "bg-blue-50 text-blue-700 hover:bg-blue-100"
-            }`}
-          >
-            {leftClickDone
-              ? "Left Click Verified"
-              : "Click Here with Left Mouse Button"}
-          </button>
-        </div>
-
-        {/* Right Click Test */}
-        <div className="bg-white p-4 rounded-lg border border-gray-200">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium text-gray-900">
-              Right Click Test
-            </h3>
-            {rightClickDone ? (
-              <CheckCircle className="h-5 w-5 text-green-500" />
-            ) : (
-              <XCircle className="h-5 w-5 text-gray-300" />
-            )}
-          </div>
-          <button
-            onContextMenu={handleRightClick}
-            onClick={handleContextMenu}
-            disabled={rightClickDone}
-            className={`w-full py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-              rightClickDone
-                ? "bg-green-50 text-green-700 cursor-default"
-                : "bg-blue-50 text-blue-700 hover:bg-blue-100"
-            }`}
-          >
-            {rightClickDone ? "Right Click Verified" : "Right-Click Here"}
-          </button>
-          {!rightClickDone && (
-            <div className="mt-2 text-xs text-gray-500">
-              On Mac, right-click is often a <b>two-finger tap</b> on the
-              trackpad, a click in the <b>bottom-right corner</b>, or{" "}
-              <b>Control+Click</b>.
-            </div>
-          )}
-          {!rightClickDone && showRightClickHint && (
-            <p className="mt-2 text-xs text-gray-500">
-              Hint: Press and hold the right mouse button, or use two fingers on
-              a trackpad
-            </p>
-          )}
-        </div>
-
         {/* Completion Message */}
-        {leftClickDone && rightClickDone && screenSizeValid && (
+        {screenSizeValid && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
             <p className="text-green-700 font-medium">
               Usability test completed successfully!

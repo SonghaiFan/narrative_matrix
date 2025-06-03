@@ -126,6 +126,25 @@
         "sub_topic": ["government", "civil war"],
         "sentiment": { "polarity": "negative", "intensity": 8 }
       }
+    },
+    {
+      "index": 6,
+      "text": "By 2016, the ongoing conflict had created a severe humanitarian crisis in Yemen. The UN declared it the world's worst humanitarian disaster, with millions facing famine and cholera outbreaks spreading rapidly across the country.",
+      "short_text": "By 2016, Yemen faced the world's worst humanitarian crisis with famine and cholera.",
+      "temporal_anchoring": { "real_time": "2016", "narrative_time": 6 },
+      "entities": [
+        { "id": "yemen", "name": "Yemen", "social_role": "country" },
+        {
+          "id": "united_nations",
+          "name": "United Nations",
+          "social_role": "organization"
+        }
+      ],
+      "topic": {
+        "main_topic": "health and environment",
+        "sub_topic": ["humanitarian crisis", "public health"],
+        "sentiment": { "polarity": "negative", "intensity": 9 }
+      }
     }
   ],
   "quiz": [
