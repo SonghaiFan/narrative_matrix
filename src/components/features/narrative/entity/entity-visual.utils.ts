@@ -650,7 +650,8 @@ export function addEventGroupHoverEffects(
   updatePosition: (x: number, y: number) => void,
   hideTooltip: () => void,
   setfocusedEventId: (id: number | null) => void,
-  focusedEventId: number | null
+  focusedEventId: number | null,
+  toggleMarkedEvent: (id: number) => void
 ) {
   eventGroup
     .on("mouseenter", function (this: SVGGElement, e: MouseEvent) {
@@ -722,6 +723,7 @@ export function addEventGroupHoverEffects(
     })
     .on("click", function () {
       setfocusedEventId(focusedEventId === event.index ? null : event.index);
+      toggleMarkedEvent(event.index);
     });
 }
 

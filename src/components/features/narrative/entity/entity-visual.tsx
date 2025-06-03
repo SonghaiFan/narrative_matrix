@@ -193,37 +193,6 @@ export function EntityVisual({ events }: EntityVisualProps) {
     updateSelectedTrackStyles,
   ]);
 
-  // Add right-click handler to event nodes
-  const handleContextMenu = useCallback(
-    (event: MouseEvent, d: any) => {
-      event.preventDefault();
-
-      // Get event index from either the passed data or from the current context
-      const eventIndex = d?.event?.index || d;
-      if (eventIndex !== undefined) {
-        toggleMarkedEvent(eventIndex);
-
-        // Get the event group from the DOM hierarchy
-        const currentGroup = d3.select(event.currentTarget as SVGElement);
-
-        // Update connector styling immediately
-        const isNowMarked = !isEventMarked(eventIndex);
-        currentGroup
-          .selectAll(".connector-outer")
-          .attr("stroke", isNowMarked ? ENTITY_CONFIG.highlight.color : "black")
-          .attr(
-            "stroke-width",
-            isNowMarked
-              ? ENTITY_CONFIG.event.connectorStrokeWidth +
-                  ENTITY_CONFIG.point.strokeWidth * 1.5
-              : ENTITY_CONFIG.event.connectorStrokeWidth +
-                  ENTITY_CONFIG.point.strokeWidth * 1.25
-          );
-      }
-    },
-    [toggleMarkedEvent, isEventMarked]
-  );
-
   // Function to handle background click
   const handleBackgroundClick = useCallback(() => {
     // Deselect any selected event
@@ -567,14 +536,9 @@ export function EntityVisual({ events }: EntityVisualProps) {
           updatePosition,
           hideTooltip,
           setfocusedEventId,
-          focusedEventId
+          focusedEventId,
+          toggleMarkedEvent
         );
-
-        // Add context menu handler
-        eventGroup.on("contextmenu", function (e: MouseEvent) {
-          // Call the centralized handler with the event index
-          handleContextMenu(e, event.index);
-        });
       }
     });
 
@@ -620,7 +584,6 @@ export function EntityVisual({ events }: EntityVisualProps) {
     updateSelectedEventStyles,
     updateSelectedTrackStyles,
     handleBackgroundClick,
-    handleContextMenu,
   ]);
 
   // Initial setup and cleanup with resize observer
