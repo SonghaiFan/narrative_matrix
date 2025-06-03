@@ -60,6 +60,10 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     // Get guide lines group
     const guideLines = d3.select(svgRef.current).select(".guide-lines");
 
+    // Hide all guide elements initially
+    guideLines.selectAll(".guide-line").style("display", "none");
+    guideLines.selectAll(".guide-label").style("display", "none");
+
     // If we have a selected event, show guide lines
     if (focusedEventId !== null && focusedEventId !== undefined) {
       // Find points with matching event index
@@ -75,25 +79,88 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         const y = parseFloat(selectedPoint.getAttribute("y") || "0");
         const height = parseFloat(selectedPoint.getAttribute("height") || "0");
 
-        // Find the center of the rect for horizontal guide and right edge for vertical guide
+        // Find the center of the rect for horizontal guide
         const centerY = y + height / 2;
-        // For date ranges, use the right edge (excluding the end cap)
-        const isDateRange = width > TIME_CONFIG.point.radius * 2 + 2; // Add small epsilon for rounding
-        const rightEdgeX = isDateRange
-          ? x + width - TIME_CONFIG.point.radius // For date ranges, use position just before the end cap
-          : x + width / 2; // For single points, use the center
 
-        // Update guide lines position
+        // Show guide lines
+        guideLines.style("display", "block");
+
+        // Update horizontal guide line
         guideLines
+          .select(".guide-line.horizontal")
           .style("display", "block")
-          .select(".horizontal")
           .attr("y1", centerY)
           .attr("y2", centerY);
 
-        guideLines
-          .select(".vertical")
-          .attr("x1", rightEdgeX)
-          .attr("x2", rightEdgeX);
+        // Get the selected node's data to determine if it's a date range
+        const nodeData = selectedPoints.datum() as DataPoint;
+        if (nodeData && nodeData.hasRealTime && nodeData.realTime) {
+          if (Array.isArray(nodeData.realTime)) {
+            // Date range - show both start and end labels and lines
+            const [startDate, endDate] = nodeData.realTime;
+
+            // We need to get the xScale - let's find it from the current visualization
+            const svg = d3.select(svgRef.current);
+            const xAxisTicks = svg.selectAll(".x-axis .tick");
+
+            // For now, calculate positions based on the rect positions
+            const startX = x + TIME_CONFIG.point.radius; // Start of the actual date range
+            const endX = x + width - TIME_CONFIG.point.radius; // End of the actual date range
+
+            // Start date label
+            guideLines
+              .select(".guide-label.start")
+              .style("display", "block")
+              .attr("x", startX - 5)
+              .text(startDate.toLocaleDateString());
+
+            // End date label
+            guideLines
+              .select(".guide-label.end")
+              .style("display", "block")
+              .attr("x", endX + 5)
+              .text(endDate.toLocaleDateString());
+
+            // Show both vertical lines for date ranges
+            guideLines
+              .select(".guide-line.vertical.start")
+              .style("display", "block")
+              .attr("x1", startX)
+              .attr("x2", startX);
+
+            guideLines
+              .select(".guide-line.vertical.end")
+              .style("display", "block")
+              .attr("x1", endX)
+              .attr("x2", endX);
+          } else {
+            // Single date - show single label and line
+            const centerX = x + width / 2;
+
+            // Single date label
+            guideLines
+              .select(".guide-label.start")
+              .style("display", "block")
+              .attr("x", centerX - 5)
+              .text(nodeData.realTime.toLocaleDateString());
+
+            // Single vertical line
+            guideLines
+              .select(".guide-line.vertical")
+              .style("display", "block")
+              .attr("x1", centerX)
+              .attr("x2", centerX);
+          }
+        } else {
+          // No real time data - show single line at center
+          const centerX = x + width / 2;
+
+          guideLines
+            .select(".guide-line.vertical")
+            .style("display", "block")
+            .attr("x1", centerX)
+            .attr("x2", centerX);
+        }
 
         // Store and scroll the selected node into view
         selectedNodeRef.current = selectedPoint;
@@ -208,7 +275,26 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         .attr("stroke", "#3b82f6")
         .attr("stroke-width", 2);
 
-      // Add vertical guide line
+      // Start date guide line
+      guideLines
+        .append("line")
+        .attr("class", "guide-line vertical start")
+        .attr("y1", -TIME_CONFIG.margin.top)
+        .attr("y2", height + TIME_CONFIG.margin.bottom + 1000)
+        .attr("stroke", "#3b82f6")
+        .attr("stroke-width", 2);
+
+      // End date guide line (for date ranges)
+      guideLines
+        .append("line")
+        .attr("class", "guide-line vertical end")
+        .attr("y1", -TIME_CONFIG.margin.top)
+        .attr("y2", height + TIME_CONFIG.margin.bottom + 1000)
+        .attr("stroke", "#3b82f6")
+        .attr("stroke-width", 2)
+        .style("display", "none");
+
+      // Single vertical guide line (for backwards compatibility)
       guideLines
         .append("line")
         .attr("class", "guide-line vertical")
@@ -216,6 +302,28 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         .attr("y2", height + TIME_CONFIG.margin.bottom + 1000)
         .attr("stroke", "#3b82f6")
         .attr("stroke-width", 2);
+
+      // Start date label
+      guideLines
+        .append("text")
+        .attr("class", "guide-label start")
+        .attr("y", -TIME_CONFIG.margin.top + 12)
+        .attr("fill", "#3b82f6")
+        .attr("font-size", "12px")
+        .attr("font-weight", "500")
+        .attr("text-anchor", "end")
+        .style("display", "none");
+
+      // End date label
+      guideLines
+        .append("text")
+        .attr("class", "guide-label end")
+        .attr("y", -TIME_CONFIG.margin.top + 12)
+        .attr("fill", "#3b82f6")
+        .attr("font-size", "12px")
+        .attr("font-weight", "500")
+        .attr("text-anchor", "start")
+        .style("display", "none");
 
       return guideLines;
     },
@@ -234,7 +342,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     ) => {
       // Define node interaction handlers
       const handleNodeInteraction = {
-        // Mouse enter handler
+        // Mouse enter handler - now triggers selection
         mouseEnter(this: any, event: MouseEvent, d: any) {
           const node = d3.select(this);
           const currentHeight = TIME_CONFIG.point.hoverRadius * 2;
@@ -273,6 +381,9 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
             .attr("ry", TIME_CONFIG.point.hoverRadius);
 
           showTooltip(d.event, event.pageX, event.pageY, "time");
+
+          // Set focused event on hover
+          setfocusedEventId(d.event.index);
         },
 
         // Mouse move handler for smooth tooltip following
@@ -280,7 +391,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
           updatePosition(event.pageX, event.pageY);
         },
 
-        // Mouse leave handler
+        // Mouse leave handler - now clears selection
         mouseLeave(this: any, event: MouseEvent, d: any) {
           const node = d3.select(this);
           const originalWidth =
@@ -329,17 +440,13 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
           }
 
           hideTooltip();
+
+          // Clear focused event on mouse leave
+          setfocusedEventId(null);
         },
 
-        // Click handler
+        // Click handler - now toggles marking
         click(this: any, event: MouseEvent, d: any) {
-          setfocusedEventId(
-            d.event.index === focusedEventId ? null : d.event.index
-          );
-        },
-
-        // Right-click handler
-        contextmenu(this: any, event: MouseEvent, d: any) {
           event.preventDefault();
           toggleMarkedEvent(d.event.index);
         },
@@ -396,8 +503,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         .on("mouseenter", handleNodeInteraction.mouseEnter)
         .on("mousemove", handleNodeInteraction.mouseMove)
         .on("mouseleave", handleNodeInteraction.mouseLeave)
-        .on("click", handleNodeInteraction.click)
-        .on("contextmenu", handleNodeInteraction.contextmenu);
+        .on("click", handleNodeInteraction.click);
     },
     [
       focusedEventId,
@@ -451,6 +557,21 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       .attr("width", containerWidth)
       .attr("height", containerHeight);
 
+    // Add arrow marker definition
+    const defs = svg.append("defs");
+    defs
+      .append("marker")
+      .attr("id", "arrow")
+      .attr("viewBox", "0 -3 6 6")
+      .attr("refX", 5)
+      .attr("refY", 0)
+      .attr("markerWidth", 4)
+      .attr("markerHeight", 4)
+      .attr("orient", "auto")
+      .append("path")
+      .attr("d", "M0,-3L6,0L0,3")
+      .attr("fill", "#E0E4EA");
+
     // Create header
     const headerContainer = d3
       .select(headerRef.current)
@@ -488,29 +609,8 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         `translate(${TIME_CONFIG.margin.left},${TIME_CONFIG.margin.top})`
       );
 
-    // Add vertical line for published date
-    g.append("line")
-      .attr("class", "publish-date-line")
-      .attr("x1", publishX)
-      .attr("x2", publishX)
-      .attr("y1", 0)
-      .attr("y2", height)
-      .attr("stroke", "#64748b")
-      .attr("stroke-width", 1)
-      .attr("stroke-dasharray", "4,4")
-      .attr("opacity", 0.6);
-
     // Add guide lines
     renderGuideLines(g, width, height);
-
-    g.append("text")
-      .attr("class", "publish-date-label")
-      .attr("x", publishX)
-      .attr("y", -8)
-      .attr("text-anchor", "middle")
-      .attr("fill", "#64748b")
-      .attr("font-size", "10px")
-      .text("Current");
 
     // Add y-axis
     g.append("g")
@@ -534,18 +634,25 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     // Create line generator
     const smoothLine = createLineGenerator(xScale, yScale, publishX);
 
-    // Add narrative line connecting to the right edge of rectangles
-    g.append("g")
-      .attr("class", "line-group")
-      .append("path")
-      .datum(sortedPoints)
-      .attr("class", "narrative-line")
-      .attr("fill", "none")
-      .attr("stroke", TIME_CONFIG.track.color)
-      .attr("stroke-width", TIME_CONFIG.track.strokeWidth)
-      .attr("stroke-opacity", TIME_CONFIG.track.opacity)
-      .attr("stroke-linecap", "round")
-      .attr("d", smoothLine);
+    // Add narrative line segments, each with its own arrow
+    const lineGroup = g.append("g").attr("class", "line-group");
+
+    // Create individual segments between consecutive points
+    for (let i = 0; i < sortedPoints.length - 1; i++) {
+      const segmentPoints = [sortedPoints[i], sortedPoints[i + 1]];
+
+      lineGroup
+        .append("path")
+        .datum(segmentPoints)
+        .attr("class", `narrative-line-segment segment-${i}`)
+        .attr("fill", "none")
+        .attr("stroke", TIME_CONFIG.track.color)
+        .attr("stroke-width", TIME_CONFIG.track.strokeWidth)
+        .attr("stroke-opacity", TIME_CONFIG.track.opacity)
+        .attr("stroke-linecap", "round")
+        .attr("marker-end", "url(#arrow)")
+        .attr("d", smoothLine);
+    }
 
     // Create labels group
     const labelsGroup = g.append("g").attr("class", "labels");
@@ -620,10 +727,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
   }, [updateVisualization]);
 
   return (
-    <div
-      className="w-full h-full overflow-y-scroll"
-      style={{ scrollbarGutter: "stable" }}
-    >
+    <div className="w-full h-full overflow-auto">
       <div className="min-w-fit">
         <div
           ref={headerRef}
@@ -631,11 +735,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
           className="bg-white sticky top-0 z-10 shadow-sm"
         />
       </div>
-      <div
-        ref={containerRef}
-        className="flex-1 relative"
-        style={{ scrollbarGutter: "stable" }}
-      >
+      <div ref={containerRef} className="flex-1 relative">
         <svg ref={svgRef} className="min-w-full min-h-full" />
       </div>
     </div>
