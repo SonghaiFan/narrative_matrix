@@ -37,7 +37,7 @@ export default function RootLayout({
         <AuthProvider>
           <CenterControlProvider>
             <TooltipProvider>
-              <DisableContextMenu />
+              {/* <DisableContextMenu /> */}
               <DisableSearch />
               <Toaster position="top-center" richColors />
               {/* <ClarityAnalytics /> */}

@@ -68,27 +68,80 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     return `child-node-${eventIndex}`;
   }, []);
 
+  // Helper function to calculate proper collapsed dimensions considering date range bounds
+  const calculateCollapsedDimensions = useCallback((d: GroupedPoint) => {
+    const hasDateRangeBounds = d.minX !== undefined && d.maxX !== undefined;
+
+    if (hasDateRangeBounds) {
+      // For date range groups, maintain the capsule shape
+      const spanWidth = Math.max(
+        d.maxX! - d.minX! + TOPIC_CONFIG.point.radius * 2,
+        TOPIC_CONFIG.point.radius * 2
+      );
+
+      return {
+        x: d.minX! - TOPIC_CONFIG.point.radius + spanWidth / 2, // Center of the capsule
+        y: d.y,
+        width: spanWidth,
+        height: TOPIC_CONFIG.point.radius * 2,
+        rx: TOPIC_CONFIG.point.radius,
+        ry: TOPIC_CONFIG.point.radius,
+        rectX: d.minX! - TOPIC_CONFIG.point.radius,
+        rectY: d.y - TOPIC_CONFIG.point.radius,
+      };
+    } else {
+      // For single points, use the traditional logic
+      const dimensions = calculateRectDimensions(
+        d.points.length,
+        TOPIC_CONFIG.point.radius
+      );
+      const position = calculateRectPosition(
+        d.x,
+        d.y,
+        dimensions.width,
+        dimensions.height
+      );
+
+      return {
+        x: d.x,
+        y: d.y,
+        width: dimensions.width,
+        height: dimensions.height,
+        rx: dimensions.rx,
+        ry: dimensions.ry,
+        rectX: position.rectX,
+        rectY: position.rectY,
+      };
+    }
+  }, []);
+
   // Update node styles based on focusedEventId and markedEventIds
   const updateSelectedEventStyles = useCallback(
-    (newSelectedId: number | null) => {
+    (newSelectedId: number | null, xScale?: any) => {
       if (!svgRef.current) return;
 
-      // Reset all nodes to default stroke style
+      // Reset all nodes to default stroke style, only marked events get blue border
       d3.select(svgRef.current)
         .selectAll(".parent-point, .child-point-rect")
         .attr("stroke", (d: any) => {
           const eventIndex = d.event?.index || d.points?.[0]?.event?.index;
+          // Only marked events get blue border, not selected events
           return isEventMarked(eventIndex)
             ? TOPIC_CONFIG.highlight.color
             : "black";
         })
         .attr("stroke-width", (d: any) => {
           const eventIndex = d.event?.index || d.points?.[0]?.event?.index;
-          return isEventMarked(eventIndex) ? 2 : TOPIC_CONFIG.point.strokeWidth;
+          // Only marked events get thicker stroke, not selected events
+          return isEventMarked(eventIndex) ? 3 : TOPIC_CONFIG.point.strokeWidth;
         });
 
       const guideLine = d3.select(svgRef.current).select(".guide-lines");
       guideLine.style("display", "none");
+
+      // Hide all guide elements
+      guideLine.selectAll(".guide-line").style("display", "none");
+      guideLine.selectAll(".guide-label").style("display", "none");
 
       if (newSelectedId === null) return;
 
@@ -112,32 +165,249 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           );
         });
 
-      // Update guide line based on selected node
+      // Update guide lines based on selected node
       if (!parentNode.empty()) {
         const x = parseFloat(parentNode.attr("x") || "0");
         const width = parseFloat(parentNode.attr("width") || "0");
-        const centerX = x + width / 2;
+        const isDateRange = parentNode.attr("data-has-real-time") === "true";
 
-        guideLine
-          .style("display", "block")
-          .select(".vertical")
-          .attr("x1", centerX)
-          .attr("x2", centerX);
+        guideLine.style("display", "block");
+
+        // Get the selected data
+        const selectedData = parentNode.datum() as GroupedPoint;
+
+        if (isDateRange || selectedData.points.length > 1) {
+          // For date ranges or grouped nodes, show both start and end guide lines
+
+          let startX: number, endX: number;
+          let startDate: Date, endDate: Date;
+
+          if (selectedData.points.length > 1) {
+            // For grouped nodes, find the specific selected child event
+            const selectedChild = selectedData.points.find(
+              (point) => point.event?.index === newSelectedId
+            );
+
+            if (selectedChild && xScale) {
+              // Show guideline for the selected child only
+              if (Array.isArray(selectedChild.realTime)) {
+                // Date range child
+                const childStartX = xScale(selectedChild.realTime[0]);
+                const childEndX = xScale(selectedChild.realTime[1]);
+                startX = childStartX;
+                endX = childEndX;
+                startDate = selectedChild.realTime[0];
+                endDate = selectedChild.realTime[1];
+              } else {
+                // Single point child - show as single point
+                const childCenterX = xScale(selectedChild.realTime as Date);
+                startX = childCenterX;
+                endX = childCenterX;
+                startDate = selectedChild.realTime as Date;
+                endDate = selectedChild.realTime as Date;
+              }
+            } else if (xScale) {
+              // Fallback: show first child if no specific selection found
+              const firstChild = selectedData.points[0];
+              if (Array.isArray(firstChild.realTime)) {
+                startX = xScale(firstChild.realTime[0]);
+                endX = xScale(firstChild.realTime[1]);
+                startDate = firstChild.realTime[0];
+                endDate = firstChild.realTime[1];
+              } else {
+                const childCenterX = xScale(firstChild.realTime as Date);
+                startX = childCenterX;
+                endX = childCenterX;
+                startDate = firstChild.realTime as Date;
+                endDate = firstChild.realTime as Date;
+              }
+            } else {
+              // No xScale available, fallback to parent rectangle visual span
+              startX = x + TOPIC_CONFIG.point.radius;
+              endX = x + width - TOPIC_CONFIG.point.radius;
+              // Use approximate dates from first child
+              const firstChild = selectedData.points[0];
+              if (Array.isArray(firstChild.realTime)) {
+                startDate = firstChild.realTime[0];
+                endDate = firstChild.realTime[1];
+              } else {
+                startDate = firstChild.realTime as Date;
+                endDate = firstChild.realTime as Date;
+              }
+            }
+          } else {
+            // For single date range nodes
+            startX = x + TOPIC_CONFIG.point.radius;
+            endX = x + width - TOPIC_CONFIG.point.radius;
+            const realTimeArray = selectedData.points[0].realTime as [
+              Date,
+              Date
+            ];
+            startDate = realTimeArray[0];
+            endDate = realTimeArray[1];
+          }
+
+          // Show start guide line and label
+          guideLine
+            .select(".vertical.start")
+            .attr("x1", startX)
+            .attr("x2", startX)
+            .style("display", "block");
+
+          guideLine
+            .select(".guide-label.start")
+            .attr("x", startX - 4) // Offset to the left of the guide line
+            .text(
+              startDate instanceof Date
+                ? startDate.toLocaleDateString()
+                : "No Date"
+            )
+            .style("display", "block");
+
+          // Show end guide line and label
+          guideLine
+            .select(".vertical.end")
+            .attr("x1", endX)
+            .attr("x2", endX)
+            .style("display", "block");
+
+          guideLine
+            .select(".guide-label.end")
+            .attr("x", endX + 4) // Offset to the right of the guide line
+            .text(
+              endDate instanceof Date ? endDate.toLocaleDateString() : "No Date"
+            )
+            .style("display", "block");
+        } else {
+          // For single points, show only start guide line at center with time label
+          const centerX = x + width / 2;
+
+          // Get the selected data to extract date
+          const selectedData = parentNode.datum() as GroupedPoint;
+          const realTime = selectedData.points[0]?.realTime;
+
+          let dateText = "No Date";
+          if (realTime) {
+            if (Array.isArray(realTime) && realTime[0]) {
+              dateText = realTime[0].toLocaleDateString();
+            } else if (realTime instanceof Date) {
+              dateText = realTime.toLocaleDateString();
+            }
+          }
+
+          guideLine
+            .select(".vertical.start")
+            .attr("x1", centerX)
+            .attr("x2", centerX)
+            .style("display", "block");
+
+          guideLine
+            .select(".guide-label.start")
+            .attr("x", centerX - 4) // Offset to the left of the guide line
+            .attr("text-anchor", "end") // Align text to the right for single points
+            .text(dateText)
+            .style("display", "block");
+
+          // Hide end guide line and end label for single points
+          guideLine.select(".vertical.end").style("display", "none");
+          guideLine.select(".guide-label.end").style("display", "none");
+        }
       } else if (!childNode.empty()) {
         const parentKey = childNode.attr("data-parent-key");
-        if (parentKey) {
+        const isDateRange = childNode.attr("data-has-real-time") === "true";
+
+        guideLine.style("display", "block");
+
+        if (isDateRange) {
+          // For child date ranges, use the child's positions
+          const childX = parseFloat(childNode.attr("x") || "0");
+          const childWidth = parseFloat(childNode.attr("width") || "0");
+          const startX = childX + TOPIC_CONFIG.point.radius;
+          const endX = childX + childWidth - TOPIC_CONFIG.point.radius;
+
+          // Get the selected child data to extract dates
+          const selectedData = childNode.datum() as ChildPoint;
+          const realTimeArray = selectedData.realTime as [Date, Date];
+
+          // Safely check if dates exist
+          if (
+            !realTimeArray ||
+            !Array.isArray(realTimeArray) ||
+            realTimeArray.length < 2
+          ) {
+            return; // Skip if no valid date range
+          }
+
+          // Show start guide line and label
+          guideLine
+            .select(".vertical.start")
+            .attr("x1", startX)
+            .attr("x2", startX)
+            .style("display", "block");
+
+          guideLine
+            .select(".guide-label.start")
+            .attr("x", startX - 4) // Offset to the left of the guide line
+            .text(
+              realTimeArray[0] instanceof Date
+                ? realTimeArray[0].toLocaleDateString()
+                : "No Date"
+            )
+            .style("display", "block");
+
+          // Show end guide line and label
+          guideLine
+            .select(".vertical.end")
+            .attr("x1", endX)
+            .attr("x2", endX)
+            .style("display", "block");
+
+          guideLine
+            .select(".guide-label.end")
+            .attr("x", endX + 4) // Offset to the right of the guide line
+            .text(
+              realTimeArray[1] instanceof Date
+                ? realTimeArray[1].toLocaleDateString()
+                : "No Date"
+            )
+            .style("display", "block");
+        } else if (parentKey) {
+          // For single date child nodes, use parent center with time label
           const parentNodeId = getParentNodeId(parentKey);
           const parentRect = d3.select(`#${parentNodeId}`).select("rect");
-
           const x = parseFloat(parentRect.attr("x") || "0");
           const width = parseFloat(parentRect.attr("width") || "0");
           const centerX = x + width / 2;
 
+          // Get the selected child data to extract date
+          const selectedData = childNode.datum() as ChildPoint;
+          const realTime = selectedData.realTime;
+
+          let dateText = "No Date";
+          if (realTime) {
+            if (Array.isArray(realTime) && realTime[0]) {
+              dateText = realTime[0].toLocaleDateString();
+            } else if (realTime instanceof Date) {
+              dateText = realTime.toLocaleDateString();
+            }
+          }
+
           guideLine
-            .style("display", "block")
-            .select(".vertical")
+            .select(".vertical.start")
             .attr("x1", centerX)
-            .attr("x2", centerX);
+            .attr("x2", centerX)
+            .style("display", "block");
+
+          guideLine
+            .select(".guide-label.start")
+            .attr("x", centerX - 4) // Offset to the left of the guide line
+            .attr("text-anchor", "end") // Align text to the right for single points
+            .text(dateText)
+            .style("display", "block");
+
+          // Hide end guide line and end label for single points
+          guideLine.select(".vertical.end").style("display", "none");
+          guideLine.select(".guide-label.end").style("display", "none");
         }
       }
     },
@@ -152,11 +422,11 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
     // Close all expanded parent nodes
     if (svgRef.current) {
-      // Reset all parent nodes to collapsed state
+      // Reset multi-child parent nodes to collapsed state (single-child groups remain visible)
       d3.select(svgRef.current)
         .selectAll(".point-group")
         .each(function (d: any) {
-          if (d.isExpanded) {
+          if (d.isExpanded && d.points.length > 1) {
             d.isExpanded = false;
 
             // Update the pointStatesRef to reflect the collapsed state
@@ -176,46 +446,43 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             const parentRect = parent.select("rect");
             const countText = parent.select("text");
 
-            const x =
-              parseFloat(parentRect.attr("x") || "0") +
-              parseFloat(parentRect.attr("width") || "0") / 2;
-            const y =
-              parseFloat(parentRect.attr("y") || "0") +
-              parseFloat(parentRect.attr("height") || "0") / 2;
+            // Use the proper collapsed dimensions that consider date range bounds
+            const collapsedDims = calculateCollapsedDimensions(d);
 
-            const { width, height, rx, ry } = calculateRectDimensions(
-              d.points.length,
-              TOPIC_CONFIG.point.radius
-            );
-
-            updateRectAndText(
-              parentRect,
-              countText,
-              x,
-              y,
-              width,
-              height,
-              rx,
-              ry,
-              200,
-              1,
-              "pointer"
-            );
-
-            // Re-enable mouse events on parent when collapsed
+            // Smooth transition for parent rectangle collapse
             parentRect
-              .style("pointer-events", "all")
-              .style("cursor", "pointer");
+              .transition()
+              .duration(200)
+              .attr("width", collapsedDims.width)
+              .attr("height", collapsedDims.height)
+              .attr("x", collapsedDims.rectX)
+              .attr("y", collapsedDims.rectY)
+              .attr("rx", collapsedDims.rx)
+              .attr("ry", collapsedDims.ry)
+              .style("opacity", 1)
+              .style("cursor", "pointer")
+              .style("pointer-events", "all");
+
+            // Update count text position
+            if (countText) {
+              countText
+                .transition()
+                .duration(200)
+                .attr("x", collapsedDims.x)
+                .attr("y", collapsedDims.y);
+            }
 
             children
               .transition()
               .duration(200)
-              .style("opacity", 0)
-              .style("pointer-events", "none");
+              .style("opacity", (d: any) => (d.total === 1 ? 1 : 0)) // Keep single-child nodes visible
+              .style("pointer-events", (d: any) =>
+                d.total === 1 ? "all" : "none"
+              ); // Keep single-child nodes interactive
           }
         });
     }
-  }, [setfocusedEventId, hideTooltip]);
+  }, [setfocusedEventId, hideTooltip, calculateCollapsedDimensions]);
 
   // Update visualization
   const updateVisualization = useCallback(() => {
@@ -308,19 +575,52 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         `translate(${TOPIC_CONFIG.margin.left},${TOPIC_CONFIG.margin.top})`
       );
 
-    // Add guide line
+    // Add guide lines
     const guideLine = g
       .append("g")
       .attr("class", "guide-lines")
       .style("display", "none");
 
+    // Start date guide line
     guideLine
       .append("line")
-      .attr("class", "guide-line vertical")
+      .attr("class", "guide-line vertical start")
       .attr("y1", -TOPIC_CONFIG.margin.top)
       .attr("y2", height + TOPIC_CONFIG.margin.bottom + 1000)
       .attr("stroke", "#3b82f6")
       .attr("stroke-width", 2);
+
+    // End date guide line (for date ranges)
+    guideLine
+      .append("line")
+      .attr("class", "guide-line vertical end")
+      .attr("y1", -TOPIC_CONFIG.margin.top)
+      .attr("y2", height + TOPIC_CONFIG.margin.bottom + 1000)
+      .attr("stroke", "#3b82f6")
+      .attr("stroke-width", 2)
+      .style("display", "none");
+
+    // Start date label
+    guideLine
+      .append("text")
+      .attr("class", "guide-label start")
+      .attr("y", -TOPIC_CONFIG.margin.top + 12)
+      .attr("fill", "#3b82f6")
+      .attr("font-size", "12px")
+      .attr("font-weight", "500")
+      .attr("text-anchor", "end")
+      .style("display", "none");
+
+    // End date label
+    guideLine
+      .append("text")
+      .attr("class", "guide-label end")
+      .attr("y", -TOPIC_CONFIG.margin.top + 12)
+      .attr("fill", "#3b82f6")
+      .attr("font-size", "12px")
+      .attr("font-weight", "500")
+      .attr("text-anchor", "start")
+      .style("display", "none");
 
     // Add y-axis
     g.append("g")
@@ -360,6 +660,356 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       yScale,
       viewMode
     );
+
+    // Node interaction handlers (defined after scales are available)
+    const handleNodeInteraction = {
+      // Mouse move handler
+      mouseMove(event: MouseEvent) {
+        updatePosition(event.pageX, event.pageY);
+      },
+
+      // Mouse enter handler - adds hover visual effects + changes selected event state
+      mouseOver(this: any, event: MouseEvent, d: any) {
+        const isParent = d3.select(this).classed("parent-point");
+        const node = d3.select(this);
+
+        // Stop event propagation to prevent bubbling
+        event.stopPropagation();
+
+        // Apply hover visual effects
+        const hoverRadius = TOPIC_CONFIG.point.radius * 1.2; // Slightly larger on hover
+        let currentWidth = parseFloat(node.attr("width") || "0");
+        let currentHeight = parseFloat(node.attr("height") || "0");
+        let newWidth = currentWidth;
+        let newHeight = hoverRadius * 2;
+
+        if (isParent) {
+          // For parent nodes, check if it has date range bounds
+          const hasDateRangeBounds = node.attr("data-has-real-time") === "true";
+
+          if (hasDateRangeBounds && d.points?.length === 1) {
+            // Single parent with date range - only scale the caps
+            const isDateRange = Array.isArray(d.points[0].realTime);
+            if (isDateRange) {
+              // For date ranges, preserve the time span and only increase caps
+              const [startDate, endDate] = d.points[0].realTime;
+              const startX = xScale(startDate);
+              const endX = xScale(endDate);
+              const timeSpanWidth = endX - startX;
+              newWidth = timeSpanWidth + hoverRadius * 2;
+            } else {
+              // Single point parent
+              newWidth = hoverRadius * 2;
+            }
+          } else {
+            // Multi-point parent or single point without date range
+            // Check if this is a grouped node with date range bounds
+            if (d.minX !== undefined && d.maxX !== undefined) {
+              // Grouped node with date range - preserve the span like time visualization
+              const timeSpanWidth = d.maxX - d.minX;
+              newWidth = timeSpanWidth + hoverRadius * 2;
+            } else {
+              // Regular grouped node without date range bounds
+              newWidth = hoverRadius * 2;
+            }
+          }
+        } else {
+          // For child nodes
+          const isDateRange = node.attr("data-has-real-time") === "true";
+          if (isDateRange) {
+            // Preserve time span for child date ranges
+            const startX =
+              parseFloat(node.attr("x") || "0") + TOPIC_CONFIG.point.radius;
+            const currentSpanWidth =
+              currentWidth - TOPIC_CONFIG.point.radius * 2;
+            newWidth = currentSpanWidth + hoverRadius * 2;
+          } else {
+            // Single point child
+            newWidth = hoverRadius * 2;
+          }
+        }
+
+        // Calculate new position to maintain center alignment
+        const originalX = parseFloat(node.attr("x") || "0");
+        const originalY = parseFloat(node.attr("y") || "0");
+        const originalCenterX = originalX + currentWidth / 2;
+        const originalCenterY = originalY + currentHeight / 2;
+        const newX = originalCenterX - newWidth / 2;
+        const newY = originalCenterY - newHeight / 2;
+
+        // Raise parent group to bring all related nodes to front
+        if (isParent) {
+          // For parent nodes, raise the entire group
+          const parentKey = node.attr("data-group-key");
+          if (parentKey) {
+            d3.select(`#${getParentNodeId(parentKey)}`).raise();
+          }
+        } else {
+          // For child nodes, raise the parent group
+          const parentKey = node.attr("data-parent-key");
+          if (parentKey) {
+            d3.select(`#${getParentNodeId(parentKey)}`).raise();
+          }
+        }
+
+        // Apply hover effects
+        node
+          .transition()
+          .duration(150)
+          .attr("width", newWidth)
+          .attr("height", newHeight)
+          .attr("x", newX)
+          .attr("y", newY)
+          .attr("rx", hoverRadius)
+          .attr("ry", hoverRadius);
+
+        // Show tooltip with event data
+        const eventData = isParent ? d.points?.[0]?.event || d.event : d.event;
+        if (eventData) {
+          showTooltip(eventData, event.pageX, event.pageY, "topic");
+        }
+
+        // Handle state change for selection/expansion
+        let targetEventIndex: number | null = null;
+
+        if (!isParent && d?.event?.index !== undefined) {
+          // Child node - select its event
+          targetEventIndex = d.event.index;
+        }
+        // Note: Parent node hover no longer sets selection to first child
+        // Note: Single-child groups are handled as child nodes only (no parent)
+
+        // Only update if different from current selection
+        if (targetEventIndex !== null && targetEventIndex !== focusedEventId) {
+          setfocusedEventId(targetEventIndex);
+        }
+      },
+
+      // Mouse leave handler - restores original size + clears selected event state
+      mouseOut(this: any, event: MouseEvent, d: any) {
+        const isParent = d3.select(this).classed("parent-point");
+        const node = d3.select(this);
+
+        // Stop event propagation to prevent bubbling
+        event.stopPropagation();
+
+        // Don't restore size for expanded parent nodes - they should stay expanded
+        if (isParent && d.isExpanded) {
+          // Hide tooltip but don't restore size
+          hideTooltip();
+          return;
+        }
+
+        // Calculate original dimensions
+        let originalWidth: number;
+        let originalHeight = TOPIC_CONFIG.point.radius * 2;
+        const originalRadius = TOPIC_CONFIG.point.radius;
+
+        if (isParent) {
+          // For parent nodes, check if it has date range bounds
+          const hasDateRangeBounds = node.attr("data-has-real-time") === "true";
+
+          if (hasDateRangeBounds && d.points?.length === 1) {
+            // Single parent with date range
+            const isDateRange = Array.isArray(d.points[0].realTime);
+            if (isDateRange) {
+              // For date ranges, calculate original span width
+              const [startDate, endDate] = d.points[0].realTime;
+              const startX = xScale(startDate);
+              const endX = xScale(endDate);
+              const timeSpanWidth = endX - startX;
+              originalWidth = Math.max(
+                timeSpanWidth + originalRadius * 2,
+                originalRadius * 2
+              );
+            } else {
+              // Single point parent
+              originalWidth = originalRadius * 2;
+            }
+          } else {
+            // Multi-point parent or single point without date range
+            // Check if this is a grouped node with date range bounds
+            if (d.minX !== undefined && d.maxX !== undefined) {
+              // Grouped node with date range - calculate original span width
+              const timeSpanWidth = d.maxX - d.minX;
+              originalWidth = Math.max(
+                timeSpanWidth + originalRadius * 2,
+                originalRadius * 2
+              );
+            } else {
+              // Regular grouped node without date range bounds
+              originalWidth = originalRadius * 2;
+            }
+          }
+        } else {
+          // For child nodes, get original width from data or calculate
+          const isDateRange = node.attr("data-has-real-time") === "true";
+          if (isDateRange) {
+            // For child date ranges, we need to recalculate based on the stored time data
+            if (Array.isArray(d.realTime)) {
+              const startX = xScale(d.realTime[0]);
+              const endX = xScale(d.realTime[1]);
+              const timeSpanWidth = endX - startX;
+              originalWidth = Math.max(
+                timeSpanWidth + originalRadius * 2,
+                originalRadius * 2
+              );
+            } else {
+              originalWidth = originalRadius * 2;
+            }
+          } else {
+            // Single point child
+            originalWidth = originalRadius * 2;
+          }
+        }
+
+        // Calculate position to maintain center alignment
+        const currentX = parseFloat(node.attr("x") || "0");
+        const currentWidth = parseFloat(node.attr("width") || "0");
+        const currentHeight = parseFloat(node.attr("height") || "0");
+        const centerX = currentX + currentWidth / 2;
+        const centerY = parseFloat(node.attr("y") || "0") + currentHeight / 2;
+        const newX = centerX - originalWidth / 2;
+        const newY = centerY - originalHeight / 2;
+
+        // Restore original size
+        node
+          .transition()
+          .duration(150)
+          .attr("width", originalWidth)
+          .attr("height", originalHeight)
+          .attr("x", newX)
+          .attr("y", newY)
+          .attr("rx", originalRadius)
+          .attr("ry", originalRadius);
+
+        // Hide tooltip
+        hideTooltip();
+
+        // Clear selection state
+        // setfocusedEventId(null);
+      },
+
+      // Click handler - triggers marking for child nodes, expansion for parent nodes
+      click(this: any, event: MouseEvent, d: any) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const isParent = d3.select(this).classed("parent-point");
+
+        if (isParent && d.points?.length > 1) {
+          // Parent node click - expand/collapse the group
+          // Toggle expansion state
+          d.isExpanded = !d.isExpanded;
+          pointStatesRef.current.set(d.key, {
+            x: d.x,
+            y: d.y,
+            isExpanded: d.isExpanded,
+          });
+
+          const parentRect = d3.select(this); // 'this' is the parent rectangle
+          const parent = d3.select(this.parentElement); // The group container
+          const children = parent.selectAll(".child-point");
+          const countText = parent.select("text");
+
+          if (d.isExpanded) {
+            // Expand the group
+
+            const x =
+              parseFloat(parentRect.attr("x") || "0") +
+              parseFloat(parentRect.attr("width") || "0") / 2;
+            const y =
+              parseFloat(parentRect.attr("y") || "0") +
+              parseFloat(parentRect.attr("height") || "0") / 2;
+
+            // Raise parent group to front
+            parent.raise();
+
+            // Get collapsed dimensions to preserve width
+            const collapsedDims = calculateCollapsedDimensions(d);
+
+            // Calculate expanded height
+            const radius = TOPIC_CONFIG.point.radius;
+            const verticalSpacing = radius * 2.5;
+            const childHeight =
+              d.points.length > 1 ? (d.points.length - 1) * verticalSpacing : 0;
+            const expandedHeight = Math.max(
+              radius * 3,
+              childHeight + radius * 3
+            );
+            const expandedWidth = collapsedDims.width + radius * 0.8;
+
+            // Calculate new position for expanded size
+            const newRectX = x - expandedWidth / 2;
+            const newRectY = y - expandedHeight / 2;
+
+            // Smooth transition for parent rectangle expansion
+
+            parentRect
+              .transition()
+              .duration(200)
+              .attr("width", expandedWidth)
+              .attr("height", expandedHeight)
+              .attr("x", newRectX)
+              .attr("y", newRectY)
+              .attr("rx", collapsedDims.rx)
+              .attr("ry", collapsedDims.ry)
+              .style("opacity", 0.5)
+              .style("cursor", "default")
+              .style("pointer-events", "none");
+
+            // Update count text position
+            if (countText) {
+              countText.transition().duration(200).attr("x", x).attr("y", y);
+            }
+
+            // Show children
+            children
+              .transition()
+              .duration(200)
+              .style("opacity", 1)
+              .style("pointer-events", "all");
+          } else {
+            // Collapse the group
+            const collapsedDims = calculateCollapsedDimensions(d);
+
+            // Smooth transition for parent rectangle collapse
+            parentRect
+              .transition()
+              .duration(200)
+              .attr("width", collapsedDims.width)
+              .attr("height", collapsedDims.height)
+              .attr("x", collapsedDims.rectX)
+              .attr("y", collapsedDims.rectY)
+              .attr("rx", collapsedDims.rx)
+              .attr("ry", collapsedDims.ry)
+              .style("opacity", 1)
+              .style("cursor", "pointer")
+              .style("pointer-events", "all");
+
+            // Update count text position
+            if (countText) {
+              countText
+                .transition()
+                .duration(200)
+                .attr("x", collapsedDims.x)
+                .attr("y", collapsedDims.y);
+            }
+
+            // Hide children
+            children
+              .transition()
+              .duration(200)
+              .style("opacity", 0)
+              .style("pointer-events", "none");
+          }
+        } else {
+          // Child node click - toggle marking
+          const eventIndex = d.event?.index || d.points?.[0]?.event?.index;
+          toggleMarkedEvent(eventIndex);
+        }
+      },
+    };
 
     // Points group
     const pointsGroup = g.append("g").attr("class", "points");
@@ -414,16 +1064,52 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       return getSentimentColor(dominantPolarity);
     };
 
-    // Add parent rectangles
+    // Add parent rectangles (only for multi-child groups)
     parentNodes
+      .filter((d: GroupedPoint) => d.points.length > 1) // Only show parent for multi-child groups
       .append("rect")
       .attr("class", "parent-point")
       .each(function (d: GroupedPoint) {
-        const { width, height, rx, ry } = calculateRectDimensions(
-          d.points.length,
-          TOPIC_CONFIG.point.radius
-        );
-        const { rectX, rectY } = calculateRectPosition(d.x, d.y, width, height);
+        // Check if this group has calculated date range bounds
+        const hasDateRangeBounds = d.minX !== undefined && d.maxX !== undefined;
+        const firstPoint = d.points[0];
+        const isDateRange = Array.isArray(firstPoint.realTime);
+
+        let rectX, rectY, width, height, rx, ry;
+
+        if (hasDateRangeBounds) {
+          // Group spans a date range - create capsule spanning the full range
+          const spanWidth = Math.max(
+            d.maxX! - d.minX! + TOPIC_CONFIG.point.radius * 2,
+            TOPIC_CONFIG.point.radius * 2
+          );
+
+          rectX = d.minX! - TOPIC_CONFIG.point.radius;
+          rectY = d.y - TOPIC_CONFIG.point.radius;
+          width = spanWidth;
+          height = TOPIC_CONFIG.point.radius * 2;
+          rx = TOPIC_CONFIG.point.radius;
+          ry = TOPIC_CONFIG.point.radius;
+        } else {
+          // Multi-point group - use existing logic
+          const dimensions = calculateRectDimensions(
+            d.points.length,
+            TOPIC_CONFIG.point.radius
+          );
+          const position = calculateRectPosition(
+            d.x,
+            d.y,
+            dimensions.width,
+            dimensions.height
+          );
+
+          rectX = position.rectX;
+          rectY = position.rectY;
+          width = dimensions.width;
+          height = dimensions.height;
+          rx = dimensions.rx;
+          ry = dimensions.ry;
+        }
 
         d3.select(this)
           .attr("x", rectX)
@@ -440,36 +1126,37 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           )
           .attr("stroke-width", (d: any) =>
             isEventMarked(d.points[0].event.index)
-              ? 2
+              ? 3
               : TOPIC_CONFIG.point.strokeWidth
           )
-          .style("cursor", d.points.length > 1 ? "pointer" : "default")
+          .attr("stroke-dasharray", "none")
+          .style("cursor", "pointer") // Always clickable since only multi-child groups have parents
           .attr("data-group-key", d.key.replace(/[^a-zA-Z0-9-_]/g, "_"))
           .attr("data-event-index", d.points[0].event.index)
-          .attr("data-point-count", d.points.length);
+          .attr("data-point-count", d.points.length)
+          .attr("data-has-real-time", hasDateRangeBounds || isDateRange);
 
-        if (d.points.length > 1) {
-          const { centerX, centerY } = calculateCenterPoint(
-            rectX,
-            rectY,
-            width,
-            height
-          );
+        // Add count text for multi-child groups
+        const { centerX, centerY } = calculateCenterPoint(
+          rectX,
+          rectY,
+          width,
+          height
+        );
 
-          d3.select(this.parentElement)
-            .append("text")
-            .attr("x", centerX)
-            .attr("y", centerY)
-            .attr("dy", "0.35em")
-            .attr("text-anchor", "middle")
-            .style(
-              "font-size",
-              `${Math.min(10 + (d.points.length - 1) * 0.5, 14)}px`
-            )
-            .style("fill", "black")
-            .style("pointer-events", "none")
-            .text(d.points.length);
-        }
+        d3.select(this.parentElement)
+          .append("text")
+          .attr("x", centerX)
+          .attr("y", centerY)
+          .attr("dy", "0.35em")
+          .attr("text-anchor", "middle")
+          .style(
+            "font-size",
+            `${Math.min(10 + (d.points.length - 1) * 0.5, 14)}px`
+          )
+          .style("fill", "black")
+          .style("pointer-events", "none")
+          .text(d.points.length);
       });
 
     // Add child nodes
@@ -486,22 +1173,33 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .enter()
       .append("g")
       .attr("class", "child-point")
-      .style("opacity", 0)
-      .style("pointer-events", "none");
+      .style("opacity", (d: ChildPoint) => (d.total === 1 ? 1 : 0)) // Single-child groups always visible
+      .style("pointer-events", (d: ChildPoint) =>
+        d.total === 1 ? "all" : "none"
+      ); // Single-child groups always interactive
 
     childNodes
       .append("rect")
       .attr("class", "child-point-rect")
       .attr("id", (d: ChildPoint) => getChildNodeId(d.event.index))
       .attr("x", (d: ChildPoint) => {
-        const parent = groupedPoints.find(
-          (g) => g.key.replace(/[^a-zA-Z0-9-_]/g, "_") === d.parentKey
-        )!;
-        const positions = calculateExpandedPositions(
-          parent,
-          TOPIC_CONFIG.point.radius
-        );
-        return positions[d.index].x - TOPIC_CONFIG.point.radius;
+        const isDateRange = Array.isArray(d.realTime);
+
+        if (isDateRange) {
+          // For date range child nodes, position at start date
+          const realTimeArray = d.realTime as [Date, Date];
+          return xScale(realTimeArray[0]) - TOPIC_CONFIG.point.radius;
+        } else {
+          // For single date child nodes, use expanded positions
+          const parent = groupedPoints.find(
+            (g) => g.key.replace(/[^a-zA-Z0-9-_]/g, "_") === d.parentKey
+          )!;
+          const positions = calculateExpandedPositions(
+            parent,
+            TOPIC_CONFIG.point.radius
+          );
+          return positions[d.index].x - TOPIC_CONFIG.point.radius;
+        }
       })
       .attr("y", (d: ChildPoint) => {
         const parent = groupedPoints.find(
@@ -513,7 +1211,23 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         );
         return positions[d.index].y - TOPIC_CONFIG.point.radius;
       })
-      .attr("width", TOPIC_CONFIG.point.radius * 2)
+      .attr("width", (d: ChildPoint) => {
+        const isDateRange = Array.isArray(d.realTime);
+
+        if (isDateRange) {
+          // For date range child nodes, calculate width spanning the date range
+          const realTimeArray = d.realTime as [Date, Date];
+          const startX = xScale(realTimeArray[0]);
+          const endX = xScale(realTimeArray[1]);
+          return Math.max(
+            endX - startX + TOPIC_CONFIG.point.radius * 2,
+            TOPIC_CONFIG.point.radius * 2
+          );
+        } else {
+          // For single date child nodes, use standard width
+          return TOPIC_CONFIG.point.radius * 2;
+        }
+      })
       .attr("height", TOPIC_CONFIG.point.radius * 2)
       .attr("rx", TOPIC_CONFIG.point.radius)
       .attr("ry", TOPIC_CONFIG.point.radius)
@@ -522,427 +1236,117 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         isEventMarked(d.event.index) ? TOPIC_CONFIG.highlight.color : "black"
       )
       .attr("stroke-width", (d: ChildPoint) =>
-        isEventMarked(d.event.index) ? 2 : TOPIC_CONFIG.point.strokeWidth
+        isEventMarked(d.event.index) ? 3 : TOPIC_CONFIG.point.strokeWidth
+      )
+      .attr("stroke-dasharray", (d: ChildPoint) =>
+        Array.isArray(d.realTime) ? "none" : "none"
       )
       .style("cursor", "pointer")
       .attr("data-parent-key", (d: ChildPoint) => d.parentKey)
-      .attr("data-event-index", (d: ChildPoint) => d.event.index);
+      .attr("data-event-index", (d: ChildPoint) => d.event.index)
+      .attr("data-has-real-time", (d: ChildPoint) => Array.isArray(d.realTime));
 
-    // Node interaction handlers
-    const handleNodeInteraction = {
-      // Highlight node on hover
-      highlightNode(node: d3.Selection<any, any, any, any>, isParent: boolean) {
-        const d = node.datum();
-        const pointCount = isParent && d.points ? d.points.length : 1;
-        const x =
-          parseFloat(node.attr("x") || "0") +
-          parseFloat(node.attr("width") || "0") / 2;
-        const y =
-          parseFloat(node.attr("y") || "0") +
-          parseFloat(node.attr("height") || "0") / 2;
-
-        // Only apply hover scaling if the parent is not expanded
-        const isExpanded = isParent && d.isExpanded;
-        if (!isExpanded) {
-          const { width, height, rx, ry } = calculateRectDimensions(
-            pointCount,
-            TOPIC_CONFIG.point.hoverRadius,
-            false,
-            true
-          );
-
-          updateRectAndText(node, null, x, y, width, height, rx, ry);
-        }
-
-        if (!isParent) {
-          const parentKey = node.attr("data-parent-key");
-          if (parentKey) {
-            const parentNode = d3
-              .select(`#${getParentNodeId(parentKey)}`)
-              .select("rect");
-            const parentData = parentNode.datum() as GroupedPoint;
-
-            if (parentData && !parentData.isExpanded) {
-              const parentX =
-                parseFloat(parentNode.attr("x") || "0") +
-                parseFloat(parentNode.attr("width") || "0") / 2;
-              const parentY =
-                parseFloat(parentNode.attr("y") || "0") +
-                parseFloat(parentNode.attr("height") || "0") / 2;
-
-              const {
-                width: parentWidth,
-                height: parentHeight,
-                rx: parentRx,
-                ry: parentRy,
-              } = calculateRectDimensions(
-                parentData.points.length,
-                TOPIC_CONFIG.point.hoverRadius,
-                false,
-                true
-              );
-
-              updateRectAndText(
-                parentNode,
-                null,
-                parentX,
-                parentY,
-                parentWidth,
-                parentHeight,
-                parentRx,
-                parentRy
-              );
-            }
-          }
-        }
-      },
-
-      // Reset node highlighting
-      resetNode(
-        node: d3.Selection<any, any, any, any>,
-        d: any,
-        isParent: boolean
-      ) {
-        const pointCount = isParent && d.points ? d.points.length : 1;
-        const radius =
-          isParent && pointCount > 1
-            ? TOPIC_CONFIG.point.radius * 1.2
-            : TOPIC_CONFIG.point.radius;
-
-        const x =
-          parseFloat(node.attr("x") || "0") +
-          parseFloat(node.attr("width") || "0") / 2;
-        const y =
-          parseFloat(node.attr("y") || "0") +
-          parseFloat(node.attr("height") || "0") / 2;
-
-        // Only reset if the parent is not expanded
-        const isExpanded = isParent && d.isExpanded;
-        if (!isExpanded) {
-          const { width, height, rx, ry } = calculateRectDimensions(
-            pointCount,
-            radius
-          );
-
-          updateRectAndText(node, null, x, y, width, height, rx, ry);
-        }
-
-        if (!isParent) {
-          const parentKey = node.attr("data-parent-key");
-          if (parentKey) {
-            const parentGroup = d3.select(`#${getParentNodeId(parentKey)}`);
-            if (!parentGroup.empty()) {
-              const parentData = parentGroup.datum() as GroupedPoint;
-
-              // Only reset parent if it's not expanded
-              if (!parentData.isExpanded) {
-                const parentRadius =
-                  parentData.points.length > 1
-                    ? TOPIC_CONFIG.point.radius * 1.2
-                    : TOPIC_CONFIG.point.radius;
-
-                const parentRect = parentGroup.select("rect");
-                const parentX =
-                  parseFloat(parentRect.attr("x") || "0") +
-                  parseFloat(parentRect.attr("width") || "0") / 2;
-                const parentY =
-                  parseFloat(parentRect.attr("y") || "0") +
-                  parseFloat(parentRect.attr("height") || "0") / 2;
-
-                const {
-                  width: parentWidth,
-                  height: parentHeight,
-                  rx: parentRx,
-                  ry: parentRy,
-                } = calculateRectDimensions(
-                  parentData.points.length,
-                  parentRadius
-                );
-
-                updateRectAndText(
-                  parentRect,
-                  null,
-                  parentX,
-                  parentY,
-                  parentWidth,
-                  parentHeight,
-                  parentRx,
-                  parentRy
-                );
-              }
-            }
-          }
-        }
-      },
-
-      // Mouse over handler
-      mouseOver(this: any, event: MouseEvent, d: any) {
-        const node = d3.select(this);
-        const isParent = node.classed("parent-point");
-        const isExpanded = isParent && d.isExpanded;
-
-        // Skip hover effects if parent is expanded
-        if (isExpanded) {
-          return;
-        }
-
-        // Raise node to front
-        if (isParent) {
-          d3.select(this.parentNode).raise();
-        } else {
-          const parentKey = node.attr("data-parent-key");
-          if (parentKey) {
-            d3.select(`#${getParentNodeId(parentKey)}`).raise();
-          }
-        }
-
-        handleNodeInteraction.highlightNode(node, isParent);
-
-        // Show tooltip
-        const eventData = d.event || d.points[0].event;
-        showTooltip(eventData, event.pageX, event.pageY, "topic");
-
-        // Highlight topic line
-        const topic = d.mainTopic || d.points[0].mainTopic;
-        g.select(`.topic-line-${topic.replace(/\s+/g, "-")}`).attr(
-          "opacity",
-          TOPIC_CONFIG.track.highlightOpacity
-        );
-      },
-
-      // Mouse out handler
-      mouseOut(this: any, event: MouseEvent, d: any) {
-        const node = d3.select(this);
-        const isParent = node.classed("parent-point");
-        const isExpanded = isParent && d.isExpanded;
-
-        // Skip reset if parent is expanded
-        if (isExpanded) {
-          return;
-        }
-
-        handleNodeInteraction.resetNode(node, d, isParent);
-
-        // Reset topic line
-        const topic = d.mainTopic || d.points[0].mainTopic;
-        g.select(`.topic-line-${topic.replace(/\s+/g, "-")}`)
-          .attr("opacity", TOPIC_CONFIG.track.opacity)
-          .attr("stroke-width", TOPIC_CONFIG.track.strokeWidth);
-
-        hideTooltip();
-      },
-
-      // Mouse move handler
-      mouseMove(event: MouseEvent) {
-        updatePosition(event.pageX, event.pageY);
-      },
-
-      // Child node click handler
-      childClick(this: any, event: MouseEvent, d: any) {
-        const eventData = d.event;
-        const isDeselecting = eventData.index === focusedEventId;
-
-        hideTooltip();
-
-        // Raise parent group
-        const parentKey = d3.select(this).attr("data-parent-key");
-        if (parentKey) {
-          d3.select(`#${getParentNodeId(parentKey)}`).raise();
-        }
-
-        setfocusedEventId(isDeselecting ? null : eventData.index);
-        event.stopPropagation();
-      },
-
-      // Right-click handler
-      contextmenu(this: any, event: MouseEvent, d: any) {
-        event.preventDefault();
-        const eventIndex = d.event?.index || d.points?.[0]?.event?.index;
-        toggleMarkedEvent(eventIndex);
-      },
-    };
-
-    // Handle click events for parent nodes
-    parentNodes.on("click", function (event: MouseEvent, d: GroupedPoint) {
-      if (d.points.length > 1) {
-        const isExpanded = !d.isExpanded;
-        d.isExpanded = isExpanded;
-        pointStatesRef.current.set(d.key, { x: d.x, y: d.y, isExpanded });
-
-        const parent = d3.select(this);
-        const children = parent.selectAll(".child-point");
-        const parentRect = parent.select("rect");
-        const countText = parent.select("text");
-
-        const x =
-          parseFloat(parentRect.attr("x") || "0") +
-          parseFloat(parentRect.attr("width") || "0") / 2;
-        const y =
-          parseFloat(parentRect.attr("y") || "0") +
-          parseFloat(parentRect.attr("height") || "0") / 2;
-
-        if (isExpanded) {
-          parent.raise();
-
-          const { width, height, rx, ry } = calculateRectDimensions(
-            d.points.length,
-            TOPIC_CONFIG.point.radius,
-            true,
-            false,
-            d.points.length
-          );
-
-          updateRectAndText(
-            parentRect,
-            countText,
-            x,
-            y,
-            width,
-            height,
-            rx,
-            ry,
-            200,
-            0.5,
-            "default" // Change cursor to default when expanded
-          );
-
-          // Disable mouse events on parent when expanded
-          parentRect.style("pointer-events", "none").style("cursor", "default");
-
-          // Remove mouse event handlers from parent
-          parentRect
-            .on("mouseover", null)
-            .on("mouseout", null)
-            .on("mousemove", null)
-            .on("contextmenu", null);
-
-          children
-            .transition()
-            .duration(200)
-            .style("opacity", 1)
-            .style("pointer-events", "all");
-        } else {
-          const { width, height, rx, ry } = calculateRectDimensions(
-            d.points.length,
-            TOPIC_CONFIG.point.radius
-          );
-
-          updateRectAndText(
-            parentRect,
-            countText,
-            x,
-            y,
-            width,
-            height,
-            rx,
-            ry,
-            200,
-            1,
-            "pointer"
-          );
-
-          // Re-enable mouse events on parent when collapsed
-          parentRect.style("pointer-events", "all").style("cursor", "pointer");
-
-          // Re-add mouse event handlers to parent
-          parentRect
-            .on("mouseover", handleNodeInteraction.mouseOver)
-            .on("mouseout", handleNodeInteraction.mouseOut)
-            .on("mousemove", handleNodeInteraction.mouseMove)
-            .on("contextmenu", handleNodeInteraction.contextmenu);
-
-          children
-            .transition()
-            .duration(200)
-            .style("opacity", 0)
-            .style("pointer-events", "none");
-        }
-      } else {
-        // For parent nodes with no children, behave like a child node
-        const eventData = d.points[0].event;
-        setfocusedEventId(
-          eventData.index === focusedEventId ? null : eventData.index
-        );
-      }
-    });
+    // Handle hover events for parent nodes
+    parentNodes
+      .on("mouseover", function (event: MouseEvent, d: GroupedPoint) {
+        handleNodeInteraction.mouseOver.call(this, event, d);
+      })
+      .on("mouseout", function (event: MouseEvent, d: GroupedPoint) {
+        handleNodeInteraction.mouseOut.call(this, event, d);
+      });
 
     // Add event listeners
     parentNodes
       .selectAll("rect.parent-point")
+      .on("mousemove", handleNodeInteraction.mouseMove)
       .on("mouseover", handleNodeInteraction.mouseOver)
       .on("mouseout", handleNodeInteraction.mouseOut)
-      .on("mousemove", handleNodeInteraction.mouseMove);
+      .on("click", handleNodeInteraction.click);
 
     childNodes
       .selectAll("rect.child-point-rect")
+      .on("mousemove", handleNodeInteraction.mouseMove)
       .on("mouseover", handleNodeInteraction.mouseOver)
       .on("mouseout", handleNodeInteraction.mouseOut)
-      .on("mousemove", handleNodeInteraction.mouseMove)
-      .on("click", handleNodeInteraction.childClick)
-      .on("contextmenu", handleNodeInteraction.contextmenu);
+      .on("click", handleNodeInteraction.click);
 
-    // Add right-click handler to parent nodes
-    parentNodes
-      .select("rect")
-      .on("contextmenu", function (event: MouseEvent, d: GroupedPoint) {
-        event.preventDefault();
-        const eventIndex = d.points[0].event.index;
-        toggleMarkedEvent(eventIndex);
-      });
-
-    // Restore expanded states
+    // Restore expanded states (only for multi-child groups)
     currentExpandedStates.forEach((state, key) => {
       if (state.isExpanded) {
         const parentNode = d3.select(`#${getParentNodeId(key)}`);
         if (!parentNode.empty()) {
           const parent = parentNode.datum() as GroupedPoint;
-          parent.isExpanded = true;
-          pointStatesRef.current.set(key, state);
 
-          // Restore expanded state visually
-          const parentRect = parentNode.select("rect");
-          const countText = parentNode.select("text");
-          const children = parentNode.selectAll(".child-point");
+          // Only restore expanded state for multi-child groups
+          if (parent.points.length > 1) {
+            parent.isExpanded = true;
+            pointStatesRef.current.set(key, state);
 
-          const x =
-            parseFloat(parentRect.attr("x") || "0") +
-            parseFloat(parentRect.attr("width") || "0") / 2;
-          const y =
-            parseFloat(parentRect.attr("y") || "0") +
-            parseFloat(parentRect.attr("height") || "0") / 2;
+            // Restore expanded state visually
+            const parentRect = parentNode.select("rect");
+            const countText = parentNode.select("text");
+            const children = parentNode.selectAll(".child-point");
 
-          const { width, height, rx, ry } = calculateRectDimensions(
-            parent.points.length,
-            TOPIC_CONFIG.point.radius,
-            true,
-            false,
-            parent.points.length
-          );
+            const x =
+              parseFloat(parentRect.attr("x") || "0") +
+              parseFloat(parentRect.attr("width") || "0") / 2;
+            const y =
+              parseFloat(parentRect.attr("y") || "0") +
+              parseFloat(parentRect.attr("height") || "0") / 2;
 
-          updateRectAndText(
-            parentRect,
-            countText,
-            x,
-            y,
-            width,
-            height,
-            rx,
-            ry,
-            0,
-            0.5
-          );
+            // Get collapsed dimensions to preserve width
+            const collapsedDims = calculateCollapsedDimensions(parent);
 
-          // Disable mouse events on parent when expanded
-          parentRect.style("pointer-events", "none").style("cursor", "default");
+            // Calculate expanded height based on child count
+            const radius = TOPIC_CONFIG.point.radius;
+            const verticalSpacing = radius * 2.5; // Same as in calculateExpandedPositions
+            const childHeight =
+              parent.points.length > 1
+                ? (parent.points.length - 1) * verticalSpacing
+                : 0;
+            const expandedHeight = Math.max(
+              radius * 3,
+              childHeight + radius * 3
+            );
 
-          children.style("opacity", 1).style("pointer-events", "all");
+            // Make width slightly wider when expanded to properly wrap child nodes
+            const expandedWidth = collapsedDims.width + radius * 0.8; // Add padding
+
+            // Raise expanded group to ensure it's above other groups
+            parentNode.raise();
+
+            // Calculate new position for expanded size
+            const newRectX = x - expandedWidth / 2;
+            const newRectY = y - expandedHeight / 2;
+
+            // Set expanded state immediately (no animation for restoration)
+            parentRect
+              .attr("width", expandedWidth)
+              .attr("height", expandedHeight)
+              .attr("x", newRectX)
+              .attr("y", newRectY)
+              .attr("rx", collapsedDims.rx)
+              .attr("ry", collapsedDims.ry)
+              .style("opacity", 0.5)
+              .style("cursor", "default")
+              .style("pointer-events", "none");
+
+            // Update count text position
+            if (countText) {
+              countText.attr("x", x).attr("y", y);
+            }
+
+            children
+              .style("opacity", (d: any) => (d.total === 1 ? 1 : 1)) // All children visible when expanded
+              .style("pointer-events", "all");
+          }
         }
       }
     });
 
     // Reapply selection if exists
     if (currentSelection !== null && currentSelection !== undefined) {
-      updateSelectedEventStyles(currentSelection);
+      updateSelectedEventStyles(currentSelection, xScale);
     }
   }, [
     events,
@@ -954,14 +1358,8 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     getParentNodeId,
     getChildNodeId,
     handleBackgroundClick,
+    calculateCollapsedDimensions,
   ]);
-
-  // Handle selection changes
-  useEffect(() => {
-    if (svgRef.current && focusedEventId !== undefined) {
-      updateSelectedEventStyles(focusedEventId);
-    }
-  }, [focusedEventId, updateSelectedEventStyles]);
 
   // Setup resize observer
   useEffect(() => {
@@ -988,6 +1386,197 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       updateVisualization();
     }
   }, [markedEventIds, updateVisualization]);
+
+  // Handle visual effects when selected event changes
+  useEffect(() => {
+    if (!svgRef.current) return;
+
+    // Update guide lines
+    updateSelectedEventStyles(focusedEventId, undefined);
+
+    if (focusedEventId !== null) {
+      // Find the node for this event
+      const allNodes = d3
+        .select(svgRef.current)
+        .selectAll(".parent-point, .child-point-rect");
+      let targetNode: d3.Selection<any, any, any, any> | null = null;
+      let targetData: any = null;
+      let isParentNode = false;
+
+      allNodes.each(function (d: any) {
+        const eventIndex = d.event?.index || d.points?.[0]?.event?.index;
+        if (eventIndex === focusedEventId) {
+          targetNode = d3.select(this as any);
+          targetData = d;
+          isParentNode = (targetNode as any).classed("parent-point");
+        }
+      });
+
+      if (targetNode && targetData) {
+        // If it's a child node, we need to expand its parent (if it exists and has multiple children)
+        if (!isParentNode && targetNode) {
+          const parentKey = (targetNode as any).attr("data-parent-key");
+          if (parentKey) {
+            const parentGroup = d3.select(`#${getParentNodeId(parentKey)}`);
+            if (!parentGroup.empty()) {
+              const parentData = parentGroup.datum() as GroupedPoint;
+
+              // Only expand if this is a multi-child group (single-child groups don't have visible parents)
+              if (parentData.points.length > 1 && !parentData.isExpanded) {
+                parentData.isExpanded = true;
+                pointStatesRef.current.set(parentData.key, {
+                  x: parentData.x,
+                  y: parentData.y,
+                  isExpanded: true,
+                });
+
+                const parent = parentGroup;
+                const children = parent.selectAll(".child-point");
+                const parentRect = parent.select("rect");
+                const countText = parent.select("text");
+
+                const x =
+                  parseFloat(parentRect.attr("x") || "0") +
+                  parseFloat(parentRect.attr("width") || "0") / 2;
+                const y =
+                  parseFloat(parentRect.attr("y") || "0") +
+                  parseFloat(parentRect.attr("height") || "0") / 2;
+
+                // Raise parent group to ensure it's above other groups
+                parent.raise();
+
+                // Get collapsed dimensions to preserve width
+                const collapsedDims = calculateCollapsedDimensions(parentData);
+
+                // Calculate expanded height based on child count
+                const radius = TOPIC_CONFIG.point.radius;
+                const verticalSpacing = radius * 2.5;
+                const childHeight =
+                  parentData.points.length > 1
+                    ? (parentData.points.length - 1) * verticalSpacing
+                    : 0;
+                const expandedHeight = Math.max(
+                  radius * 3,
+                  childHeight + radius * 3
+                );
+
+                // Make width slightly wider when expanded
+                const expandedWidth = collapsedDims.width + radius * 0.8;
+
+                // Calculate new position for expanded size
+                const newRectX = x - expandedWidth / 2;
+                const newRectY = y - expandedHeight / 2;
+
+                // Smooth transition for parent rectangle expansion
+                parentRect
+                  .transition()
+                  .duration(200)
+                  .attr("width", expandedWidth)
+                  .attr("height", expandedHeight)
+                  .attr("x", newRectX)
+                  .attr("y", newRectY)
+                  .attr("rx", collapsedDims.rx)
+                  .attr("ry", collapsedDims.ry)
+                  .style("opacity", 0.5)
+                  .style("cursor", "default")
+                  .style("pointer-events", "none");
+
+                // Update count text position
+                if (countText) {
+                  countText
+                    .transition()
+                    .duration(200)
+                    .attr("x", x)
+                    .attr("y", y);
+                }
+
+                children
+                  .transition()
+                  .duration(200)
+                  .style("opacity", 1)
+                  .style("pointer-events", "all");
+              }
+            }
+          }
+        }
+
+        // Raise the target node to front
+        if (!isParentNode && targetNode) {
+          const parentKey = (targetNode as any).attr("data-parent-key");
+          if (parentKey) {
+            // Raise the entire parent group to bring all children to front
+            d3.select(`#${getParentNodeId(parentKey)}`).raise();
+          }
+        } else if (isParentNode && targetNode) {
+          // For parent nodes, also raise to front
+          const parentKey = (targetNode as any).attr("data-group-key");
+          if (parentKey) {
+            d3.select(`#${getParentNodeId(parentKey)}`).raise();
+          }
+        }
+      }
+    } else {
+      // No event selected - collapse all expanded groups
+
+      d3.select(svgRef.current)
+        .selectAll(".point-group")
+        .each(function (d: any) {
+          // Only collapse multi-child groups (single-child groups don't have collapsible parents)
+          if (d.isExpanded && d.points.length > 1) {
+            d.isExpanded = false;
+            pointStatesRef.current.set(d.key, {
+              x: d.x,
+              y: d.y,
+              isExpanded: false,
+            });
+
+            const parent = d3.select(this);
+            const children = parent.selectAll(".child-point");
+            const parentRect = parent.select("rect");
+            const countText = parent.select("text");
+
+            // Use collapsed dimensions
+            const collapsedDims = calculateCollapsedDimensions(d);
+
+            // Smooth transition for parent rectangle collapse
+            parentRect
+              .transition()
+              .duration(200)
+              .attr("width", collapsedDims.width)
+              .attr("height", collapsedDims.height)
+              .attr("x", collapsedDims.rectX)
+              .attr("y", collapsedDims.rectY)
+              .attr("rx", collapsedDims.rx)
+              .attr("ry", collapsedDims.ry)
+              .style("opacity", 1)
+              .style("cursor", "pointer")
+              .style("pointer-events", "all");
+
+            // Update count text position
+            if (countText) {
+              countText
+                .transition()
+                .duration(200)
+                .attr("x", collapsedDims.x)
+                .attr("y", collapsedDims.y);
+            }
+
+            children
+              .transition()
+              .duration(200)
+              .style("opacity", (d: any) => (d.total === 1 ? 1 : 0)) // Keep single-child nodes visible
+              .style("pointer-events", (d: any) =>
+                d.total === 1 ? "all" : "none"
+              ); // Keep single-child nodes interactive
+          }
+        });
+    }
+  }, [
+    focusedEventId,
+    updateSelectedEventStyles,
+    getParentNodeId,
+    calculateCollapsedDimensions,
+  ]);
 
   return (
     <div className="w-full h-full flex flex-col">

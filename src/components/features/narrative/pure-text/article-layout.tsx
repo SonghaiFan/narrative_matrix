@@ -68,7 +68,7 @@ interface ArticleParagraphProps {
   isSelected: boolean;
   isMarked: boolean;
   onClick: () => void;
-  onContextMenu: (e: React.MouseEvent) => void;
+  onContextMenu?: (e: React.MouseEvent) => void;
   highlightEntities: (text: string, entities: any[]) => string;
 }
 

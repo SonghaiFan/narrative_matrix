@@ -152,13 +152,10 @@ export function PureTextDisplay({ events, metadata }: PureTextDisplayProps) {
                     event={event}
                     isSelected={focusedEventId === event.index}
                     isMarked={isEventMarked(event.index)}
-                    onClick={() =>
+                    onClick={() => {
                       setfocusedEventId(
                         event.index === focusedEventId ? null : event.index
-                      )
-                    }
-                    onContextMenu={(e) => {
-                      e.preventDefault();
+                      );
                       toggleMarkedEvent(event.index);
                     }}
                     highlightEntities={highlightEntities}

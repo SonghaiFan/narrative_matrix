@@ -129,23 +129,23 @@
   ],
   "quiz": [
     {
-      "id": "aftermath_1",
-      "question": "What was the aftermath or resolution of the following event?\n\nBiden signaled stronger U.S. defense commitment to Taiwan since 2021.",
-      "questionCaption": "",
-      "answer": "Biden affirmed U.S. defense commitment to Taiwan in May 2022; PRC protested.",
+      "id": "flashback_1",
+      "question": "Based on the narrative, which event is the most prominent flashback?",
+      "questionCaption": "A flashback is when a narrative jumps back in time to describe an earlier event. Look for events that are mentioned later in the narrative text but occurred much earlier historically.",
+      "answer": "Pelosi visited Taiwan in August 2022, triggering PRC military response.",
       "level": "Comprehension",
       "type": "radio-options",
-      "timeLimit": 120,
+      "timeLimit": 60,
       "visual": "time",
       "prone": "time",
       "options": [
-        "Biden affirmed U.S. defense commitment to Taiwan in May 2022; PRC protested.",
-        "PLA conducted blockade-style drills and erased Taiwan Strait status quo post-visit.",
+        "Pelosi visited Taiwan in August 2022, triggering PRC military response.",
         "PRC imposed sanctions, cyberattacks, and military pressure after Pelosi's visit.",
-        "Pelosi visited Taiwan in August 2022, triggering PRC military response."
+        "PLA conducted blockade-style drills and erased Taiwan Strait status quo post-visit.",
+        "Biden affirmed U.S. defense commitment to Taiwan in May 2022; PRC protested."
       ],
       "completed": false,
-      "event_reference": [1, 2]
+      "event_reference": 3
     }
   ]
 }

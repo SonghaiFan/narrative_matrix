@@ -128,23 +128,23 @@
   ],
   "quiz": [
     {
-      "id": "aftermath_1",
-      "question": "What was the aftermath or resolution of the following event?\n\nUN proposed partitioning Palestine into Jewish and Arab states in 1947.",
-      "questionCaption": "",
-      "answer": "Israel declared independence in 1948; war led to Palestinian displacement and new borders.",
+      "id": "flashback_1",
+      "question": "Based on the narrative, which event is the most prominent flashback?",
+      "questionCaption": "A flashback is when a narrative jumps back in time to describe an earlier event. Look for events that are mentioned later in the narrative text but occurred much earlier historically.",
+      "answer": "Israeli-Palestinian conflict began in the late 1800s due to nationalist movements.",
       "level": "Comprehension",
       "type": "radio-options",
-      "timeLimit": 120,
-      "visual": null,
+      "timeLimit": 60,
+      "visual": "time",
       "prone": "time",
       "options": [
+        "Israeli-Palestinian conflict began in the late 1800s due to nationalist movements.",
         "Israel declared independence in 1948; war led to Palestinian displacement and new borders.",
-        "Israel captured major territories in 1967 Six-Day War after preemptive strikes.",
-        "Tensions between Israel and its neighbors escalated following the 1956 Suez Crisis.",
-        "Israeli-Palestinian conflict began in the late 1800s due to nationalist movements."
+        "Israel invaded Sinai in 1956; Egypt, Jordan, and Syria prepared defense pacts.",
+        "Israel captured major territories in 1967 Six-Day War after preemptive strikes."
       ],
       "completed": false,
-      "event_reference": [2, 3]
+      "event_reference": 1
     }
   ]
 }

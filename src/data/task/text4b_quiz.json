@@ -124,23 +124,23 @@
   ],
   "quiz": [
     {
-      "id": "aftermath_1",
-      "question": "What was the aftermath or resolution of the following event?\n\nIn 1954–55, PRC shelled Kinmen and Matsu to deter U.S.–Taiwan defense treaty.",
-      "questionCaption": "",
-      "answer": "Taipei and Beijing informally agreed on 'median line' in Taiwan Strait post-crisis.",
+      "id": "flashback_1",
+      "question": "Based on the narrative, which event is the most prominent flashback?",
+      "questionCaption": "A flashback is when a narrative jumps back in time to describe an earlier event. Look for events that are mentioned later in the narrative text but occurred much earlier historically.",
+      "answer": "PRC shelled Kinmen in 1958; U.S. prepared nuclear response under Eisenhower.",
       "level": "Comprehension",
       "type": "radio-options",
-      "timeLimit": 120,
+      "timeLimit": 60,
       "visual": "time",
       "prone": "time",
       "options": [
-        "Taipei and Beijing informally agreed on 'median line' in Taiwan Strait post-crisis.",
-        "PRC fired missiles near Taiwan in 1995–96 to oppose Lee Teng-hui's U.S. visit.",
+        "PRC shelled Kinmen in 1958; U.S. prepared nuclear response under Eisenhower.",
         "U.S. ended defense treaty and recognized PRC in 1979.",
-        "PRC shelled Kinmen in 1958; U.S. prepared nuclear response under Eisenhower."
+        "PRC fired missiles near Taiwan in 1995–96 to oppose Lee Teng-hui's U.S. visit.",
+        "Taipei and Beijing informally agreed on 'median line' in Taiwan Strait post-crisis."
       ],
       "completed": false,
-      "event_reference": [1, 2]
+      "event_reference": 3
     }
   ]
 }

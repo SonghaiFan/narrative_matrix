@@ -109,14 +109,12 @@ export function CenterControlProvider({
   }, []);
 
   // Toggle marked state for an event with tracking
+  // Toggle marked state for an event - if event is already marked, clear all marks,
+  // otherwise mark only this event (single selection model)
   const toggleMarkedEvent = useCallback((id: number) => {
     setMarkedEventIds((prev) => {
       const isMarked = prev.includes(id);
-      if (isMarked) {
-        return prev.filter((eventId) => eventId !== id);
-      } else {
-        return [...prev, id];
-      }
+      return isMarked ? [] : [id];
     });
   }, []);
 

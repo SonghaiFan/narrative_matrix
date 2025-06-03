@@ -34,6 +34,8 @@ export interface GroupedPoint {
   mainTopic: string;
   x: number;
   y: number;
+  minX?: number; // For date range groups
+  maxX?: number; // For date range groups
   isExpanded: boolean;
 }
 
@@ -231,13 +233,136 @@ export function groupOverlappingPoints(
   viewMode: "main" | "sub" = "sub"
 ): GroupedPoint[] {
   const groups: Map<string, GroupedPoint> = new Map();
-  const threshold = 10; // Threshold for considering points as overlapping
+  const spatialThreshold = 25; // Increased threshold for spatial distance (pixels)
+  const temporalThreshold = 7 * 24 * 60 * 60 * 1000; // Increased to 7 days in milliseconds
 
   // Filter dataPoints for "sub" viewMode to only include points with subtopics
   const filteredDataPoints =
     viewMode === "sub"
       ? dataPoints.filter((point) => point.subTopics.length > 0)
       : dataPoints;
+
+  // Helper function to check if two time ranges overlap or are close
+  const areTemporallyRelated = (
+    point1: DataPoint,
+    point2: DataPoint
+  ): boolean => {
+    const getTimeRange = (point: DataPoint): [Date, Date] => {
+      if (Array.isArray(point.realTime)) {
+        return point.realTime;
+      } else {
+        return [point.realTime as Date, point.realTime as Date];
+      }
+    };
+
+    const [start1, end1] = getTimeRange(point1);
+    const [start2, end2] = getTimeRange(point2);
+
+    // Check for overlap or proximity
+    const gap1 = start2.getTime() - end1.getTime(); // Gap from end of 1 to start of 2
+    const gap2 = start1.getTime() - end2.getTime(); // Gap from end of 2 to start of 1
+
+    // They overlap if either gap is negative, or they're close if gap is within threshold
+    return gap1 <= temporalThreshold && gap2 <= temporalThreshold;
+  };
+
+  // Helper function to get the visual span of a point (considering node width)
+  const getVisualSpan = (
+    point: DataPoint
+  ): { startX: number; endX: number } => {
+    const radius = TOPIC_CONFIG.point.radius;
+    const visualPadding = radius * 0.8; // Add padding for more inclusive grouping
+
+    if (Array.isArray(point.realTime)) {
+      // Date range - visual span from start to end with padding
+      const startX = getXPosition(xScale, point.realTime[0]);
+      const endX = getXPosition(xScale, point.realTime[1]);
+      return {
+        startX: startX - radius - visualPadding, // Include left cap + padding
+        endX: endX + radius + visualPadding, // Include right cap + padding
+      };
+    } else {
+      // Single point - visual span with padding
+      const centerX = getXPosition(xScale, point.realTime);
+      return {
+        startX: centerX - radius - visualPadding,
+        endX: centerX + radius + visualPadding,
+      };
+    }
+  };
+
+  // Helper function to check if two visual spans overlap
+  const doVisualSpansOverlap = (
+    span1: { startX: number; endX: number },
+    span2: { startX: number; endX: number }
+  ): boolean => {
+    // Spans overlap if one starts before the other ends, and vice versa
+    return span1.startX <= span2.endX && span2.startX <= span1.endX;
+  };
+
+  // Helper function to get the visual span of an entire group
+  const getGroupVisualSpan = (
+    group: GroupedPoint
+  ): { startX: number; endX: number } => {
+    if (group.minX !== undefined && group.maxX !== undefined) {
+      // Group already has calculated bounds
+      const radius = TOPIC_CONFIG.point.radius;
+      const visualPadding = radius * 0.8; // Add padding for more inclusive grouping
+      return {
+        startX: group.minX - radius - visualPadding,
+        endX: group.maxX + radius + visualPadding,
+      };
+    } else {
+      // Calculate from individual points
+      const spans = group.points.map(getVisualSpan);
+      return {
+        startX: Math.min(...spans.map((s) => s.startX)),
+        endX: Math.max(...spans.map((s) => s.endX)),
+      };
+    }
+  };
+
+  // Helper function to check if point should be grouped with existing group
+  const shouldGroupWith = (point: DataPoint, group: GroupedPoint): boolean => {
+    // Must have same topic
+    const pointTopic =
+      viewMode === "main" ? point.mainTopic : point.subTopics[0];
+    if (group.mainTopic !== pointTopic) return false;
+
+    // Check temporal relationship with any point in the group
+    const isTemporallyRelated = group.points.some((groupPoint) =>
+      areTemporallyRelated(point, groupPoint)
+    );
+
+    // Get visual spans for overlap checking
+    const pointSpan = getVisualSpan(point);
+    const groupSpan = getGroupVisualSpan(group);
+    const hasVisualOverlap = doVisualSpansOverlap(pointSpan, groupSpan);
+
+    // Check if spans are close (within grouping tolerance)
+    const proximityTolerance = TOPIC_CONFIG.point.radius * 1.5;
+    const gapBetweenSpans = Math.min(
+      Math.abs(pointSpan.startX - groupSpan.endX),
+      Math.abs(groupSpan.startX - pointSpan.endX)
+    );
+    const areSpansClose = gapBetweenSpans <= proximityTolerance;
+
+    // Group if temporally related OR visually overlapping OR spans are close
+    if (isTemporallyRelated || hasVisualOverlap || areSpansClose) return true;
+
+    // Fallback to spatial distance for edge cases (much smaller threshold now)
+    const pointX = getXPosition(xScale, point.realTime);
+    const pointTopic_y = yScale(pointTopic);
+    if (!pointTopic_y) return false;
+
+    const pointY = pointTopic_y + yScale.bandwidth() / 2;
+    const distance = Math.sqrt(
+      Math.pow(pointX - group.x, 2) + Math.pow(pointY - group.y, 2)
+    );
+
+    // Increased spatial threshold for more aggressive grouping
+    return distance < spatialThreshold;
+  };
 
   filteredDataPoints.forEach((point) => {
     const x = getXPosition(xScale, point.realTime);
@@ -248,19 +373,10 @@ export function groupOverlappingPoints(
 
     const y = yScale(topic)! + yScale.bandwidth() / 2;
 
-    // Check if this point overlaps with any existing group
+    // Check if this point should be grouped with any existing group
     let foundGroup = false;
     for (const [key, group] of groups.entries()) {
-      const distance = Math.sqrt(
-        Math.pow(x - group.x, 2) + Math.pow(y - group.y, 2)
-      );
-
-      // If the point is close enough to an existing group and has the same topic
-      if (
-        distance < threshold &&
-        ((viewMode === "main" && group.mainTopic === point.mainTopic) ||
-          (viewMode === "sub" && group.mainTopic === point.subTopics[0]))
-      ) {
+      if (shouldGroupWith(point, group)) {
         // Add the point to the existing group
         group.points.push(point);
         foundGroup = true;
@@ -268,7 +384,7 @@ export function groupOverlappingPoints(
       }
     }
 
-    // If no overlapping group was found, create a new one
+    // If no suitable group was found, create a new one
     if (!foundGroup) {
       const groupKey = `group-${groups.size + 1}-${point.index}`;
       const groupTopic =
@@ -285,7 +401,42 @@ export function groupOverlappingPoints(
     }
   });
 
-  return Array.from(groups.values());
+  // Calculate bounds for each group after all points are added
+  const groupsArray = Array.from(groups.values());
+  groupsArray.forEach((group) => {
+    if (group.points.length > 1) {
+      // For multi-point groups, calculate the date range bounds
+      const allDates: Date[] = [];
+      group.points.forEach((point) => {
+        if (Array.isArray(point.realTime)) {
+          allDates.push(point.realTime[0], point.realTime[1]);
+        } else {
+          allDates.push(point.realTime as Date);
+        }
+      });
+
+      if (allDates.length > 0) {
+        const minDate = new Date(Math.min(...allDates.map((d) => d.getTime())));
+        const maxDate = new Date(Math.max(...allDates.map((d) => d.getTime())));
+
+        group.minX = getXPosition(xScale, minDate);
+        group.maxX = getXPosition(xScale, maxDate);
+
+        // Update the center x position to be the center of the date range
+        group.x = (group.minX + group.maxX) / 2;
+      }
+    } else if (group.points.length === 1) {
+      // For single point groups, check if it's a date range
+      const point = group.points[0];
+      if (Array.isArray(point.realTime)) {
+        group.minX = getXPosition(xScale, point.realTime[0]);
+        group.maxX = getXPosition(xScale, point.realTime[1]);
+        group.x = (group.minX + group.maxX) / 2;
+      }
+    }
+  });
+
+  return groupsArray;
 }
 
 // Calculate positions for expanded child nodes
@@ -358,24 +509,15 @@ export function calculateRectDimensions(
     rx = radius * 0.8;
     ry = radius * 0.8;
   } else {
-    // Scale parent node size based on child count
+    // Use same size as time visualization - no scaling based on point count
     const baseSize = radius * 2;
-    const scaleFactor = Math.min(1 + (pointCount - 1) * 0.2, 2.5); // Scale up to 2.5x for larger groups
 
-    width = pointCount > 1 ? baseSize * scaleFactor : baseSize;
-    height = pointCount > 1 ? baseSize * scaleFactor : baseSize;
+    width = baseSize;
+    height = baseSize;
 
-    // Corner radius scales proportionally with the size
-    // Use a percentage of the width/height to maintain consistent rounded corners
-    const cornerRadiusPercentage = 0.5; // 50% of the smaller dimension
-    rx =
-      pointCount > 1
-        ? Math.min(width, height) * cornerRadiusPercentage
-        : radius;
-    ry =
-      pointCount > 1
-        ? Math.min(width, height) * cornerRadiusPercentage
-        : radius;
+    // Use standard radius for all nodes, same as time visualization
+    rx = radius;
+    ry = radius;
   }
 
   return { width, height, rx, ry };
