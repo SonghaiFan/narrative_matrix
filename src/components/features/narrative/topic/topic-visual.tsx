@@ -18,7 +18,6 @@ import {
   calculateRectDimensions,
   calculateRectPosition,
   calculateCenterPoint,
-  updateRectAndText,
   type DataPoint,
   type GroupedPoint,
 } from "./topic-visual.utils";
@@ -165,249 +164,105 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           );
         });
 
-      // Update guide lines based on selected node
+      // Show guide lines for the selected node
+      let selectedNode = null;
       if (!parentNode.empty()) {
-        const x = parseFloat(parentNode.attr("x") || "0");
-        const width = parseFloat(parentNode.attr("width") || "0");
-        const isDateRange = parentNode.attr("data-has-real-time") === "true";
-
-        guideLine.style("display", "block");
-
-        // Get the selected data
-        const selectedData = parentNode.datum() as GroupedPoint;
-
-        if (isDateRange || selectedData.points.length > 1) {
-          // For date ranges or grouped nodes, show both start and end guide lines
-
-          let startX: number, endX: number;
-          let startDate: Date, endDate: Date;
-
-          if (selectedData.points.length > 1) {
-            // For grouped nodes, find the specific selected child event
-            const selectedChild = selectedData.points.find(
-              (point) => point.event?.index === newSelectedId
-            );
-
-            if (selectedChild && xScale) {
-              // Show guideline for the selected child only
-              if (Array.isArray(selectedChild.realTime)) {
-                // Date range child
-                const childStartX = xScale(selectedChild.realTime[0]);
-                const childEndX = xScale(selectedChild.realTime[1]);
-                startX = childStartX;
-                endX = childEndX;
-                startDate = selectedChild.realTime[0];
-                endDate = selectedChild.realTime[1];
-              } else {
-                // Single point child - show as single point
-                const childCenterX = xScale(selectedChild.realTime as Date);
-                startX = childCenterX;
-                endX = childCenterX;
-                startDate = selectedChild.realTime as Date;
-                endDate = selectedChild.realTime as Date;
-              }
-            } else if (xScale) {
-              // Fallback: show first child if no specific selection found
-              const firstChild = selectedData.points[0];
-              if (Array.isArray(firstChild.realTime)) {
-                startX = xScale(firstChild.realTime[0]);
-                endX = xScale(firstChild.realTime[1]);
-                startDate = firstChild.realTime[0];
-                endDate = firstChild.realTime[1];
-              } else {
-                const childCenterX = xScale(firstChild.realTime as Date);
-                startX = childCenterX;
-                endX = childCenterX;
-                startDate = firstChild.realTime as Date;
-                endDate = firstChild.realTime as Date;
-              }
-            } else {
-              // No xScale available, fallback to parent rectangle visual span
-              startX = x + TOPIC_CONFIG.point.radius;
-              endX = x + width - TOPIC_CONFIG.point.radius;
-              // Use approximate dates from first child
-              const firstChild = selectedData.points[0];
-              if (Array.isArray(firstChild.realTime)) {
-                startDate = firstChild.realTime[0];
-                endDate = firstChild.realTime[1];
-              } else {
-                startDate = firstChild.realTime as Date;
-                endDate = firstChild.realTime as Date;
-              }
-            }
-          } else {
-            // For single date range nodes
-            startX = x + TOPIC_CONFIG.point.radius;
-            endX = x + width - TOPIC_CONFIG.point.radius;
-            const realTimeArray = selectedData.points[0].realTime as [
-              Date,
-              Date
-            ];
-            startDate = realTimeArray[0];
-            endDate = realTimeArray[1];
-          }
-
-          // Show start guide line and label
-          guideLine
-            .select(".vertical.start")
-            .attr("x1", startX)
-            .attr("x2", startX)
-            .style("display", "block");
-
-          guideLine
-            .select(".guide-label.start")
-            .attr("x", startX - 4) // Offset to the left of the guide line
-            .text(
-              startDate instanceof Date
-                ? startDate.toLocaleDateString()
-                : "No Date"
-            )
-            .style("display", "block");
-
-          // Show end guide line and label
-          guideLine
-            .select(".vertical.end")
-            .attr("x1", endX)
-            .attr("x2", endX)
-            .style("display", "block");
-
-          guideLine
-            .select(".guide-label.end")
-            .attr("x", endX + 4) // Offset to the right of the guide line
-            .text(
-              endDate instanceof Date ? endDate.toLocaleDateString() : "No Date"
-            )
-            .style("display", "block");
-        } else {
-          // For single points, show only start guide line at center with time label
-          const centerX = x + width / 2;
-
-          // Get the selected data to extract date
-          const selectedData = parentNode.datum() as GroupedPoint;
-          const realTime = selectedData.points[0]?.realTime;
-
-          let dateText = "No Date";
-          if (realTime) {
-            if (Array.isArray(realTime) && realTime[0]) {
-              dateText = realTime[0].toLocaleDateString();
-            } else if (realTime instanceof Date) {
-              dateText = realTime.toLocaleDateString();
-            }
-          }
-
-          guideLine
-            .select(".vertical.start")
-            .attr("x1", centerX)
-            .attr("x2", centerX)
-            .style("display", "block");
-
-          guideLine
-            .select(".guide-label.start")
-            .attr("x", centerX - 4) // Offset to the left of the guide line
-            .attr("text-anchor", "end") // Align text to the right for single points
-            .text(dateText)
-            .style("display", "block");
-
-          // Hide end guide line and end label for single points
-          guideLine.select(".vertical.end").style("display", "none");
-          guideLine.select(".guide-label.end").style("display", "none");
-        }
+        selectedNode = parentNode.node() as SVGRectElement;
       } else if (!childNode.empty()) {
-        const parentKey = childNode.attr("data-parent-key");
-        const isDateRange = childNode.attr("data-has-real-time") === "true";
+        selectedNode = childNode.node() as SVGRectElement;
+      }
 
+      if (selectedNode && xScale) {
+        // Get the selected node's position and dimensions
+        const x = parseFloat(selectedNode.getAttribute("x") || "0");
+        const width = parseFloat(selectedNode.getAttribute("width") || "0");
+        const y = parseFloat(selectedNode.getAttribute("y") || "0");
+        const height = parseFloat(selectedNode.getAttribute("height") || "0");
+
+        // Calculate guide line positions
+        const centerY = y + height / 2;
+
+        // For date ranges, use the right edge (excluding the end cap)
+        // For single points, use the center
+        const isDateRange = width > TOPIC_CONFIG.point.radius * 2 + 2; // Add small epsilon for rounding
+        const rightEdgeX = isDateRange
+          ? x + width - TOPIC_CONFIG.point.radius // For date ranges, use position just before the end cap
+          : x + width / 2; // For single points, use the center
+
+        // Show and position guide lines
         guideLine.style("display", "block");
 
-        if (isDateRange) {
-          // For child date ranges, use the child's positions
-          const childX = parseFloat(childNode.attr("x") || "0");
-          const childWidth = parseFloat(childNode.attr("width") || "0");
-          const startX = childX + TOPIC_CONFIG.point.radius;
-          const endX = childX + childWidth - TOPIC_CONFIG.point.radius;
+        // Update horizontal guide line
+        guideLine
+          .select(".guide-line.horizontal")
+          .style("display", "block")
+          .attr("y1", centerY)
+          .attr("y2", centerY);
 
-          // Get the selected child data to extract dates
-          const selectedData = childNode.datum() as ChildPoint;
-          const realTimeArray = selectedData.realTime as [Date, Date];
+        // Update vertical guide line
+        guideLine
+          .select(".guide-line.vertical")
+          .style("display", "block")
+          .attr("x1", rightEdgeX)
+          .attr("x2", rightEdgeX);
 
-          // Safely check if dates exist
-          if (
-            !realTimeArray ||
-            !Array.isArray(realTimeArray) ||
-            realTimeArray.length < 2
-          ) {
-            return; // Skip if no valid date range
-          }
+        // Get the selected node's data to show date labels
+        const nodeData = d3.select(selectedNode).datum() as any;
+        if (nodeData) {
+          const startDate = nodeData.realTime || nodeData.points?.[0]?.realTime;
 
-          // Show start guide line and label
-          guideLine
-            .select(".vertical.start")
-            .attr("x1", startX)
-            .attr("x2", startX)
-            .style("display", "block");
+          if (startDate) {
+            if (Array.isArray(startDate)) {
+              // Date range - show both start and end labels
+              const [start, end] = startDate;
+              const startX = xScale(start);
+              const endX = xScale(end);
 
-          guideLine
-            .select(".guide-label.start")
-            .attr("x", startX - 4) // Offset to the left of the guide line
-            .text(
-              realTimeArray[0] instanceof Date
-                ? realTimeArray[0].toLocaleDateString()
-                : "No Date"
-            )
-            .style("display", "block");
+              // Start date label
+              guideLine
+                .select(".guide-label.start")
+                .style("display", "block")
+                .attr("x", startX - 5)
+                .text(start.toLocaleDateString());
 
-          // Show end guide line and label
-          guideLine
-            .select(".vertical.end")
-            .attr("x1", endX)
-            .attr("x2", endX)
-            .style("display", "block");
+              // End date label
+              guideLine
+                .select(".guide-label.end")
+                .style("display", "block")
+                .attr("x", endX + 5)
+                .text(end.toLocaleDateString());
 
-          guideLine
-            .select(".guide-label.end")
-            .attr("x", endX + 4) // Offset to the right of the guide line
-            .text(
-              realTimeArray[1] instanceof Date
-                ? realTimeArray[1].toLocaleDateString()
-                : "No Date"
-            )
-            .style("display", "block");
-        } else if (parentKey) {
-          // For single date child nodes, use parent center with time label
-          const parentNodeId = getParentNodeId(parentKey);
-          const parentRect = d3.select(`#${parentNodeId}`).select("rect");
-          const x = parseFloat(parentRect.attr("x") || "0");
-          const width = parseFloat(parentRect.attr("width") || "0");
-          const centerX = x + width / 2;
+              // Show both vertical lines for date ranges
+              guideLine
+                .select(".guide-line.vertical.start")
+                .style("display", "block")
+                .attr("x1", startX)
+                .attr("x2", startX);
 
-          // Get the selected child data to extract date
-          const selectedData = childNode.datum() as ChildPoint;
-          const realTime = selectedData.realTime;
+              guideLine
+                .select(".guide-line.vertical.end")
+                .style("display", "block")
+                .attr("x1", endX)
+                .attr("x2", endX);
+            } else {
+              // Single date - show single label
+              const dateX = xScale(startDate);
 
-          let dateText = "No Date";
-          if (realTime) {
-            if (Array.isArray(realTime) && realTime[0]) {
-              dateText = realTime[0].toLocaleDateString();
-            } else if (realTime instanceof Date) {
-              dateText = realTime.toLocaleDateString();
+              // Single date label
+              guideLine
+                .select(".guide-label.start")
+                .style("display", "block")
+                .attr("x", dateX - 5)
+                .text(startDate.toLocaleDateString());
+
+              // Single vertical line
+              guideLine
+                .select(".guide-line.vertical")
+                .style("display", "block")
+                .attr("x1", dateX)
+                .attr("x2", dateX);
             }
           }
-
-          guideLine
-            .select(".vertical.start")
-            .attr("x1", centerX)
-            .attr("x2", centerX)
-            .style("display", "block");
-
-          guideLine
-            .select(".guide-label.start")
-            .attr("x", centerX - 4) // Offset to the left of the guide line
-            .attr("text-anchor", "end") // Align text to the right for single points
-            .text(dateText)
-            .style("display", "block");
-
-          // Hide end guide line and end label for single points
-          guideLine.select(".vertical.end").style("display", "none");
-          guideLine.select(".guide-label.end").style("display", "none");
         }
       }
     },
@@ -1190,15 +1045,8 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           const realTimeArray = d.realTime as [Date, Date];
           return xScale(realTimeArray[0]) - TOPIC_CONFIG.point.radius;
         } else {
-          // For single date child nodes, use expanded positions
-          const parent = groupedPoints.find(
-            (g) => g.key.replace(/[^a-zA-Z0-9-_]/g, "_") === d.parentKey
-          )!;
-          const positions = calculateExpandedPositions(
-            parent,
-            TOPIC_CONFIG.point.radius
-          );
-          return positions[d.index].x - TOPIC_CONFIG.point.radius;
+          // For single date child nodes, align to exact date
+          return xScale(d.realTime as Date) - TOPIC_CONFIG.point.radius;
         }
       })
       .attr("y", (d: ChildPoint) => {
