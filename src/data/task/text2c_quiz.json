@@ -2,7 +2,7 @@
   "events": [
     {
       "index": 1,
-      "text": "Since 2016, Turkish troops have conducted ground operations in Syria targeting both Islamic State militants and armed Kurdish groups.",
+      "text": "Since 2016, Turkish troops have conducted ground operations in Syria targeting both Islamic State (ISIS) militants and armed Kurdish groups.",
       "short_text": "Turkey launched ground operations against ISIS and Kurdish groups from 2016.",
       "temporal_anchoring": {
         "real_time": "2016",
@@ -12,12 +12,12 @@
         { "id": "turkey", "name": "Turkey", "social_role": "country" },
         {
           "id": "islamic_state",
-          "name": "Islamic State",
+          "name": "ISIS",
           "social_role": "organization"
         },
         {
           "id": "kurdish_groups",
-          "name": "Kurdish groups",
+          "name": "Kurdish",
           "social_role": "organization"
         }
       ],
@@ -29,7 +29,7 @@
     },
     {
       "index": 2,
-      "text": "In September 2015, Russia began launching air strikes in Syria at the request of the Assad regime, claiming to target Islamic State positions. Syrian forces, with Russian assistance, reclaimed key areas including the ancient city of Palmyra.",
+      "text": "In September 2015, Russia began launching air strikes in Syria at the request of the Assad regime, claiming to target ISIS positions. Syrian forces, with Russian assistance, reclaimed key areas including the ancient city of Palmyra.",
       "short_text": "Russia started airstrikes in Syria in 2015; Palmyra was retaken.",
       "temporal_anchoring": { "real_time": "2015-09", "narrative_time": 2 },
       "entities": [
@@ -37,10 +37,9 @@
         { "id": "syria", "name": "Syria", "social_role": "country" },
         {
           "id": "islamic_state",
-          "name": "Islamic State",
+          "name": "ISIS",
           "social_role": "organization"
-        },
-        { "id": "palmyra", "name": "Palmyra", "social_role": "object" }
+        }
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
@@ -50,7 +49,7 @@
     },
     {
       "index": 3,
-      "text": "The U.S.-led coalition, in coordination with Iraqi security forces and the Syrian Democratic Forces (SDF), has reclaimed 98 percent of the territory previously held by the Islamic State in Iraq and Syria, including major cities like Raqqa and Deir al-Zour.",
+      "text": "The United States (US)-led coalition, in coordination with Iraqi security forces and the Syrian Democratic Forces (SDF), has reclaimed 98 percent of the territory previously held by ISIS in Iraq and Syria, including major cities like Raqqa and Deir al-Zour.",
       "short_text": "ISIS lost 98% of its territory in Iraq and Syria, including Raqqa and Deir al-Zour.",
       "temporal_anchoring": {
         "real_time": ["2017", "2020"],
@@ -59,26 +58,20 @@
       "entities": [
         {
           "id": "united_states",
-          "name": "United States",
+          "name": "US",
           "social_role": "country"
         },
         { "id": "iraq", "name": "Iraq", "social_role": "country" },
         { "id": "syria", "name": "Syria", "social_role": "country" },
         {
           "id": "islamic_state",
-          "name": "Islamic State",
+          "name": "ISIS",
           "social_role": "organization"
         },
         {
           "id": "syrian_democratic_forces",
-          "name": "Syrian Democratic Forces",
+          "name": "SDF",
           "social_role": "organization"
-        },
-        { "id": "raqqa", "name": "Raqqa", "social_role": "object" },
-        {
-          "id": "deir_al_zour",
-          "name": "Deir al-Zour",
-          "social_role": "object"
         }
       ],
       "topic": {
@@ -95,8 +88,7 @@
       "entities": [
         { "id": "syria", "name": "Syria", "social_role": "country" },
         { "id": "russia", "name": "Russia", "social_role": "country" },
-        { "id": "iran", "name": "Iran", "social_role": "country" },
-        { "id": "aleppo", "name": "Aleppo", "social_role": "object" }
+        { "id": "iran", "name": "Iran", "social_role": "country" }
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
@@ -116,7 +108,7 @@
         { "id": "syria", "name": "Syria", "social_role": "country" },
         {
           "id": "bashar_al_assad_regime",
-          "name": "Bashar al-Assad regime",
+          "name": "Assad regime",
           "social_role": "organization"
         }
       ],
@@ -132,12 +124,6 @@
       "short_text": "2023 earthquake hindered opposition governance in Idlib and border regions.",
       "temporal_anchoring": { "real_time": "2023", "narrative_time": 6 },
       "entities": [
-        { "id": "idlib", "name": "Idlib", "social_role": "object" },
-        {
-          "id": "iraq_syria_border",
-          "name": "Iraq-Syria border",
-          "social_role": "object"
-        },
         { "id": "turkey", "name": "Turkey", "social_role": "country" },
         { "id": "syria", "name": "Syria", "social_role": "country" }
       ],
@@ -159,7 +145,7 @@
       "timeLimit": 120,
       "visual": "entity",
       "prone": "entity",
-      "options": ["Syria", "Islamic State", "Turkey", "Russia"],
+      "options": ["Syria", "ISIS", "Turkey", "Russia"],
       "completed": false,
       "event_reference": [1, 2, 3, 4, 5, 6]
     }

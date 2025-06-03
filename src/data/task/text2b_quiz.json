@@ -2,7 +2,7 @@
   "events": [
     {
       "index": 1,
-      "text": "In 2011, protests against President Bashar al-Assad's regime escalated into a civil war involving the Syrian government—supported by Russia and Iran—and anti-government rebels backed by the United States and its allies, including France, the United Kingdom, Italy, Saudi Arabia, Turkey, Jordan, and the UAE.",
+      "text": "In 2011, protests against President Bashar al-Assad's regime escalated into a civil war involving the Syrian government—supported by Russia and Iran—and anti-government rebels backed by the United States (US) and its allies, including France, the United Kingdom (UK), Italy, Saudi Arabia, Turkey, Jordan, and the United Arab Emirates (UAE).",
       "short_text": "Syria's 2011 protests escalated into an internationalized civil war.",
       "temporal_anchoring": { "real_time": "2011", "narrative_time": 1 },
       "entities": [
@@ -11,13 +11,13 @@
         { "id": "iran", "name": "Iran", "social_role": "country" },
         {
           "id": "united_states",
-          "name": "United States",
+          "name": "US",
           "social_role": "country"
         },
         { "id": "france", "name": "France", "social_role": "country" },
         {
           "id": "united_kingdom",
-          "name": "United Kingdom",
+          "name": "UK",
           "social_role": "country"
         },
         { "id": "italy", "name": "Italy", "social_role": "country" },
@@ -30,7 +30,7 @@
         { "id": "jordan", "name": "Jordan", "social_role": "country" },
         {
           "id": "united_arab_emirates",
-          "name": "United Arab Emirates",
+          "name": "UAE",
           "social_role": "country"
         }
       ],
@@ -42,7 +42,7 @@
     },
     {
       "index": 2,
-      "text": "The Syrian civil war developed into three overlapping military campaigns: international efforts to defeat the Islamic State, combat between the Syrian government and rebel groups, and Turkish military operations targeting Syrian Kurdish forces.",
+      "text": "The Syrian civil war developed into three overlapping military campaigns: international efforts to defeat the Islamic State (ISIS), combat between the Syrian government and rebel groups, and Turkish military operations targeting Syrian Kurdish forces.",
       "short_text": "The war evolved into three major fronts: ISIS, regime vs. rebels, and Turkey vs. Kurds.",
       "temporal_anchoring": {
         "real_time": "2011",
@@ -51,7 +51,7 @@
       "entities": [
         {
           "id": "islamic_state",
-          "name": "Islamic State",
+          "name": "ISIS",
           "social_role": "organization"
         },
         { "id": "turkey", "name": "Turkey", "social_role": "country" },
@@ -69,13 +69,13 @@
     },
     {
       "index": 3,
-      "text": "In 2013, the Islamic State began capturing territory in Syria, further complicating the civil war and drawing international concern.",
+      "text": "In 2013, ISIS began capturing territory in Syria, further complicating the civil war and drawing international concern.",
       "short_text": "ISIS began seizing Syrian territory in 2013.",
       "temporal_anchoring": { "real_time": "2013", "narrative_time": 3 },
       "entities": [
         {
           "id": "islamic_state",
-          "name": "Islamic State",
+          "name": "ISIS",
           "social_role": "organization"
         },
         { "id": "syria", "name": "Syria", "social_role": "country" }
@@ -88,23 +88,23 @@
     },
     {
       "index": 4,
-      "text": "After coordinated ISIS terrorist attacks across Europe in 2015, the United States, United Kingdom, France, Turkey, Saudi Arabia, and other Arab nations expanded their air campaign from Iraq to Syria to target ISIS.",
+      "text": "After coordinated ISIS terrorist attacks across Europe in 2015, the US, UK, France, Turkey, Saudi Arabia, and other Arab nations expanded their air campaign from Iraq to Syria to target ISIS.",
       "short_text": "ISIS attacks in Europe in 2015 prompted expanded airstrikes in Syria.",
       "temporal_anchoring": { "real_time": "2015", "narrative_time": 4 },
       "entities": [
         {
           "id": "islamic_state",
-          "name": "Islamic State",
+          "name": "ISIS",
           "social_role": "organization"
         },
         {
           "id": "united_states",
-          "name": "United States",
+          "name": "US",
           "social_role": "country"
         },
         {
           "id": "united_kingdom",
-          "name": "United Kingdom",
+          "name": "UK",
           "social_role": "country"
         },
         { "id": "france", "name": "France", "social_role": "country" },
@@ -123,8 +123,8 @@
     },
     {
       "index": 5,
-      "text": "The U.S.-led coalition has carried out more than eleven thousand airstrikes in Syria against Islamic State targets, while continuing to support ground operations led by the Syrian Democratic Forces (SDF).",
-      "short_text": "Over 11,000 airstrikes by U.S.-led coalition targeted ISIS in Syria.",
+      "text": "The US-led coalition has carried out more than eleven thousand airstrikes in Syria against ISIS targets, while continuing to support ground operations led by the Syrian Democratic Forces (SDF).",
+      "short_text": "Over 11,000 airstrikes by US-led coalition targeted ISIS in Syria.",
       "temporal_anchoring": {
         "real_time": "2015",
         "narrative_time": 5
@@ -132,17 +132,17 @@
       "entities": [
         {
           "id": "united_states",
-          "name": "United States",
+          "name": "US",
           "social_role": "country"
         },
         {
           "id": "islamic_state",
-          "name": "Islamic State",
+          "name": "ISIS",
           "social_role": "organization"
         },
         {
           "id": "syrian_democratic_forces",
-          "name": "Syrian Democratic Forces",
+          "name": "SDF",
           "social_role": "organization"
         }
       ],
@@ -158,13 +158,13 @@
       "id": "ir_e_isis",
       "question": "Which entity appears more frequently in events across the narrative compared to the other options?",
       "questionCaption": "",
-      "answer": "Islamic State",
+      "answer": "ISIS",
       "level": "Information Retrieval",
       "type": "radio-options",
       "timeLimit": 120,
       "visual": "entity",
       "prone": "entity",
-      "options": ["Islamic State", "Syria", "United States", "Turkey"],
+      "options": ["ISIS", "Syria", "US", "Turkey"],
       "completed": false,
       "event_reference": [1, 2, 3, 4, 5]
     }

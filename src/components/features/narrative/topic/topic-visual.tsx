@@ -408,7 +408,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .attr("transform", `translate(0,30)`)
       .call(xAxis)
       .style("font-size", `${TOPIC_CONFIG.axis.fontSize}px`)
-      .call((g) => g.select(".domain").attr("stroke", "#94a3b8"))
+      .call((g) => g.select(".domain").remove())
       .call((g) => g.selectAll(".tick line").attr("stroke", "#94a3b8"));
 
     // Create main SVG

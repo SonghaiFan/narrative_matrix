@@ -7,5 +7,6 @@ const ACCESSIBLE_COLORS = {
 } as const;
 
 export function getSentimentColor(polarity: SentimentPolarity): string {
-  return ACCESSIBLE_COLORS[polarity];
+  // return ACCESSIBLE_COLORS[polarity];
+  return "white";
 }
