@@ -411,6 +411,18 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .call((g) => g.select(".domain").remove())
       .call((g) => g.selectAll(".tick line").attr("stroke", "#94a3b8"));
 
+    // Add "Real Time" label to x-axis
+    headerSvg
+      .append("text")
+      .attr("class", "x-axis-label")
+      .attr("x", -TOPIC_CONFIG.margin.left + 50)
+      .attr("y", 25)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#64748b")
+      .style("font-size", "12px")
+      .style("font-weight", "500")
+      .text("Real Time →");
+
     // Create main SVG
     const svg = d3
       .select(svgRef.current)

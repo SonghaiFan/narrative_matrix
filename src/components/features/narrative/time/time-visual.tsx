@@ -570,7 +570,8 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       .attr("orient", "auto")
       .append("path")
       .attr("d", "M0,-3L6,0L0,3")
-      .attr("fill", "#E0E4EA");
+      .attr("fill", TIME_CONFIG.track.color)
+      .attr("opacity", TIME_CONFIG.track.opacity);
 
     // Create header
     const headerContainer = d3
@@ -601,6 +602,17 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       .call((g) => g.select(".domain").remove())
       .call((g) => g.selectAll(".tick line").attr("stroke", "#94a3b8"));
 
+    headerSvg
+      .append("text")
+      .attr("class", "x-axis-label")
+      .attr("x", -TIME_CONFIG.margin.left + 50)
+      .attr("y", 25)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#64748b")
+      .style("font-size", "12px")
+      .style("font-weight", "500")
+      .text("Real Time →");
+
     // Create main group with proper margins
     const g = svg
       .append("g")
@@ -623,10 +635,10 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       .attr("class", "axis-label")
       .attr("transform", "rotate(-90)")
       .attr("x", -height / 2)
-      .attr("y", -40)
+      .attr("y", -60)
       .attr("fill", "#64748b")
       .attr("text-anchor", "middle")
-      .text("Paragraph");
+      .text("← Paragraph");
 
     // Add lead titles
     renderLeadTitles(g, leadTitlePoints, yScale, width);

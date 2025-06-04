@@ -32,7 +32,7 @@ export const SHARED_CONFIG = {
   },
   // Header settings
   header: {
-    height: 50, // Height of the header area in pixels
+    height: 40, // Height of the header area in pixels
   },
   // Minimum height for visualizations
   minHeight: 800,

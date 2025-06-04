@@ -3,8 +3,8 @@ import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualizat
 
 export const TIME_CONFIG = merge({}, SHARED_CONFIG, {
   margin: {
-    left: 80, // Reduced left margin compared to shared config
-    right: 40, // Reduced right margin compared to shared config
+    left: 120, // Reduced left margin compared to shared config
+    right: 80, // Reduced right margin compared to shared config
   },
   // Override minHeight to always use content-based height
   minHeight: 0,
