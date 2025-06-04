@@ -326,9 +326,17 @@ export function EntityVisual({ events }: EntityVisualProps) {
     // Clear previous content for SVG but not header
     d3.select(svgRef.current).selectAll("*").remove();
 
-    // Setup dimensions first
+    // Setup dimensions first - get the main container height (the one with overflow-auto)
+    const mainContainer = containerRef.current.closest(
+      ".overflow-auto"
+    ) as HTMLElement;
+    const availableHeight = mainContainer
+      ? mainContainer.clientHeight - ENTITY_CONFIG.header.height
+      : window.innerHeight - ENTITY_CONFIG.header.height - 100; // fallback with some margin
+
     const { containerHeight, height } = getEntityDimensions(
       containerRef.current.clientWidth,
+      availableHeight,
       events.length
     );
 
@@ -608,7 +616,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
 
   return (
     <div
-      className="w-full h-full overflow-scroll"
+      className="w-full h-full overflow-auto"
       style={{ scrollbarGutter: "stable" }}
     >
       <div className="min-w-fit">
@@ -618,7 +626,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
           className="bg-white sticky top-0 z-10 shadow-sm"
         />
         <div ref={containerRef}>
-          <svg ref={svgRef} className="w-full" />
+          <svg ref={svgRef} className="block" />
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@ import { getSentimentColor } from "@/components/features/narrative/shared/color-
 import {
   createNarrativeYAxis,
   calculateDimensions,
+  calculateResponsiveDimensions,
 } from "@/components/features/narrative/shared/visualization-utils";
 
 export type EntityAttribute = string;
@@ -15,12 +16,20 @@ export interface EntityMention {
   count: number;
 }
 
-// Remove the old calculateDimensions function and use the shared one
+// Calculate dimensions that fit content within container height
 export function getEntityDimensions(
   containerWidth: number,
+  containerHeight: number,
   eventsLength: number
 ) {
-  return calculateDimensions(containerWidth, eventsLength, ENTITY_CONFIG);
+  return calculateResponsiveDimensions(
+    containerWidth,
+    containerHeight,
+    eventsLength,
+    ENTITY_CONFIG,
+    30, // minEventHeight - minimum readable height
+    100 // maxEventHeight - maximum comfortable height
+  );
 }
 
 // Get entity mentions count from events

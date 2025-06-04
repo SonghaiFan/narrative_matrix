@@ -236,3 +236,44 @@ export function calculateDimensions(
     height,
   };
 }
+
+/**
+ * Calculate responsive dimensions that fit content within the container height
+ */
+export function calculateResponsiveDimensions(
+  containerWidth: number,
+  containerHeight: number,
+  eventsLength: number,
+  config: VisualizationConfig,
+  minEventHeight: number = 30,
+  maxEventHeight: number = 120
+) {
+  const width = containerWidth - config.margin.left - config.margin.right;
+
+  // Ensure we have a minimum container height
+  const effectiveContainerHeight = Math.max(containerHeight, 400);
+  const availableHeight =
+    effectiveContainerHeight - config.margin.top - config.margin.bottom;
+
+  // Calculate the height per event to fit all events in the available space
+  // Ensure we always fit within the container by using floor division
+  const calculatedEventHeight = Math.max(
+    minEventHeight,
+    Math.min(maxEventHeight, Math.floor(availableHeight / eventsLength))
+  );
+
+  // Calculate actual content height - this should never exceed availableHeight
+  const contentHeight = Math.min(
+    eventsLength * calculatedEventHeight,
+    availableHeight
+  );
+
+  // Always use the original container height to ensure we fit within it
+  return {
+    containerWidth,
+    width,
+    containerHeight: effectiveContainerHeight,
+    height: contentHeight,
+    eventHeight: calculatedEventHeight,
+  };
+}

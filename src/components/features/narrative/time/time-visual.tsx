@@ -542,9 +542,20 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     const { dataPoints, leadTitlePoints } = processEvents(events);
     const sortedPoints = getSortedPoints(dataPoints);
 
-    // Calculate dimensions
+    // Calculate dimensions - get the main container height (the one with overflow-auto)
+    const mainContainer = containerRef.current.closest(
+      ".overflow-auto"
+    ) as HTMLElement;
+    const availableHeight = mainContainer
+      ? mainContainer.clientHeight - TIME_CONFIG.header.height
+      : window.innerHeight - TIME_CONFIG.header.height - 100; // fallback with some margin
+
     const { containerWidth, containerHeight, width, height } =
-      getTimeDimensions(containerRef.current.clientWidth, events.length);
+      getTimeDimensions(
+        containerRef.current.clientWidth,
+        availableHeight,
+        events.length
+      );
 
     // Create scales
     const publishDate = new Date(metadata.publishDate);

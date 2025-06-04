@@ -9,6 +9,7 @@ import {
   getTimeDomain,
   getXPosition,
   calculateDimensions,
+  calculateResponsiveDimensions,
 } from "@/components/features/narrative/shared/visualization-utils";
 
 export interface DataPoint {
@@ -118,12 +119,20 @@ export function getScales(
   return { xScale, yScale };
 }
 
-// Remove the old calculateDimensions function and use the shared one
+// Calculate dimensions that fit content within container height
 export function getTimeDimensions(
   containerWidth: number,
+  containerHeight: number,
   eventsLength: number
 ) {
-  return calculateDimensions(containerWidth, eventsLength, TIME_CONFIG);
+  return calculateResponsiveDimensions(
+    containerWidth,
+    containerHeight,
+    eventsLength,
+    TIME_CONFIG,
+    30, // minEventHeight - minimum readable height
+    100 // maxEventHeight - maximum comfortable height
+  );
 }
 
 // Create axes for the visualization
