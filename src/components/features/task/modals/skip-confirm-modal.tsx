@@ -23,16 +23,20 @@ export function SkipConfirmModal({
           </div>
           <div className="flex-1">
             <h3 className="text-sm font-medium text-gray-900">
-              Confirm: Information Not Found
+              Confirm: None of above
             </h3>
             <div className="text-xs text-gray-500 mt-1">
-              <p>Are you sure this information is not specified in the text?</p>
+              <p>
+                Are you sure that none of the provided options are correct based
+                on the text?
+              </p>
               <p className="mt-1">Please confirm that you have:</p>
               <ul className="mt-1 ml-4 list-disc">
                 <li>Carefully read through all available text</li>
                 <li>Checked all relevant events and references</li>
                 <li>
-                  Found no clear answer based solely on the provided information
+                  Found no clear answer that matches any of the given options
+                  based solely on the provided information
                 </li>
               </ul>
             </div>
@@ -56,7 +60,7 @@ export function SkipConfirmModal({
             onClick={onConfirm}
             className="px-3 py-1.5 text-xs bg-amber-600 text-white rounded-md hover:bg-amber-700"
           >
-            Confirm Not Found
+            Confirm None of Above
           </button>
         </div>
       </div>

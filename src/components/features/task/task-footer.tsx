@@ -19,7 +19,6 @@ interface TaskFooterProps {
   onShowAnswer?: () => void; // Optional: for domain experts
   canShowAnswer?: boolean; // To manage toggle state text
   showAnswerActive?: boolean; // To indicate if "Show Answer" is currently active
-  onInformationNotFound?: () => void; // Optional: for skipping
   // State
   isTaskCompleted: boolean;
   isDomainExpert: boolean;
@@ -36,14 +35,11 @@ export function TaskFooter({
   onShowAnswer,
   canShowAnswer, // Not directly used for disabling, but for text
   showAnswerActive,
-  onInformationNotFound,
   isTaskCompleted,
   isDomainExpert,
 }: TaskFooterProps) {
   const showSubmitButton =
     !isTaskCompleted || (isDomainExpert && showAnswerActive);
-  const showInfoNotFoundButton =
-    !isTaskCompleted && !showAnswerActive && onInformationNotFound;
   const showDomainExpertRevealButton =
     isDomainExpert && !isTaskCompleted && onShowAnswer;
 
@@ -107,19 +103,6 @@ export function TaskFooter({
           )}
         </div>
       </div>
-
-      {/* "Information Not Found" button full-width below others if applicable */}
-      {showInfoNotFoundButton && (
-        <div className="mt-3 border-t pt-3">
-          <button
-            onClick={onInformationNotFound}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-amber-300 bg-amber-50 text-amber-700 rounded-md hover:bg-amber-100 hover:border-amber-400 transition-colors text-sm font-medium shadow-sm"
-          >
-            <HelpCircle className="h-4 w-4" />
-            Mark as "Information Not Found"
-          </button>
-        </div>
-      )}
     </div>
   );
 }

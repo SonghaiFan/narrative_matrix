@@ -163,7 +163,7 @@ export function TaskPanel({
 
   const handleConfirmSkipAction = () => {
     setShowSkipConfirmModal(false);
-    setUserAnswer("Information not specified in the text");
+    setUserAnswer("None of above");
     handleSubmission({ isSkipped: true, isTimeUp: false });
   };
 
@@ -189,6 +189,7 @@ export function TaskPanel({
       return false;
     if (showAnswerUI && isDomainExpert) return true;
     if (
+      userAnswer === "None of above" ||
       userAnswer === "Information not specified in the text" ||
       userAnswer === "Time expired before answer was submitted"
     ) {
@@ -196,8 +197,6 @@ export function TaskPanel({
     }
     return userAnswer.trim() !== "";
   };
-  const isFooterInfoNotFoundButtonVisible =
-    currentTask && !currentTask.completed && !showAnswerUI;
 
   const isFooterDomainExpertRevealButtonVisible =
     currentTask && isDomainExpert && !currentTask.completed;
@@ -286,6 +285,11 @@ export function TaskPanel({
           userEventReference={currentTask.userEventReference}
           onMarkedEventClick={setfocusedEventId}
           onRemoveMarkedEvent={toggleMarkedEvent}
+          onNoneOfAbove={
+            currentTask && !currentTask.completed && !showAnswerUI
+              ? handleAttemptSkip
+              : undefined
+          }
         />
       </div>
 
@@ -312,9 +316,6 @@ export function TaskPanel({
         }
         canShowAnswer={!!isFooterDomainExpertRevealButtonVisible}
         showAnswerActive={showAnswerUI}
-        onInformationNotFound={
-          isFooterInfoNotFoundButtonVisible ? handleAttemptSkip : undefined
-        }
         isTaskCompleted={currentTask.completed ?? false}
         isDomainExpert={userRole === "domain"}
       />

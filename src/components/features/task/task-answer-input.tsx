@@ -1,5 +1,5 @@
 import React from "react";
-import { CheckCircle, X } from "lucide-react";
+import { CheckCircle, X, HelpCircle } from "lucide-react";
 import {
   QuizItem,
   RadioOptions,
@@ -20,6 +20,7 @@ interface TaskAnswerInputProps {
   userEventReference: number | number[] | null | undefined;
   onMarkedEventClick: (eventId: number) => void; // To focus on event
   onRemoveMarkedEvent: (eventId: number) => void; // To remove/toggle mark
+  onNoneOfAbove?: () => void; // New prop for "None of above" functionality
 }
 
 export function TaskAnswerInput({
@@ -33,6 +34,7 @@ export function TaskAnswerInput({
   userEventReference,
   onMarkedEventClick,
   onRemoveMarkedEvent,
+  onNoneOfAbove,
 }: TaskAnswerInputProps) {
   const renderEventReferences = (
     eventRef: number | number[] | null | undefined,
@@ -189,6 +191,19 @@ export function TaskAnswerInput({
                 </div>
               )}
               {renderAnswerInput()}
+
+              {/* "None of above" button */}
+              {!isTaskCompleted && !showAnswer && onNoneOfAbove && (
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <button
+                    onClick={onNoneOfAbove}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-amber-300 bg-amber-50 text-amber-700 rounded-md hover:bg-amber-100 hover:border-amber-400 transition-colors text-sm font-medium shadow-sm"
+                  >
+                    <HelpCircle className="h-4 w-4" />
+                    None of above
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="p-2 rounded text-xs flex items-start bg-blue-50 text-blue-800">

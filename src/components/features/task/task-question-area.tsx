@@ -84,9 +84,9 @@ export function TaskQuestionArea({
             <div className="flex items-start gap-2">
               <HelpCircle className="h-3.5 w-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
               <div className="text-xs text-amber-800">
-                Tip: If you cannot find the specific information in the text,
-                use the "Information Not Found" button below to skip this
-                question.
+                Tip: If none of the provided options are correct based on the
+                text you have read, use the "None of above" button below the
+                answer area.
               </div>
             </div>
           </div>

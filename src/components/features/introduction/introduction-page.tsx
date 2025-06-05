@@ -50,114 +50,6 @@ const sharedIntroductionSteps: IntroductionStep[] = [
     ),
     image: "/images/overview.png",
   },
-  // {
-  //   title: "Visualisation Panel",
-  //   content: (
-  //     <div className="space-y-4">
-  //       <p>The Visualisation Panel helps you see the story in three ways:</p>
-  //       <ul className="list-disc pl-5 space-y-1">
-  //         <li>
-  //           <strong>Entity Swimlane</strong>: See how entities interact across
-  //           the narrative.
-  //         </li>
-  //         <li>
-  //           <strong>Topic Stream</strong>: See how events are grouped by topic
-  //           over time.
-  //         </li>
-  //         <li>
-  //           <strong>Storytime</strong>: Compare the order of events in the story
-  //           to real-world time.
-  //         </li>
-  //       </ul>
-  //       <p>Shared visual elements:</p>
-  //       <ul className="list-disc pl-5 space-y-1">
-  //         <li>
-  //           <strong>Nodes</strong> represent events colored by sentiment.{" "}
-  //           <span className="text-green-600 font-semibold">Green</span> =
-  //           positive, <span className="text-gray-500 font-semibold">grey</span>{" "}
-  //           = neutral,{" "}
-  //           <span className="text-orange-500 font-semibold">orange</span> =
-  //           negative.
-  //         </li>
-  //         <li>
-  //           <strong>Tracks</strong> (grey bars) connect related events by
-  //           entity, topic, or sequence.
-  //         </li>
-  //       </ul>
-  //     </div>
-  //   ),
-  //   image: "/images/visualisation.png",
-  // },
-  {
-    title: "Text Panel",
-    content: (
-      <div className="space-y-2">
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Read the article, organized by event.</li>
-          <li>Use search to highlight key terms and find events quickly.</li>
-        </ul>
-      </div>
-    ),
-    image: "/images/text_search.gif",
-  },
-  {
-    title: "Task Panel",
-    content: (
-      <div className="space-y-2">
-        <ul className="list-disc pl-5 space-y-1">
-          <li>
-            Answer questions about the article using the text and visual panels.
-          </li>
-          <li>Each question has a time limit.</li>
-          <li>
-            If you can't find the answer, use "Information Not Found" to skip.
-          </li>
-        </ul>
-      </div>
-    ),
-  },
-  {
-    title: "Interactions",
-    content: (
-      <div className="space-y-6">
-        <p>Use these actions to explore and answer questions:</p>
-        <div className="grid md:grid-cols-3 gap-4 space-y-4 md:space-y-0">
-          <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 flex flex-col">
-            <h4 className="font-semibold text-blue-700 mb-2 flex items-center">
-              <span className="mr-2">🖱️</span> Hover
-            </h4>
-            <ul className="list-disc pl-5 text-gray-700 text-base space-y-1">
-              <li>
-                Hover over a visual element to see a tooltip with details.
-              </li>
-            </ul>
-          </div>
-          <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 flex flex-col">
-            <h4 className="font-semibold text-blue-700 mb-2 flex items-center">
-              <span className="mr-2">🖱️</span> Focus (Left Click)
-            </h4>
-            <ul className="list-disc pl-5 text-gray-700 text-base space-y-1">
-              <li>Click a node or paragraph to focus on an event.</li>
-              <li>Highlights the event in both visualization and text.</li>
-            </ul>
-          </div>
-          <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 flex flex-col">
-            <h4 className="font-semibold text-blue-700 mb-2 flex items-center">
-              <span className="mr-2">🖱️</span> Mark (Right Click)
-            </h4>
-            <ul className="list-disc pl-5 text-gray-700 text-base space-y-1">
-              <li>Right-click a node or paragraph to mark an event.</li>
-              <li>
-                Marked events have a{" "}
-                <span className="text-blue-500 font-semibold">blue border</span>
-                .
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    ),
-  },
 ];
 
 // Entity-specific introduction steps
@@ -424,13 +316,7 @@ export function IntroductionPage({
             ))}
           </div>
           <Button onClick={handleNext} variant="primary" size="lg">
-            {currentStep === introductionSteps.length - 1 ? (
-              "Begin"
-            ) : (
-              <>
-                Next <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-              </>
-            )}
+            Next <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
           </Button>
         </div>
       </div>
