@@ -18,8 +18,8 @@
           }
         },
         {
-          "type": "training",
-          "title": "Training Phase",
+          "type": "task",
+          "title": "Task Phase",
           "dimension": "topic",
           "dataSources": {
             "eventsDataPath": "task/events.json",
@@ -33,6 +33,15 @@
           "dataSources": {
             "eventsDataPath": "task/events.json",
             "quizDataPath": "train/entity/training_quiz_demo.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "Task Phase",
+          "dimension": "topic",
+          "dataSources": {
+            "eventsDataPath": "task/events.json",
+            "quizDataPath": "train/topic/training_quiz_demo.json"
           }
         },
         { "type": "complete", "title": "Study Completed" }

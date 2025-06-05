@@ -22,8 +22,7 @@ import { TaskFooter } from "./task-footer";
 // Modals
 import { ConfirmSubmitModal } from "./modals/confirm-submit-modal";
 import { SkipConfirmModal } from "./modals/skip-confirm-modal";
-import { TrainingCompleteModal } from "./modals/training-complete-modal";
-import { TimeWarningModal } from "./modals/time-warning-modal";
+import { TimeWarningModal, TimeWarningType } from "./modals/time-warning-modal";
 import { IncorrectAnswerModal } from "./modals/incorrect-answer-modal";
 
 interface TaskPanelProps {
@@ -52,9 +51,9 @@ export function TaskPanel({
   // --- State for Modals ---
   const [showConfirmSubmitModal, setShowConfirmSubmitModal] = useState(false);
   const [showSkipConfirmModal, setShowSkipConfirmModal] = useState(false);
-  const [showTrainingCompleteModal, setShowTrainingCompleteModal] =
-    useState(false);
   const [showTimeWarningModal, setShowTimeWarningModal] = useState(false);
+  const [timeWarningType, setTimeWarningType] =
+    useState<TimeWarningType>("twentySecondsLeft");
   const [showIncorrectAnswerModal, setShowIncorrectAnswerModal] =
     useState(false);
 
@@ -106,6 +105,18 @@ export function TaskPanel({
     },
     onTwentySecondsLeft: () => {
       if (!isDomainExpert && currentTask && !currentTask.completed) {
+        setTimeWarningType("twentySecondsLeft");
+        setShowTimeWarningModal(true);
+      }
+    },
+    onTimerStart: () => {
+      if (
+        !isDomainExpert &&
+        currentTask &&
+        !currentTask.completed &&
+        !is_training
+      ) {
+        setTimeWarningType("taskStart");
         setShowTimeWarningModal(true);
       }
     },
@@ -113,8 +124,7 @@ export function TaskPanel({
       showTimeWarningModal ||
       showConfirmSubmitModal ||
       showSkipConfirmModal ||
-      showIncorrectAnswerModal ||
-      showTrainingCompleteModal,
+      showIncorrectAnswerModal,
     isCompleted: currentTask?.completed ?? false,
     isTrainingOrDomainExpert: is_training || isDomainExpert,
     currentTaskKey: currentTask?.id || "no-task",
@@ -164,14 +174,9 @@ export function TaskPanel({
   // TaskPanel now only handles task navigation within a stage
   // Stage completion is handled by parent components
 
-  const handleConfirmTrainingComplete = () => {
-    setShowTrainingCompleteModal(false);
-    // Training completion is now handled by parent component
-  };
-
   const handleDomainSkipTraining = () => {
     // For domain experts, show completion modal then navigate
-    setShowTrainingCompleteModal(true);
+    handleSubmission({ isSkipped: true, isTimeUp: false });
   };
 
   // --- Footer Button Logic (Corrected) ---
@@ -191,10 +196,6 @@ export function TaskPanel({
     }
     return userAnswer.trim() !== "";
   };
-
-  const isFooterSubmitButtonVisible =
-    currentTask && (!currentTask.completed || (isDomainExpert && showAnswerUI));
-
   const isFooterInfoNotFoundButtonVisible =
     currentTask && !currentTask.completed && !showAnswerUI;
 
@@ -329,15 +330,11 @@ export function TaskPanel({
         onConfirm={handleConfirmSkipAction}
         onCancel={() => setShowSkipConfirmModal(false)}
       />
-      <TrainingCompleteModal
-        isOpen={showTrainingCompleteModal}
-        onConfirm={handleConfirmTrainingComplete}
-        onCancel={() => setShowTrainingCompleteModal(false)}
-        isSkippingTraining={Boolean(is_training && userRole === "domain")}
-      />
+
       <TimeWarningModal
         isOpen={showTimeWarningModal}
         onClose={() => setShowTimeWarningModal(false)}
+        warningType={timeWarningType}
       />
       <IncorrectAnswerModal
         isOpen={showIncorrectAnswerModal}

@@ -4,6 +4,7 @@ interface UseQuestionTimerProps {
   timeLimitMs: number | undefined; // Time in milliseconds for the current question
   onTimeUp: () => void; // Callback when time is up
   onTwentySecondsLeft: () => void; // Callback when 20 seconds are left
+  onTimerStart?: () => void; // Callback when timer starts for real tasks
   isPaused: boolean; // Whether the timer should be paused (e.g., modal is open)
   isCompleted: boolean; // Whether the current task is completed
   isTrainingOrDomainExpert: boolean; // True if in training or user is domain expert (for less strict timer)
@@ -14,6 +15,7 @@ export function useQuestionTimer({
   timeLimitMs,
   onTimeUp,
   onTwentySecondsLeft,
+  onTimerStart,
   isPaused,
   isCompleted,
   isTrainingOrDomainExpert,
@@ -25,6 +27,7 @@ export function useQuestionTimer({
   const timerIdRef = useRef<NodeJS.Timeout | null>(null);
   const twentySecondsWarningShownRef = useRef(false);
   const timeUpCalledRef = useRef(false);
+  const timerStartWarningShownRef = useRef(false);
 
   const clearCurrentTimer = useCallback(() => {
     if (timerIdRef.current) {
@@ -38,6 +41,7 @@ export function useQuestionTimer({
     setTimeLeftMs(timeLimitMs ?? null);
     twentySecondsWarningShownRef.current = false;
     timeUpCalledRef.current = false;
+    timerStartWarningShownRef.current = false;
     clearCurrentTimer();
   }, [currentTaskKey, timeLimitMs, clearCurrentTimer]);
 
@@ -63,6 +67,17 @@ export function useQuestionTimer({
     // Don't start a new interval if one is already running or time is already zero or less
     if (timerIdRef.current || timeLeftMs <= 0) {
       return;
+    }
+
+    // Show timer start warning for real tasks (not training, not domain expert)
+    if (
+      !isTrainingOrDomainExpert &&
+      !timerStartWarningShownRef.current &&
+      onTimerStart
+    ) {
+      timerStartWarningShownRef.current = true;
+      onTimerStart();
+      return; // Don't start the actual timer yet, wait for modal to close
     }
 
     timerIdRef.current = setInterval(() => {
@@ -114,6 +129,7 @@ export function useQuestionTimer({
     isTrainingOrDomainExpert,
     onTimeUp,
     onTwentySecondsLeft,
+    onTimerStart,
     clearCurrentTimer,
   ]);
 
