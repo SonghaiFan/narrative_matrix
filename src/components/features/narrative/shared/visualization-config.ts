@@ -16,12 +16,19 @@ export const SHARED_CONFIG = {
   },
   //
   track: {
-    strokeWidth: 6,
-    opacity: 0.3,
-    highlightOpacity: 0.8,
-    highlightStrokeWidth: 2,
+    strokeWidth: 4,
+    opacity: 1,
     dashArray: "3,3",
-    color: "#94a3b8",
+    color: "#dee3ea",
+  },
+  // Arrow marker configuration
+  arrow: {
+    width: 3, // Width of arrow markers
+    height: 3, // Height of arrow markers
+    refX: 5, // Reference X position for arrow placement
+    refY: 0, // Reference Y position for arrow placement
+    viewBox: "0 -3 6 6", // ViewBox for arrow shape
+    path: "M0,-3L6,0L0,3", // SVG path for arrow shape
   },
   // Animation timing
   animation: {
@@ -52,22 +59,5 @@ export const SHARED_CONFIG = {
   // Scale settings
   scale: {
     timeExponent: 1, // Power scale exponent for time distribution
-  },
-  // Responsive layout settings
-  responsive: {
-    // Content-based dimensions
-    content: {
-      minEntityWidth: 40, // Minimum width per entity
-      entityGap: 10, // Gap between entities
-      eventHeight: 100, // Height per event
-      minEventGap: 5, // Minimum gap between events
-    },
-    // Container-based dimensions
-    container: {
-      minWidth: 600, // Minimum container width
-      minHeight: 400, // Minimum container height
-      maxWidth: 2000, // Maximum container width
-      maxHeight: 2000, // Maximum container height
-    },
   },
 };

@@ -4,6 +4,7 @@ import { NarrativeEvent } from "@/types/data";
 import { useEffect, useRef, useCallback } from "react";
 import * as d3 from "d3";
 import { TIME_CONFIG } from "./time-config";
+import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
 import { useTooltip } from "@/contexts/tooltip-context";
 import { useCenterControl } from "@/contexts/center-control-context";
 import {
@@ -12,9 +13,9 @@ import {
   getScales,
   getTimeDimensions,
   createAxes,
-  createLineGenerator,
   DataPoint,
 } from "./time-visual.utils";
+import { getXPosition } from "@/components/features/narrative/shared/visualization-utils";
 import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
 
 interface TimeVisualProps {
@@ -573,14 +574,14 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     defs
       .append("marker")
       .attr("id", "arrow")
-      .attr("viewBox", "0 -3 6 6")
-      .attr("refX", 5)
-      .attr("refY", 0)
-      .attr("markerWidth", 4)
-      .attr("markerHeight", 4)
+      .attr("viewBox", SHARED_CONFIG.arrow.viewBox)
+      .attr("refX", SHARED_CONFIG.arrow.refX)
+      .attr("refY", SHARED_CONFIG.arrow.refY)
+      .attr("markerWidth", SHARED_CONFIG.arrow.width)
+      .attr("markerHeight", SHARED_CONFIG.arrow.height)
       .attr("orient", "auto")
       .append("path")
-      .attr("d", "M0,-3L6,0L0,3")
+      .attr("d", SHARED_CONFIG.arrow.path)
       .attr("fill", TIME_CONFIG.track.color)
       .attr("opacity", TIME_CONFIG.track.opacity);
 
@@ -654,27 +655,62 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     // Add lead titles
     renderLeadTitles(g, leadTitlePoints, yScale, width);
 
-    // Create line generator
-    const smoothLine = createLineGenerator(xScale, yScale, publishX);
+    // Helper function to calculate shortened line endpoints
+    const getPointPosition = (point: DataPoint) => {
+      const x = point.hasRealTime
+        ? getXPosition(xScale, point.realTime)
+        : publishX;
+      const y = yScale(point.narrativeTime);
+      return { x, y };
+    };
 
-    // Add narrative line segments, each with its own arrow
+    const shortenLineToNode = (
+      start: { x: number; y: number },
+      end: { x: number; y: number },
+      endRadius: number
+    ) => {
+      const dx = end.x - start.x;
+      const dy = end.y - start.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance <= endRadius) return { x: start.x, y: start.y };
+
+      const shortenDistance = endRadius + 3; // Stop 3px before the node edge
+      const ratio = (distance - shortenDistance) / distance;
+
+      return {
+        x: start.x + dx * ratio,
+        y: start.y + dy * ratio,
+      };
+    };
+
+    // Add narrative line segments with smart arrow positioning
     const lineGroup = g.append("g").attr("class", "line-group");
 
     // Create individual segments between consecutive points
     for (let i = 0; i < sortedPoints.length - 1; i++) {
-      const segmentPoints = [sortedPoints[i], sortedPoints[i + 1]];
+      const startPoint = sortedPoints[i];
+      const endPoint = sortedPoints[i + 1];
+
+      const start = getPointPosition(startPoint);
+      const end = getPointPosition(endPoint);
+
+      // Calculate shortened end position to avoid covering the target node
+      const nodeRadius = TIME_CONFIG.point.radius;
+      const shortenedEnd = shortenLineToNode(start, end, nodeRadius);
 
       lineGroup
-        .append("path")
-        .datum(segmentPoints)
+        .append("line")
         .attr("class", `narrative-line-segment segment-${i}`)
-        .attr("fill", "none")
+        .attr("x1", start.x)
+        .attr("y1", start.y)
+        .attr("x2", shortenedEnd.x)
+        .attr("y2", shortenedEnd.y)
         .attr("stroke", TIME_CONFIG.track.color)
         .attr("stroke-width", TIME_CONFIG.track.strokeWidth)
         .attr("stroke-opacity", TIME_CONFIG.track.opacity)
         .attr("stroke-linecap", "round")
-        .attr("marker-end", "url(#arrow)")
-        .attr("d", smoothLine);
+        .attr("marker-end", "url(#arrow)");
     }
 
     // Create labels group
@@ -750,7 +786,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
   }, [updateVisualization]);
 
   return (
-    <div className="w-full h-full overflow-auto">
+    <div className="w-full h-full overflow-hidden">
       <div className="min-w-fit">
         <div
           ref={headerRef}

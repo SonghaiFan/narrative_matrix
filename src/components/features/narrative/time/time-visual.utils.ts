@@ -8,7 +8,6 @@ import {
   getDateFromRange,
   getTimeDomain,
   getXPosition,
-  calculateDimensions,
   calculateResponsiveDimensions,
 } from "@/components/features/narrative/shared/visualization-utils";
 
