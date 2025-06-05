@@ -100,15 +100,15 @@
   "quiz": [
     {
       "id": "ir_t_unrest_start",
-      "question": "When was the first event related to unrest, conflicts and war mentioned in the narrative?",
-      "questionCaption": "unrest, conflicts and war: periods of violence, civil war, or military intervention.",
-      "answer": "2011",
+      "question": "What is the year of the latest Civil War-related event mentioned in the narrative?",
+      "questionCaption": "IPTC Definition of Civil War: Armed conflict between members of the same nation or geographical region, in some cases with a desire to divide the nation or region.",
+      "answer": "2020",
       "level": "Information Retrieval",
       "type": "radio-options",
       "timeLimit": 60,
       "visual": "topic",
       "prone": "topic",
-      "options": ["2011", "2020", "2023"],
+      "options": ["2011", "2020", "2021", "2023"],
       "completed": false,
       "event_reference": 1
     }

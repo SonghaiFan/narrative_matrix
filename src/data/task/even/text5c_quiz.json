@@ -2,9 +2,9 @@
   "events": [
     {
       "index": 1,
-      "text": "In May 2018, French President Emmanuel Macron hosted a summit with Khalifa Haftar, GNA leader Fayez Seraj, and HoR representatives, where the rival factions agreed to hold national elections in December 2018.",
+      "text": "On May 29, 2018, French President Emmanuel Macron hosted a summit with Khalifa Haftar, GNA leader Fayez Seraj, and HoR representatives, where the rival factions agreed to hold national elections in December 2018.",
       "short_text": "In May 2018, Libya's rival leaders agreed to December elections at Macron-led summit.",
-      "temporal_anchoring": { "real_time": "2018-05", "narrative_time": 1 },
+      "temporal_anchoring": { "real_time": "2018-05-29", "narrative_time": 1 },
       "entities": [
         { "id": "france", "name": "France", "social_role": "country" },
         {
@@ -166,15 +166,20 @@
   "quiz": [
     {
       "id": "ir_t_politics_start",
-      "question": "When was the first event related to politics mentioned in the narrative?",
-      "questionCaption": "politics: peace negotiations, elections, or government formation.",
-      "answer": "2018",
+      "question": "Which topic covers the longest time span in the narrative?",
+      "questionCaption": "IPTC Definition of Armed Conflict: Disputes between opposing groups involving the use of weaponry, but not formally declared a war.",
+      "answer": "armed conflict",
       "level": "Information Retrieval",
       "type": "radio-options",
       "timeLimit": 60,
       "visual": "topic",
       "prone": "topic",
-      "options": ["2018", "2019", "2015"],
+      "options": [
+        "armed conflict",
+        "elections",
+        "peace negotiations",
+        "energy resources"
+      ],
       "completed": false,
       "event_reference": 1
     }

@@ -2,8 +2,8 @@
   "events": [
     {
       "index": 1,
-      "text": "In the First Taiwan Strait Crisis (1954–55), the PRC shelled the Kinmen and Matsu islands near mainland China to deter the United States from signing a mutual defense treaty with Taiwan. The attempt failed, and the treaty was signed.",
-      "short_text": "In 1954–55, PRC shelled Kinmen and Matsu to deter U.S.–Taiwan defense treaty.",
+      "text": "In the First Taiwan Strait Crisis (1954-55), the PRC shelled the Kinmen and Matsu islands near mainland China to deter the United States from signing a mutual defense treaty with Taiwan. The attempt failed, and the treaty was signed.",
+      "short_text": "In 1954-55, PRC shelled Kinmen and Matsu to deter U.S.-Taiwan defense treaty.",
       "temporal_anchoring": {
         "real_time": ["1954", "1955"],
         "narrative_time": 1
@@ -96,8 +96,8 @@
     },
     {
       "index": 5,
-      "text": "In the Third Taiwan Strait Crisis (1995–96), the PRC fired live ammunition and missiles into waters near Taiwan to protest President Lee Teng-hui's visit to the United States, escalating tensions across the strait.",
-      "short_text": "PRC fired missiles near Taiwan in 1995–96 to oppose Lee Teng-hui's U.S. visit.",
+      "text": "In the Third Taiwan Strait Crisis (1995-96), the PRC fired live ammunition and missiles into waters near Taiwan to protest President Lee Teng-hui's visit to the United States, escalating tensions across the strait.",
+      "short_text": "PRC fired missiles near Taiwan in 1995-96 to oppose Lee Teng-hui's U.S. visit.",
       "temporal_anchoring": {
         "real_time": ["1995", "1996"],
         "narrative_time": 5

@@ -3,154 +3,143 @@
     {
       "index": 1,
       "text": "In 2014, Houthi insurgents—Shiite rebels with links to Iran—took control of Sanaa, Yemen's capital, demanding lower fuel prices and the formation of a new government. Their move marked the beginning of Yemen's civil war.",
-      "short_text": "Houthi rebels seized Sanaa in 2014, starting Yemen's civil war.",
-      "temporal_anchoring": { "real_time": "2014", "narrative_time": 1 },
+      "short_text": "In 2014, Houthis seized Sanaa, triggering Yemen's civil war.",
+      "temporal_anchoring": {
+        "real_time": "2014",
+        "narrative_time": 1
+      },
       "entities": [
-        {
-          "id": "houthi_insurgents",
-          "name": "Houthi insurgents",
-          "social_role": "organization"
-        },
-        { "id": "iran", "name": "Iran", "social_role": "country" },
-        { "id": "yemen", "name": "Yemen", "social_role": "country" },
-        { "id": "sanaa", "name": "Sanaa", "social_role": "object" }
+        { "name": "Yemen", "social_role": "country" },
+        { "name": "Houthi rebels", "social_role": "organization" },
+        { "name": "Iran", "social_role": "country" },
+        { "name": "Sanaa", "social_role": "object" }
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["civil war", "armed conflict"],
-        "sentiment": { "polarity": "negative", "intensity": 8 }
+        "sub_topic": ["civil war", "rebellions"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 9
+        }
       }
     },
     {
       "index": 2,
       "text": "In January 2015, after failed negotiations, Houthi rebels stormed the presidential palace, prompting President Abd Rabbu Mansour Hadi and his government to resign.",
-      "short_text": "Houthi rebels took Yemen's presidential palace in January 2015; Hadi resigned.",
-      "temporal_anchoring": { "real_time": "2015-01", "narrative_time": 2 },
+      "short_text": "In Jan 2015, Houthis seized the presidential palace; Hadi resigned.",
+      "temporal_anchoring": {
+        "real_time": "2015-01",
+        "narrative_time": 2
+      },
       "entities": [
-        {
-          "id": "houthi_insurgents",
-          "name": "Houthi insurgents",
-          "social_role": "organization"
-        },
-        {
-          "id": "abd_rabbu_mansour_hadi",
-          "name": "Abd Rabbu Mansour Hadi",
-          "social_role": "person"
-        },
-        { "id": "yemen", "name": "Yemen", "social_role": "country" }
+        { "name": "Yemen", "social_role": "country" },
+        { "name": "Houthi rebels", "social_role": "organization" },
+        { "name": "Abd Rabbu Mansour Hadi", "social_role": "person" }
       ],
       "topic": {
-        "main_topic": "politics",
-        "sub_topic": ["government", "coup d'etat"],
-        "sentiment": { "polarity": "negative", "intensity": 7 }
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["civil war", "government"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
       }
     },
     {
       "index": 3,
       "text": "In February 2015, after fleeing Sanaa for the southern city of Aden, President Hadi rescinded his resignation. This move complicated the legitimacy of a UN-supported transitional council formed to fill the power vacuum.",
-      "short_text": "Hadi fled to Aden in Feb 2015 and rescinded resignation, complicating UN transition.",
-      "temporal_anchoring": { "real_time": "2015-02", "narrative_time": 3 },
+      "short_text": "In Feb 2015, Hadi retracted his resignation, challenging UN-backed council.",
+      "temporal_anchoring": {
+        "real_time": "2015-02",
+        "narrative_time": 3
+      },
       "entities": [
-        {
-          "id": "abd_rabbu_mansour_hadi",
-          "name": "Abd Rabbu Mansour Hadi",
-          "social_role": "person"
-        },
-        { "id": "sanaa", "name": "Sanaa", "social_role": "object" },
-        { "id": "aden", "name": "Aden", "social_role": "object" },
-        {
-          "id": "united_nations",
-          "name": "United Nations",
-          "social_role": "organization"
-        }
+        { "name": "Yemen", "social_role": "country" },
+        { "name": "Abd Rabbu Mansour Hadi", "social_role": "person" },
+        { "name": "Aden", "social_role": "object" },
+        { "name": "United Nations", "social_role": "organization" }
       ],
       "topic": {
         "main_topic": "politics",
         "sub_topic": ["government", "peace negotiations"],
-        "sentiment": { "polarity": "neutral", "intensity": 5 }
+        "sentiment": {
+          "polarity": "neutral",
+          "intensity": 5
+        }
       }
     },
     {
       "index": 4,
       "text": "Beginning in March 2015, Saudi Arabia led a coalition of Gulf states in launching economic sanctions and air strikes against Houthi forces. The campaign was supported by U.S. intelligence and logistics.",
-      "short_text": "Saudi-led coalition began military campaign against Houthis in March 2015.",
-      "temporal_anchoring": { "real_time": "2015-03", "narrative_time": 4 },
+      "short_text": "Saudi-led coalition began airstrikes on Houthis in March 2015 with U.S. support.",
+      "temporal_anchoring": {
+        "real_time": "2015-03",
+        "narrative_time": 4
+      },
       "entities": [
-        {
-          "id": "saudi_arabia",
-          "name": "Saudi Arabia",
-          "social_role": "country"
-        },
-        {
-          "id": "houthi_insurgents",
-          "name": "Houthi insurgents",
-          "social_role": "organization"
-        },
-        {
-          "id": "united_states",
-          "name": "United States",
-          "social_role": "country"
-        }
+        { "name": "Saudi Arabia", "social_role": "country" },
+        { "name": "United States", "social_role": "country" },
+        { "name": "Houthi rebels", "social_role": "organization" },
+        { "name": "Yemen", "social_role": "country" }
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["air strikes", "international military intervention"],
-        "sentiment": { "polarity": "negative", "intensity": 9 }
+        "sub_topic": ["armed conflict", "international military intervention"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 9
+        }
       }
     },
     {
       "index": 5,
       "text": "A Houthi offensive eventually forced Hadi to flee from Aden to Saudi Arabia. Although he later attempted to return to Aden, Hadi ultimately ruled as president in exile.",
-      "short_text": "Hadi fled to Saudi Arabia and governed in exile after Houthi advance.",
-      "temporal_anchoring": { "real_time": "2015", "narrative_time": 5 },
+      "short_text": "Hadi fled to Saudi Arabia and ruled Yemen in exile after Houthi advance.",
+      "temporal_anchoring": {
+        "real_time": "2015-03-25",
+        "narrative_time": 5
+      },
       "entities": [
-        {
-          "id": "abd_rabbu_mansour_hadi",
-          "name": "Abd Rabbu Mansour Hadi",
-          "social_role": "person"
-        },
-        {
-          "id": "houthi_insurgents",
-          "name": "Houthi insurgents",
-          "social_role": "organization"
-        },
-        { "id": "aden", "name": "Aden", "social_role": "object" },
-        {
-          "id": "saudi_arabia",
-          "name": "Saudi Arabia",
-          "social_role": "country"
-        }
+        { "name": "Abd Rabbu Mansour Hadi", "social_role": "person" },
+        { "name": "Houthi rebels", "social_role": "organization" },
+        { "name": "Saudi Arabia", "social_role": "country" },
+        { "name": "Aden", "social_role": "object" }
       ],
       "topic": {
-        "main_topic": "politics",
-        "sub_topic": ["government", "civil war"],
-        "sentiment": { "polarity": "negative", "intensity": 8 }
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["civil war", "government"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 8
+        }
       }
     },
     {
       "index": 6,
       "text": "By 2016, the ongoing conflict had created a severe humanitarian crisis in Yemen. The UN declared it the world's worst humanitarian disaster, with millions facing famine and cholera outbreaks spreading rapidly across the country.",
-      "short_text": "By 2016, Yemen faced the world's worst humanitarian crisis with famine and cholera.",
-      "temporal_anchoring": { "real_time": "2016", "narrative_time": 6 },
+      "short_text": "By 2016, Yemen faced famine and cholera in what the UN called the worst humanitarian crisis.",
+      "temporal_anchoring": {
+        "real_time": "2016",
+        "narrative_time": 6
+      },
       "entities": [
-        { "id": "yemen", "name": "Yemen", "social_role": "country" },
-        {
-          "id": "united_nations",
-          "name": "United Nations",
-          "social_role": "organization"
-        }
+        { "name": "Yemen", "social_role": "country" },
+        { "name": "United Nations", "social_role": "organization" }
       ],
       "topic": {
-        "main_topic": "health and environment",
-        "sub_topic": ["humanitarian crisis", "public health"],
-        "sentiment": { "polarity": "negative", "intensity": 9 }
+        "main_topic": "social issue",
+        "sub_topic": ["humanitarian aid", "crisis"],
+        "sentiment": {
+          "polarity": "negative",
+          "intensity": 10
+        }
       }
     }
   ],
   "quiz": [
     {
       "id": "ir_t_unrest_start",
-      "question": "When was the first event related to unrest, conflicts and war mentioned in the narrative?",
+      "question": "What is the year of the latest Civil War-related event mentioned in the narrative?",
       "questionCaption": "unrest, conflicts and war: civil war, armed conflict, or major violence.",
       "answer": "2014",
       "level": "Information Retrieval",
@@ -158,7 +147,7 @@
       "timeLimit": 60,
       "visual": "topic",
       "prone": "topic",
-      "options": ["2014", "2015", "2018"],
+      "options": ["2014", "2015", "2016", "2018"],
       "completed": false,
       "event_reference": 1
     }

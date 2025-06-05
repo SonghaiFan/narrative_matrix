@@ -15,7 +15,7 @@
       ],
       "topic": {
         "main_topic": "politics",
-        "sub_topic": ["revolutions", "government"],
+        "sub_topic": ["government", "national government"],
         "sentiment": { "polarity": "negative", "intensity": 7 }
       }
     },
@@ -35,7 +35,7 @@
       "topic": {
         "main_topic": "politics",
         "sub_topic": ["government", "election"],
-        "sentiment": { "polarity": "neutral", "intensity": 5 }
+        "sentiment": { "polarity": "neutral", "intensity": 4 }
       }
     },
     {
@@ -66,7 +66,7 @@
     {
       "index": 4,
       "text": "Between 2012 and 2014, armed groups such as the Islamic State (IS) and Ansar al-Sharia (AaS) expanded across Libya, weakening central authority and escalating internal conflict.",
-      "short_text": "Militant groups spread across Libya between 2012–2014, deepening instability.",
+      "short_text": "Militant groups spread across Libya between 2012-2014, deepening instability.",
       "temporal_anchoring": {
         "real_time": ["2012", "2014"],
         "narrative_time": 4
@@ -86,7 +86,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["guerrilla activity", "civil war"],
+        "sub_topic": ["armed conflict", "guerrilla activity"],
         "sentiment": { "polarity": "negative", "intensity": 8 }
       }
     },
@@ -111,7 +111,7 @@
       ],
       "topic": {
         "main_topic": "unrest, conflicts and war",
-        "sub_topic": ["armed conflict", "guerrilla activity"],
+        "sub_topic": ["armed conflict", "civil war"],
         "sentiment": { "polarity": "negative", "intensity": 7 }
       }
     },
@@ -152,15 +152,15 @@
   "quiz": [
     {
       "id": "ir_t_politics_start",
-      "question": "When was the first event related to politics mentioned in the narrative?",
-      "questionCaption": "politics: revolutions, government transitions, or institutional change.",
-      "answer": "2011",
+      "question": "In which year did the first Armed Conflict-related event in the narrative occur?",
+      "questionCaption": "IPTC Definition of Armed Conflict: Disputes between opposing groups involving the use of weaponry, but not formally declared a war.",
+      "answer": "2012",
       "level": "Information Retrieval",
       "type": "radio-options",
       "timeLimit": 60,
       "visual": "topic",
       "prone": "topic",
-      "options": ["2011", "2012", "2014"],
+      "options": ["2011", "2012", "2014", "2016"],
       "completed": false,
       "event_reference": 1
     }

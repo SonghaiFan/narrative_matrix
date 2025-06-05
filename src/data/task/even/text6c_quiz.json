@@ -2,9 +2,12 @@
   "events": [
     {
       "index": 1,
-      "text": "In April 2018, the U.S. military disbanded the command that led major combat operations against the Islamic State in Iraq, marking the formal end of the campaign. Around 2,500 U.S. troops remained to support the Iraqi military with training and advisory roles.",
+      "text": "In April 2018, the U.S. military disbanded the command that led major combat operations against the Islamic State in Iraq, marking the formal end of the campaign that had lasted from 2014 to 2018. Around 2,500 U.S. troops remained to support the Iraqi military with training and advisory roles.",
       "short_text": "U.S. ended major ISIS operations in Iraq in April 2018; advisory role continued.",
-      "temporal_anchoring": { "real_time": "2018-04", "narrative_time": 1 },
+      "temporal_anchoring": {
+        "real_time": ["2014", "2018"],
+        "narrative_time": 1
+      },
       "entities": [
         {
           "id": "united_states",
@@ -25,16 +28,16 @@
       ],
       "topic": {
         "main_topic": "politics",
-        "sub_topic": ["military operations", "foreign aid"],
+        "sub_topic": ["armed forces", "national security", "armed conflict"],
         "sentiment": { "polarity": "neutral", "intensity": 5 }
       }
     },
     {
       "index": 2,
-      "text": "Sectarian tensions between Sunni and Shiite groups, and disputes between Kurdish factions in the north and Baghdad, escalated after the 2003 U.S. invasion and complicated the campaign to defeat the Islamic State. These tensions now challenge the stability of Iraq's postwar government.",
+      "text": "From 2003 to 2022, sectarian tensions between Sunni and Shiite groups and ethnic disputes between Kurdish factions in northern Iraq and the Baghdad government escalated following the U.S.-led invasion. These prolonged religious and social conflicts complicated the fight against the Islamic State and destabilized Iraq's postwar political recovery.",
       "short_text": "Post-2003 sectarian and ethnic tensions threaten Iraq's post-ISIS recovery.",
       "temporal_anchoring": {
-        "real_time": "2003",
+        "real_time": ["2003", "2022"],
         "narrative_time": 2
       },
       "entities": [
@@ -51,14 +54,14 @@
         }
       ],
       "topic": {
-        "main_topic": "politics",
-        "sub_topic": ["ethnic conflict", "government"],
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["religious conflict", "social conflict"],
         "sentiment": { "polarity": "negative", "intensity": 7 }
       }
     },
     {
       "index": 3,
-      "text": "In May 2018, a coalition led by Shiite cleric Muqtada al-Sadr won a surprise victory in Iraq's parliamentary elections, raising questions about Iranian influence in Iraq, as al-Sadr has historically opposed Iranian-backed factions.",
+      "text": "In May 2018, a coalition led by Shiite cleric Muqtada al-Sadr won a surprise victory in Iraq's parliamentary elections, part of Iraq's national election cycle between 2018 and 2021. His win raised concerns about Iranian influence in Iraq, given al-Sadr's opposition to Tehran-backed factions.",
       "short_text": "Muqtada al-Sadr's coalition won Iraq's May 2018 elections, challenging Iran's sway.",
       "temporal_anchoring": { "real_time": "2018-05", "narrative_time": 3 },
       "entities": [
@@ -72,27 +75,33 @@
       ],
       "topic": {
         "main_topic": "politics",
-        "sub_topic": ["election", "foreign relations"],
+        "sub_topic": ["national elections", "political development"],
         "sentiment": { "polarity": "neutral", "intensity": 6 }
       }
     },
     {
       "index": 4,
-      "text": "Following Iraq's 2021 parliamentary elections, which saw increased representation for minority groups, lawmakers were unable to form a coalition government, leading to a prolonged political crisis.",
+      "text": "In October 2021, Iraq held parliamentary elections that increased representation for minority groups. However, between late 2021 and mid-2022, parliamentarians were unable to form a coalition government, resulting in a prolonged political crisis.",
       "short_text": "Iraq's 2021 election led to deadlock as parliament failed to form a government.",
-      "temporal_anchoring": { "real_time": "2021", "narrative_time": 4 },
+      "temporal_anchoring": {
+        "real_time": ["2021-10", "2022-06"],
+        "narrative_time": 4
+      },
       "entities": [{ "id": "iraq", "name": "Iraq", "social_role": "country" }],
       "topic": {
         "main_topic": "politics",
-        "sub_topic": ["election", "government"],
-        "sentiment": { "polarity": "negative", "intensity": 6 }
+        "sub_topic": ["national elections", "national government"],
+        "sentiment": { "polarity": "negative", "intensity": 7 }
       }
     },
     {
       "index": 5,
-      "text": "In 2022, the Iraqi government passed a law that granted amnesty to thousands of individuals convicted of terrorism-related offenses, including those who had fought for the Islamic State. The move was seen as a way to reconcile with former militants and reduce the influence of the Islamic State.",
+      "text": "In 2022, the Iraqi government passed an amnesty law for thousands of individuals previously convicted of terrorism-related offenses, including former Islamic State fighters. This move was part of post-conflict reconciliation efforts following the 2014-2018 armed campaign against the Islamic State.",
       "short_text": "Iraq granted amnesty to thousands of former Islamic State militants in 2022.",
-      "temporal_anchoring": { "real_time": "2022", "narrative_time": 5 },
+      "temporal_anchoring": {
+        "real_time": ["2014", "2022"],
+        "narrative_time": 5
+      },
       "entities": [
         { "id": "iraq", "name": "Iraq", "social_role": "country" },
         {
@@ -103,23 +112,28 @@
       ],
       "topic": {
         "main_topic": "politics",
-        "sub_topic": ["amnesty", "government"],
-        "sentiment": { "polarity": "neutral", "intensity": 5 }
+        "sub_topic": ["national government", "act of terror", "armed conflict"],
+        "sentiment": { "polarity": "neutral", "intensity": 6 }
       }
     }
   ],
   "quiz": [
     {
       "id": "ir_t_politics_start",
-      "question": "When was the first event related to politics mentioned in the narrative?",
-      "questionCaption": "politics: military operations, foreign aid, or government action.",
-      "answer": "2018",
+      "question": "Which topic covers the longest time span in the narrative?",
+      "questionCaption": "IPTC Definition of Armed Conflict: Disputes between opposing groups involving the use of weaponry, but not formally declared a war.",
+      "answer": "armed conflict",
       "level": "Information Retrieval",
       "type": "radio-options",
       "timeLimit": 60,
       "visual": null,
       "prone": "topic",
-      "options": ["2018", "2003", "2022"],
+      "options": [
+        "armed conflict",
+        "religious conflict",
+        "social conflict",
+        "national elections"
+      ],
       "completed": false,
       "event_reference": 1
     }
