@@ -61,10 +61,10 @@
     },
     {
       "index": 4,
-      "text": "The conflict fueled wider Middle East instability, as the IDF launched a ground invasion of Lebanon in response to months of Hezbollah cross-border attacks initiated after the October 7 Hamas assault.",
-      "short_text": "IDF invaded Lebanon following Hezbollah attacks tied to Gaza conflict.",
+      "text": "On October 1, 2024, the Israel Defense Forces (IDF) launched a ground invasion of Lebanon following months of Hezbollah cross-border attacks that began shortly after the October 7, 2023 Hamas assault on Israel.",
+      "short_text": "On October 1, 2024, the IDF invaded Lebanon after Hezbollah attacks tied to the Gaza conflict.",
       "temporal_anchoring": {
-        "real_time": ["2023-10-07", "2024"],
+        "real_time": "2024-10-01",
         "narrative_time": 4
       },
       "entities": [
@@ -88,10 +88,10 @@
     },
     {
       "index": 5,
-      "text": "Yemen's Houthi rebels fired missiles at Israel and commercial ships in the Red Sea, while other Iran-backed groups launched attacks on U.S. military sites in Iraq and Syria, escalating regional hostilities.",
-      "short_text": "Houthi and Iran-backed groups attacked Israel and U.S. targets in region.",
+      "text": "Beginning on November 19, 2023, Yemen's Houthi rebels fired missiles at Israel and commercial ships in the Red Sea. In parallel, throughout late 2023 and into early 2025, other Iran-backed groups carried out attacks on U.S. military sites in Iraq and Syria, significantly escalating regional hostilities.",
+      "short_text": "On November 19, 2023, Houthi and Iran-backed groups attacked Israel and U.S. targets in region.",
       "temporal_anchoring": {
-        "real_time": ["2023-11", "2024"],
+        "real_time": ["2023-11-19", "2025"],
         "narrative_time": 5
       },
       "entities": [
@@ -138,20 +138,16 @@
   "quiz": [
     {
       "id": "flashback_1",
-      "question": "Based on the narrative, which event is the most prominent flashback?",
-      "questionCaption": "A flashback is when a narrative jumps back in time to describe an earlier event. Look for events that are mentioned later in the narrative text but occurred much earlier historically.",
-      "answer": "Hamas attacked Israel on October 7, 2023, prompting Israeli operations in Gaza.",
+      "question": "According to the narrative text, which paragraph refers to an event that occurs latest?",
+      "questionCaption": "",
+      "answer": "#3",
       "level": "Comprehension",
       "type": "radio-options",
       "timeLimit": 60,
       "visual": null,
       "prone": "time",
-      "options": [
-        "Hamas attacked Israel on October 7, 2023, prompting Israeli operations in Gaza.",
-        "Cease-fire deal on January 15, 2025, included hostage and prisoner releases and aid deliveries.",
-        "IDF invaded Lebanon following Hezbollah attacks tied to Gaza conflict.",
-        "Iran attacked Israel directly in 2024; Israel responded with counterstrikes."
-      ],
+
+      "options": ["#2", "#3", "#4", "#6"],
       "completed": false,
       "event_reference": 1
     }

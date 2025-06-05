@@ -1,12 +1,12 @@
 {
   "events": [
     {
-      "index": 1,
+      "index": 2,
       "text": "The Israeli-Palestinian conflict traces its origins to the late 19th century, marked by the rise of competing Jewish and Arab nationalist movements in the territory of Palestine under Ottoman and later British control.",
       "short_text": "Israeli-Palestinian conflict began in the late 1800s due to nationalist movements.",
       "temporal_anchoring": {
         "real_time": ["1880-01-01", "1899-12-31"],
-        "narrative_time": 1
+        "narrative_time": 2
       },
       "entities": [
         { "id": "palestine", "name": "Palestine", "social_role": "object" }
@@ -18,10 +18,10 @@
       }
     },
     {
-      "index": 2,
+      "index": 3,
       "text": "In 1947, the United Nations adopted Resolution 181, also known as the Partition Plan, proposing to divide the British Mandate of Palestine into separate Arab and Jewish states.",
       "short_text": "UN proposed partitioning Palestine into Jewish and Arab states in 1947.",
-      "temporal_anchoring": { "real_time": "1947", "narrative_time": 2 },
+      "temporal_anchoring": { "real_time": "1947", "narrative_time": 3 },
       "entities": [
         {
           "id": "united_nations",
@@ -41,12 +41,12 @@
       }
     },
     {
-      "index": 3,
+      "index": 4,
       "text": "On May 14, 1948, the State of Israel was declared, triggering the first Arab-Israeli War. The war ended in 1949 with Israeli victory, the displacement of 750,000 Palestinians, and the territorial division into Israel, the West Bank, and Gaza Strip.",
       "short_text": "Israel declared independence in 1948; war led to Palestinian displacement and new borders.",
       "temporal_anchoring": {
         "real_time": ["1948-05-14", "1949"],
-        "narrative_time": 3
+        "narrative_time": 4
       },
       "entities": [
         { "id": "israel", "name": "Israel", "social_role": "country" },
@@ -65,10 +65,10 @@
       }
     },
     {
-      "index": 4,
+      "index": 5,
       "text": "Tensions between Israel and its neighbors escalated following the 1956 Suez Crisis, during which Israel invaded the Sinai Peninsula. In response, Egypt, Jordan, and Syria formed mutual defense pacts anticipating further Israeli mobilization.",
       "short_text": "Israel invaded Sinai in 1956; Egypt, Jordan, and Syria prepared defense pacts.",
-      "temporal_anchoring": { "real_time": "1956", "narrative_time": 4 },
+      "temporal_anchoring": { "real_time": "1956", "narrative_time": 5 },
       "entities": [
         { "id": "israel", "name": "Israel", "social_role": "country" },
         { "id": "egypt", "name": "Egypt", "social_role": "country" },
@@ -87,10 +87,10 @@
       }
     },
     {
-      "index": 5,
+      "index": 1,
       "text": "In June 1967, after a series of escalations led by Egyptian President Abdel Gamal Nasser, Israel launched preemptive strikes on Egypt and Syria, starting the Six-Day War. Israel gained control of the Sinai Peninsula and Gaza Strip from Egypt, the West Bank and East Jerusalem from Jordan, and the Golan Heights from Syria.",
       "short_text": "Israel captured major territories in 1967 Six-Day War after preemptive strikes.",
-      "temporal_anchoring": { "real_time": "1967-06", "narrative_time": 5 },
+      "temporal_anchoring": { "real_time": "1967-06", "narrative_time": 1 },
       "entities": [
         { "id": "israel", "name": "Israel", "social_role": "country" },
         { "id": "egypt", "name": "Egypt", "social_role": "country" },
@@ -129,20 +129,15 @@
   "quiz": [
     {
       "id": "flashback_1",
-      "question": "Based on the narrative, which event is the most prominent flashback?",
-      "questionCaption": "A flashback is when a narrative jumps back in time to describe an earlier event. Look for events that are mentioned later in the narrative text but occurred much earlier historically.",
-      "answer": "Israeli-Palestinian conflict began in the late 1800s due to nationalist movements.",
+      "question": "Based on the narrative, which paragraph refers to an event that break the sequence of events from earliest to latest?",
+      "questionCaption": "",
+      "answer": "#2",
       "level": "Comprehension",
       "type": "radio-options",
       "timeLimit": 60,
       "visual": "time",
       "prone": "time",
-      "options": [
-        "Israeli-Palestinian conflict began in the late 1800s due to nationalist movements.",
-        "Israel declared independence in 1948; war led to Palestinian displacement and new borders.",
-        "Israel invaded Sinai in 1956; Egypt, Jordan, and Syria prepared defense pacts.",
-        "Israel captured major territories in 1967 Six-Day War after preemptive strikes."
-      ],
+      "options": ["#1", "#2", "#3", "#4"],
       "completed": false,
       "event_reference": 1
     }

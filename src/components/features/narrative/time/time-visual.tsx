@@ -552,6 +552,50 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         `translate(${TIME_CONFIG.margin.left},${TIME_CONFIG.margin.top})`
       );
 
+    // Add square grid background aligned with y-axis ticks and square cells
+    const gridGroup = g.append("g").attr("class", "background-grid");
+    const yTicks = yScale.ticks();
+    // Draw horizontal grid lines at y-axis ticks
+    yTicks.forEach((tick) => {
+      const y = yScale(tick);
+      gridGroup
+        .append("line")
+        .attr("x1", 0)
+        .attr("y1", y)
+        .attr("x2", width)
+        .attr("y2", y)
+        .attr("stroke", "#e5e7eb")
+        .attr("stroke-width", 1);
+    });
+    // Calculate y-tick pixel spacing for square grid
+    let yTickSpacing = 0;
+    if (yTicks.length > 1) {
+      yTickSpacing = Math.abs(yScale(yTicks[1]) - yScale(yTicks[0]));
+    }
+    // Draw vertical grid lines at intervals matching y-tick spacing
+    if (yTickSpacing > 0) {
+      for (let x = 0; x <= width; x += yTickSpacing) {
+        gridGroup
+          .append("line")
+          .attr("x1", x)
+          .attr("y1", 0)
+          .attr("x2", x)
+          .attr("y2", height)
+          .attr("stroke", "#e5e7eb")
+          .attr("stroke-width", 1);
+      }
+    }
+    // Add a dashed vertical grid line at the max x position to close the grid
+    gridGroup
+      .append("line")
+      .attr("x1", width)
+      .attr("y1", 0)
+      .attr("x2", width)
+      .attr("y2", height)
+      .attr("stroke", "#e5e7eb")
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "4,4");
+
     // Add guide lines
     renderGuideLines(g, width, height);
 
@@ -603,13 +647,43 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     // Add narrative line segments with smart arrow positioning
     const lineGroup = g.append("g").attr("class", "line-group");
 
+    // Helper to get the latest date (end) for a point
+    function getLatestDate(point: DataPoint) {
+      if (point.hasRealTime && Array.isArray(point.realTime)) {
+        return point.realTime[1];
+      }
+      return point.realTime;
+    }
+    // Helper to get the earliest date (start) for a point
+    function getEarliestDate(point: DataPoint) {
+      if (point.hasRealTime && Array.isArray(point.realTime)) {
+        return point.realTime[0];
+      }
+      return point.realTime;
+    }
+
     // Create individual segments between consecutive points
     for (let i = 0; i < sortedPoints.length - 1; i++) {
       const startPoint = sortedPoints[i];
       const endPoint = sortedPoints[i + 1];
 
-      const start = getPointPosition(startPoint);
-      const end = getPointPosition(endPoint);
+      // Use latest date for start, earliest date for end
+      const latestDate = getLatestDate(startPoint);
+      const earliestDate = getEarliestDate(endPoint);
+      const start = {
+        x:
+          startPoint.hasRealTime && latestDate instanceof Date
+            ? xScale(latestDate)
+            : publishX,
+        y: yScale(startPoint.narrativeTime),
+      };
+      const end = {
+        x:
+          endPoint.hasRealTime && earliestDate instanceof Date
+            ? xScale(earliestDate)
+            : publishX,
+        y: yScale(endPoint.narrativeTime),
+      };
 
       // Calculate shortened end position to avoid covering the target node
       const nodeRadius = TIME_CONFIG.point.radius;

@@ -2,7 +2,7 @@
   "quiz": [
     {
       "id": "ir_e_n",
-      "question": "Which entity appears more frequently in events across the narrative compared to the other two options?",
+      "question": "Which entity appears most frequently in events across the narrative compared to the other options?",
       "questionCaption": "",
       "answer": "Egypt",
       "level": "Information Retrieval",

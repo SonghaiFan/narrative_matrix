@@ -156,7 +156,7 @@
   "quiz": [
     {
       "id": "ir_e_isis",
-      "question": "Which entity appears more frequently in events across the narrative compared to the other options?",
+      "question": "Based on the narrative, which entity NOT mentioned in the same event with United States(US)?",
       "questionCaption": "",
       "answer": "ISIS",
       "level": "Information Retrieval",
@@ -164,7 +164,7 @@
       "timeLimit": 120,
       "visual": null,
       "prone": "entity",
-      "options": ["ISIS", "Syria", "US", "Turkey"],
+      "options": ["Turkey", " Islamic State(ISIS)", "Syria", "France"],
       "completed": false,
       "event_reference": [1, 2, 3, 4, 5]
     }

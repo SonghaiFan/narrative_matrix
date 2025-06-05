@@ -128,7 +128,7 @@
   "quiz": [
     {
       "id": "ir_e_ukr",
-      "question": "Which entity appears more frequently in events across the narrative compared to the other options?",
+      "question": "Which entity appears most frequently in events across the narrative compared to the other options?",
       "questionCaption": "",
       "answer": "Ukraine",
       "level": "Information Retrieval",
@@ -136,7 +136,7 @@
       "timeLimit": 120,
       "visual": null,
       "prone": "entity",
-      "options": ["Ukraine", "Russia", "Donetsk", "Luhansk"]
+      "options": ["Russia", "Donetsk", "Ukraine", "United States"]
     }
   ]
 }

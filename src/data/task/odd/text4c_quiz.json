@@ -130,20 +130,15 @@
   "quiz": [
     {
       "id": "flashback_1",
-      "question": "Based on the narrative, which event is the most prominent flashback?",
-      "questionCaption": "A flashback is when a narrative jumps back in time to describe an earlier event. Look for events that are mentioned later in the narrative text but occurred much earlier historically.",
-      "answer": "Pelosi visited Taiwan in August 2022, triggering PRC military response.",
+      "question": "Based on the narrative, which two paragraphs have the longest time gap between them?",
+      "questionCaption": "",
+      "answer": "#2 and #3",
       "level": "Comprehension",
       "type": "radio-options",
       "timeLimit": 60,
       "visual": "time",
       "prone": "time",
-      "options": [
-        "Pelosi visited Taiwan in August 2022, triggering PRC military response.",
-        "PRC imposed sanctions, cyberattacks, and military pressure after Pelosi's visit.",
-        "PLA conducted blockade-style drills and erased Taiwan Strait status quo post-visit.",
-        "Biden affirmed U.S. defense commitment to Taiwan in May 2022; PRC protested."
-      ],
+      "options": ["#1 and #2", "#2 and #3", "#3 and #4", "#4 and #5"],
       "completed": false,
       "event_reference": 3
     }

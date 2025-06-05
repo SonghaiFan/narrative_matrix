@@ -40,7 +40,10 @@
       "index": 3,
       "text": "Despite improved Israeli-Arab relations after 1979, unresolved issues around Palestinian self-governance led to the outbreak of the first intifada in 1987, during which hundreds of thousands of Palestinians in the West Bank and Gaza protested against Israeli occupation.",
       "short_text": "Palestinians launched the first intifada against Israel in 1987.",
-      "temporal_anchoring": { "real_time": "1987", "narrative_time": 3 },
+      "temporal_anchoring": {
+        "real_time": ["1979", "1987"],
+        "narrative_time": 3
+      },
       "entities": [
         {
           "id": "palestinians",
@@ -100,20 +103,15 @@
   "quiz": [
     {
       "id": "flashback_1",
-      "question": "Based on the narrative, which event is the most prominent flashback?",
+      "question": "Based on the narrative, which two paragraphs have the shortest time gap between them?",
       "questionCaption": "A flashback is when a narrative jumps back in time to describe an earlier event. Look for events that are mentioned later in the narrative text but occurred much earlier historically.",
-      "answer": "Egypt and Syria attacked Israel in 1973 Yom Kippur War; outcome was symbolic.",
+      "answer": "#4 and #5",
       "level": "Comprehension",
       "type": "radio-options",
       "timeLimit": 60,
       "visual": null,
       "prone": "time",
-      "options": [
-        "Egypt and Syria attacked Israel in 1973 Yom Kippur War; outcome was symbolic.",
-        "1993 Oslo I Accords established Palestinian self-rule and mutual recognition.",
-        "1995 Oslo II Accords mandated Israeli pullback from parts of West Bank.",
-        "Egypt and Israel signed peace treaty in 1979 via Camp David Accords."
-      ],
+      "options": ["#1 and #2", "#2 and #3", "#3 and #4", "#4 and #5"],
       "completed": false,
       "event_reference": 1
     }

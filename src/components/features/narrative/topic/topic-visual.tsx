@@ -448,6 +448,31 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         `translate(${TOPIC_CONFIG.margin.left},${TOPIC_CONFIG.margin.top})`
       );
 
+    // Add vertical grid background for real time axis
+    const gridGroup = g.append("g").attr("class", "background-grid");
+    const gridCellPx = 40; // Size of grid cell in pixels for equal intervals
+    // Draw vertical grid lines at equal intervals
+    for (let x = 0; x <= width; x += gridCellPx) {
+      gridGroup
+        .append("line")
+        .attr("x1", x)
+        .attr("y1", 0)
+        .attr("x2", x)
+        .attr("y2", height)
+        .attr("stroke", "#e5e7eb")
+        .attr("stroke-width", 1);
+    }
+    // Add a dashed vertical grid line at the max x position to close the grid
+    gridGroup
+      .append("line")
+      .attr("x1", width)
+      .attr("y1", 0)
+      .attr("x2", width)
+      .attr("y2", height)
+      .attr("stroke", "#e5e7eb")
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "4,4");
+
     // Add guide lines
     const guideLine = g
       .append("g")

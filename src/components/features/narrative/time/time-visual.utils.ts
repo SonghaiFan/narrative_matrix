@@ -121,7 +121,7 @@ export function getTimeDimensions(
     eventsLength,
     TIME_CONFIG,
     30, // minEventHeight - minimum readable height
-    100 // maxEventHeight - maximum comfortable height
+    120 // maxEventHeight - maximum comfortable height
   );
 }
 

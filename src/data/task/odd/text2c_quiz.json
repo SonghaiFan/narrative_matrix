@@ -137,7 +137,7 @@
   "quiz": [
     {
       "id": "ir_e_syr",
-      "question": "Which entity appears more frequently in events across the narrative compared to the other options?",
+      "question": "Which entity co-occurs most frequently with Syria throughout the narrative compared to the other options?",
       "questionCaption": "",
       "answer": "Syria",
       "level": "Information Retrieval",
@@ -145,7 +145,7 @@
       "timeLimit": 120,
       "visual": "entity",
       "prone": "entity",
-      "options": ["Syria", "ISIS", "Turkey", "Russia"],
+      "options": ["ISIS", "Turkey", "Russia", "Syrian Democratic Forces(SDF)"],
       "completed": false,
       "event_reference": [1, 2, 3, 4, 5, 6]
     }
