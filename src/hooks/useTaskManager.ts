@@ -203,62 +203,18 @@ export function useTaskManager({
         }
       }
 
-      // Use a fresh calculation for allTasksNowCompleted based on the latest state update attempt
-      const allTasksNowCompleted = tasks
-        .map((t, i) => (i === currentTaskIndex ? fullyUpdatedTask : t))
-        .every((t) => t.completed);
-
-      if (allTasksNowCompleted) {
-        if (isTraining) {
-          // Store training completion state
-          const scenarioPathKey =
-            window.location.pathname.split("/")[1] || "unknown-scenario";
-          setTrainingCompleted(scenarioPathKey, true);
-          setIsSubmitting(false);
-        } else {
-          // For main tasks, save final progress
-          const studyType = getStudyType();
-          const finalProgress = {
-            totalTasks: tasks.length,
-            completedTasks: tasks.filter((t) => t.completed).length,
-            correctTasks: 0,
-            studyType,
-            isCompleted: true,
-            totalSessionTime: 0,
-            answers: tasks.map((task) => ({
-              questionId: task.id,
-              question: task.question,
-              userAnswer: task.userAnswer || "",
-              completed: task.completed,
-              userEventReference: task.userEventReference || null,
-              startTimestamp: task.startTimestamp,
-              submitTimestamp: task.submitTimestamp,
-              isTimeExpired: task.isTimeExpired || false,
-              duration:
-                task.submitTimestamp && task.startTimestamp
-                  ? task.submitTimestamp - task.startTimestamp
-                  : null,
-            })),
-          };
-          saveTaskProgress(userId, finalProgress);
-          if (userRole === "normal") {
-            markTaskAsCompleted(userId);
-          }
-          setIsSubmitting(false);
-        }
-      } else {
+      // Handle task navigation within the stage
+      if (currentTaskIndex < tasks.length - 1) {
+        // Move to next task after a short delay for user feedback
         setTimeout(() => {
-          if (currentTaskIndex < tasks.length - 1) {
-            setCurrentTaskIndex(currentTaskIndex + 1);
-            setUserAnswer(tasks[currentTaskIndex + 1].userAnswer || "");
-            clearMarkedEvents();
-          } else {
-            console.warn(
-              "On last task, but not all tasks reported as completed after submission."
-            );
-          }
+          setCurrentTaskIndex(currentTaskIndex + 1);
+          setUserAnswer(tasks[currentTaskIndex + 1].userAnswer || "");
+          clearMarkedEvents();
           setIsSubmitting(false);
         }, 1000);
+      } else {
+        // This was the last task - completion will be handled by useTaskCompletion hook
+        setIsSubmitting(false);
       }
     },
     [

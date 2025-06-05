@@ -12,7 +12,6 @@ import { NarrativeEvent, DatasetMetadata } from "@/types/data";
 import { useQuestionTimer } from "@/hooks/useQuestionTimer";
 import { useQuizLoader } from "@/hooks/useQuizLoader";
 import { useTaskManager } from "@/hooks/useTaskManager";
-import { useNavigationStore } from "@/store/navigation-store";
 
 // Sub-components
 import { TaskHeader } from "./task-header";
@@ -34,7 +33,6 @@ interface TaskPanelProps {
   userRole?: "domain" | "normal";
   is_training?: boolean;
   quiz?: Quiz; // Pre-loaded and ordered quiz items
-  onComplete?: () => void;
 }
 
 export function TaskPanel({
@@ -44,14 +42,12 @@ export function TaskPanel({
   userRole = "normal",
   is_training = false,
   quiz: passedInQuiz,
-  onComplete,
 }: TaskPanelProps) {
   const { userId } = useAuth();
   const { toggleMarkedEvent, setfocusedEventId, markedEventIds } =
     useCenterControl();
 
-  // Add navigation store hooks
-  const { goToNextStage, completeCurrentStage } = useNavigationStore();
+  // Navigation is now handled via onComplete callback
 
   // --- State for Modals ---
   const [showConfirmSubmitModal, setShowConfirmSubmitModal] = useState(false);
@@ -165,32 +161,12 @@ export function TaskPanel({
     setShowAnswerUI((prev) => !prev);
   };
 
-  // Effect to handle completion of training or tasks
-  useEffect(() => {
-    const allTasksCompleted = tasks.every((task: any) => task.completed);
-    if (
-      allTasksCompleted &&
-      currentTask?.completed &&
-      currentTaskIndex === tasks.length - 1
-    ) {
-      if (is_training) {
-        // For training, show completion modal first
-        setShowTrainingCompleteModal(true);
-      } else {
-        // For main tasks, call onComplete directly to trigger navigation
-        if (onComplete) {
-          onComplete();
-        }
-      }
-    }
-  }, [tasks, is_training, currentTask, currentTaskIndex, onComplete]);
+  // TaskPanel now only handles task navigation within a stage
+  // Stage completion is handled by parent components
 
   const handleConfirmTrainingComplete = () => {
     setShowTrainingCompleteModal(false);
-    // Call onComplete to trigger navigation to next stage
-    if (onComplete) {
-      onComplete();
-    }
+    // Training completion is now handled by parent component
   };
 
   const handleDomainSkipTraining = () => {
@@ -333,7 +309,7 @@ export function TaskPanel({
             ? handleDomainExpertReveal
             : undefined
         }
-        canShowAnswer={isFooterDomainExpertRevealButtonVisible}
+        canShowAnswer={!!isFooterDomainExpertRevealButtonVisible}
         showAnswerActive={showAnswerUI}
         onInformationNotFound={
           isFooterInfoNotFoundButtonVisible ? handleAttemptSkip : undefined

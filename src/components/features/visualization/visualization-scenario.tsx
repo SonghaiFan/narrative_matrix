@@ -8,6 +8,7 @@ import { TaskPanel } from "@/components/features/task/task-panel";
 import { ResizableTwoColRow } from "@/components/ui/resizable-two-col-row";
 import { ScenarioPageFactory } from "@/components/features/visualization/scenario-page-factory";
 import { useTaskStore } from "@/store/task-store";
+import { useTaskCompletion } from "@/hooks/useTaskCompletion";
 import { QuizVisual, Quiz } from "@/components/features/task/quiz-types";
 import { NarrativeEvent, DatasetMetadata } from "@/types/data";
 import { Suspense, useEffect } from "react";
@@ -64,7 +65,7 @@ interface VisualizationScenarioProps {
   isLoading: boolean;
   error: string | null;
   quiz?: Quiz;
-  onComplete?: () => void;
+  onStageCompleted?: () => void;
 }
 
 export function VisualizationScenario({
@@ -75,9 +76,11 @@ export function VisualizationScenario({
   isLoading,
   error,
   quiz,
-  onComplete,
+  onStageCompleted,
 }: VisualizationScenarioProps) {
   const currentTask = useTaskStore((state) => state.currentTask);
+  const tasks = useTaskStore((state) => state.tasks);
+  const currentTaskIndex = useTaskStore((state) => state.currentTaskIndex);
   const visual = currentTask?.visual || null;
   const { setCurrentScenario } = useNavigationStore();
 
@@ -96,6 +99,8 @@ export function VisualizationScenario({
     }
   }, [metadata, setCurrentScenario]);
 
+  // Task completion is now handled inside renderContent with proper userRole
+
   return (
     <ScenarioPageFactory
       title={title}
@@ -105,18 +110,28 @@ export function VisualizationScenario({
       isLoading={isLoading}
       error={error}
       quiz={quiz}
-      onComplete={onComplete}
+      onStageCompleted={onStageCompleted}
       renderContent={({
         metadata: factoryMetadata,
         events: factoryEvents,
         role,
         is_training: factoryIsTraining,
         quiz: factoryQuiz,
-        onComplete: factoryOnComplete,
+        onStageCompleted: factoryOnStageCompleted,
       }) => {
         if (!factoryMetadata || !factoryEvents) {
           return <LoadingSpinner text="Loading data for content..." />;
         }
+
+        // Use task completion hook with userRole
+        useTaskCompletion({
+          tasks,
+          currentTask,
+          currentTaskIndex,
+          isTraining: factoryIsTraining || false,
+          userRole: role as "domain" | "normal",
+          onAllTasksCompleted: factoryOnStageCompleted,
+        });
 
         return (
           <div className="w-full h-full relative grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
@@ -138,7 +153,6 @@ export function VisualizationScenario({
                 userRole={role as "domain" | "normal"}
                 is_training={factoryIsTraining}
                 quiz={factoryQuiz}
-                onComplete={factoryOnComplete}
               />
             </div>
           </div>
