@@ -1,17 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  CheckCircle,
-  HelpCircle,
-  AlertCircle,
-  X,
-  Brain,
-  Timer,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
+
 import { Quiz } from "./quiz-types/index";
 import { useCenterControl } from "@/contexts/center-control-context";
 import { useAuth } from "@/contexts/auth-context";
@@ -56,14 +46,9 @@ export function TaskPanel({
   quiz: passedInQuiz,
   onComplete,
 }: TaskPanelProps) {
-  const router = useRouter();
-  const { userId, scenarioId, role } = useAuth();
-  const {
-    toggleMarkedEvent,
-    setfocusedEventId,
-    markedEventIds,
-    selectedScenario: contextSelectedScenario,
-  } = useCenterControl();
+  const { userId } = useAuth();
+  const { toggleMarkedEvent, setfocusedEventId, markedEventIds } =
+    useCenterControl();
 
   // Add navigation store hooks
   const { goToNextStage, completeCurrentStage } = useNavigationStore();
@@ -73,7 +58,6 @@ export function TaskPanel({
   const [showSkipConfirmModal, setShowSkipConfirmModal] = useState(false);
   const [showTrainingCompleteModal, setShowTrainingCompleteModal] =
     useState(false);
-  const [pendingRedirectPath, setPendingRedirectPath] = useState("");
   const [showTimeWarningModal, setShowTimeWarningModal] = useState(false);
   const [showIncorrectAnswerModal, setShowIncorrectAnswerModal] =
     useState(false);
@@ -109,10 +93,9 @@ export function TaskPanel({
     goToPreviousTask,
     goToTask,
     checkAnswer,
-    navigateToCompletionPage,
   } = taskManager;
 
-  const isDomainExpert = role === "domain";
+  const isDomainExpert = userRole === "domain";
 
   const { formattedTime, timerColorClass } = useQuestionTimer({
     timeLimitMs: currentTask?.timeLimit,
@@ -136,7 +119,7 @@ export function TaskPanel({
       showSkipConfirmModal ||
       showIncorrectAnswerModal ||
       showTrainingCompleteModal,
-    isCompleted: currentTask?.completed || false,
+    isCompleted: currentTask?.completed ?? false,
     isTrainingOrDomainExpert: is_training || isDomainExpert,
     currentTaskKey: currentTask?.id || "no-task",
   });
@@ -184,81 +167,35 @@ export function TaskPanel({
 
   // Effect to handle completion of training or tasks
   useEffect(() => {
-    const allTasksCompleted = tasks.every((task) => task.completed);
+    const allTasksCompleted = tasks.every((task: any) => task.completed);
     if (
       allTasksCompleted &&
       currentTask?.completed &&
       currentTaskIndex === tasks.length - 1
     ) {
-      // Complete current stage and get next path
-      completeCurrentStage();
-
-      // If we have an external onComplete callback, use it
-      if (onComplete) {
-        if (is_training) {
-          // For training, show completion modal first, then call onComplete
-          setShowTrainingCompleteModal(true);
-        } else {
-          // For main tasks, call onComplete directly
-          onComplete();
-        }
+      if (is_training) {
+        // For training, show completion modal first
+        setShowTrainingCompleteModal(true);
       } else {
-        // Legacy navigation if no onComplete is provided
-        const nextPath = goToNextStage();
-        if (is_training) {
-          // For training, show completion modal before navigation
-          setPendingRedirectPath(nextPath);
-          setShowTrainingCompleteModal(true);
-        } else {
-          // For main tasks, navigate directly
-          router.push(nextPath);
+        // For main tasks, call onComplete directly to trigger navigation
+        if (onComplete) {
+          onComplete();
         }
       }
     }
-  }, [
-    tasks,
-    is_training,
-    currentTask,
-    currentTaskIndex,
-    scenarioId,
-    contextSelectedScenario,
-    completeCurrentStage,
-    goToNextStage,
-    router,
-  ]);
+  }, [tasks, is_training, currentTask, currentTaskIndex, onComplete]);
 
   const handleConfirmTrainingComplete = () => {
     setShowTrainingCompleteModal(false);
+    // Call onComplete to trigger navigation to next stage
     if (onComplete) {
-      // Call the onComplete callback if provided
       onComplete();
-    } else if (pendingRedirectPath) {
-      if (is_training) {
-        const scenarioPathKey =
-          window.location.pathname.split("/")[1] || "unknown-scenario";
-        localStorage.setItem(`hasCompletedTraining-${scenarioPathKey}`, "true");
-      }
-      router.push(pendingRedirectPath);
     }
   };
 
   const handleDomainSkipTraining = () => {
-    completeCurrentStage();
-    if (onComplete) {
-      // Show the training complete modal first
-      setShowTrainingCompleteModal(true);
-    } else {
-      // Dispatch an event to notify that training should be skipped
-      const event = new CustomEvent("scenario:training-complete", {
-        detail: { skipped: true },
-      });
-      window.dispatchEvent(event);
-
-      // Still show the modal as feedback to the user
-      const nextPath = goToNextStage();
-      setPendingRedirectPath(nextPath);
-      setShowTrainingCompleteModal(true);
-    }
+    // For domain experts, show completion modal then navigate
+    setShowTrainingCompleteModal(true);
   };
 
   // --- Footer Button Logic (Corrected) ---
@@ -339,23 +276,20 @@ export function TaskPanel({
     <div className={`flex flex-col h-full bg-white ${className}`}>
       <TaskHeader
         isTraining={is_training}
-        completedTasksCount={tasks.filter((t) => t.completed).length}
+        completedTasksCount={tasks.filter((t: any) => t.completed).length}
         totalTasksCount={tasks.length}
         currentTaskIndex={currentTaskIndex}
         currentTaskTimeLeftFormatted={formattedTime}
         currentTaskTimerColorClass={timerColorClass}
         isDomainExpert={userRole === "domain"}
         onSkipToNextStage={
-          userRole === "domain"
-            ? () => {
-                // For both training and non-training tasks, dispatch a custom event to transition to the next stage
-                const event = new CustomEvent("scenario:skip-to-next-stage");
-                window.dispatchEvent(event);
-              }
-            : undefined
+          userRole === "domain" ? handleDomainSkipTraining : undefined
         }
         onDotClick={userRole === "domain" ? goToTask : undefined} // Allow dot nav for domain experts
-        tasksForDots={tasks.map((t) => ({ id: t.id, completed: t.completed }))}
+        tasksForDots={tasks.map((t: any) => ({
+          id: t.id,
+          completed: t.completed,
+        }))}
       />
 
       <div className="flex-1 overflow-y-auto p-2 space-y-4">
@@ -371,7 +305,7 @@ export function TaskPanel({
           markedEventIds={markedEventIds}
           isDomainExpert={userRole === "domain"}
           showAnswer={showAnswerUI}
-          isTaskCompleted={currentTask.completed || false}
+          isTaskCompleted={currentTask.completed ?? false}
           userEventReference={currentTask.userEventReference}
           onMarkedEventClick={setfocusedEventId}
           onRemoveMarkedEvent={toggleMarkedEvent}
@@ -404,7 +338,7 @@ export function TaskPanel({
         onInformationNotFound={
           isFooterInfoNotFoundButtonVisible ? handleAttemptSkip : undefined
         }
-        isTaskCompleted={currentTask.completed || false}
+        isTaskCompleted={currentTask.completed ?? false}
         isDomainExpert={userRole === "domain"}
       />
 
@@ -422,16 +356,8 @@ export function TaskPanel({
       <TrainingCompleteModal
         isOpen={showTrainingCompleteModal}
         onConfirm={handleConfirmTrainingComplete}
-        onCancel={() => {
-          setShowTrainingCompleteModal(false);
-          setPendingRedirectPath("");
-        }}
-        isSkippingTraining={
-          !!pendingRedirectPath &&
-          pendingRedirectPath.includes("/training") === false &&
-          is_training &&
-          userRole === "domain"
-        }
+        onCancel={() => setShowTrainingCompleteModal(false)}
+        isSkippingTraining={Boolean(is_training && userRole === "domain")}
       />
       <TimeWarningModal
         isOpen={showTimeWarningModal}

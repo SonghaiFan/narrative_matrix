@@ -109,8 +109,6 @@ export function VisualizationScenario({
       renderContent={({
         metadata: factoryMetadata,
         events: factoryEvents,
-        userId,
-        scenarioId,
         role,
         is_training: factoryIsTraining,
         quiz: factoryQuiz,

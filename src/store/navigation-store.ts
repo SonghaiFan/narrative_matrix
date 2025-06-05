@@ -4,19 +4,7 @@ import { getScenarioMetadata } from "@/lib/scenarios/study-config";
 
 export type NavigationStage = "intro" | "training" | "task" | "complete";
 
-// Legacy fixed navigation stages - kept for backward compatibility
-export const NAVIGATION_STAGES: NavigationStage[] = [
-  "intro",
-  "training",
-  "task",
-  "complete",
-];
-
 export interface ScenarioProgress {
-  introCompleted: boolean;
-  trainingCompleted: boolean;
-  tasksCompleted: boolean;
-  currentStage: NavigationStage;
   // Track the current step within the study flow
   currentFlowIndex: number;
   // Track completion status of each stage in the flow
@@ -57,20 +45,8 @@ interface NavigationState {
   ) => { stage: NavigationStage; flowIndex: number } | null;
 }
 
-// Mapping stage to URL path segment
-const stageToPathMap: Record<NavigationStage, string> = {
-  intro: "introduction",
-  training: "training",
-  task: "", // Root scenario path
-  complete: "completion",
-};
-
 // Default scenario progress template
 const createDefaultProgress = (): ScenarioProgress => ({
-  introCompleted: false,
-  trainingCompleted: false,
-  tasksCompleted: false,
-  currentStage: "intro",
   currentFlowIndex: 0,
   completedStages: [],
 });
@@ -143,8 +119,7 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
       return studyFlow[currentFlowIndex].type as NavigationStage;
     }
 
-    // Fallback to legacy behavior
-    return progress.currentStage;
+    return null;
   },
 
   // Get the current index in the study flow
@@ -251,11 +226,6 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
     set((state) => {
       const updatedProgress = { ...state.scenarioProgress[currentScenario] };
 
-      // Update the legacy stage completion status
-      if (currentStage === "intro") updatedProgress.introCompleted = true;
-      if (currentStage === "training") updatedProgress.trainingCompleted = true;
-      if (currentStage === "task") updatedProgress.tasksCompleted = true;
-
       // Mark the current stage in the flow as completed
       const completedStages = [...updatedProgress.completedStages];
       completedStages[currentFlowIndex] = true;
@@ -273,7 +243,6 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
           console.log(
             `completeCurrentStage: Advancing to next stage: ${nextStage.type} at index ${nextIndex}`
           );
-          updatedProgress.currentStage = nextStage.type as NavigationStage;
           updatedProgress.currentFlowIndex = nextIndex;
         }
       } else {
@@ -384,26 +353,14 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
     // Parse the scenario ID to get study ID and session ID
     const { studyId, sessionId } = parseScenarioId(currentScenario);
 
-    // For the SPA approach, return URL parameters instead of full URLs
-    if (window && window.location) {
-      // Create URL with parameters for the single-page app approach
-      const params = new URLSearchParams();
-      params.set("stage", stageType);
-      params.set("flowIndex", stageIndex.toString());
+    // Create URL with parameters for the single-page app approach
+    const params = new URLSearchParams();
+    params.set("stage", stageType);
+    params.set("flowIndex", stageIndex.toString());
 
-      // For the main page, the base URL is /studyId/sessionId
-      const basePath = `/${studyId}/${sessionId}`;
-      return `${basePath}?${params.toString()}`;
-    }
-
-    // Legacy approach for server-side or fallback
-    // For the main tasks stage, the URL is just /studyId/sessionId
-    if (stageType === "task") {
-      return `/${studyId}/${sessionId}`;
-    }
-
-    // For other stages, add the stage path
-    return `/${studyId}/${sessionId}/${stageToPathMap[stageType]}`;
+    // For the main page, the base URL is /studyId/sessionId
+    const basePath = `/${studyId}/${sessionId}`;
+    return `${basePath}?${params.toString()}`;
   },
 
   // Get URL parameters for a stage (used for SPA navigation)
@@ -444,32 +401,8 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
 
     if (!scenarioProgress[scenario]) return false;
 
-    // First check if the specific flow stage is completed
-    if (scenarioProgress[scenario].completedStages[flowIndex]) {
-      return true;
-    }
-
-    // Legacy compatibility check
-    const metadata = getScenarioMetadata(scenario);
-    const studyFlow = metadata?.studyFlow || [];
-
-    if (flowIndex < 0 || flowIndex >= studyFlow.length) return false;
-
-    const stageType = studyFlow[flowIndex].type as NavigationStage;
-
-    // Fall back to legacy checks if flow stage isn't specifically marked
-    switch (stageType) {
-      case "intro":
-        return scenarioProgress[scenario].introCompleted;
-      case "training":
-        return scenarioProgress[scenario].trainingCompleted;
-      case "task":
-        return scenarioProgress[scenario].tasksCompleted;
-      case "complete":
-        return scenarioProgress[scenario].tasksCompleted;
-      default:
-        return false;
-    }
+    // Check if the specific flow stage is completed
+    return scenarioProgress[scenario].completedStages[flowIndex] || false;
   },
 
   // Reset progress for a specific scenario

@@ -16,7 +16,7 @@ import {
   DataPoint,
 } from "./time-visual.utils";
 import { getXPosition } from "@/components/features/narrative/shared/visualization-utils";
-import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
+import { getNodetColor } from "@/components/features/narrative/shared/color-utils";
 
 interface TimeVisualProps {
   events: NarrativeEvent[];
@@ -175,85 +175,6 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       guideLines.style("display", "none");
     }
   }, [focusedEventId, markedEventIds, isEventMarked]);
-
-  // Create and render lead titles
-  const renderLeadTitles = useCallback(
-    (
-      g: d3.Selection<SVGGElement, unknown, null, undefined>,
-      leadTitlePoints: any[],
-      yScale: d3.ScaleLinear<number, number>,
-      width: number
-    ) => {
-      const leadTitles = g
-        .append("g")
-        .attr("class", "lead-titles")
-        .selectAll(".lead-title")
-        .data(leadTitlePoints)
-        .enter()
-        .append("g")
-        .attr("class", "lead-title-group");
-
-      // Add dashed lines for lead titles
-      leadTitles
-        .append("line")
-        .attr("class", "lead-title-line")
-        .attr("x1", 0)
-        .attr("x2", width)
-        .attr("y1", (d) => yScale(d.narrativeTime))
-        .attr("y2", (d) => yScale(d.narrativeTime))
-        .attr("stroke", "#94a3b8")
-        .attr("stroke-width", 1)
-        .attr("stroke-dasharray", "4,4")
-        .attr("opacity", 0.5);
-
-      // Add lead title text with wrapping
-      leadTitles.each(function (d) {
-        const text = d3
-          .select(this)
-          .append("text")
-          .attr("x", -TIME_CONFIG.margin.left + 10)
-          .attr("y", yScale(d.narrativeTime))
-          .attr("dy", "0.32em")
-          .attr("text-anchor", "start")
-          .attr("fill", "#64748b")
-          .style("font-size", "12px")
-          .style("font-weight", "500");
-
-        const maxWidth = TIME_CONFIG.margin.left - 30;
-        const words = (d.event.lead_title ?? "").split(/\s+/);
-        let line: string[] = [];
-        let lineNumber = 0;
-        let tspan = text
-          .append("tspan")
-          .attr("x", -TIME_CONFIG.margin.left + 10)
-          .attr("dy", 0);
-
-        for (let word of words) {
-          line.push(word);
-          tspan.text(line.join(" "));
-
-          if (tspan.node()!.getComputedTextLength() > maxWidth) {
-            line.pop();
-            tspan.text(line.join(" "));
-            line = [word];
-            tspan = text
-              .append("tspan")
-              .attr("x", -TIME_CONFIG.margin.left + 10)
-              .attr("dy", "1.1em")
-              .text(word);
-            lineNumber++;
-          }
-        }
-
-        // Adjust vertical position to center multi-line text
-        const totalHeight = lineNumber * 1.1;
-        text
-          .selectAll("tspan")
-          .attr("dy", (_, i) => `${i === 0 ? -totalHeight / 2 : 1.1}em`);
-      });
-    },
-    []
-  );
 
   // Create and render guide lines
   const renderGuideLines = useCallback(
@@ -488,9 +409,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         .attr("height", TIME_CONFIG.point.radius * 2)
         .attr("rx", TIME_CONFIG.point.radius)
         .attr("ry", TIME_CONFIG.point.radius)
-        .attr("fill", (d) =>
-          getSentimentColor(d.event.topic.sentiment.polarity)
-        )
+        .attr("fill", (d) => getNodetColor(d.event.topic.sentiment.polarity))
         .attr("stroke", (d) =>
           isEventMarked(d.event.index) ? TIME_CONFIG.highlight.color : "black"
         )
@@ -540,7 +459,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     d3.select(headerRef.current).selectAll("*").remove();
 
     // Process data points
-    const { dataPoints, leadTitlePoints } = processEvents(events);
+    const { dataPoints } = processEvents(events);
     const sortedPoints = getSortedPoints(dataPoints);
 
     // Calculate dimensions - get the main container height (the one with overflow-auto)
@@ -652,9 +571,6 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       .attr("text-anchor", "middle")
       .text("← Paragraph");
 
-    // Add lead titles
-    renderLeadTitles(g, leadTitlePoints, yScale, width);
-
     // Helper function to calculate shortened line endpoints
     const getPointPosition = (point: DataPoint) => {
       const x = point.hasRealTime
@@ -754,7 +670,6 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     isEventMarked,
     toggleMarkedEvent,
     updateSelectedEventStyles,
-    renderLeadTitles,
     renderGuideLines,
     handlePointInteractions,
     handleBackgroundClick,

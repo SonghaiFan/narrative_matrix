@@ -6,7 +6,7 @@ const ACCESSIBLE_COLORS = {
   neutral: "#EEEEEE", // Light gray - works for all vision types
 } as const;
 
-export function getSentimentColor(polarity: SentimentPolarity): string {
+export function getNodetColor(polarity: SentimentPolarity): string {
   // return ACCESSIBLE_COLORS[polarity];
   return "white";
 }

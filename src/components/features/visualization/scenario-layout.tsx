@@ -10,7 +10,7 @@ interface ScenarioLayoutProps {
   title: string;
   isLoading?: boolean;
   isTraining?: boolean;
-  showSentimentLegend?: boolean;
+  showColourLegend?: boolean;
 }
 
 export function ScenarioLayout({
@@ -18,7 +18,7 @@ export function ScenarioLayout({
   title,
   isLoading = false,
   isTraining = false,
-  showSentimentLegend = true,
+  showColourLegend = false,
 }: ScenarioLayoutProps) {
   // Show loading overlay for data loading
   if (isLoading) {
@@ -36,7 +36,7 @@ export function ScenarioLayout({
       <AppHeader
         title={title}
         isTrainingMode={isTraining}
-        showSentimentLegend={showSentimentLegend}
+        showColourLegend={showColourLegend}
       />
 
       {/* Main content */}

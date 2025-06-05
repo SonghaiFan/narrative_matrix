@@ -2,10 +2,9 @@ import { Entity, NarrativeEvent } from "@/types/data";
 import { VisualizationType } from "@/types/visualization";
 import * as d3 from "d3";
 import { ENTITY_CONFIG } from "./entity-config";
-import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
+import { getNodetColor } from "@/components/features/narrative/shared/color-utils";
 import {
   createNarrativeYAxis,
-  calculateDimensions,
   calculateResponsiveDimensions,
 } from "@/components/features/narrative/shared/visualization-utils";
 
@@ -574,7 +573,7 @@ export function createEventNode(
     .attr("cx", cx)
     .attr("cy", cy)
     .attr("r", ENTITY_CONFIG.point.radius)
-    .attr("fill", getSentimentColor(event.topic.sentiment.polarity))
+    .attr("fill", getNodetColor(event.topic.sentiment.polarity))
     .attr(
       "stroke",
       focusedEventId === event.index ? ENTITY_CONFIG.highlight.color : "black"
@@ -1146,7 +1145,7 @@ export function drawLinkConnectors(
     // Add inner connector to both groups
     const sourceEvent = getEventFromNodeId(sourceNode.id, events);
     const connectorColor = sourceEvent
-      ? getSentimentColor(sourceEvent.topic.sentiment.polarity)
+      ? getNodetColor(sourceEvent.topic.sentiment.polarity)
       : "#fff";
 
     createConnector(

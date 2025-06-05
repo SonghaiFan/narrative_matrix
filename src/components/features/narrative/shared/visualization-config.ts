@@ -30,10 +30,7 @@ export const SHARED_CONFIG = {
     viewBox: "0 -3 6 6", // ViewBox for arrow shape
     path: "M0,-3L6,0L0,3", // SVG path for arrow shape
   },
-  // Animation timing
-  animation: {
-    duration: 200, // Duration of transitions in milliseconds
-  },
+
   highlight: {
     color: "#3b82f6",
   },

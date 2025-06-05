@@ -39,16 +39,7 @@ export interface LeadTitlePoint {
 // Process events into data points
 export function processEvents(events: NarrativeEvent[]): {
   dataPoints: DataPoint[];
-  leadTitlePoints: LeadTitlePoint[];
 } {
-  const leadTitlePoints = events
-    .filter((e) => e.lead_title)
-    .map((event) => ({
-      event,
-      narrativeTime: event.temporal_anchoring.narrative_time,
-      hasRealTime: !!event.temporal_anchoring.real_time,
-    }));
-
   // Separate events into those with and without real_time
   const timePoints = events
     .filter((e) => e.temporal_anchoring.real_time)
@@ -80,7 +71,7 @@ export function processEvents(events: NarrativeEvent[]): {
   // Combine all points
   const dataPoints = [...timePoints, ...noTimePoints];
 
-  return { dataPoints, leadTitlePoints };
+  return { dataPoints };
 }
 
 // Create sorted points for line drawing (only points with real time)

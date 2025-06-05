@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { formatDate } from "@/lib/utils";
 import { TooltipPosition } from "@/contexts/tooltip-context";
 import { VisualizationType } from "@/types/visualization";
-import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
+import { getNodetColor } from "@/components/features/narrative/shared/color-utils";
 
 interface NarrativeTooltipProps {
   event: NarrativeEvent | null;
@@ -101,7 +101,7 @@ export function NarrativeTooltip({
   const hasSourceName = event && "source_name" in event;
 
   // Get sentiment color for background
-  const sentimentColor = getSentimentColor(event.topic.sentiment.polarity);
+  const sentimentColor = getNodetColor(event.topic.sentiment.polarity);
 
   return (
     <div

@@ -134,13 +134,6 @@ export function createTimeScale(width: number, domain: [Date, Date]) {
   return finalScale;
 }
 
-// Generate ticks for time axis based on power scale
-export function generateTimeTicks(startDate: Date, endDate: Date): Date[] {
-  // This function is now deprecated as we're using d3's built-in tick generation
-  // Return empty array to ensure backward compatibility
-  return [];
-}
-
 // Create y-axis with integer ticks for narrative time
 export function createNarrativeYAxis(
   yScale: d3.ScaleLinear<number, number>,
@@ -211,30 +204,6 @@ interface VisualizationConfig {
     left: number;
   };
   minHeight: number;
-}
-
-/**
- * Calculate dimensions for visualizations based on container size and event count
- */
-export function calculateDimensions(
-  containerWidth: number,
-  eventsLength: number,
-  config: VisualizationConfig
-) {
-  const width = containerWidth - config.margin.left - config.margin.right;
-  const minHeight =
-    eventsLength * SHARED_CONFIG.responsive.content.eventHeight +
-    config.margin.top +
-    config.margin.bottom;
-  const containerHeight = Math.max(minHeight, config.minHeight);
-  const height = containerHeight - config.margin.top - config.margin.bottom;
-
-  return {
-    containerWidth,
-    width,
-    containerHeight,
-    height,
-  };
 }
 
 /**

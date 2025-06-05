@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, ReactNode } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
-import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
+import { getNodetColor } from "@/components/features/narrative/shared/color-utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOutAlt, faCircle } from "@fortawesome/free-solid-svg-icons";
 
@@ -114,14 +114,14 @@ interface AuthHeaderProps {
   title: string;
   children?: ReactNode;
   isTrainingMode?: boolean;
-  showSentimentLegend?: boolean;
+  showColourLegend?: boolean;
 }
 
 export function AppHeader({
   title,
   children,
   isTrainingMode = false,
-  showSentimentLegend = false,
+  showColourLegend = false,
 }: AuthHeaderProps) {
   const router = useRouter();
   const { userId, role } = useAuth();
@@ -166,7 +166,7 @@ export function AppHeader({
         </div>
 
         {/* Center section with sentiment legend
-        {showSentimentLegend && (
+        {showColourLegend && (
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <div className="flex items-center bg-gray-50 rounded-lg border border-gray-200 px-4 py-2 shadow-sm">
               <span className="text-xs font-semibold text-gray-700 mr-3">
@@ -177,7 +177,7 @@ export function AppHeader({
                   <FontAwesomeIcon
                     icon={faCircle}
                     className="mr-1.5 text-xs"
-                    style={{ color: getSentimentColor("positive") }}
+                    style={{ color: getNodetColor("positive") }}
                   />
                   <span className="text-xs font-medium text-gray-700">
                     Positive
@@ -187,7 +187,7 @@ export function AppHeader({
                   <FontAwesomeIcon
                     icon={faCircle}
                     className="mr-1.5 text-xs"
-                    style={{ color: getSentimentColor("neutral") }}
+                    style={{ color: getNodetColor("neutral") }}
                   />
                   <span className="text-xs font-medium text-gray-700">
                     Neutral
@@ -197,7 +197,7 @@ export function AppHeader({
                   <FontAwesomeIcon
                     icon={faCircle}
                     className="mr-1.5 text-xs"
-                    style={{ color: getSentimentColor("negative") }}
+                    style={{ color: getNodetColor("negative") }}
                   />
                   <span className="text-xs font-medium text-gray-700">
                     Negative

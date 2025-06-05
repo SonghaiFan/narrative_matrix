@@ -124,41 +124,6 @@ export function getScales(
   return { xScale, yScale };
 }
 
-// Calculate dimensions based on container and config
-export function calculateDimensions(
-  containerWidth: number,
-  containerHeight: number
-) {
-  const { responsive } = SHARED_CONFIG;
-
-  // Ensure container dimensions are within bounds
-  const boundedWidth = Math.min(
-    Math.max(containerWidth, responsive.container.minWidth),
-    responsive.container.maxWidth
-  );
-  const boundedHeight = Math.min(
-    Math.max(containerHeight, responsive.container.minHeight),
-    responsive.container.maxHeight
-  );
-
-  // Calculate usable dimensions accounting for margins
-  const width = Math.max(
-    0,
-    boundedWidth - TOPIC_CONFIG.margin.left - TOPIC_CONFIG.margin.right
-  );
-  const height = Math.max(
-    0,
-    boundedHeight - TOPIC_CONFIG.margin.top - TOPIC_CONFIG.margin.bottom
-  );
-
-  return {
-    containerWidth: boundedWidth,
-    containerHeight: boundedHeight,
-    width,
-    height,
-  };
-}
-
 // Create axes
 export function createAxes(
   xScale: any, // Using any since we have a custom scale

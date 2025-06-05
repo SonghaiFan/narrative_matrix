@@ -6,7 +6,7 @@ import * as d3 from "d3";
 import { TOPIC_CONFIG } from "./topic-config";
 import { useTooltip } from "@/contexts/tooltip-context";
 import { useCenterControl } from "@/contexts/center-control-context";
-import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
+import { getNodetColor } from "@/components/features/narrative/shared/color-utils";
 import {
   processEvents,
   getTopicCounts,
@@ -905,11 +905,8 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     // Helper function for sentiment color
     const getParentSentimentColor = (d: GroupedPoint) => {
       if (d.points.length <= 1) {
-        return getSentimentColor(d.points[0].sentimentPolarity);
+        return getNodetColor(d.points[0].sentimentPolarity);
       }
-
-      const avgIntensity =
-        d.points.reduce((sum, p) => sum + p.sentiment, 0) / d.points.length;
 
       const polarityCounts = {
         positive: 0,
@@ -934,7 +931,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         dominantPolarity = "negative";
       }
 
-      return getSentimentColor(dominantPolarity);
+      return getNodetColor(dominantPolarity);
     };
 
     // Add parent rectangles (only for multi-child groups)
@@ -1101,7 +1098,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .attr("height", TOPIC_CONFIG.point.radius * 2)
       .attr("rx", TOPIC_CONFIG.point.radius)
       .attr("ry", TOPIC_CONFIG.point.radius)
-      .attr("fill", (d: ChildPoint) => getSentimentColor(d.sentimentPolarity))
+      .attr("fill", (d: ChildPoint) => getNodetColor(d.sentimentPolarity))
       .attr("stroke", (d: ChildPoint) =>
         isEventMarked(d.event.index) ? TOPIC_CONFIG.highlight.color : "black"
       )

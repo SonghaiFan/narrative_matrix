@@ -1,12 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import { QuizItem } from "@/components/features/task/quiz-types";
-import {
-  saveTaskProgress as saveProgressToLocalStorage,
-  updateTaskProgress as updateProgressInLocalStorage,
-  markTaskAsCompleted as markTasksCompletedInLocalStorage,
-  getTaskProgress as getProgressFromLocalStorage,
-} from "@/lib/task-progress";
 import { saveQuizResponse } from "@/lib/api-submission";
+import { checkAnswer } from "@/lib/quiz-utils";
 import { useAuth } from "@/contexts/auth-context";
 import { useCenterControl } from "@/contexts/center-control-context";
 import { useTaskStore } from "@/store/task-store";
@@ -24,32 +19,37 @@ export function useTaskManager({
   userRole,
   datasetStudyType,
 }: UseTaskManagerProps) {
-  // No longer need router since we're using custom events for navigation
-  const { userId, scenarioId, sessionId } = useAuth();
-  const {
-    markedEventIds,
-    clearMarkedEvents,
-    selectedScenario: contextSelectedScenario,
-  } = useCenterControl();
-  const setCurrentTaskInGlobalStore = useTaskStore(
-    (state) => state.setCurrentTask
-  );
+  const { userId, sessionId } = useAuth();
+  const { markedEventIds, clearMarkedEvents } = useCenterControl();
 
-  const [tasks, setTasks] = useState<QuizItem[]>(initialTasks);
-  const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
-  const [userAnswer, setUserAnswer] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  // No longer need a separate sessionId state since we get it from the Auth context
+  // Use Zustand store for all state management
+  const {
+    tasks,
+    currentTaskIndex,
+    userAnswer,
+    isSubmitting,
+    currentTask,
+    setCurrentTask,
+    setCurrentTaskIndex,
+    setUserAnswer,
+    setIsSubmitting,
+    setTasks,
+    saveTaskProgress,
+    updateTaskProgress,
+    getTaskProgress,
+    markTaskAsCompleted,
+    setTrainingCompleted,
+  } = useTaskStore();
 
   // Initialize tasks and current index when initialTasks change
   useEffect(() => {
     setTasks(initialTasks);
     // Logic to resume progress
     if (userId && !isTraining && initialTasks.length > 0) {
-      const progress = getProgressFromLocalStorage(userId);
+      const progress = getTaskProgress(userId);
       if (progress?.answers) {
         const lastCompletedIndex = progress.answers.reduce(
-          (maxIndex, answer, currentIndex) =>
+          (maxIndex: number, answer: any, currentIndex: number) =>
             answer.completed ? currentIndex : maxIndex,
           -1
         );
@@ -71,28 +71,34 @@ export function useTaskManager({
       setCurrentTaskIndex(0);
       setUserAnswer(initialTasks[0]?.userAnswer || "");
     }
-  }, [initialTasks, userId, isTraining]);
+  }, [
+    initialTasks,
+    userId,
+    isTraining,
+    setTasks,
+    setCurrentTaskIndex,
+    setUserAnswer,
+    getTaskProgress,
+  ]);
 
-  const currentTask = tasks[currentTaskIndex];
-
+  // Update current task in store when index changes
   useEffect(() => {
-    if (currentTask) {
-      setCurrentTaskInGlobalStore(currentTask);
+    if (tasks[currentTaskIndex]) {
+      setCurrentTask(tasks[currentTaskIndex]);
     }
-  }, [currentTask, setCurrentTaskInGlobalStore]);
+  }, [currentTaskIndex, tasks, setCurrentTask]);
 
   // Record start timestamp when current task changes and it's not completed
   useEffect(() => {
     if (currentTask && !currentTask.completed && !currentTask.startTimestamp) {
-      setTasks((prevTasks) =>
-        prevTasks.map((task, index) =>
-          index === currentTaskIndex
-            ? { ...task, startTimestamp: Date.now() }
-            : task
-        )
+      const updatedTasks = tasks.map((task: QuizItem, index: number) =>
+        index === currentTaskIndex
+          ? { ...task, startTimestamp: Date.now() }
+          : task
       );
+      setTasks(updatedTasks);
     }
-  }, [currentTask, currentTaskIndex]);
+  }, [currentTask, currentTaskIndex, tasks, setTasks]);
 
   const getStudyType = useCallback(() => {
     const pathSegments = window.location.pathname.split("/").filter(Boolean);
@@ -103,51 +109,6 @@ export function useTaskManager({
     if (scenarioNameFromPath.includes("text-visual")) return "text-visual";
     return datasetStudyType || scenarioNameFromPath || "text-visual"; // Fallback
   }, [datasetStudyType]);
-
-  const navigateToCompletionPage = useCallback(() => {
-    if (!userId) return;
-    const studyType = getStudyType();
-    const finalProgress = {
-      totalTasks: tasks.length,
-      completedTasks: tasks.filter((t) => t.completed).length,
-      correctTasks: 0, // Simplified for now
-      studyType,
-      isCompleted: true,
-      totalSessionTime: 0, // This should be handled by the timer hook or passed in
-      answers: tasks.map((task) => ({
-        questionId: task.id,
-        question: task.question,
-        userAnswer: task.userAnswer || "",
-        completed: task.completed,
-        userEventReference: task.userEventReference || null,
-        startTimestamp: task.startTimestamp,
-        submitTimestamp: task.submitTimestamp,
-        isTimeExpired: task.isTimeExpired || false,
-        duration:
-          task.submitTimestamp && task.startTimestamp
-            ? task.submitTimestamp - task.startTimestamp
-            : null,
-      })),
-    };
-    saveProgressToLocalStorage(userId, finalProgress);
-    if (userRole === "normal") {
-      markTasksCompletedInLocalStorage(userId);
-    }
-
-    // Dispatch a custom event for the SPA to transition to the completion stage
-    const event = new CustomEvent("scenario:complete", {
-      detail: {
-        tasks: tasks.length,
-        type: studyType,
-        time: finalProgress.totalSessionTime,
-      },
-    });
-
-    // Dispatch the event - our SPA will listen for this and handle the transition
-    window.dispatchEvent(event);
-
-    // No need for legacy router navigation anymore since completion is integrated into the SPA
-  }, [userId, tasks, userRole, getStudyType]);
 
   const handleSubmission = useCallback(
     (options: { isSkipped?: boolean; isTimeUp?: boolean }) => {
@@ -173,11 +134,10 @@ export function useTaskManager({
         ...updatedTaskData,
       } as QuizItem;
 
-      setTasks((prevTasks) =>
-        prevTasks.map((task, index) =>
-          index === currentTaskIndex ? fullyUpdatedTask : task
-        )
+      const updatedTasks = tasks.map((task: QuizItem, index: number) =>
+        index === currentTaskIndex ? fullyUpdatedTask : task
       );
+      setTasks(updatedTasks);
 
       if (userId) {
         // Use the sessionId from the Auth context - no need for localStorage
@@ -196,7 +156,7 @@ export function useTaskManager({
         });
 
         if (!isTraining) {
-          const currentProgress = getProgressFromLocalStorage(userId);
+          const currentProgress = getTaskProgress(userId);
           const newAnswers = [...(currentProgress?.answers || [])];
           const existingAnswerIndex = newAnswers.findIndex(
             (a) => a.questionId === fullyUpdatedTask.id
@@ -230,7 +190,7 @@ export function useTaskManager({
             index === currentTaskIndex ? fullyUpdatedTask : task
           );
 
-          updateProgressInLocalStorage(userId, {
+          updateTaskProgress(userId, {
             totalTasks: tasksAfterCurrentSubmission.length,
             completedTasks: tasksAfterCurrentSubmission.filter(
               (t) => t.completed
@@ -250,45 +210,41 @@ export function useTaskManager({
 
       if (allTasksNowCompleted) {
         if (isTraining) {
-          let scenarioIdForPath = "1"; // Default
-          if (scenarioId)
-            scenarioIdForPath = scenarioId.replace("text-visual-", "");
-          else if (contextSelectedScenario)
-            scenarioIdForPath = contextSelectedScenario.replace(
-              "text-visual-",
-              ""
-            );
-          else {
-            const pathParts = window.location.pathname.split("/");
-            if (pathParts.length >= 3 && pathParts[1] === "text-visual")
-              scenarioIdForPath = pathParts[2];
-          }
-          // Store only the completion state of the scenario training (non-sensitive)
+          // Store training completion state
           const scenarioPathKey =
             window.location.pathname.split("/")[1] || "unknown-scenario";
-          localStorage.setItem(
-            `hasCompletedTraining-${scenarioPathKey}`,
-            "true"
-          );
-
-          // Dispatch training complete event instead of directly navigating
-          const event = new CustomEvent("scenario:training-complete", {
-            detail: { scenarioId: scenarioIdForPath },
-          });
-          window.dispatchEvent(event);
-
-          // Keep the legacy approach as a fallback
-          const mainRedirectPath = `/text-visual/${scenarioIdForPath}`;
-          console.log(
-            "Training complete. Suggested redirect:",
-            mainRedirectPath
-          );
-          setIsSubmitting(false); // Allow UI to update for modal
+          setTrainingCompleted(scenarioPathKey, true);
+          setIsSubmitting(false);
         } else {
-          setTimeout(() => {
-            navigateToCompletionPage();
-            setIsSubmitting(false); // Reset after navigation attempt
-          }, 1000);
+          // For main tasks, save final progress
+          const studyType = getStudyType();
+          const finalProgress = {
+            totalTasks: tasks.length,
+            completedTasks: tasks.filter((t) => t.completed).length,
+            correctTasks: 0,
+            studyType,
+            isCompleted: true,
+            totalSessionTime: 0,
+            answers: tasks.map((task) => ({
+              questionId: task.id,
+              question: task.question,
+              userAnswer: task.userAnswer || "",
+              completed: task.completed,
+              userEventReference: task.userEventReference || null,
+              startTimestamp: task.startTimestamp,
+              submitTimestamp: task.submitTimestamp,
+              isTimeExpired: task.isTimeExpired || false,
+              duration:
+                task.submitTimestamp && task.startTimestamp
+                  ? task.submitTimestamp - task.startTimestamp
+                  : null,
+            })),
+          };
+          saveTaskProgress(userId, finalProgress);
+          if (userRole === "normal") {
+            markTaskAsCompleted(userId);
+          }
+          setIsSubmitting(false);
         }
       } else {
         setTimeout(() => {
@@ -310,45 +266,46 @@ export function useTaskManager({
       userAnswer,
       markedEventIds,
       userId,
-      sessionId, // Add sessionId dependency
+      sessionId,
       isTraining,
       tasks,
       currentTaskIndex,
-      scenarioId,
-      contextSelectedScenario,
       clearMarkedEvents,
-      navigateToCompletionPage,
       getStudyType,
       setTasks,
+      setIsSubmitting,
+      getTaskProgress,
+      updateTaskProgress,
+      setTrainingCompleted,
+      saveTaskProgress,
+      markTaskAsCompleted,
+      userRole,
     ]
   );
 
-  const goToTask = (index: number) => {
-    if (index >= 0 && index < tasks.length) {
-      if (userRole === "domain" || !tasks[index].completed) {
-        setCurrentTaskIndex(index);
-        setUserAnswer(tasks[index].userAnswer || "");
-        clearMarkedEvents();
+  const goToTask = useCallback(
+    (index: number) => {
+      if (index >= 0 && index < tasks.length) {
+        if (userRole === "domain" || !tasks[index].completed) {
+          setCurrentTaskIndex(index);
+          setUserAnswer(tasks[index].userAnswer || "");
+          clearMarkedEvents();
+        }
       }
-    }
-  };
+    },
+    [tasks, userRole, setCurrentTaskIndex, setUserAnswer, clearMarkedEvents]
+  );
 
-  const goToNextTask = () => {
+  const goToNextTask = useCallback(() => {
     if (currentTaskIndex < tasks.length - 1) {
       if (userRole === "domain" || (currentTask && currentTask.completed)) {
         goToTask(currentTaskIndex + 1);
       }
-    } else if (
-      userRole === "domain" &&
-      currentTaskIndex === tasks.length - 1 &&
-      currentTask &&
-      currentTask.completed
-    ) {
-      navigateToCompletionPage();
     }
-  };
+    // Note: Domain experts navigating beyond last task should be handled by parent component
+  }, [currentTaskIndex, tasks.length, userRole, currentTask, goToTask]);
 
-  const goToPreviousTask = () => {
+  const goToPreviousTask = useCallback(() => {
     if (currentTaskIndex > 0) {
       if (
         userRole === "domain" ||
@@ -357,9 +314,9 @@ export function useTaskManager({
         goToTask(currentTaskIndex - 1);
       }
     }
-  };
+  }, [currentTaskIndex, userRole, tasks, goToTask]);
 
-  const restartTasks = () => {
+  const restartTasks = useCallback(() => {
     const resetedTasks = initialTasks.map((task) => ({
       ...task,
       completed: false,
@@ -373,69 +330,13 @@ export function useTaskManager({
     setCurrentTaskIndex(0);
     setUserAnswer(resetedTasks[0]?.userAnswer || "");
     clearMarkedEvents();
-  };
-
-  const checkAnswer = useCallback(
-    (task: QuizItem, answerToCheck: string): boolean => {
-      if (!answerToCheck.trim()) return false;
-      const normalize = (str: string) =>
-        str.toLowerCase().trim().replace(/\s+/g, " ");
-
-      switch (task.type) {
-        case "radio-options":
-          return normalize(task.answer) === normalize(answerToCheck);
-        case "multiple-select":
-          const normalizeAndSort = (str: string) =>
-            str
-              .split(",")
-              .map((item) => normalize(item))
-              .filter(Boolean)
-              .sort();
-          const correctItems = normalizeAndSort(task.answer);
-          const userItems = normalizeAndSort(answerToCheck);
-          if (correctItems.length !== userItems.length) return false;
-          return correctItems.every((item, index) => item === userItems[index]);
-        case "numbered-sequence":
-          return (
-            task.answer.replace(/\s+/g, "") ===
-            answerToCheck.replace(/\s+/g, "")
-          );
-        case "grid-matching":
-          try {
-            const parseGridString = (str: string) => {
-              const pairs = str.split(",").map((pair) => pair.trim());
-              return pairs.reduce((acc, pair) => {
-                const [key, value] = pair.split(":").map((s) => normalize(s));
-                if (key && value !== undefined) acc[key] = value;
-                return acc;
-              }, {} as Record<string, string>);
-            };
-            const correctPairs = parseGridString(task.answer);
-            const userPairs = parseGridString(answerToCheck);
-            const correctKeys = Object.keys(correctPairs).sort();
-            const userKeys = Object.keys(userPairs).sort();
-            if (
-              correctKeys.length !== userKeys.length ||
-              correctKeys.some((key) => !userPairs.hasOwnProperty(key))
-            )
-              return false;
-            return correctKeys.every(
-              (key) => correctPairs[key] === userPairs[key]
-            );
-          } catch {
-            return false;
-          }
-        default: // single-input or any other type not explicitly handled by variants
-          // Check if task.answer is a string before normalizing, as it could be from a variant not having 'answer' or it being of a different type.
-          const baseTask = task as any; // Use 'any' carefully, or ensure 'answer' is on a common base type for all QuizItem variants.
-          if (typeof baseTask.answer === "string") {
-            return normalize(baseTask.answer) === normalize(answerToCheck);
-          }
-          return false;
-      }
-    },
-    []
-  );
+  }, [
+    initialTasks,
+    setTasks,
+    setCurrentTaskIndex,
+    setUserAnswer,
+    clearMarkedEvents,
+  ]);
 
   return {
     tasks,
@@ -451,6 +352,5 @@ export function useTaskManager({
     goToPreviousTask,
     restartTasks,
     checkAnswer,
-    navigateToCompletionPage,
   };
 }

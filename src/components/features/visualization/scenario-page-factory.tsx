@@ -10,7 +10,7 @@ import { Quiz } from "@/components/features/task/quiz-types";
 interface ScenarioPageFactoryProps {
   title: string;
   is_training?: boolean;
-  showSentimentLegend?: boolean;
+  showColourLegend?: boolean;
   // Accept metadata and events directly
   metadata: DatasetMetadata | null;
   events: NarrativeEvent[] | null;
@@ -37,8 +37,7 @@ interface ScenarioPageFactoryProps {
 export function ScenarioPageFactory({
   title,
   is_training = false,
-  showSentimentLegend = true,
-  // Destructure new props
+  showColourLegend = true,
   metadata,
   events,
   isLoading,
@@ -55,7 +54,7 @@ export function ScenarioPageFactory({
         title={title}
         isLoading={false}
         isTraining={is_training}
-        showSentimentLegend={showSentimentLegend}
+        showColourLegend={showColourLegend}
       >
         <div className="h-full flex flex-col items-center justify-center p-4">
           <div className="text-red-500 mb-2">Error:</div>
@@ -74,7 +73,7 @@ export function ScenarioPageFactory({
         title={title}
         isLoading={true}
         isTraining={is_training}
-        showSentimentLegend={showSentimentLegend}
+        showColourLegend={showColourLegend}
       >
         <div className="h-full flex items-center justify-center">
           <div className="text-gray-500">Loading content...</div>
@@ -88,7 +87,7 @@ export function ScenarioPageFactory({
       title={title}
       isLoading={false}
       isTraining={is_training}
-      showSentimentLegend={showSentimentLegend}
+      showColourLegend={showColourLegend}
     >
       {/* Pass metadata, events, userId, scenarioId, role, and is_training to renderContent */}
       {renderContent({
