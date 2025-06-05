@@ -1,0 +1,151 @@
+{
+  "events": [
+    {
+      "index": 1,
+      "text": "Since 2021, U.S. President Joe Biden has repeatedly stated that the United States would defend Taiwan if attacked by China, signaling a shift from 'strategic ambiguity' to 'strategic clarity' despite official denials of a policy change.",
+      "short_text": "Biden signaled stronger U.S. defense commitment to Taiwan since 2021.",
+      "temporal_anchoring": {
+        "real_time": ["2021", "2022"],
+        "narrative_time": 1
+      },
+      "entities": [
+        { "id": "joe_biden", "name": "Joe Biden", "social_role": "person" },
+        { "id": "us", "name": "United States", "social_role": "country" },
+        { "id": "taiwan", "name": "Taiwan", "social_role": "country" },
+        {
+          "id": "prc",
+          "name": "People's Republic of China",
+          "social_role": "country"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["national security", "foreign relations"],
+        "sentiment": { "polarity": "neutral", "intensity": 6 }
+      }
+    },
+    {
+      "index": 2,
+      "text": "In May 2022, President Biden stated that the U.S. was committed to defending Taiwan, reinforcing the perception of a shift to strategic clarity and provoking accusations from Beijing of undermining the One China policy.",
+      "short_text": "Biden affirmed U.S. defense commitment to Taiwan in May 2022; PRC protested.",
+      "temporal_anchoring": { "real_time": "2022-05", "narrative_time": 2 },
+      "entities": [
+        { "id": "joe_biden", "name": "Joe Biden", "social_role": "person" },
+        { "id": "us", "name": "United States", "social_role": "country" },
+        {
+          "id": "prc",
+          "name": "People's Republic of China",
+          "social_role": "country"
+        },
+        { "id": "taiwan", "name": "Taiwan", "social_role": "country" }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["diplomacy", "national security"],
+        "sentiment": { "polarity": "negative", "intensity": 6 }
+      }
+    },
+    {
+      "index": 3,
+      "text": "In early August 2022, U.S. House Speaker Nancy Pelosi visited Taiwan and met with President Tsai Ing-wen and local civil society leaders. The visit provoked intense condemnation from the PRC, which responded with unprecedented military drills simulating a blockade around Taiwan.",
+      "short_text": "Pelosi visited Taiwan in August 2022, triggering PRC military response.",
+      "temporal_anchoring": { "real_time": "2022-08", "narrative_time": 3 },
+      "entities": [
+        {
+          "id": "nancy_pelosi",
+          "name": "Nancy Pelosi",
+          "social_role": "person"
+        },
+        {
+          "id": "tsai_ing-wen",
+          "name": "Tsai Ing-wen",
+          "social_role": "person"
+        },
+        { "id": "us", "name": "United States", "social_role": "country" },
+        { "id": "taiwan", "name": "Taiwan", "social_role": "country" },
+        {
+          "id": "prc",
+          "name": "People's Republic of China",
+          "social_role": "country"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["military exercises", "diplomacy"],
+        "sentiment": { "polarity": "negative", "intensity": 8 }
+      }
+    },
+    {
+      "index": 4,
+      "text": "Following Pelosi's visit, the PLA conducted four days of live-fire exercises around Taiwan, including over 300 military aircraft crossing the median line and regular naval patrols, which effectively erased the longstanding status quo in the Taiwan Strait.",
+      "short_text": "PLA conducted blockade-style drills and erased Taiwan Strait status quo post-visit.",
+      "temporal_anchoring": { "real_time": "2022-08", "narrative_time": 4 },
+      "entities": [
+        {
+          "id": "pla",
+          "name": "People's Liberation Army",
+          "social_role": "organization"
+        },
+        { "id": "taiwan", "name": "Taiwan", "social_role": "country" },
+        {
+          "id": "prc",
+          "name": "People's Republic of China",
+          "social_role": "country"
+        },
+        {
+          "id": "taiwan_strait",
+          "name": "Taiwan Strait",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["military exercises", "air strikes"],
+        "sentiment": { "polarity": "negative", "intensity": 9 }
+      }
+    },
+    {
+      "index": 5,
+      "text": "After Pelosi's trip, the PRC escalated hybrid pressure on Taiwan, imposing trade sanctions, halting exports, and allegedly conducting cyberattacks alongside continued military provocations.",
+      "short_text": "PRC imposed sanctions, cyberattacks, and military pressure after Pelosi's visit.",
+      "temporal_anchoring": {
+        "real_time": "2022-08",
+        "narrative_time": 5
+      },
+      "entities": [
+        {
+          "id": "prc",
+          "name": "People's Republic of China",
+          "social_role": "country"
+        },
+        { "id": "taiwan", "name": "Taiwan", "social_role": "country" }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["economic sanction", "cybercrime", "military exercises"],
+        "sentiment": { "polarity": "negative", "intensity": 8 }
+      }
+    }
+  ],
+  "quiz": [
+    {
+      "id": "flashback_1",
+      "question": "Based on the narrative, which event is the most prominent flashback?",
+      "questionCaption": "A flashback is when a narrative jumps back in time to describe an earlier event. Look for events that are mentioned later in the narrative text but occurred much earlier historically.",
+      "answer": "Pelosi visited Taiwan in August 2022, triggering PRC military response.",
+      "level": "Comprehension",
+      "type": "radio-options",
+      "timeLimit": 60,
+      "visual": null,
+      "prone": "time",
+      "options": [
+        "Pelosi visited Taiwan in August 2022, triggering PRC military response.",
+        "PRC imposed sanctions, cyberattacks, and military pressure after Pelosi's visit.",
+        "PLA conducted blockade-style drills and erased Taiwan Strait status quo post-visit.",
+        "Biden affirmed U.S. defense commitment to Taiwan in May 2022; PRC protested."
+      ],
+      "completed": false,
+      "event_reference": 3
+    }
+  ]
+}

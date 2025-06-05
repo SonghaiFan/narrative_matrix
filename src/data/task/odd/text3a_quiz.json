@@ -1,0 +1,159 @@
+{
+  "events": [
+    {
+      "index": 1,
+      "text": "On October 7, 2023, Hamas launched a deadly attack on Israel, triggering Israeli airstrikes and a ground campaign in the Gaza Strip by the Israel Defense Forces (IDF).",
+      "short_text": "Hamas attacked Israel on October 7, 2023, prompting Israeli operations in Gaza.",
+      "temporal_anchoring": { "real_time": "2023-10-07", "narrative_time": 1 },
+      "entities": [
+        { "id": "hamas", "name": "Hamas", "social_role": "organization" },
+        { "id": "israel", "name": "Israel", "social_role": "country" },
+        {
+          "id": "israel_defense_forces",
+          "name": "IDF",
+          "social_role": "organization"
+        },
+        { "id": "gaza_strip", "name": "Gaza Strip", "social_role": "object" }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "war"],
+        "sentiment": { "polarity": "negative", "intensity": 9 }
+      }
+    },
+    {
+      "index": 2,
+      "text": "On January 15, 2025, the United States, Egypt, and Qatar mediated a cease-fire between Israel and Hamas, ending fifteen months of fighting. As part of the deal, Hamas released thirty-three hostages, Israel freed hundreds of Palestinian prisoners, displaced residents returned to northern Gaza, and 600 humanitarian aid trucks entered the area daily.",
+      "short_text": "Cease-fire deal on January 15, 2025, included hostage and prisoner releases and aid deliveries.",
+      "temporal_anchoring": { "real_time": "2025-01-15", "narrative_time": 2 },
+      "entities": [
+        {
+          "id": "united_states",
+          "name": "United States",
+          "social_role": "country"
+        },
+        { "id": "egypt", "name": "Egypt", "social_role": "country" },
+        { "id": "qatar", "name": "Qatar", "social_role": "country" },
+        { "id": "hamas", "name": "Hamas", "social_role": "organization" },
+        { "id": "israel", "name": "Israel", "social_role": "country" },
+        { "id": "gaza_strip", "name": "Gaza Strip", "social_role": "object" }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations", "foreign aid"],
+        "sentiment": { "polarity": "positive", "intensity": 6 }
+      }
+    },
+    {
+      "index": 3,
+      "text": "On March 18, 2025, Israel ended the six-week cease-fire by launching strikes and ground operations in central and southern Gaza, citing renewed threats.",
+      "short_text": "Israel resumed operations in Gaza on March 18, 2025, ending cease-fire.",
+      "temporal_anchoring": { "real_time": "2025-03-18", "narrative_time": 3 },
+      "entities": [
+        { "id": "israel", "name": "Israel", "social_role": "country" },
+        { "id": "gaza_strip", "name": "Gaza Strip", "social_role": "object" }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict"],
+        "sentiment": { "polarity": "negative", "intensity": 8 }
+      }
+    },
+    {
+      "index": 4,
+      "text": "The conflict fueled wider Middle East instability, as the IDF launched a ground invasion of Lebanon in response to months of Hezbollah cross-border attacks initiated after the October 7 Hamas assault.",
+      "short_text": "IDF invaded Lebanon following Hezbollah attacks tied to Gaza conflict.",
+      "temporal_anchoring": {
+        "real_time": ["2023-10-07", "2024"],
+        "narrative_time": 4
+      },
+      "entities": [
+        {
+          "id": "israel_defense_forces",
+          "name": "IDF",
+          "social_role": "organization"
+        },
+        { "id": "lebanon", "name": "Lebanon", "social_role": "country" },
+        {
+          "id": "hezbollah",
+          "name": "Hezbollah",
+          "social_role": "organization"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["international military intervention", "armed conflict"],
+        "sentiment": { "polarity": "negative", "intensity": 8 }
+      }
+    },
+    {
+      "index": 5,
+      "text": "Yemen's Houthi rebels fired missiles at Israel and commercial ships in the Red Sea, while other Iran-backed groups launched attacks on U.S. military sites in Iraq and Syria, escalating regional hostilities.",
+      "short_text": "Houthi and Iran-backed groups attacked Israel and U.S. targets in region.",
+      "temporal_anchoring": {
+        "real_time": ["2023-11", "2024"],
+        "narrative_time": 5
+      },
+      "entities": [
+        {
+          "id": "houthi_rebels",
+          "name": "Houthi rebels",
+          "social_role": "organization"
+        },
+        { "id": "israel", "name": "Israel", "social_role": "country" },
+        { "id": "iran", "name": "Iran", "social_role": "country" },
+        {
+          "id": "united_states",
+          "name": "United States",
+          "social_role": "country"
+        },
+        { "id": "iraq", "name": "Iraq", "social_role": "country" },
+        { "id": "syria", "name": "Syria", "social_role": "country" }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "air strikes"],
+        "sentiment": { "polarity": "negative", "intensity": 9 }
+      }
+    },
+    {
+      "index": 6,
+      "text": "In April and October of 2024, Iran launched direct attacks on Israel, prompting Israeli retaliatory strikes targeting Iran's air defense systems and missile production facilities.",
+      "short_text": "Iran attacked Israel directly in 2024; Israel responded with counterstrikes.",
+      "temporal_anchoring": {
+        "real_time": ["2024-04", "2024-10"],
+        "narrative_time": 6
+      },
+      "entities": [
+        { "id": "iran", "name": "Iran", "social_role": "country" },
+        { "id": "israel", "name": "Israel", "social_role": "country" }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["international military intervention", "air strikes"],
+        "sentiment": { "polarity": "negative", "intensity": 9 }
+      }
+    }
+  ],
+  "quiz": [
+    {
+      "id": "flashback_1",
+      "question": "Based on the narrative, which event is the most prominent flashback?",
+      "questionCaption": "A flashback is when a narrative jumps back in time to describe an earlier event. Look for events that are mentioned later in the narrative text but occurred much earlier historically.",
+      "answer": "Hamas attacked Israel on October 7, 2023, prompting Israeli operations in Gaza.",
+      "level": "Comprehension",
+      "type": "radio-options",
+      "timeLimit": 60,
+      "visual": null,
+      "prone": "time",
+      "options": [
+        "Hamas attacked Israel on October 7, 2023, prompting Israeli operations in Gaza.",
+        "Cease-fire deal on January 15, 2025, included hostage and prisoner releases and aid deliveries.",
+        "IDF invaded Lebanon following Hezbollah attacks tied to Gaza conflict.",
+        "Iran attacked Israel directly in 2024; Israel responded with counterstrikes."
+      ],
+      "completed": false,
+      "event_reference": 1
+    }
+  ]
+}

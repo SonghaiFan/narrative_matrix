@@ -1,0 +1,182 @@
+{
+  "events": [
+    {
+      "index": 1,
+      "text": "In May 2018, French President Emmanuel Macron hosted a summit with Khalifa Haftar, GNA leader Fayez Seraj, and HoR representatives, where the rival factions agreed to hold national elections in December 2018.",
+      "short_text": "In May 2018, Libya's rival leaders agreed to December elections at Macron-led summit.",
+      "temporal_anchoring": { "real_time": "2018-05", "narrative_time": 1 },
+      "entities": [
+        { "id": "france", "name": "France", "social_role": "country" },
+        {
+          "id": "khalifa_haftar",
+          "name": "Khalifa Haftar",
+          "social_role": "person"
+        },
+        { "id": "fayez_seraj", "name": "Fayez Seraj", "social_role": "person" },
+        {
+          "id": "government_of_national_accord",
+          "name": "GNA",
+          "social_role": "organization"
+        },
+        {
+          "id": "house_of_representatives",
+          "name": "HoR",
+          "social_role": "organization"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations", "election"],
+        "sentiment": { "polarity": "positive", "intensity": 5 }
+      }
+    },
+    {
+      "index": 2,
+      "text": "On September 2018, the GNA declared a state of emergency in Tripoli less than a week after a UN cease-fire went into effect, as fighting between rival militias reignited in the capital.",
+      "short_text": "GNA declared emergency in Tripoli in September 2018 after cease-fire collapsed.",
+      "temporal_anchoring": { "real_time": "2018-09", "narrative_time": 2 },
+      "entities": [
+        {
+          "id": "government_of_national_accord",
+          "name": "GNA",
+          "social_role": "organization"
+        },
+        { "id": "tripoli", "name": "Tripoli", "social_role": "object" },
+        {
+          "id": "united_nations",
+          "name": "UN",
+          "social_role": "organization"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "civil war"],
+        "sentiment": { "polarity": "negative", "intensity": 8 }
+      }
+    },
+    {
+      "index": 3,
+      "text": "Despite agreeing to elections in May, the UN Special Envoy Ghassan Salame announced in late 2018 that Libya's elections would be delayed until spring 2019 due to worsening security conditions.",
+      "short_text": "UN postponed Libya's 2018 elections to spring 2019 citing insecurity.",
+      "temporal_anchoring": { "real_time": "2018-12", "narrative_time": 3 },
+      "entities": [
+        {
+          "id": "united_nations",
+          "name": "UN",
+          "social_role": "organization"
+        },
+        {
+          "id": "ghassan_salame",
+          "name": "Ghassan Salame",
+          "social_role": "person"
+        },
+        { "id": "libya", "name": "Libya", "social_role": "country" }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["election", "peace negotiations"],
+        "sentiment": { "polarity": "negative", "intensity": 6 }
+      }
+    },
+    {
+      "index": 4,
+      "text": "In October 2018, the UN-backed GNA and the HoR signed a power-sharing agreement, aiming to end the conflict and establish a unified government.",
+      "short_text": "UN-backed GNA and HoR signed power-sharing agreement in Oct 2018.",
+      "temporal_anchoring": { "real_time": "2018-10", "narrative_time": 4 },
+      "entities": [
+        {
+          "id": "gna",
+          "name": "GNA",
+          "social_role": "organization"
+        },
+        {
+          "id": "house_of_representatives",
+          "name": "HoR",
+          "social_role": "organization"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations", "government"],
+        "sentiment": { "polarity": "positive", "intensity": 5 }
+      }
+    },
+    {
+      "index": 5,
+      "text": "In December 2018, Libya's NOC shut down the El Sharara oil field due to security threats. General Haftar later claimed the site was secure, but renewed conflict led to further shutdowns.",
+      "short_text": "NOC shut El Sharara oil field in Dec 2018; Haftar claimed control amid renewed fighting.",
+      "temporal_anchoring": { "real_time": "2018-12", "narrative_time": 5 },
+      "entities": [
+        {
+          "id": "national_oil_corporation",
+          "name": "NOC",
+          "social_role": "organization"
+        },
+        {
+          "id": "khalifa_haftar",
+          "name": "Khalifa Haftar",
+          "social_role": "person"
+        },
+        {
+          "id": "el_sharara_oil_field",
+          "name": "El Sharara oil field",
+          "social_role": "object"
+        }
+      ],
+      "topic": {
+        "main_topic": "economy, business and finance",
+        "sub_topic": ["energy resources", "armed conflict"],
+        "sentiment": { "polarity": "negative", "intensity": 7 }
+      }
+    },
+    {
+      "index": 6,
+      "text": "In April 2019, General Khalifa Haftar launched a major offensive to capture Tripoli from the UN-backed GNA, leading to intense fighting in and around the capital that displaced thousands of civilians.",
+      "short_text": "Haftar's forces attacked Tripoli in April 2019, sparking major conflict.",
+      "temporal_anchoring": { "real_time": "2019-04", "narrative_time": 6 },
+      "entities": [
+        {
+          "id": "khalifa_haftar",
+          "name": "Khalifa Haftar",
+          "social_role": "person"
+        },
+        {
+          "id": "gna",
+          "name": "GNA",
+          "social_role": "organization"
+        },
+        {
+          "id": "tripoli",
+          "name": "Tripoli",
+          "social_role": "object"
+        },
+        {
+          "id": "united_nations",
+          "name": "UN",
+          "social_role": "organization"
+        }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["armed conflict", "civil war"],
+        "sentiment": { "polarity": "negative", "intensity": 8 }
+      }
+    }
+  ],
+  "quiz": [
+    {
+      "id": "ir_t_politics_start",
+      "question": "When was the first event related to politics mentioned in the narrative?",
+      "questionCaption": "politics: peace negotiations, elections, or government formation.",
+      "answer": "2018",
+      "level": "Information Retrieval",
+      "type": "radio-options",
+      "timeLimit": 60,
+      "visual": "topic",
+      "prone": "topic",
+      "options": ["2018", "2019", "2015"],
+      "completed": false,
+      "event_reference": 1
+    }
+  ]
+}

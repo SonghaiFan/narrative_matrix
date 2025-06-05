@@ -49,7 +49,7 @@
     },
     "text-visual-1": {
       "id": "text-demo-1",
-      "name": "Text Demo 999",
+      "name": "Text Visualisation 1",
       "description": "Each task is a single event from all event files.",
       "topic": "Generic Topic",
       "author": "Demo Author",
@@ -77,48 +77,48 @@
           "type": "task",
           "title": "text 1a",
           "dataSources": {
-            "eventsDataPath": "task/text1a_quiz.json",
-            "quizDataPath": "task/text1a_quiz.json"
+            "eventsDataPath": "task/odd/text1a_quiz.json",
+            "quizDataPath": "task/odd/text1a_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 1b",
           "dataSources": {
-            "eventsDataPath": "task/text1b_quiz.json",
-            "quizDataPath": "task/text1b_quiz.json"
+            "eventsDataPath": "task/odd/text1b_quiz.json",
+            "quizDataPath": "task/odd/text1b_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 1c",
           "dataSources": {
-            "eventsDataPath": "task/text1c_quiz.json",
-            "quizDataPath": "task/text1c_quiz.json"
+            "eventsDataPath": "task/odd/text1c_quiz.json",
+            "quizDataPath": "task/odd/text1c_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 2a",
           "dataSources": {
-            "eventsDataPath": "task/text2a_quiz.json",
-            "quizDataPath": "task/text2a_quiz.json"
+            "eventsDataPath": "task/odd/text2a_quiz.json",
+            "quizDataPath": "task/odd/text2a_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 2b",
           "dataSources": {
-            "eventsDataPath": "task/text2b_quiz.json",
-            "quizDataPath": "task/text2b_quiz.json"
+            "eventsDataPath": "task/odd/text2b_quiz.json",
+            "quizDataPath": "task/odd/text2b_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 2c",
           "dataSources": {
-            "eventsDataPath": "task/text2c_quiz.json",
-            "quizDataPath": "task/text2c_quiz.json"
+            "eventsDataPath": "task/odd/text2c_quiz.json",
+            "quizDataPath": "task/odd/text2c_quiz.json"
           }
         },
         {
@@ -138,48 +138,48 @@
           "type": "task",
           "title": "text 3a",
           "dataSources": {
-            "eventsDataPath": "task/text3a_quiz.json",
-            "quizDataPath": "task/text3a_quiz.json"
+            "eventsDataPath": "task/odd/text3a_quiz.json",
+            "quizDataPath": "task/odd/text3a_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 3b",
           "dataSources": {
-            "eventsDataPath": "task/text3b_quiz.json",
-            "quizDataPath": "task/text3b_quiz.json"
+            "eventsDataPath": "task/odd/text3b_quiz.json",
+            "quizDataPath": "task/odd/text3b_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 3c",
           "dataSources": {
-            "eventsDataPath": "task/text3c_quiz.json",
-            "quizDataPath": "task/text3c_quiz.json"
+            "eventsDataPath": "task/odd/text3c_quiz.json",
+            "quizDataPath": "task/odd/text3c_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 4a",
           "dataSources": {
-            "eventsDataPath": "task/text4a_quiz.json",
-            "quizDataPath": "task/text4a_quiz.json"
+            "eventsDataPath": "task/odd/text4a_quiz.json",
+            "quizDataPath": "task/odd/text4a_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 4b",
           "dataSources": {
-            "eventsDataPath": "task/text4b_quiz.json",
-            "quizDataPath": "task/text4b_quiz.json"
+            "eventsDataPath": "task/odd/text4b_quiz.json",
+            "quizDataPath": "task/odd/text4b_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 4c",
           "dataSources": {
-            "eventsDataPath": "task/text4c_quiz.json",
-            "quizDataPath": "task/text4c_quiz.json"
+            "eventsDataPath": "task/odd/text4c_quiz.json",
+            "quizDataPath": "task/odd/text4c_quiz.json"
           }
         },
         {
@@ -199,48 +199,247 @@
           "type": "task",
           "title": "text 5a",
           "dataSources": {
-            "eventsDataPath": "task/text5a_quiz.json",
-            "quizDataPath": "task/text5a_quiz.json"
+            "eventsDataPath": "task/odd/text5a_quiz.json",
+            "quizDataPath": "task/odd/text5a_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 5b",
           "dataSources": {
-            "eventsDataPath": "task/text5b_quiz.json",
-            "quizDataPath": "task/text5b_quiz.json"
+            "eventsDataPath": "task/odd/text5b_quiz.json",
+            "quizDataPath": "task/odd/text5b_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 5c",
           "dataSources": {
-            "eventsDataPath": "task/text5c_quiz.json",
-            "quizDataPath": "task/text5c_quiz.json"
+            "eventsDataPath": "task/odd/text5c_quiz.json",
+            "quizDataPath": "task/odd/text5c_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 6a",
           "dataSources": {
-            "eventsDataPath": "task/text6a_quiz.json",
-            "quizDataPath": "task/text6a_quiz.json"
+            "eventsDataPath": "task/odd/text6a_quiz.json",
+            "quizDataPath": "task/odd/text6a_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 6b",
           "dataSources": {
-            "eventsDataPath": "task/text6b_quiz.json",
-            "quizDataPath": "task/text6b_quiz.json"
+            "eventsDataPath": "task/odd/text6b_quiz.json",
+            "quizDataPath": "task/odd/text6b_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 6c",
           "dataSources": {
-            "eventsDataPath": "task/text6c_quiz.json",
-            "quizDataPath": "task/text6c_quiz.json"
+            "eventsDataPath": "task/odd/text6c_quiz.json",
+            "quizDataPath": "task/odd/text6c_quiz.json"
+          }
+        },
+        { "type": "complete", "title": "Study Completed" }
+      ]
+    },
+    "text-visual-2": {
+      "id": "text-visual-2",
+      "name": "Text Visualisation 2",
+      "description": "Each task is a single event from all event files.",
+      "topic": "Generic Topic",
+      "author": "Demo Author",
+      "publishDate": "2025-05-20",
+      "studyFlow": [
+        {
+          "type": "intro",
+          "title": "Introduction",
+          "dimension": "common"
+        },
+        {
+          "type": "intro",
+          "title": "Introduction",
+          "dimension": "entity"
+        },
+        {
+          "type": "training",
+          "title": "Training entity swimlane",
+          "dataSources": {
+            "eventsDataPath": "train/entity/training_events.json",
+            "quizDataPath": "train/entity/training_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 1a",
+          "dataSources": {
+            "eventsDataPath": "task/even/text1a_quiz.json",
+            "quizDataPath": "task/even/text1a_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 1b",
+          "dataSources": {
+            "eventsDataPath": "task/even/text1b_quiz.json",
+            "quizDataPath": "task/even/text1b_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 1c",
+          "dataSources": {
+            "eventsDataPath": "task/even/text1c_quiz.json",
+            "quizDataPath": "task/even/text1c_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 2a",
+          "dataSources": {
+            "eventsDataPath": "task/even/text2a_quiz.json",
+            "quizDataPath": "task/even/text2a_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 2b",
+          "dataSources": {
+            "eventsDataPath": "task/even/text2b_quiz.json",
+            "quizDataPath": "task/even/text2b_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 2c",
+          "dataSources": {
+            "eventsDataPath": "task/even/text2c_quiz.json",
+            "quizDataPath": "task/even/text2c_quiz.json"
+          }
+        },
+        {
+          "type": "intro",
+          "title": "Introduction",
+          "dimension": "time"
+        },
+        {
+          "type": "training",
+          "title": "Training story time",
+          "dataSources": {
+            "eventsDataPath": "train/time/training_events.json",
+            "quizDataPath": "train/time/training_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 3a",
+          "dataSources": {
+            "eventsDataPath": "task/even/text3a_quiz.json",
+            "quizDataPath": "task/even/text3a_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 3b",
+          "dataSources": {
+            "eventsDataPath": "task/even/text3b_quiz.json",
+            "quizDataPath": "task/even/text3b_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 3c",
+          "dataSources": {
+            "eventsDataPath": "task/even/text3c_quiz.json",
+            "quizDataPath": "task/even/text3c_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 4a",
+          "dataSources": {
+            "eventsDataPath": "task/even/text4a_quiz.json",
+            "quizDataPath": "task/even/text4a_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 4b",
+          "dataSources": {
+            "eventsDataPath": "task/even/text4b_quiz.json",
+            "quizDataPath": "task/even/text4b_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 4c",
+          "dataSources": {
+            "eventsDataPath": "task/even/text4c_quiz.json",
+            "quizDataPath": "task/even/text4c_quiz.json"
+          }
+        },
+        {
+          "type": "intro",
+          "title": "Introduction",
+          "dimension": "topic"
+        },
+        {
+          "type": "training",
+          "title": "Training topic stream",
+          "dataSources": {
+            "eventsDataPath": "train/topic/training_events.json",
+            "quizDataPath": "train/topic/training_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 5a",
+          "dataSources": {
+            "eventsDataPath": "task/even/text5a_quiz.json",
+            "quizDataPath": "task/even/text5a_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 5b",
+          "dataSources": {
+            "eventsDataPath": "task/even/text5b_quiz.json",
+            "quizDataPath": "task/even/text5b_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 5c",
+          "dataSources": {
+            "eventsDataPath": "task/even/text5c_quiz.json",
+            "quizDataPath": "task/even/text5c_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 6a",
+          "dataSources": {
+            "eventsDataPath": "task/even/text6a_quiz.json",
+            "quizDataPath": "task/even/text6a_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 6b",
+          "dataSources": {
+            "eventsDataPath": "task/even/text6b_quiz.json",
+            "quizDataPath": "task/even/text6b_quiz.json"
+          }
+        },
+        {
+          "type": "task",
+          "title": "text 6c",
+          "dataSources": {
+            "eventsDataPath": "task/even/text6c_quiz.json",
+            "quizDataPath": "task/even/text6c_quiz.json"
           }
         },
         { "type": "complete", "title": "Study Completed" }
@@ -258,144 +457,144 @@
           "type": "task",
           "title": "text 1a",
           "dataSources": {
-            "eventsDataPath": "task/text1a_quiz.json",
-            "quizDataPath": "task/text1a_quiz.json"
+            "eventsDataPath": "task/odd/text1a_quiz.json",
+            "quizDataPath": "task/odd/text1a_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 1b",
           "dataSources": {
-            "eventsDataPath": "task/text1b_quiz.json",
-            "quizDataPath": "task/text1b_quiz.json"
+            "eventsDataPath": "task/odd/text1b_quiz.json",
+            "quizDataPath": "task/odd/text1b_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 1c",
           "dataSources": {
-            "eventsDataPath": "task/text1c_quiz.json",
-            "quizDataPath": "task/text1c_quiz.json"
+            "eventsDataPath": "task/odd/text1c_quiz.json",
+            "quizDataPath": "task/odd/text1c_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 2a",
           "dataSources": {
-            "eventsDataPath": "task/text2a_quiz.json",
-            "quizDataPath": "task/text2a_quiz.json"
+            "eventsDataPath": "task/odd/text2a_quiz.json",
+            "quizDataPath": "task/odd/text2a_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 2b",
           "dataSources": {
-            "eventsDataPath": "task/text2b_quiz.json",
-            "quizDataPath": "task/text2b_quiz.json"
+            "eventsDataPath": "task/odd/text2b_quiz.json",
+            "quizDataPath": "task/odd/text2b_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 2c",
           "dataSources": {
-            "eventsDataPath": "task/text2c_quiz.json",
-            "quizDataPath": "task/text2c_quiz.json"
+            "eventsDataPath": "task/odd/text2c_quiz.json",
+            "quizDataPath": "task/odd/text2c_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 3a",
           "dataSources": {
-            "eventsDataPath": "task/text3a_quiz.json",
-            "quizDataPath": "task/text3a_quiz.json"
+            "eventsDataPath": "task/odd/text3a_quiz.json",
+            "quizDataPath": "task/odd/text3a_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 3b",
           "dataSources": {
-            "eventsDataPath": "task/text3b_quiz.json",
-            "quizDataPath": "task/text3b_quiz.json"
+            "eventsDataPath": "task/odd/text3b_quiz.json",
+            "quizDataPath": "task/odd/text3b_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 3c",
           "dataSources": {
-            "eventsDataPath": "task/text3c_quiz.json",
-            "quizDataPath": "task/text3c_quiz.json"
+            "eventsDataPath": "task/odd/text3c_quiz.json",
+            "quizDataPath": "task/odd/text3c_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 4a",
           "dataSources": {
-            "eventsDataPath": "task/text4a_quiz.json",
-            "quizDataPath": "task/text4a_quiz.json"
+            "eventsDataPath": "task/odd/text4a_quiz.json",
+            "quizDataPath": "task/odd/text4a_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 4b",
           "dataSources": {
-            "eventsDataPath": "task/text4b_quiz.json",
-            "quizDataPath": "task/text4b_quiz.json"
+            "eventsDataPath": "task/odd/text4b_quiz.json",
+            "quizDataPath": "task/odd/text4b_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 4c",
           "dataSources": {
-            "eventsDataPath": "task/text4c_quiz.json",
-            "quizDataPath": "task/text4c_quiz.json"
+            "eventsDataPath": "task/odd/text4c_quiz.json",
+            "quizDataPath": "task/odd/text4c_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 5a",
           "dataSources": {
-            "eventsDataPath": "task/text5a_quiz.json",
-            "quizDataPath": "task/text5a_quiz.json"
+            "eventsDataPath": "task/odd/text5a_quiz.json",
+            "quizDataPath": "task/odd/text5a_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 5b",
           "dataSources": {
-            "eventsDataPath": "task/text5b_quiz.json",
-            "quizDataPath": "task/text5b_quiz.json"
+            "eventsDataPath": "task/odd/text5b_quiz.json",
+            "quizDataPath": "task/odd/text5b_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 5c",
           "dataSources": {
-            "eventsDataPath": "task/text5c_quiz.json",
-            "quizDataPath": "task/text5c_quiz.json"
+            "eventsDataPath": "task/odd/text5c_quiz.json",
+            "quizDataPath": "task/odd/text5c_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 6a",
           "dataSources": {
-            "eventsDataPath": "task/text6a_quiz.json",
-            "quizDataPath": "task/text6a_quiz.json"
+            "eventsDataPath": "task/odd/text6a_quiz.json",
+            "quizDataPath": "task/odd/text6a_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 6b",
           "dataSources": {
-            "eventsDataPath": "task/text6b_quiz.json",
-            "quizDataPath": "task/text6b_quiz.json"
+            "eventsDataPath": "task/odd/text6b_quiz.json",
+            "quizDataPath": "task/odd/text6b_quiz.json"
           }
         },
         {
           "type": "task",
           "title": "text 6c",
           "dataSources": {
-            "eventsDataPath": "task/text6c_quiz.json",
-            "quizDataPath": "task/text6c_quiz.json"
+            "eventsDataPath": "task/odd/text6c_quiz.json",
+            "quizDataPath": "task/odd/text6c_quiz.json"
           }
         },
         { "type": "complete", "title": "Study Completed" }

@@ -1,0 +1,142 @@
+{
+  "events": [
+    {
+      "index": 1,
+      "text": "Russia launched a full-scale invasion of Ukraine in February 2022 and by 2024 had captured over 4,000 square kilometers of additional territory, resulting in Russian occupation of roughly 20 percent of Ukraine.",
+      "short_text": "Russia occupied 20% of Ukraine by 2024 after launching a full-scale invasion in 2022.",
+      "temporal_anchoring": {
+        "real_time": ["2022-02", "2024"],
+        "narrative_time": 1
+      },
+      "entities": [
+        { "id": "russia", "name": "Russia", "social_role": "country" },
+        { "id": "ukraine", "name": "Ukraine", "social_role": "country" }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "armed conflict"],
+        "sentiment": { "polarity": "negative", "intensity": 8 }
+      }
+    },
+    {
+      "index": 2,
+      "text": "Throughout 2024, Russia continued its bombardment of Ukrainian cities, while Ukraine used drone attacks against Russian military targets. These hostilities caused over 40,000 civilian casualties, 3.7 million internally displaced persons, and 6.9 million refugees. Humanitarian needs surged to 12.7 million people.",
+      "short_text": "Continued fighting in 2024 caused tens of thousands of casualties and mass displacement.",
+      "temporal_anchoring": { "real_time": "2024", "narrative_time": 2 },
+      "entities": [
+        { "id": "russia", "name": "Russia", "social_role": "country" },
+        { "id": "ukraine", "name": "Ukraine", "social_role": "country" }
+      ],
+      "topic": {
+        "main_topic": "unrest, conflicts and war",
+        "sub_topic": ["war", "weaponry", "refugee"],
+        "sentiment": { "polarity": "negative", "intensity": 9 }
+      }
+    },
+    {
+      "index": 3,
+      "text": "The United States provided approximately $407 billion in aid to Ukraine since January 2022, with over $118 billion coming from American sources. This support came amid escalating tensions over the war.",
+      "short_text": "The U.S. has provided $407 billion in aid to Ukraine since 2022.",
+      "temporal_anchoring": {
+        "real_time": "2022-01 to 2024",
+        "narrative_time": 3
+      },
+      "entities": [
+        {
+          "id": "united_states",
+          "name": "United States",
+          "social_role": "country"
+        },
+        { "id": "ukraine", "name": "Ukraine", "social_role": "country" }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["foreign aid"],
+        "sentiment": { "polarity": "positive", "intensity": 6 }
+      }
+    },
+    {
+      "index": 4,
+      "text": "In early 2025, efforts by the Trump administration to negotiate peace led to diplomatic tensions. A contentious White House meeting between Trump, Zelenskyy, and JD Vance ended in acrimony, prompting Trump to suspend U.S. military aid to Ukraine.",
+      "short_text": "Trump suspended U.S. military aid after a tense meeting with Zelenskyy and Vance.",
+      "temporal_anchoring": { "real_time": "2025-02", "narrative_time": 4 },
+      "entities": [
+        {
+          "id": "donald_trump",
+          "name": "Donald Trump",
+          "social_role": "person"
+        },
+        {
+          "id": "volodymyr_zelenskyy",
+          "name": "Volodymyr Zelenskyy",
+          "social_role": "person"
+        },
+        { "id": "jd_vance", "name": "JD Vance", "social_role": "person" },
+        {
+          "id": "united_states",
+          "name": "United States",
+          "social_role": "country"
+        },
+        { "id": "ukraine", "name": "Ukraine", "social_role": "country" }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["foreign aid", "peace negotiations"],
+        "sentiment": { "polarity": "negative", "intensity": 7 }
+      }
+    },
+    {
+      "index": 5,
+      "text": "On March 11, 2025, Ukraine announced its readiness to accept a Trump administration proposal for a thirty-day interim ceasefire, conditional on Russian agreement.",
+      "short_text": "Ukraine accepted a U.S.-proposed 30-day ceasefire, pending Russian approval.",
+      "temporal_anchoring": { "real_time": "2025-03-11", "narrative_time": 5 },
+      "entities": [
+        { "id": "ukraine", "name": "Ukraine", "social_role": "country" },
+        { "id": "russia", "name": "Russia", "social_role": "country" },
+        {
+          "id": "united_states",
+          "name": "United States",
+          "social_role": "country"
+        }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["peace negotiations"],
+        "sentiment": { "polarity": "neutral", "intensity": 4 }
+      }
+    },
+    {
+      "index": 6,
+      "text": "Later in March 2025, the United States reinstated its military and intelligence support for Ukraine, reversing its previous suspension and signaling renewed support for Kyiv amid ongoing negotiations.",
+      "short_text": "U.S. resumed military and intelligence aid to Ukraine in March 2025.",
+      "temporal_anchoring": { "real_time": "2025-03", "narrative_time": 6 },
+      "entities": [
+        {
+          "id": "united_states",
+          "name": "United States",
+          "social_role": "country"
+        },
+        { "id": "ukraine", "name": "Ukraine", "social_role": "country" }
+      ],
+      "topic": {
+        "main_topic": "politics",
+        "sub_topic": ["foreign aid", "espionage and intelligence"],
+        "sentiment": { "polarity": "positive", "intensity": 6 }
+      }
+    }
+  ],
+  "quiz": [
+    {
+      "id": "ir_e_ukr",
+      "question": "Which entity appears more frequently in events across the narrative compared to the other options?",
+      "questionCaption": "",
+      "answer": "Ukraine",
+      "level": "Information Retrieval",
+      "type": "radio-options",
+      "timeLimit": 120,
+      "visual": "entity",
+      "prone": "entity",
+      "options": ["Ukraine", "Russia", "Donetsk", "Luhansk"]
+    }
+  ]
+}
