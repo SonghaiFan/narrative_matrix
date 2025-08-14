@@ -74,29 +74,36 @@ export function processEvents(events: NarrativeEvent[]): DataPoint[] {
 // Get unique topics and their counts
 export function getTopicCounts(
   dataPoints: DataPoint[],
-  viewMode: "main" | "sub" = "sub"
+  viewMode: "main" | "sub" | "sentiment" = "sub"
 ): Map<string, number> {
   const topicCounts = new Map<string, number>();
 
-  if (viewMode === "main") {
-    // Count main topics
-    dataPoints.forEach((point) => {
-      topicCounts.set(
-        point.mainTopic,
-        (topicCounts.get(point.mainTopic) || 0) + 1
-      );
-    });
-  } else {
-    // Only count the first subtopic of each node
-    dataPoints.forEach((point) => {
-      if (point.subTopics.length > 0) {
-        const firstSubTopic = point.subTopics[0];
+  switch (viewMode) {
+    case "main":
+      dataPoints.forEach((point) => {
         topicCounts.set(
-          firstSubTopic,
-          (topicCounts.get(firstSubTopic) || 0) + 1
+          point.mainTopic,
+          (topicCounts.get(point.mainTopic) || 0) + 1
         );
-      }
-    });
+      });
+      break;
+    case "sub":
+      dataPoints.forEach((point) => {
+        if (point.subTopics.length > 0) {
+          const firstSubTopic = point.subTopics[0];
+          topicCounts.set(
+            firstSubTopic,
+            (topicCounts.get(firstSubTopic) || 0) + 1
+          );
+        }
+      });
+      break;
+    case "sentiment":
+      dataPoints.forEach((point) => {
+        const key = point.sentimentPolarity;
+        topicCounts.set(key, (topicCounts.get(key) || 0) + 1);
+      });
+      break;
   }
 
   return topicCounts;
@@ -129,187 +136,127 @@ export function getScales(
   return { xScale, yScale };
 }
 
+// Topic-specific axes (time on x, categorical band on y)
+export function createAxes(
+  xScale: any, // custom time scale (could be composite)
+  yScale: d3.ScaleBand<string>,
+  config = TOPIC_CONFIG
+) {
+  const xAxis = createTimeXAxis(xScale, config);
+  const yAxis = d3
+    .axisLeft(yScale)
+    .tickSize(config.axis.tickSize)
+    .tickPadding(config.axis.tickPadding);
+  return { xAxis, yAxis };
+}
+
 // Calculate dimensions based on container and config
 export function calculateDimensions(
   containerWidth: number,
   containerHeight: number
 ) {
   const { responsive } = SHARED_CONFIG;
-
-  // Ensure container dimensions are within bounds
-  const boundedWidth = Math.min(
-    Math.max(containerWidth, responsive.container.minWidth),
-    responsive.container.maxWidth
-  );
-  const boundedHeight = Math.min(
-    Math.max(containerHeight, responsive.container.minHeight),
-    responsive.container.maxHeight
-  );
-
-  // Calculate usable dimensions accounting for margins
-  const width = Math.max(
-    0,
-    boundedWidth - TOPIC_CONFIG.margin.left - TOPIC_CONFIG.margin.right
-  );
-  const height = Math.max(
-    0,
-    boundedHeight - TOPIC_CONFIG.margin.top - TOPIC_CONFIG.margin.bottom
-  );
-
-  return {
-    containerWidth: boundedWidth,
-    containerHeight: boundedHeight,
-    width,
-    height,
-  };
 }
 
-// Create axes
-export function createAxes(
-  xScale: any, // Using any since we have a custom scale
-  yScale: d3.ScaleBand<string>,
-  config = TOPIC_CONFIG
-) {
-  const xAxis = createTimeXAxis(xScale, config);
-  const yAxis = createTopicYAxis(yScale, config);
-
-  return { xAxis, yAxis };
-}
-
-// Create edges between events based on narrative time
-export function createEdges(
+// NEW DISTANCE-BASED GROUPING (preferred)
+// Groups events on same categorical row by merging sequential pills whose spans overlap
+// or whose gap is <= configured gapPx. This normalizes logic across view modes.
+export function groupPointsByDistance(
   dataPoints: DataPoint[],
-  viewMode: "main" | "sub" = "sub"
-): Edge[] {
-  const edges: Edge[] = [];
-
-  // Sort data points by narrative time
-  const sortedPoints = [...dataPoints].sort(
-    (a, b) => a.narrativeTime - b.narrativeTime
-  );
-
-  // Create edges between all events in narrative time sequence
-  // This will connect events 1->2->4->6->7 in sequence
-  for (let i = 0; i < sortedPoints.length - 1; i++) {
-    const current = sortedPoints[i];
-    const next = sortedPoints[i + 1];
-
-    // Create an edge with the appropriate topic based on viewMode
-    if (viewMode === "main") {
-      edges.push({
-        source: current,
-        target: next,
-        mainTopic: current.mainTopic, // Use main topic for styling
-      });
-    } else {
-      // For subtopics, create an edge for each shared subtopic
-      const sharedSubTopics = current.subTopics.filter((subTopic) =>
-        next.subTopics.includes(subTopic)
-      );
-
-      if (sharedSubTopics.length > 0) {
-        // Create edges for shared subtopics
-        sharedSubTopics.forEach((subTopic) => {
-          edges.push({
-            source: current,
-            target: next,
-            mainTopic: subTopic, // Use subtopic for styling
-          });
-        });
-      } else {
-        // If no shared subtopics, create a default edge
-        edges.push({
-          source: current,
-          target: next,
-          mainTopic: current.subTopics[0] || current.mainTopic, // Fallback to main topic if no subtopics
-        });
-      }
-    }
-  }
-
-  return edges;
-}
-
-// Group overlapping points
-export function groupOverlappingPoints(
-  dataPoints: DataPoint[],
-  xScale: any, // composite or time scale
+  xScale: any,
   yScale: d3.ScaleBand<string>,
-  viewMode: "main" | "sub" = "sub",
-  proximityThreshold: number = 18 // px threshold for grouping close nodes
+  viewMode: "main" | "sub" | "sentiment" = "sub"
 ): GroupedPoint[] {
-  const groups: Map<string, GroupedPoint> = new Map();
+  const groups: GroupedPoint[] = [];
 
-  // For sub view only keep points having at least one sub topic
-  const filtered =
-    viewMode === "sub"
-      ? dataPoints.filter((p) => p.subTopics.length > 0)
-      : dataPoints;
+  // Configured horizontal gap threshold per mode
+  const groupingCfg = TOPIC_CONFIG.grouping;
+  const gapPx =
+    viewMode === "main"
+      ? groupingCfg.main.gapPx
+      : viewMode === "sub"
+      ? groupingCfg.sub.gapPx
+      : 30; // sentiment mode: use a default small gap when clustering continuous single-date pills
 
-  filtered.forEach((point) => {
-    const topic = viewMode === "main" ? point.mainTopic : point.subTopics[0];
-    if (!topic || !yScale(topic)) return; // skip if filtered out
+  // Category accessor
+  const category = (p: DataPoint): string | undefined => {
+    if (viewMode === "main") return p.mainTopic || undefined;
+    if (viewMode === "sub") return p.subTopics[0];
+    return p.sentimentPolarity;
+  };
 
-    const y = yScale(topic)! + yScale.bandwidth() / 2;
-    const centerX = getXPosition(xScale, point.realTime);
+  // Pre-filter for sub mode
+  const filtered = dataPoints.filter((p) =>
+    viewMode === "sub" ? p.subTopics.length > 0 : true
+  );
 
-    // Determine horizontal span of the point (date range vs single date)
-    let spanMin = centerX;
-    let spanMax = centerX;
-    if (Array.isArray(point.realTime)) {
-      const [startDate, endDate] = point.realTime;
-      spanMin = getXPosition(xScale, startDate);
-      spanMax = getXPosition(xScale, endDate);
-      if (spanMax < spanMin) {
-        // Swap if order is reversed for any reason
-        [spanMin, spanMax] = [spanMax, spanMin];
+  // Organize by category
+  const byCat = d3.group(filtered, (p) => category(p) || "__none__");
+
+  byCat.forEach((points, cat) => {
+    if (cat === "__none__" || !yScale(cat)) return;
+    const y = yScale(cat)! + yScale.bandwidth() / 2;
+
+    // Map to span objects
+    const spans = points.map((p) => {
+      let start: number, end: number;
+      if (Array.isArray(p.realTime)) {
+        const [s, e] = p.realTime as [Date, Date];
+        start = getXPosition(xScale, s);
+        end = getXPosition(xScale, e);
+        if (end < start) [start, end] = [end, start];
+      } else {
+        const cx = getXPosition(xScale, p.realTime as Date);
+        start = cx - TOPIC_CONFIG.point.radius; // treat as pill
+        end = cx + TOPIC_CONFIG.point.radius;
       }
-    }
+      return { point: p, start, end };
+    });
 
-    // Try to merge into an existing group on same topic if:
-    // 1. Horizontal spans overlap or are within proximityThreshold
-    // 2. Vertical distance (different topics) not relevant because topic must match
-    // 3. For single points treat them as a small pill of width ~ 2*radius
-    let merged = false;
-    for (const group of groups.values()) {
-      if (group.mainTopic !== topic) continue;
+    // Sort spans left to right
+    spans.sort((a, b) => a.start - b.start);
 
-      // Compute overlap / closeness
-      const gMin = group.minX ?? group.x;
-      const gMax = group.maxX ?? group.x;
-
-      const horizontallyClose =
-        spanMin <= gMax + proximityThreshold &&
-        spanMax >= gMin - proximityThreshold;
-
-      if (horizontallyClose) {
-        group.points.push(point);
-        // Update span bounds
-        group.minX = Math.min(gMin, spanMin);
-        group.maxX = Math.max(gMax, spanMax);
-        // Recompute visual center as midpoint of bounds (so later pills center align)
-        group.x = (group.minX + group.maxX) / 2;
-        merged = true;
-        break;
+    // Sweep and group
+    let current: { start: number; end: number; pts: DataPoint[] } | null = null;
+    spans.forEach(({ point, start, end }) => {
+      if (!current) {
+        current = { start, end, pts: [point] };
+        return;
       }
-    }
-
-    if (!merged) {
-      const key = `group-${groups.size + 1}-${point.index}`;
-      groups.set(key, {
-        key,
-        points: [point],
-        mainTopic: topic,
-        x: (spanMin + spanMax) / 2,
-        y,
-        isExpanded: false,
-        minX: spanMin,
-        maxX: spanMax,
-      });
-    }
+      // If overlapping or gap within threshold
+      const gap = start > current.end ? start - current.end : 0;
+      if (gap <= gapPx) {
+        current.end = Math.max(current.end, end);
+        current.pts.push(point);
+      } else {
+        // finalize current
+        groups.push(buildGroup(current, cat, y));
+        current = { start, end, pts: [point] };
+      }
+    });
+    if (current) groups.push(buildGroup(current, cat, y));
   });
 
-  return Array.from(groups.values());
+  return groups;
+
+  function buildGroup(
+    g: { start: number; end: number; pts: DataPoint[] },
+    cat: string,
+    y: number
+  ): GroupedPoint {
+    const centerX = (g.start + g.end) / 2;
+    const key = `${cat}-dgrp-${groups.length}-${g.pts[0].index}`;
+    return {
+      key,
+      points: g.pts,
+      mainTopic: cat,
+      x: centerX,
+      y,
+      isExpanded: false,
+      minX: g.start + TOPIC_CONFIG.point.radius, // store boundaries aligning with prior logic expectations (center + radius offset)
+      maxX: g.end - TOPIC_CONFIG.point.radius,
+    };
+  }
 }
 
 // Calculate positions for expanded child nodes
@@ -477,48 +424,3 @@ export function updateRectAndText(
 }
 
 // Helper function to calculate proper collapsed dimensions considering date range bounds
-export function calculateCollapsedDimensions(d: GroupedPoint) {
-  const hasDateRangeBounds = d.minX !== undefined && d.maxX !== undefined;
-
-  if (hasDateRangeBounds) {
-    // For date range groups, maintain the capsule shape
-    const spanWidth = Math.max(
-      d.maxX! - d.minX! + TOPIC_CONFIG.point.radius * 2,
-      TOPIC_CONFIG.point.radius * 2
-    );
-
-    return {
-      x: d.minX! - TOPIC_CONFIG.point.radius + spanWidth / 2, // Center of the capsule
-      y: d.y,
-      width: spanWidth,
-      height: TOPIC_CONFIG.point.radius * 2,
-      rx: TOPIC_CONFIG.point.radius,
-      ry: TOPIC_CONFIG.point.radius,
-      rectX: d.minX! - TOPIC_CONFIG.point.radius,
-      rectY: d.y - TOPIC_CONFIG.point.radius,
-    };
-  } else {
-    // For single points, use the traditional logic
-    const dimensions = calculateRectDimensions(
-      d.points.length,
-      TOPIC_CONFIG.point.radius
-    );
-    const position = calculateRectPosition(
-      d.x,
-      d.y,
-      dimensions.width,
-      dimensions.height
-    );
-
-    return {
-      x: d.x,
-      y: d.y,
-      width: dimensions.width,
-      height: dimensions.height,
-      rx: dimensions.rx,
-      ry: dimensions.ry,
-      rectX: position.rectX,
-      rectY: position.rectY,
-    };
-  }
-}

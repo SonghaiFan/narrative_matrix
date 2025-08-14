@@ -21,10 +21,10 @@ interface TopicDisplayProps {
   };
 }
 
-type TopicViewMode = "main" | "sub";
+type TopicViewMode = "main" | "sub" | "sentiment";
 
 export function TopicDisplay({ events, metadata }: TopicDisplayProps) {
-  const [viewMode] = useState<TopicViewMode>("sub");
+  const [viewMode, setViewMode] = useState<TopicViewMode>("sub");
 
   return (
     <VisualizationDisplay
@@ -35,12 +35,12 @@ export function TopicDisplay({ events, metadata }: TopicDisplayProps) {
           className="flex items-center gap-2"
           style={{ height: `${SHARED_CONFIG.header.height * 0.8}px` }}
         >
-          {/* <Select
+          <Select
             value={viewMode}
             onValueChange={(value: TopicViewMode) => setViewMode(value)}
           >
             <SelectTrigger
-              className="text-xs w-[140px] min-h-0"
+              className="text-xs w-[160px] min-h-0"
               style={{ height: `${SHARED_CONFIG.header.height * 0.7}px` }}
             >
               <SelectValue placeholder="Select view mode" />
@@ -52,8 +52,11 @@ export function TopicDisplay({ events, metadata }: TopicDisplayProps) {
               <SelectItem value="sub" className="text-xs py-1">
                 Subtopics
               </SelectItem>
+              <SelectItem value="sentiment" className="text-xs py-1">
+                Sentiment
+              </SelectItem>
             </SelectContent>
-          </Select> */}
+          </Select>
         </div>
       }
     >

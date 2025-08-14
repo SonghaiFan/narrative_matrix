@@ -13,20 +13,19 @@ import {
   getTopTopics,
   getScales,
   createAxes,
-  groupOverlappingPoints,
+  groupPointsByDistance,
   calculateExpandedPositions,
   calculateRectDimensions,
   calculateRectPosition,
   calculateCenterPoint,
   updateRectAndText,
-  calculateCollapsedDimensions,
   type DataPoint,
   type GroupedPoint,
 } from "./topic-visual.utils";
 
 interface TopicVisualProps {
   events: NarrativeEvent[];
-  viewMode: "main" | "sub";
+  viewMode: "main" | "sub" | "sentiment";
   metadata: {
     publishDate: string;
   };
@@ -234,8 +233,12 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
     // Process data
     const dataPoints = processEvents(events);
-    const topicCounts = getTopicCounts(dataPoints);
-    const topTopics = getTopTopics(topicCounts);
+    const topicCounts = getTopicCounts(dataPoints, viewMode);
+    let topTopics = getTopTopics(topicCounts);
+    if (viewMode === "sentiment") {
+      const sentimentOrder = ["positive", "neutral", "negative"];
+      topTopics = sentimentOrder.filter((s) => topicCounts.has(s));
+    }
 
     // Get container dimensions
     const containerWidth = containerRef.current.clientWidth;
@@ -386,7 +389,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     });
 
     // Group overlapping points
-    const groupedPoints = groupOverlappingPoints(
+    const groupedPoints = groupPointsByDistance(
       dataPoints,
       xScale,
       yScale,
@@ -1307,7 +1310,6 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           }
         });
     }
-
   }, [setSelectedEventId, hideTooltip]);
 
   return (
