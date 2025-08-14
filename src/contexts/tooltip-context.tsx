@@ -11,6 +11,8 @@ import {
 import { NarrativeTooltip } from "@/components/features/narrative/shared/narrative-tooltip";
 import { VisualizationType } from "@/types/visualization";
 
+export { type VisualizationType };
+
 export interface TooltipPosition {
   x: number;
   y: number;

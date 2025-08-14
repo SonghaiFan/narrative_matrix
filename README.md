@@ -43,13 +43,10 @@ Narrative Matrix is a Next.js application that provides different narrative visu
 
 All accounts use the same password: `study`
 
-| User Type               | Username   | Role   | Description                                 |
-| ----------------------- | ---------- | ------ | ------------------------------------------- |
-| Domain Expert           | `domain`   | domain | Access to all scenarios and dashboards      |
-| Text User               | `text`     | normal | Access to pure text visualization           |
-| Visualization User      | `viz`      | normal | Access to visualization dashboard           |
-| Text Chat User          | `textchat` | normal | Access to text with chat interface          |
-| Visualization Chat User | `vizchat`  | normal | Access to visualization with chat interface |
+| Username | Description                      |
+| -------- | -------------------------------- |
+| `demo`   | Demo user with access to all scenarios |
+| `admin`  | Admin user with access to all scenarios |
 
 ## Quick Start
 
@@ -96,15 +93,19 @@ narrative_subway/
 
 ## Application Routes
 
-- `/` - Home page with redirection based on user role
-- `/login` - Authentication page
-- `/pure-text` - Text-based narrative visualization
-- `/visualization` - Interactive visualization dashboard
+- `/` - Home page with login
+- `/dashboard` - Main dashboard with scenario selection
+- `/pure-text` - Text-only narrative visualization
+- `/text-visual` - Text with interactive visualizations  
+- `/text-chat` - Text with AI chat interface
+- `/mixed` - Combined visualizations and AI chat
 
-## User Roles and Access Control
+## Navigation Flow
 
-- **Domain Expert**: Has access to all scenarios and can switch between different visualization modes
-- **Normal User**: Automatically directed to their assigned visualization mode
+Simple three-step navigation:
+1. **Login** - Enter credentials on the home page
+2. **Dashboard** - Select from four available scenarios  
+3. **Scenario** - Interact with the chosen visualization approach
 
 ## Key Features
 

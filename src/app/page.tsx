@@ -1,71 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { LoginForm } from "@/components/features/auth/login-form";
-import { useAuth } from "@/contexts/auth-context";
-import { hasCompletedTasks, getTaskProgress } from "@/lib/task-progress";
 
 export default function Home() {
-  const { user, isAuthenticated, isLoading } = useAuth();
-  const router = useRouter();
   const [hasConsented, setHasConsented] = useState(false);
 
-  // Redirect users based on role and task completion status
-  useEffect(() => {
-    if (!isLoading && isAuthenticated && user) {
-      // Redirect domain users to dashboard
-      if (user.role === "domain") {
-        router.push("/dashboard");
-        return;
-      }
-
-      // For normal users, check if they've completed tasks
-      if (user.role === "normal") {
-        const hasCompleted = hasCompletedTasks(user.id);
-
-        if (hasCompleted) {
-          // If tasks are completed, redirect to completion page
-          const progress = getTaskProgress(user.id);
-          if (progress) {
-            router.push(
-              `/completion?total=${progress.totalTasks}&correct=${progress.correctTasks}&type=${progress.studyType}`
-            );
-            return;
-          }
-        }
-
-        // If not completed, redirect to their default scenario's introduction
-        if (user.defaultScenario) {
-          // Map scenario types to their correct routes
-          const routeMap = {
-            "pure-text": "/pure-text/introduction",
-            "text-visual": "/text-visual/introduction",
-            "text-chat": "/text-chat/introduction",
-            mixed: "/mixed/introduction",
-          };
-
-          const defaultScenario = user.defaultScenario || "mixed";
-          router.push(routeMap[defaultScenario] || "/pure-text/introduction");
-        } else {
-          // Fallback to pure-text if no default scenario
-          router.push("/pure-text/introduction");
-        }
-      }
-    }
-  }, [isAuthenticated, isLoading, user, router]);
-
-  // Show loading state
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  // Simple login page - no loading or redirects needed
 
   // Render login form with consent for unauthenticated users
   return (
@@ -175,7 +116,7 @@ export default function Home() {
               <h1 className="text-2xl font-bold text-gray-900">
                 Narrative Matrix
               </h1>
-              <p className="text-gray-500">User Study Platform</p>
+              <p className="text-gray-500">Interactive Demo Platform</p>
             </div>
 
             <div className="flex-grow flex flex-col justify-center">

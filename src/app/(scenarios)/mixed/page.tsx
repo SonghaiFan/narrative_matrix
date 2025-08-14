@@ -5,18 +5,13 @@ import { EntityDisplay } from "@/components/features/narrative/entity/entity-dis
 import { TopicDisplay } from "@/components/features/narrative/topic/topic-display";
 import { PureTextDisplay } from "@/components/features/narrative/pure-text/pure-text-display";
 import { ChatInterface } from "@/components/features/chat/chat-interface";
-import { TaskPanel } from "@/components/features/task/task-panel";
-import { ResizableTwoRowCol } from "@/components/ui/resizable-two-row-col";
 import { ResizableGrid } from "@/components/ui/resizable-grid";
-import { ScenarioPageFactory } from "@/components/features/dashboard/scenario-page-factory";
+import { SimpleScenarioLayout } from "@/components/ui/simple-scenario-layout";
 
 function VisualizationChatScenario() {
   return (
-    <ScenarioPageFactory
-      title="Mixed"
-      renderContent={({ data, user }) => {
-        const { metadata, events } = data;
-
+    <SimpleScenarioLayout title="Mixed">
+      {({ metadata, events }) => {
         const renderPanel = (content: React.ReactNode) => (
           <div className="h-full bg-white border border-gray-200 shadow-sm">
             <div className="h-full overflow-auto">{content}</div>
@@ -39,25 +34,13 @@ function VisualizationChatScenario() {
                 />
               </div>
               <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                <ResizableTwoRowCol
-                  firstComponent={<ChatInterface events={events} />}
-                  secondComponent={
-                    <TaskPanel
-                      events={events}
-                      metadata={metadata}
-                      userRole={user?.role as "domain" | "normal"}
-                    />
-                  }
-                  defaultFirstSize={50}
-                  defaultSecondSize={50}
-                  direction="vertical"
-                />
+                <ChatInterface events={events} />
               </div>
             </div>
           </div>
         );
       }}
-    />
+    </SimpleScenarioLayout>
   );
 }
 

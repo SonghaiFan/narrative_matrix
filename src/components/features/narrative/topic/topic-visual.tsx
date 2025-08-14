@@ -153,9 +153,9 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     d3.select(headerRef.current).selectAll("*").remove();
 
     // Process data
-    const dataPoints = processEvents(events, viewMode);
-    const topicCounts = getTopicCounts(dataPoints, viewMode);
-    const topTopics = getTopTopics(topicCounts, viewMode);
+    const dataPoints = processEvents(events);
+    const topicCounts = getTopicCounts(dataPoints);
+    const topTopics = getTopTopics(topicCounts);
 
     // Get container dimensions
     const containerWidth = containerRef.current.clientWidth;

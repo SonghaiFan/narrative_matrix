@@ -4,45 +4,19 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { AuthState } from "@/types/user";
 import { ScenarioType } from "@/types/scenario";
 
-// Mock users for demonstration
+// Mock users for demonstration - all are domain users for simple demo
 const MOCK_USERS = [
   {
     id: "1",
-    name: "Domain Expert",
-    username: "domain",
+    name: "Demo User",
+    username: "demo",
     role: "domain" as const,
   },
   {
-    id: "2",
-    name: "Text User",
-    username: "text",
-    role: "normal" as const,
-    defaultScenario: "pure-text" as ScenarioType,
-    defaultDataset: "default.json",
-  },
-  {
-    id: "3",
-    name: "Visualization User",
-    username: "viz",
-    role: "normal" as const,
-    defaultScenario: "text-visual" as ScenarioType,
-    defaultDataset: "default.json",
-  },
-  {
-    id: "4",
-    name: "Text Chat User",
-    username: "textchat",
-    role: "normal" as const,
-    defaultScenario: "text-chat" as ScenarioType,
-    defaultDataset: "default.json",
-  },
-  {
-    id: "5",
-    name: "Visualization Chat User",
-    username: "vizchat",
-    role: "normal" as const,
-    defaultScenario: "mixed" as ScenarioType,
-    defaultDataset: "default.json",
+    id: "2", 
+    name: "Admin",
+    username: "admin",
+    role: "domain" as const,
   },
 ];
 
@@ -148,9 +122,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => {
     removeLocalStorage("user");
-    // Clear the introduction cookie
-    document.cookie =
-      "hasCompletedIntro=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     setAuthState({
       user: null,
       isAuthenticated: false,

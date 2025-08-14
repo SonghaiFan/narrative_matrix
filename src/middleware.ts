@@ -18,16 +18,6 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Allow access to completion page (but client-side auth check will still happen)
-  if (pathname.startsWith("/completion")) {
-    return NextResponse.next();
-  }
-
-  // Handle dashboard access - we'll check auth client-side
-  if (pathname === "/dashboard") {
-    return NextResponse.next();
-  }
-
   // Check if the route is a scenario path
   const isScenarioPath =
     pathname.startsWith("/pure-text") ||
@@ -36,17 +26,8 @@ export function middleware(request: NextRequest) {
     pathname.startsWith("/mixed");
 
   if (isScenarioPath) {
-    // Allow direct access to introduction and training pages
-    if (pathname.endsWith("/introduction") || pathname.endsWith("/training")) {
-      return NextResponse.next();
-    }
-
-    // For main scenario pages, we'll check completion status on client
-    const response = NextResponse.next();
-    response.headers.set("X-Check-Auth", "true");
-    response.headers.set("X-Check-Intro-Completion", "true");
-    response.headers.set("X-Check-Training-Completion", "true");
-    return response;
+    // Direct access to all scenario pages
+    return NextResponse.next();
   }
 
   // Default: allow request to proceed
