@@ -1,11 +1,8 @@
 "use client";
 
 import { ReactNode, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/auth-context";
 import { CenterControlProvider } from "@/contexts/center-control-context";
 import { TooltipProvider } from "@/contexts/tooltip-context";
-import { AuthHeader } from "@/components/features/auth/auth-header";
 import { loadDataFile } from "@/lib/data-storage";
 
 interface SimpleScenarioLayoutProps {
@@ -14,20 +11,11 @@ interface SimpleScenarioLayoutProps {
 }
 
 export function SimpleScenarioLayout({ title, children }: SimpleScenarioLayoutProps) {
-  const router = useRouter();
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const [data, setData] = useState<{ metadata: any; events: any[] } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Handle authentication
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push("/");
-    }
-  }, [authLoading, isAuthenticated, router]);
-
-  // Load data
+  // Load data immediately without authentication checks
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -43,22 +31,8 @@ export function SimpleScenarioLayout({ title, children }: SimpleScenarioLayoutPr
       }
     };
 
-    if (isAuthenticated) {
-      fetchData();
-    }
-  }, [isAuthenticated]);
-
-  // Show loading state while checking authentication
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
-        <div className="w-10 h-10 border-3 border-neutral-300 border-t-neutral-600 rounded-full animate-spin mb-2"></div>
-        <div className="text-neutral-600 text-sm">
-          Checking authentication...
-        </div>
-      </div>
-    );
-  }
+    fetchData();
+  }, []);
 
   // Show loading overlay for data loading
   if (isLoading) {
@@ -83,8 +57,18 @@ export function SimpleScenarioLayout({ title, children }: SimpleScenarioLayoutPr
     <CenterControlProvider>
       <TooltipProvider>
         <div className="h-screen w-screen flex flex-col overflow-hidden bg-gray-50">
-          {/* Header */}
-          <AuthHeader title={title} />
+          {/* Simple Header */}
+          <div className="flex-none bg-white border-b border-gray-200 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
+              <a 
+                href="/" 
+                className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                ← Back to Demo Selection
+              </a>
+            </div>
+          </div>
 
           {/* Main content */}
           <div className="flex-1 min-h-0">
