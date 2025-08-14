@@ -486,9 +486,14 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     const { dataPoints, leadTitlePoints } = processEvents(events);
     const sortedPoints = getSortedPoints(dataPoints);
 
-    // Calculate dimensions
+    // Determine dynamic width (prefer parent width to adapt when outer layout resizes)
+    const measuredWidth =
+      containerRef.current.parentElement?.clientWidth ||
+      containerRef.current.clientWidth;
+
+    // Calculate dimensions based on measured outer width
     const { containerWidth, containerHeight, width, height } =
-      getTimeDimensions(containerRef.current.clientWidth, events.length);
+      getTimeDimensions(measuredWidth, events.length);
 
     // Create scales
     const publishDate = new Date(metadata.publishDate);
@@ -627,20 +632,29 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     }
   }, [selectedEventId, updateSelectedEventStyles]);
 
-  // Initial setup and resize handling
+  // Initial setup and resize handling (observe container + window)
   useEffect(() => {
     if (!containerRef.current) return;
 
     const resizeObserver = new ResizeObserver(() => {
       window.requestAnimationFrame(updateVisualization);
     });
-
+    // Observe both container and its parent (for layout-driven width changes)
     resizeObserver.observe(containerRef.current);
+    if (containerRef.current.parentElement) {
+      resizeObserver.observe(containerRef.current.parentElement);
+    }
     resizeObserverRef.current = resizeObserver;
+
+    const handleWindowResize = () => {
+      window.requestAnimationFrame(updateVisualization);
+    };
+    window.addEventListener("resize", handleWindowResize);
 
     updateVisualization();
 
     return () => {
+      window.removeEventListener("resize", handleWindowResize);
       resizeObserverRef.current?.disconnect();
     };
   }, [updateVisualization]);
@@ -650,14 +664,18 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       className="w-full h-full overflow-scroll"
       style={{ scrollbarGutter: "stable" }}
     >
-      <div className="min-w-fit">
+      <div className="w-full">
         <div
           ref={headerRef}
           style={{ height: `${TIME_CONFIG.header.height}px` }}
           className="bg-white sticky top-0 z-10 shadow-sm"
         />
-        <div ref={containerRef}>
-          <svg ref={svgRef} className="w-full" />
+        <div ref={containerRef} className="w-full">
+          <svg
+            ref={svgRef}
+            className="w-full"
+            preserveAspectRatio="xMinYMin slice"
+          />
         </div>
       </div>
     </div>
