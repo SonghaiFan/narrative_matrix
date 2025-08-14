@@ -834,13 +834,6 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         // Show tooltip
         const eventData = d.event || d.points[0].event;
         showTooltip(eventData, event.pageX, event.pageY, "topic");
-
-        // Highlight topic line
-        const topic = d.mainTopic || d.points[0].mainTopic;
-        g.select(`.topic-line-${topic.replace(/\s+/g, "-")}`).attr(
-          "opacity",
-          TOPIC_CONFIG.track.highlightOpacity
-        );
       },
 
       // Mouse out handler
@@ -855,12 +848,6 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         }
 
         handleNodeInteraction.resetNode(node, d, isParent);
-
-        // Reset topic line
-        const topic = d.mainTopic || d.points[0].mainTopic;
-        g.select(`.topic-line-${topic.replace(/\s+/g, "-")}`)
-          .attr("opacity", TOPIC_CONFIG.track.opacity)
-          .attr("stroke-width", TOPIC_CONFIG.track.strokeWidth);
 
         hideTooltip();
       },
@@ -969,24 +956,56 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             .style("opacity", 1)
             .style("pointer-events", "all");
         } else {
-          const { width, height, rx, ry } = calculateRectDimensions(
-            d.points.length,
-            TOPIC_CONFIG.point.radius
-          );
+          // Determine if this group represents a date span (has stored min/max X bounds)
+          const hasDateRangeBounds =
+            d.minX !== undefined &&
+            d.maxX !== undefined &&
+            d.maxX > d.minX + 0.5; // small epsilon
 
-          updateRectAndText(
-            parentRect,
-            countText,
-            x,
-            y,
-            width,
-            height,
-            rx,
-            ry,
-            200,
-            1,
-            "pointer"
-          );
+          if (hasDateRangeBounds) {
+            // Recreate original pill spanning the date range
+            const spanWidth = Math.max(
+              d.maxX! - d.minX! + TOPIC_CONFIG.point.radius * 2,
+              TOPIC_CONFIG.point.radius * 2
+            );
+            const rectX = d.minX! - TOPIC_CONFIG.point.radius;
+            const rectY = d.y - TOPIC_CONFIG.point.radius;
+            const centerX = rectX + spanWidth / 2;
+            const centerY = rectY + TOPIC_CONFIG.point.radius; // since height = diameter
+
+            updateRectAndText(
+              parentRect,
+              countText,
+              centerX,
+              centerY,
+              spanWidth,
+              TOPIC_CONFIG.point.radius * 2,
+              TOPIC_CONFIG.point.radius,
+              TOPIC_CONFIG.point.radius,
+              200,
+              1,
+              "pointer"
+            );
+          } else {
+            const { width, height, rx, ry } = calculateRectDimensions(
+              d.points.length,
+              TOPIC_CONFIG.point.radius
+            );
+
+            updateRectAndText(
+              parentRect,
+              countText,
+              x,
+              y,
+              width,
+              height,
+              rx,
+              ry,
+              200,
+              1,
+              "pointer"
+            );
+          }
 
           // Re-enable mouse events on parent when collapsed
           parentRect.style("pointer-events", "all").style("cursor", "pointer");
@@ -1230,19 +1249,50 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
               TOPIC_CONFIG.point.radius
             );
 
-            updateRectAndText(
-              parentRect,
-              countText,
-              x,
-              y,
-              width,
-              height,
-              rx,
-              ry,
-              200,
-              1,
-              "pointer"
-            );
+            // Determine if this group represents a date span (has stored min/max X bounds)
+            const hasDateRangeBounds =
+              d.minX !== undefined &&
+              d.maxX !== undefined &&
+              d.maxX > d.minX + 0.5; // epsilon
+
+            if (hasDateRangeBounds) {
+              const spanWidth = Math.max(
+                d.maxX! - d.minX! + TOPIC_CONFIG.point.radius * 2,
+                TOPIC_CONFIG.point.radius * 2
+              );
+              const rectX = d.minX! - TOPIC_CONFIG.point.radius;
+              const rectY = d.y - TOPIC_CONFIG.point.radius;
+              const centerX = rectX + spanWidth / 2;
+              const centerY = rectY + TOPIC_CONFIG.point.radius;
+
+              updateRectAndText(
+                parentRect,
+                countText,
+                centerX,
+                centerY,
+                spanWidth,
+                TOPIC_CONFIG.point.radius * 2,
+                TOPIC_CONFIG.point.radius,
+                TOPIC_CONFIG.point.radius,
+                200,
+                1,
+                "pointer"
+              );
+            } else {
+              updateRectAndText(
+                parentRect,
+                countText,
+                x,
+                y,
+                width,
+                height,
+                rx,
+                ry,
+                200,
+                1,
+                "pointer"
+              );
+            }
 
             // Re-enable mouse events on parent when collapsed
             parentRect
@@ -1257,6 +1307,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           }
         });
     }
+
   }, [setSelectedEventId, hideTooltip]);
 
   return (
