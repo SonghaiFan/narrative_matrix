@@ -35,6 +35,8 @@ export interface GroupedPoint {
   x: number;
   y: number;
   isExpanded: boolean;
+  minX?: number; // For date range bounds
+  maxX?: number; // For date range bounds
 }
 
 // Process events into data points
@@ -220,61 +222,78 @@ export function createEdges(
 // Group overlapping points
 export function groupOverlappingPoints(
   dataPoints: DataPoint[],
-  xScale: any, // Using any since we have a custom composite scale
+  xScale: any, // composite or time scale
   yScale: d3.ScaleBand<string>,
-  viewMode: "main" | "sub" = "sub"
+  viewMode: "main" | "sub" = "sub",
+  proximityThreshold: number = 18 // px threshold for grouping close nodes
 ): GroupedPoint[] {
   const groups: Map<string, GroupedPoint> = new Map();
-  const threshold = 10; // Threshold for considering points as overlapping
 
-  // Filter dataPoints for "sub" viewMode to only include points with subtopics
-  const filteredDataPoints =
+  // For sub view only keep points having at least one sub topic
+  const filtered =
     viewMode === "sub"
-      ? dataPoints.filter((point) => point.subTopics.length > 0)
+      ? dataPoints.filter((p) => p.subTopics.length > 0)
       : dataPoints;
 
-  filteredDataPoints.forEach((point) => {
-    const x = getXPosition(xScale, point.realTime);
-    const topic = viewMode === "main" ? point.mainTopic : point.subTopics[0]; // Only use first subtopic
-
-    // Skip if topic is undefined or not in yScale domain (could happen if we filtered out some topics)
-    if (!topic || !yScale(topic)) return;
+  filtered.forEach((point) => {
+    const topic = viewMode === "main" ? point.mainTopic : point.subTopics[0];
+    if (!topic || !yScale(topic)) return; // skip if filtered out
 
     const y = yScale(topic)! + yScale.bandwidth() / 2;
+    const centerX = getXPosition(xScale, point.realTime);
 
-    // Check if this point overlaps with any existing group
-    let foundGroup = false;
-    for (const [key, group] of groups.entries()) {
-      const distance = Math.sqrt(
-        Math.pow(x - group.x, 2) + Math.pow(y - group.y, 2)
-      );
+    // Determine horizontal span of the point (date range vs single date)
+    let spanMin = centerX;
+    let spanMax = centerX;
+    if (Array.isArray(point.realTime)) {
+      const [startDate, endDate] = point.realTime;
+      spanMin = getXPosition(xScale, startDate);
+      spanMax = getXPosition(xScale, endDate);
+      if (spanMax < spanMin) {
+        // Swap if order is reversed for any reason
+        [spanMin, spanMax] = [spanMax, spanMin];
+      }
+    }
 
-      // If the point is close enough to an existing group and has the same topic
-      if (
-        distance < threshold &&
-        ((viewMode === "main" && group.mainTopic === point.mainTopic) ||
-          (viewMode === "sub" && group.mainTopic === point.subTopics[0]))
-      ) {
-        // Add the point to the existing group
+    // Try to merge into an existing group on same topic if:
+    // 1. Horizontal spans overlap or are within proximityThreshold
+    // 2. Vertical distance (different topics) not relevant because topic must match
+    // 3. For single points treat them as a small pill of width ~ 2*radius
+    let merged = false;
+    for (const group of groups.values()) {
+      if (group.mainTopic !== topic) continue;
+
+      // Compute overlap / closeness
+      const gMin = group.minX ?? group.x;
+      const gMax = group.maxX ?? group.x;
+
+      const horizontallyClose =
+        spanMin <= gMax + proximityThreshold &&
+        spanMax >= gMin - proximityThreshold;
+
+      if (horizontallyClose) {
         group.points.push(point);
-        foundGroup = true;
+        // Update span bounds
+        group.minX = Math.min(gMin, spanMin);
+        group.maxX = Math.max(gMax, spanMax);
+        // Recompute visual center as midpoint of bounds (so later pills center align)
+        group.x = (group.minX + group.maxX) / 2;
+        merged = true;
         break;
       }
     }
 
-    // If no overlapping group was found, create a new one
-    if (!foundGroup) {
-      const groupKey = `group-${groups.size + 1}-${point.index}`;
-      const groupTopic =
-        viewMode === "main" ? point.mainTopic : point.subTopics[0];
-
-      groups.set(groupKey, {
-        key: groupKey,
+    if (!merged) {
+      const key = `group-${groups.size + 1}-${point.index}`;
+      groups.set(key, {
+        key,
         points: [point],
-        mainTopic: groupTopic,
-        x,
+        mainTopic: topic,
+        x: (spanMin + spanMax) / 2,
         y,
         isExpanded: false,
+        minX: spanMin,
+        maxX: spanMax,
       });
     }
   });
@@ -444,4 +463,51 @@ export function updateRectAndText(
   }
 
   return { rectX, rectY, centerX, centerY };
+}
+
+// Helper function to calculate proper collapsed dimensions considering date range bounds
+export function calculateCollapsedDimensions(d: GroupedPoint) {
+  const hasDateRangeBounds = d.minX !== undefined && d.maxX !== undefined;
+
+  if (hasDateRangeBounds) {
+    // For date range groups, maintain the capsule shape
+    const spanWidth = Math.max(
+      d.maxX! - d.minX! + TOPIC_CONFIG.point.radius * 2,
+      TOPIC_CONFIG.point.radius * 2
+    );
+
+    return {
+      x: d.minX! - TOPIC_CONFIG.point.radius + spanWidth / 2, // Center of the capsule
+      y: d.y,
+      width: spanWidth,
+      height: TOPIC_CONFIG.point.radius * 2,
+      rx: TOPIC_CONFIG.point.radius,
+      ry: TOPIC_CONFIG.point.radius,
+      rectX: d.minX! - TOPIC_CONFIG.point.radius,
+      rectY: d.y - TOPIC_CONFIG.point.radius,
+    };
+  } else {
+    // For single points, use the traditional logic
+    const dimensions = calculateRectDimensions(
+      d.points.length,
+      TOPIC_CONFIG.point.radius
+    );
+    const position = calculateRectPosition(
+      d.x,
+      d.y,
+      dimensions.width,
+      dimensions.height
+    );
+
+    return {
+      x: d.x,
+      y: d.y,
+      width: dimensions.width,
+      height: dimensions.height,
+      rx: dimensions.rx,
+      ry: dimensions.ry,
+      rectX: position.rectX,
+      rectY: position.rectY,
+    };
+  }
 }

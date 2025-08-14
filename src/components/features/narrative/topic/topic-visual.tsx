@@ -19,6 +19,7 @@ import {
   calculateRectPosition,
   calculateCenterPoint,
   updateRectAndText,
+  calculateCollapsedDimensions,
   type DataPoint,
   type GroupedPoint,
 } from "./topic-visual.utils";
@@ -64,7 +65,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
   // Update node styles based on selectedEventId
   const updateSelectedEventStyles = useCallback(
-    (newSelectedId: number | null) => {
+    (newSelectedId: number | null, xScale?: any) => {
       if (!svgRef.current) return;
 
       // Reset all nodes to default stroke style
@@ -75,6 +76,10 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
       const guideLine = d3.select(svgRef.current).select(".guide-lines");
       guideLine.style("display", "none");
+
+      // Hide all guide elements
+      guideLine.selectAll(".guide-line").style("display", "none");
+      guideLine.selectAll(".guide-label").style("display", "none");
 
       if (newSelectedId === null) return;
 
@@ -98,36 +103,107 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           );
         });
 
-      childNode.attr("stroke", TOPIC_CONFIG.highlight.color);
-
-      // Update guide line based on selected node
+      // Show guide lines for the selected node
+      let selectedNode = null;
       if (!parentNode.empty()) {
+        selectedNode = parentNode.node() as SVGRectElement;
         parentNode.attr("stroke", TOPIC_CONFIG.highlight.color);
-        const x = parseFloat(parentNode.attr("x") || "0");
-        const width = parseFloat(parentNode.attr("width") || "0");
-        const centerX = x + width / 2;
-
-        guideLine
-          .style("display", "block")
-          .select(".vertical")
-          .attr("x1", centerX)
-          .attr("x2", centerX);
       } else if (!childNode.empty()) {
-        const parentKey = childNode.attr("data-parent-key");
-        if (parentKey) {
-          const parentNodeId = getParentNodeId(parentKey);
-          const parentRect = d3.select(`#${parentNodeId}`).select("rect");
-          parentRect.attr("stroke", TOPIC_CONFIG.highlight.color);
+        selectedNode = childNode.node() as SVGRectElement;
+        childNode.attr("stroke", TOPIC_CONFIG.highlight.color);
+      }
 
-          const x = parseFloat(parentRect.attr("x") || "0");
-          const width = parseFloat(parentRect.attr("width") || "0");
-          const centerX = x + width / 2;
+      if (selectedNode && xScale) {
+        // Get the selected node's position and dimensions
+        const x = parseFloat(selectedNode.getAttribute("x") || "0");
+        const width = parseFloat(selectedNode.getAttribute("width") || "0");
+        const y = parseFloat(selectedNode.getAttribute("y") || "0");
+        const height = parseFloat(selectedNode.getAttribute("height") || "0");
 
-          guideLine
-            .style("display", "block")
-            .select(".vertical")
-            .attr("x1", centerX)
-            .attr("x2", centerX);
+        // Calculate guide line positions
+        const centerY = y + height / 2;
+
+        // For date ranges, use the right edge (excluding the end cap)
+        // For single points, use the center
+        const isDateRange = width > TOPIC_CONFIG.point.radius * 2 + 2; // Add small epsilon for rounding
+        const rightEdgeX = isDateRange
+          ? x + width - TOPIC_CONFIG.point.radius // For date ranges, use position just before the end cap
+          : x + width / 2; // For single points, use the center
+
+        // Show and position guide lines
+        guideLine.style("display", "block");
+
+        // Update horizontal guide line
+        guideLine
+          .select(".guide-line.horizontal")
+          .style("display", "block")
+          .attr("y1", centerY)
+          .attr("y2", centerY);
+
+        // Update vertical guide line
+        guideLine
+          .select(".guide-line.vertical")
+          .style("display", "block")
+          .attr("x1", rightEdgeX)
+          .attr("x2", rightEdgeX);
+
+        // Get the selected node's data to show date labels
+        const nodeData = d3.select(selectedNode).datum() as any;
+        if (nodeData) {
+          const startDate = nodeData.realTime || nodeData.points?.[0]?.realTime;
+
+          if (startDate && xScale) {
+            if (Array.isArray(startDate)) {
+              // Date range - show both start and end labels
+              const [start, end] = startDate;
+              const startX = xScale(start);
+              const endX = xScale(end);
+
+              // Start date label
+              guideLine
+                .select(".guide-label.start")
+                .style("display", "block")
+                .attr("x", startX - 5)
+                .text(start.toLocaleDateString());
+
+              // End date label
+              guideLine
+                .select(".guide-label.end")
+                .style("display", "block")
+                .attr("x", endX + 5)
+                .text(end.toLocaleDateString());
+
+              // Show both vertical lines for date ranges
+              guideLine
+                .select(".guide-line.vertical.start")
+                .style("display", "block")
+                .attr("x1", startX)
+                .attr("x2", startX);
+
+              guideLine
+                .select(".guide-line.vertical.end")
+                .style("display", "block")
+                .attr("x1", endX)
+                .attr("x2", endX);
+            } else {
+              // Single date - show single label
+              const dateX = xScale(startDate);
+
+              // Single date label
+              guideLine
+                .select(".guide-label.start")
+                .style("display", "block")
+                .attr("x", dateX - 5)
+                .text(startDate.toLocaleDateString());
+
+              // Single vertical line
+              guideLine
+                .select(".guide-line.vertical")
+                .style("display", "block")
+                .attr("x1", dateX)
+                .attr("x2", dateX);
+            }
+          }
         }
       }
     },
@@ -225,12 +301,41 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         `translate(${TOPIC_CONFIG.margin.left},${TOPIC_CONFIG.margin.top})`
       );
 
-    // Add guide line
+    // Add guide lines
     const guideLine = g
       .append("g")
       .attr("class", "guide-lines")
       .style("display", "none");
 
+    // Horizontal guide line
+    guideLine
+      .append("line")
+      .attr("class", "guide-line horizontal")
+      .attr("x1", 0)
+      .attr("x2", width)
+      .attr("stroke", "#3b82f6")
+      .attr("stroke-width", 2);
+
+    // Start date guide line
+    guideLine
+      .append("line")
+      .attr("class", "guide-line vertical start")
+      .attr("y1", -TOPIC_CONFIG.margin.top)
+      .attr("y2", height + TOPIC_CONFIG.margin.bottom + 1000)
+      .attr("stroke", "#3b82f6")
+      .attr("stroke-width", 2);
+
+    // End date guide line (for date ranges)
+    guideLine
+      .append("line")
+      .attr("class", "guide-line vertical end")
+      .attr("y1", -TOPIC_CONFIG.margin.top)
+      .attr("y2", height + TOPIC_CONFIG.margin.bottom + 1000)
+      .attr("stroke", "#3b82f6")
+      .attr("stroke-width", 2)
+      .style("display", "none");
+
+    // Single date guide line (fallback)
     guideLine
       .append("line")
       .attr("class", "guide-line vertical")
@@ -238,6 +343,28 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .attr("y2", height + TOPIC_CONFIG.margin.bottom + 1000)
       .attr("stroke", "#3b82f6")
       .attr("stroke-width", 2);
+
+    // Start date label
+    guideLine
+      .append("text")
+      .attr("class", "guide-label start")
+      .attr("y", -TOPIC_CONFIG.margin.top + 12)
+      .attr("fill", "#3b82f6")
+      .attr("font-size", "12px")
+      .attr("font-weight", "500")
+      .attr("text-anchor", "end")
+      .style("display", "none");
+
+    // End date label
+    guideLine
+      .append("text")
+      .attr("class", "guide-label end")
+      .attr("y", -TOPIC_CONFIG.margin.top + 12)
+      .attr("fill", "#3b82f6")
+      .attr("font-size", "12px")
+      .attr("font-weight", "500")
+      .attr("text-anchor", "start")
+      .style("display", "none");
 
     // Add y-axis
     g.append("g")
@@ -336,11 +463,46 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .append("rect")
       .attr("class", "parent-point")
       .each(function (d: GroupedPoint) {
-        const { width, height, rx, ry } = calculateRectDimensions(
-          d.points.length,
-          TOPIC_CONFIG.point.radius
-        );
-        const { rectX, rectY } = calculateRectPosition(d.x, d.y, width, height);
+        // Check if this group has calculated date range bounds
+        const hasDateRangeBounds = d.minX !== undefined && d.maxX !== undefined;
+        const firstPoint = d.points[0];
+        const isDateRange = Array.isArray(firstPoint.realTime);
+
+        let rectX, rectY, width, height, rx, ry;
+
+        if (hasDateRangeBounds && d.maxX! > d.minX!) {
+          // Group spans a date range - create capsule spanning the full range
+          const spanWidth = Math.max(
+            d.maxX! - d.minX! + TOPIC_CONFIG.point.radius * 2,
+            TOPIC_CONFIG.point.radius * 2
+          );
+
+          rectX = d.minX! - TOPIC_CONFIG.point.radius;
+          rectY = d.y - TOPIC_CONFIG.point.radius;
+          width = spanWidth;
+          height = TOPIC_CONFIG.point.radius * 2;
+          rx = TOPIC_CONFIG.point.radius;
+          ry = TOPIC_CONFIG.point.radius;
+        } else {
+          // Single point group - use existing logic
+          const dimensions = calculateRectDimensions(
+            d.points.length,
+            TOPIC_CONFIG.point.radius
+          );
+          const position = calculateRectPosition(
+            d.x,
+            d.y,
+            dimensions.width,
+            dimensions.height
+          );
+
+          rectX = position.rectX;
+          rectY = position.rectY;
+          width = dimensions.width;
+          height = dimensions.height;
+          rx = dimensions.rx;
+          ry = dimensions.ry;
+        }
 
         d3.select(this)
           .attr("x", rectX)
@@ -355,7 +517,8 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           .style("cursor", d.points.length > 1 ? "pointer" : "default")
           .attr("data-group-key", d.key.replace(/[^a-zA-Z0-9-_]/g, "_"))
           .attr("data-event-index", d.points[0].event.index)
-          .attr("data-point-count", d.points.length);
+          .attr("data-point-count", d.points.length)
+          .attr("data-has-real-time", hasDateRangeBounds || isDateRange);
 
         if (d.points.length > 1) {
           const { centerX, centerY } = calculateCenterPoint(
@@ -403,14 +566,16 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .attr("class", "child-point-rect")
       .attr("id", (d: ChildPoint) => getChildNodeId(d.event.index))
       .attr("x", (d: ChildPoint) => {
-        const parent = groupedPoints.find(
-          (g) => g.key.replace(/[^a-zA-Z0-9-_]/g, "_") === d.parentKey
-        )!;
-        const positions = calculateExpandedPositions(
-          parent,
-          TOPIC_CONFIG.point.radius
-        );
-        return positions[d.index].x - TOPIC_CONFIG.point.radius;
+        const isDateRange = Array.isArray(d.realTime);
+
+        if (isDateRange) {
+          // For date range child nodes, position at start date
+          const realTimeArray = d.realTime as [Date, Date];
+          return xScale(realTimeArray[0]) - TOPIC_CONFIG.point.radius;
+        } else {
+          // For single date child nodes, align to exact date
+          return xScale(d.realTime as Date) - TOPIC_CONFIG.point.radius;
+        }
       })
       .attr("y", (d: ChildPoint) => {
         const parent = groupedPoints.find(
@@ -422,7 +587,23 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         );
         return positions[d.index].y - TOPIC_CONFIG.point.radius;
       })
-      .attr("width", TOPIC_CONFIG.point.radius * 2)
+      .attr("width", (d: ChildPoint) => {
+        const isDateRange = Array.isArray(d.realTime);
+
+        if (isDateRange) {
+          // For date range child nodes, calculate width spanning the date range
+          const realTimeArray = d.realTime as [Date, Date];
+          const startX = xScale(realTimeArray[0]);
+          const endX = xScale(realTimeArray[1]);
+          return Math.max(
+            endX - startX + TOPIC_CONFIG.point.radius * 2,
+            TOPIC_CONFIG.point.radius * 2
+          );
+        } else {
+          // For single date child nodes, use standard width
+          return TOPIC_CONFIG.point.radius * 2;
+        }
+      })
       .attr("height", TOPIC_CONFIG.point.radius * 2)
       .attr("rx", TOPIC_CONFIG.point.radius)
       .attr("ry", TOPIC_CONFIG.point.radius)
@@ -431,7 +612,8 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth)
       .style("cursor", "pointer")
       .attr("data-parent-key", (d: ChildPoint) => d.parentKey)
-      .attr("data-event-index", (d: ChildPoint) => d.event.index);
+      .attr("data-event-index", (d: ChildPoint) => d.event.index)
+      .attr("data-has-real-time", (d: ChildPoint) => Array.isArray(d.realTime));
 
     // Node interaction handlers
     const handleNodeInteraction = {
@@ -448,15 +630,36 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
         // Only apply hover scaling if the parent is not expanded
         const isExpanded = isParent && d.isExpanded;
+        // Preserve pill length for date range groups: detect via data-has-real-time and width > base
+        const hasRealTimeRange = node.attr("data-has-real-time") === "true";
+        const originalWidth = parseFloat(node.attr("width") || "0");
+        const baseWidth = TOPIC_CONFIG.point.radius * 2;
+        const isRangePill = hasRealTimeRange && originalWidth > baseWidth + 2; // epsilon
         if (!isExpanded) {
-          const { width, height, rx, ry } = calculateRectDimensions(
-            pointCount,
-            TOPIC_CONFIG.point.hoverRadius,
-            false,
-            true
-          );
-
-          updateRectAndText(node, null, x, y, width, height, rx, ry);
+          if (isRangePill) {
+            // Keep width; only subtly thicken height for emphasis
+            const newHeight = baseWidth * 1.2;
+            const rx = TOPIC_CONFIG.point.radius;
+            const ry = TOPIC_CONFIG.point.radius;
+            updateRectAndText(
+              node,
+              null,
+              x,
+              y,
+              originalWidth, // unchanged width
+              newHeight,
+              rx,
+              ry
+            );
+          } else {
+            const { width, height, rx, ry } = calculateRectDimensions(
+              pointCount,
+              TOPIC_CONFIG.point.hoverRadius,
+              false,
+              true
+            );
+            updateRectAndText(node, null, x, y, width, height, rx, ry);
+          }
         }
 
         if (!isParent) {
@@ -524,12 +727,29 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         // Only reset if the parent is not expanded
         const isExpanded = isParent && d.isExpanded;
         if (!isExpanded) {
-          const { width, height, rx, ry } = calculateRectDimensions(
-            pointCount,
-            radius
-          );
-
-          updateRectAndText(node, null, x, y, width, height, rx, ry);
+          const hasRealTimeRange = node.attr("data-has-real-time") === "true";
+            const originalWidth = parseFloat(node.attr("width") || "0");
+            const baseWidth = TOPIC_CONFIG.point.radius * 2;
+            const isRangePill = hasRealTimeRange && originalWidth > baseWidth + 2;
+          if (isRangePill) {
+            // Restore to pill height exactly baseWidth (capsule) while keeping width
+            updateRectAndText(
+              node,
+              null,
+              x,
+              y,
+              originalWidth,
+              baseWidth,
+              TOPIC_CONFIG.point.radius,
+              TOPIC_CONFIG.point.radius
+            );
+          } else {
+            const { width, height, rx, ry } = calculateRectDimensions(
+              pointCount,
+              radius
+            );
+            updateRectAndText(node, null, x, y, width, height, rx, ry);
+          }
         }
 
         if (!isParent) {
@@ -541,12 +761,16 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
               // Only reset parent if it's not expanded
               if (!parentData.isExpanded) {
-                const parentRadius =
-                  parentData.points.length > 1
-                    ? TOPIC_CONFIG.point.radius * 1.2
-                    : TOPIC_CONFIG.point.radius;
-
                 const parentRect = parentGroup.select("rect");
+                const hasRealTimeRange =
+                  parentRect.attr("data-has-real-time") === "true";
+                const originalWidth = parseFloat(
+                  parentRect.attr("width") || "0"
+                );
+                const baseWidth = TOPIC_CONFIG.point.radius * 2;
+                const isRangePill =
+                  hasRealTimeRange && originalWidth > baseWidth + 2;
+
                 const parentX =
                   parseFloat(parentRect.attr("x") || "0") +
                   parseFloat(parentRect.attr("width") || "0") / 2;
@@ -554,26 +778,42 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
                   parseFloat(parentRect.attr("y") || "0") +
                   parseFloat(parentRect.attr("height") || "0") / 2;
 
-                const {
-                  width: parentWidth,
-                  height: parentHeight,
-                  rx: parentRx,
-                  ry: parentRy,
-                } = calculateRectDimensions(
-                  parentData.points.length,
-                  parentRadius
-                );
-
-                updateRectAndText(
-                  parentRect,
-                  null,
-                  parentX,
-                  parentY,
-                  parentWidth,
-                  parentHeight,
-                  parentRx,
-                  parentRy
-                );
+                if (isRangePill) {
+                  updateRectAndText(
+                    parentRect,
+                    null,
+                    parentX,
+                    parentY,
+                    originalWidth,
+                    baseWidth,
+                    TOPIC_CONFIG.point.radius,
+                    TOPIC_CONFIG.point.radius
+                  );
+                } else {
+                  const parentRadius =
+                    parentData.points.length > 1
+                      ? TOPIC_CONFIG.point.radius * 1.2
+                      : TOPIC_CONFIG.point.radius;
+                  const {
+                    width: parentWidth,
+                    height: parentHeight,
+                    rx: parentRx,
+                    ry: parentRy,
+                  } = calculateRectDimensions(
+                    parentData.points.length,
+                    parentRadius
+                  );
+                  updateRectAndText(
+                    parentRect,
+                    null,
+                    parentX,
+                    parentY,
+                    parentWidth,
+                    parentHeight,
+                    parentRx,
+                    parentRy
+                  );
+                }
               }
             }
           }
@@ -682,27 +922,30 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         if (isExpanded) {
           parent.raise();
 
-          const { width, height, rx, ry } = calculateRectDimensions(
-            d.points.length,
-            TOPIC_CONFIG.point.radius,
-            true,
-            false,
-            d.points.length
-          );
+          // Preserve original width (date range pill or sized circle) and only grow height
+          const originalWidth = parseFloat(parentRect.attr("width") || "0");
+          const originalHeight = parseFloat(parentRect.attr("height") || "0");
+          const rxCurrent = parseFloat(parentRect.attr("rx") || `${TOPIC_CONFIG.point.radius}`);
+          const ryCurrent = parseFloat(parentRect.attr("ry") || `${TOPIC_CONFIG.point.radius}`);
 
-          updateRectAndText(
-            parentRect,
-            countText,
-            x,
-            y,
-            width,
-            height,
-            rx,
-            ry,
-            200,
-            0.5,
-            "default" // Change cursor to default when expanded
-          );
+          const verticalSpacing = TOPIC_CONFIG.point.radius * 2.5; // must match calculateExpandedPositions
+          const neededHeight =
+            (d.points.length - 1) * verticalSpacing + TOPIC_CONFIG.point.radius * 3; // padding
+          const expandedHeight = Math.max(originalHeight, neededHeight);
+
+            updateRectAndText(
+              parentRect,
+              countText,
+              x,
+              y,
+              originalWidth, // unchanged width
+              expandedHeight,
+              rxCurrent,
+              ryCurrent,
+              200,
+              0.5,
+              "default"
+            );
 
           // Disable mouse events on parent when expanded
           parentRect.style("pointer-events", "none").style("cursor", "default");
@@ -797,26 +1040,27 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             parseFloat(parentRect.attr("y") || "0") +
             parseFloat(parentRect.attr("height") || "0") / 2;
 
-          const { width, height, rx, ry } = calculateRectDimensions(
-            parent.points.length,
-            TOPIC_CONFIG.point.radius,
-            true,
-            false,
-            parent.points.length
-          );
+          const originalWidth = parseFloat(parentRect.attr("width") || "0");
+          const originalHeight = parseFloat(parentRect.attr("height") || "0");
+          const rxCurrent = parseFloat(parentRect.attr("rx") || `${TOPIC_CONFIG.point.radius}`);
+          const ryCurrent = parseFloat(parentRect.attr("ry") || `${TOPIC_CONFIG.point.radius}`);
+          const verticalSpacing = TOPIC_CONFIG.point.radius * 2.5;
+          const neededHeight =
+            (parent.points.length - 1) * verticalSpacing + TOPIC_CONFIG.point.radius * 3;
+          const expandedHeight = Math.max(originalHeight, neededHeight);
 
-          updateRectAndText(
-            parentRect,
-            countText,
-            x,
-            y,
-            width,
-            height,
-            rx,
-            ry,
-            0,
-            0.5
-          );
+            updateRectAndText(
+              parentRect,
+              countText,
+              x,
+              y,
+              originalWidth,
+              expandedHeight,
+              rxCurrent,
+              ryCurrent,
+              0,
+              0.5
+            );
 
           // Disable mouse events on parent when expanded
           parentRect.style("pointer-events", "none").style("cursor", "default");
@@ -828,7 +1072,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
     // Reapply selection if exists
     if (currentSelection !== null && currentSelection !== undefined) {
-      updateSelectedEventStyles(currentSelection);
+      updateSelectedEventStyles(currentSelection, xScale);
     }
   }, [
     events,
@@ -838,12 +1082,14 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     updateSelectedEventStyles,
   ]);
 
-  // Handle selection changes
+  // Handle selection changes  
   useEffect(() => {
     if (svgRef.current && selectedEventId !== undefined) {
-      updateSelectedEventStyles(selectedEventId);
+      // We need to access xScale from the latest render
+      // Since we don't have direct access here, let's call updateVisualization which will handle it
+      updateVisualization();
     }
-  }, [selectedEventId, updateSelectedEventStyles]);
+  }, [selectedEventId, updateVisualization]);
 
   // Setup resize observer
   useEffect(() => {
