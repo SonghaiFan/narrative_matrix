@@ -117,7 +117,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         childNode.attr("stroke", TOPIC_CONFIG.highlight.color);
       }
 
-  if (SHOW_VERTICAL_TIME_GUIDES && selectedNode && xScale) {
+      if (SHOW_VERTICAL_TIME_GUIDES && selectedNode && xScale) {
         // Get the selected node's position and dimensions
         const x = parseFloat(selectedNode.getAttribute("x") || "0");
         const width = parseFloat(selectedNode.getAttribute("width") || "0");
@@ -311,7 +311,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .attr("class", "guide-lines")
       .style("display", SHOW_VERTICAL_TIME_GUIDES ? "none" : "none");
 
-    if ( SHOW_VERTICAL_TIME_GUIDES) {
+    if (SHOW_VERTICAL_TIME_GUIDES) {
       guideLine
         .append("line")
         .attr("class", "guide-line vertical start")
@@ -716,9 +716,9 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         const isExpanded = isParent && d.isExpanded;
         if (!isExpanded) {
           const hasRealTimeRange = node.attr("data-has-real-time") === "true";
-            const originalWidth = parseFloat(node.attr("width") || "0");
-            const baseWidth = TOPIC_CONFIG.point.radius * 2;
-            const isRangePill = hasRealTimeRange && originalWidth > baseWidth + 2;
+          const originalWidth = parseFloat(node.attr("width") || "0");
+          const baseWidth = TOPIC_CONFIG.point.radius * 2;
+          const isRangePill = hasRealTimeRange && originalWidth > baseWidth + 2;
           if (isRangePill) {
             // Restore to pill height exactly baseWidth (capsule) while keeping width
             updateRectAndText(
@@ -913,27 +913,32 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           // Preserve original width (date range pill or sized circle) and only grow height
           const originalWidth = parseFloat(parentRect.attr("width") || "0");
           const originalHeight = parseFloat(parentRect.attr("height") || "0");
-          const rxCurrent = parseFloat(parentRect.attr("rx") || `${TOPIC_CONFIG.point.radius}`);
-          const ryCurrent = parseFloat(parentRect.attr("ry") || `${TOPIC_CONFIG.point.radius}`);
+          const rxCurrent = parseFloat(
+            parentRect.attr("rx") || `${TOPIC_CONFIG.point.radius}`
+          );
+          const ryCurrent = parseFloat(
+            parentRect.attr("ry") || `${TOPIC_CONFIG.point.radius}`
+          );
 
           const verticalSpacing = TOPIC_CONFIG.point.radius * 2.5; // must match calculateExpandedPositions
           const neededHeight =
-            (d.points.length - 1) * verticalSpacing + TOPIC_CONFIG.point.radius * 3; // padding
+            (d.points.length - 1) * verticalSpacing +
+            TOPIC_CONFIG.point.radius * 3; // padding
           const expandedHeight = Math.max(originalHeight, neededHeight);
 
-            updateRectAndText(
-              parentRect,
-              countText,
-              x,
-              y,
-              originalWidth, // unchanged width
-              expandedHeight,
-              rxCurrent,
-              ryCurrent,
-              200,
-              0.5,
-              "default"
-            );
+          updateRectAndText(
+            parentRect,
+            countText,
+            x,
+            y,
+            originalWidth, // unchanged width
+            expandedHeight,
+            rxCurrent,
+            ryCurrent,
+            200,
+            0.5,
+            "default"
+          );
 
           // Disable mouse events on parent when expanded
           parentRect.style("pointer-events", "none").style("cursor", "default");
@@ -1030,25 +1035,30 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
           const originalWidth = parseFloat(parentRect.attr("width") || "0");
           const originalHeight = parseFloat(parentRect.attr("height") || "0");
-          const rxCurrent = parseFloat(parentRect.attr("rx") || `${TOPIC_CONFIG.point.radius}`);
-          const ryCurrent = parseFloat(parentRect.attr("ry") || `${TOPIC_CONFIG.point.radius}`);
+          const rxCurrent = parseFloat(
+            parentRect.attr("rx") || `${TOPIC_CONFIG.point.radius}`
+          );
+          const ryCurrent = parseFloat(
+            parentRect.attr("ry") || `${TOPIC_CONFIG.point.radius}`
+          );
           const verticalSpacing = TOPIC_CONFIG.point.radius * 2.5;
           const neededHeight =
-            (parent.points.length - 1) * verticalSpacing + TOPIC_CONFIG.point.radius * 3;
+            (parent.points.length - 1) * verticalSpacing +
+            TOPIC_CONFIG.point.radius * 3;
           const expandedHeight = Math.max(originalHeight, neededHeight);
 
-            updateRectAndText(
-              parentRect,
-              countText,
-              x,
-              y,
-              originalWidth,
-              expandedHeight,
-              rxCurrent,
-              ryCurrent,
-              0,
-              0.5
-            );
+          updateRectAndText(
+            parentRect,
+            countText,
+            x,
+            y,
+            originalWidth,
+            expandedHeight,
+            rxCurrent,
+            ryCurrent,
+            0,
+            0.5
+          );
 
           // Disable mouse events on parent when expanded
           parentRect.style("pointer-events", "none").style("cursor", "default");
@@ -1057,6 +1067,70 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         }
       }
     });
+
+    // Auto-expand group if a selected child belongs to a collapsed multi-child group
+    if (currentSelection !== null && currentSelection !== undefined) {
+      const targetGroup = groupedPoints.find(
+        (gp) =>
+          gp.points.length > 1 &&
+          gp.points.some((p) => p.event.index === currentSelection)
+      );
+      if (targetGroup && !targetGroup.isExpanded) {
+        // Mark expanded in state map
+        targetGroup.isExpanded = true;
+        pointStatesRef.current.set(targetGroup.key, {
+          x: targetGroup.x,
+          y: targetGroup.y,
+          isExpanded: true,
+        });
+
+        const parentNode = d3.select(`#${getParentNodeId(targetGroup.key)}`);
+        if (!parentNode.empty()) {
+          const parentRect = parentNode.select("rect");
+          const countText = parentNode.select("text");
+          const children = parentNode.selectAll(".child-point");
+
+          const x =
+            parseFloat(parentRect.attr("x") || "0") +
+            parseFloat(parentRect.attr("width") || "0") / 2;
+          const y =
+            parseFloat(parentRect.attr("y") || "0") +
+            parseFloat(parentRect.attr("height") || "0") / 2;
+
+          // Preserve width, only grow height (same logic as manual expand)
+          const originalWidth = parseFloat(parentRect.attr("width") || "0");
+          const originalHeight = parseFloat(parentRect.attr("height") || "0");
+          const rxCurrent = parseFloat(
+            parentRect.attr("rx") || `${TOPIC_CONFIG.point.radius}`
+          );
+          const ryCurrent = parseFloat(
+            parentRect.attr("ry") || `${TOPIC_CONFIG.point.radius}`
+          );
+          const verticalSpacing = TOPIC_CONFIG.point.radius * 2.5;
+          const neededHeight =
+            (targetGroup.points.length - 1) * verticalSpacing +
+            TOPIC_CONFIG.point.radius * 3;
+          const expandedHeight = Math.max(originalHeight, neededHeight);
+
+          updateRectAndText(
+            parentRect,
+            countText,
+            x,
+            y,
+            originalWidth,
+            expandedHeight,
+            rxCurrent,
+            ryCurrent,
+            0,
+            0.5,
+            "default"
+          );
+
+          parentRect.style("pointer-events", "none").style("cursor", "default");
+          children.style("opacity", 1).style("pointer-events", "all");
+        }
+      }
+    }
 
     // Reapply selection if exists
     if (currentSelection !== null && currentSelection !== undefined) {
@@ -1070,9 +1144,9 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     updateSelectedEventStyles,
   ]);
 
-  // Handle selection changes  
+  // Handle selection changes
   useEffect(() => {
-  if (svgRef.current && selectedEventId !== undefined) {
+    if (svgRef.current && selectedEventId !== undefined) {
       // We need to access xScale from the latest render
       // Since we don't have direct access here, let's call updateVisualization which will handle it
       updateVisualization();

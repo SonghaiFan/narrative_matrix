@@ -47,7 +47,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     // Get guide lines group
     const guideLines = d3.select(svgRef.current).select(".guide-lines");
 
-  // If we have a selected event, highlight it and show guide lines
+    // If we have a selected event, highlight it and show guide lines
     if (selectedEventId !== null && selectedEventId !== undefined) {
       // Find points with matching event index
       const selectedPoints = d3
@@ -85,31 +85,31 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
 
         if (isDateRange) {
           const [startDate, endDate] = realTime as [Date, Date];
-            const startX = scale(startDate);
-            const endX = scale(endDate);
-            // Start line
-            guideLines
-              .select(".vertical.start")
-              .style("display", "block")
-              .attr("x1", startX)
-              .attr("x2", startX);
-            // End line
-            guideLines
-              .select(".vertical.end")
-              .style("display", "block")
-              .attr("x1", endX)
-              .attr("x2", endX);
-            // Labels
-            guideLines
-              .select(".guide-label.start")
-              .style("display", "block")
-              .attr("x", startX - 5)
-              .text(startDate.toLocaleDateString());
-            guideLines
-              .select(".guide-label.end")
-              .style("display", "block")
-              .attr("x", endX + 5)
-              .text(endDate.toLocaleDateString());
+          const startX = scale(startDate);
+          const endX = scale(endDate);
+          // Start line
+          guideLines
+            .select(".vertical.start")
+            .style("display", "block")
+            .attr("x1", startX)
+            .attr("x2", startX);
+          // End line
+          guideLines
+            .select(".vertical.end")
+            .style("display", "block")
+            .attr("x1", endX)
+            .attr("x2", endX);
+          // Labels
+          guideLines
+            .select(".guide-label.start")
+            .style("display", "block")
+            .attr("x", startX - 5)
+            .text(startDate.toLocaleDateString());
+          guideLines
+            .select(".guide-label.end")
+            .style("display", "block")
+            .attr("x", endX + 5)
+            .text(endDate.toLocaleDateString());
         } else {
           // Single date vertical line at center (for single point pill center)
           const singleX = x + width / 2;
@@ -492,8 +492,8 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
 
     // Create scales
     const publishDate = new Date(metadata.publishDate);
-  const { xScale, yScale } = getScales(dataPoints, width, height);
-  xScaleRef.current = xScale;
+    const { xScale, yScale } = getScales(dataPoints, width, height);
+    xScaleRef.current = xScale;
     const publishX = xScale(publishDate);
 
     // Setup SVG
