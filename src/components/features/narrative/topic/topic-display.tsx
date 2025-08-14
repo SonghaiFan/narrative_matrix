@@ -54,32 +54,6 @@ export function TopicDisplay({ events, metadata }: TopicDisplayProps) {
               </SelectItem>
             </SelectContent>
           </Select> */}
-
-          {/* Sentiment Legend */}
-          <div className="flex items-center ml-4 text-xs">
-            <span className="font-medium mr-2">Sentiment:</span>
-            <div className="flex items-center mr-3">
-              <div
-                className="w-3 h-3 rounded-full mr-1"
-                style={{ backgroundColor: getSentimentColor("positive") }}
-              />
-              <span>Positive</span>
-            </div>
-            <div className="flex items-center mr-3">
-              <div
-                className="w-3 h-3 rounded-full mr-1"
-                style={{ backgroundColor: getSentimentColor("negative") }}
-              />
-              <span>Negative</span>
-            </div>
-            <div className="flex items-center">
-              <div
-                className="w-3 h-3 rounded-full mr-1"
-                style={{ backgroundColor: getSentimentColor("neutral") }}
-              />
-              <span>Neutral</span>
-            </div>
-          </div>
         </div>
       }
     >

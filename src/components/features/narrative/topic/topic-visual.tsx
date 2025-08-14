@@ -906,8 +906,8 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         d.isExpanded = isExpanded;
         pointStatesRef.current.set(d.key, { x: d.x, y: d.y, isExpanded });
 
-  // Hide tooltip & clear hover state before toggling expansion
-  hideTooltip();
+        // Hide tooltip & clear hover state before toggling expansion
+        hideTooltip();
 
         const parent = d3.select(this);
         const children = parent.selectAll(".child-point");

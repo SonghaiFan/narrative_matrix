@@ -413,7 +413,8 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
           resetNodeVisual(node as any, d);
           hideTooltip();
           // Toggle selection
-          const newId = d.event.index === selectedEventId ? null : d.event.index;
+          const newId =
+            d.event.index === selectedEventId ? null : d.event.index;
           setSelectedEventId(newId);
         },
       };
