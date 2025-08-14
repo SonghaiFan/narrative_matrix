@@ -1,25 +1,36 @@
 "use client";
-import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
 
-const sentiments: { key: "positive"|"negative"|"neutral"; label: string; desc: string }[] = [
-  { key: "positive", label: "Positive", desc: "Favorable / supportive tone" },
-  { key: "negative", label: "Negative", desc: "Critical / opposing tone" },
-  { key: "neutral", label: "Neutral", desc: "Objective / mixed tone" },
+import { getSentimentColor } from "./color-utils";
+
+const ITEMS: {
+  label: string;
+  polarity: "positive" | "negative" | "neutral";
+}[] = [
+  { label: "Positive", polarity: "positive" },
+  { label: "Negative", polarity: "negative" },
+  { label: "Neutral", polarity: "neutral" },
 ];
 
-export function SentimentLegend() {
+export function SentimentLegend({ compact = false }: { compact?: boolean }) {
   return (
-    <div className="flex items-center gap-4 px-4 py-1 text-xs text-slate-600 select-none">
-      {sentiments.map(s => (
-        <div key={s.key} className="flex items-center gap-2">
+    <div className="flex items-center gap-3 select-none">
+      {ITEMS.map((item) => (
+        <div key={item.polarity} className="flex items-center gap-1.5">
           <span
-            className="inline-block w-3 h-3 rounded-full ring-1 ring-slate-400"
-            style={{ backgroundColor: getSentimentColor(s.key) }}
-            aria-label={`${s.label} sentiment color`}
+            className="inline-block rounded-full border border-gray-300"
+            style={{
+              background: getSentimentColor(item.polarity),
+              width: compact ? 10 : 14,
+              height: compact ? 10 : 14,
+            }}
           />
-          <span className="font-medium">{s.label}</span>
+          <span className="text-xs text-gray-600 leading-none">
+            {item.label}
+          </span>
         </div>
       ))}
     </div>
   );
 }
+
+export default SentimentLegend;
