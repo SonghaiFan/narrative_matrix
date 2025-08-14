@@ -9,6 +9,7 @@ import {
   getTimeDomain,
   getXPosition,
   calculateDimensions,
+  parseFlexibleDate,
 } from "@/components/features/narrative/shared/visualization-utils";
 
 export interface DataPoint {
@@ -36,7 +37,8 @@ export interface LeadTitlePoint {
   hasRealTime: boolean;
 }
 
-// Process events into data points
+// Process events into data points (uses shared parseFlexibleDate)
+
 export function processEvents(events: NarrativeEvent[]): {
   dataPoints: DataPoint[];
   leadTitlePoints: LeadTitlePoint[];
@@ -52,20 +54,29 @@ export function processEvents(events: NarrativeEvent[]): {
   // Separate events into those with and without real_time
   const timePoints = events
     .filter((e) => e.temporal_anchoring.real_time)
-    .map((event, i) => ({
-      event,
-      realTime: event.temporal_anchoring.real_time
-        ? Array.isArray(event.temporal_anchoring.real_time)
-          ? ([
-              new Date(event.temporal_anchoring.real_time[0]),
-              new Date(event.temporal_anchoring.real_time[1]),
-            ] as [Date, Date])
-          : new Date(event.temporal_anchoring.real_time)
-        : null,
-      narrativeTime: event.temporal_anchoring.narrative_time,
-      index: i,
-      hasRealTime: true,
-    }));
+    .map((event, i) => {
+      const rt = event.temporal_anchoring.real_time;
+      let parsed: Date | [Date, Date] | null = null;
+      if (rt) {
+        if (Array.isArray(rt)) {
+          const start = parseFlexibleDate(rt[0], false);
+          const end = parseFlexibleDate(rt[1], true);
+          // Fallback: if one side missing, use the other
+          if (start && end) parsed = [start, end];
+          else if (start) parsed = start;
+          else if (end) parsed = end;
+        } else {
+          parsed = parseFlexibleDate(rt, false);
+        }
+      }
+      return {
+        event,
+        realTime: parsed,
+        narrativeTime: event.temporal_anchoring.narrative_time,
+        index: i,
+        hasRealTime: !!parsed,
+      };
+    });
 
   const noTimePoints = events
     .filter((e) => !e.temporal_anchoring.real_time)

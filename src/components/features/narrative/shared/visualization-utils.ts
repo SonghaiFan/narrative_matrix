@@ -1,6 +1,37 @@
 import * as d3 from "d3";
 import { SHARED_CONFIG } from "./visualization-config";
 
+// Flexible date parsing: supports year, year-month, unpadded month/day, and full dates
+export function parseFlexibleDate(raw: any, isRangeEnd = false): Date | null {
+  if (!raw) return null;
+  if (raw instanceof Date) return raw;
+  if (typeof raw !== "string") {
+    const d = new Date(raw);
+    return isNaN(d.getTime()) ? null : d;
+  }
+  let s = raw.trim();
+  if (/^\d{4}$/.test(s)) {
+    // Year only
+    s = isRangeEnd ? `${s}-12-31` : `${s}-01-01`;
+  } else if (/^\d{4}-\d{1,2}$/.test(s)) {
+    // Year-month
+    const [y, m] = s.split("-");
+    const mm = m.padStart(2, "0");
+    if (isRangeEnd) {
+      const lastDay = new Date(parseInt(y), parseInt(mm), 0).getDate();
+      s = `${y}-${mm}-${String(lastDay).padStart(2, "0")}`;
+    } else {
+      s = `${y}-${mm}-01`;
+    }
+  } else if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(s)) {
+    // Pad month/day
+    const [y, m, d] = s.split("-");
+    s = `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+  }
+  const date = new Date(s);
+  return isNaN(date.getTime()) ? null : date;
+}
+
 // Helper function to check if two labels overlap
 function doLabelsOverlap(
   pos1: number,

@@ -7,6 +7,7 @@ import {
   getDateFromRange,
   getTimeDomain,
   getXPosition,
+  parseFlexibleDate,
 } from "@/components/features/narrative/shared/visualization-utils";
 import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
 
@@ -41,23 +42,33 @@ export interface GroupedPoint {
 
 // Process events into data points
 export function processEvents(events: NarrativeEvent[]): DataPoint[] {
-  const validEvents = events.filter((e) => e.temporal_anchoring.real_time);
-  return validEvents.map((event, index) => ({
-    event,
-    mainTopic: event.topic.main_topic,
-    subTopics: event.topic.sub_topic,
-    narrativeTime: event.temporal_anchoring.narrative_time,
-    sentiment: event.topic.sentiment.intensity,
-    sentimentPolarity: event.topic.sentiment.polarity,
-    text: event.text,
-    realTime: Array.isArray(event.temporal_anchoring.real_time)
-      ? ([
-          new Date(event.temporal_anchoring.real_time[0]),
-          new Date(event.temporal_anchoring.real_time[1]),
-        ] as [Date, Date])
-      : new Date(event.temporal_anchoring.real_time as string),
-    index,
-  }));
+  return events
+    .filter((e) => e.temporal_anchoring.real_time)
+    .map((event, index) => {
+      const rt = event.temporal_anchoring.real_time;
+      let realTime: Date | [Date, Date];
+      if (Array.isArray(rt)) {
+        const start = parseFlexibleDate(rt[0], false);
+        const end = parseFlexibleDate(rt[1], true);
+        if (start && end) realTime = [start, end];
+        else if (start) realTime = start;
+        else if (end) realTime = end;
+        else realTime = new Date(NaN); // will be filtered implicitly later if needed
+      } else {
+        realTime = (parseFlexibleDate(rt, false) as Date) || new Date(NaN);
+      }
+      return {
+        event,
+        mainTopic: event.topic.main_topic,
+        subTopics: event.topic.sub_topic,
+        narrativeTime: event.temporal_anchoring.narrative_time,
+        sentiment: event.topic.sentiment.intensity,
+        sentimentPolarity: event.topic.sentiment.polarity,
+        text: event.text,
+        realTime,
+        index,
+      } as DataPoint;
+    });
 }
 
 // Get unique topics and their counts
