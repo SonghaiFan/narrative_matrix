@@ -94,7 +94,7 @@ export function PureTextSearch({
         type="text"
         className="block w-full pl-10 pr-3 py-1.5 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
         style={{ fontSize: `${text.fontSize.meta}px` }}
-        placeholder="Search article content, timestamps, entities, or topics..."
+        placeholder="Search article content ..."
         value={searchQuery}
         onChange={handleInputChange}
       />
