@@ -45,6 +45,9 @@ interface ChildPoint extends DataPoint {
 }
 
 export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
+  // Feature flag: disable x (vertical) guideline per request
+  // We keep vertical time guide lines (date markers) but disable horizontal guideline.
+  const SHOW_VERTICAL_TIME_GUIDES = true;
   const { selectedEventId, setSelectedEventId } = useCenterControl();
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -75,11 +78,12 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth);
 
       const guideLine = d3.select(svgRef.current).select(".guide-lines");
-      guideLine.style("display", "none");
-
-      // Hide all guide elements
-      guideLine.selectAll(".guide-line").style("display", "none");
-      guideLine.selectAll(".guide-label").style("display", "none");
+      if (SHOW_VERTICAL_TIME_GUIDES) {
+        // Reset visibility (they will be re-shown for selected node)
+        guideLine.style("display", "none");
+        guideLine.selectAll(".guide-line.vertical").style("display", "none");
+        guideLine.selectAll(".guide-label").style("display", "none");
+      }
 
       if (newSelectedId === null) return;
 
@@ -113,7 +117,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         childNode.attr("stroke", TOPIC_CONFIG.highlight.color);
       }
 
-      if (selectedNode && xScale) {
+  if (SHOW_VERTICAL_TIME_GUIDES && selectedNode && xScale) {
         // Get the selected node's position and dimensions
         const x = parseFloat(selectedNode.getAttribute("x") || "0");
         const width = parseFloat(selectedNode.getAttribute("width") || "0");
@@ -305,66 +309,50 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     const guideLine = g
       .append("g")
       .attr("class", "guide-lines")
-      .style("display", "none");
+      .style("display", SHOW_VERTICAL_TIME_GUIDES ? "none" : "none");
 
-    // Horizontal guide line
-    guideLine
-      .append("line")
-      .attr("class", "guide-line horizontal")
-      .attr("x1", 0)
-      .attr("x2", width)
-      .attr("stroke", "#3b82f6")
-      .attr("stroke-width", 2);
-
-    // Start date guide line
-    guideLine
-      .append("line")
-      .attr("class", "guide-line vertical start")
-      .attr("y1", -TOPIC_CONFIG.margin.top)
-      .attr("y2", height + TOPIC_CONFIG.margin.bottom + 1000)
-      .attr("stroke", "#3b82f6")
-      .attr("stroke-width", 2);
-
-    // End date guide line (for date ranges)
-    guideLine
-      .append("line")
-      .attr("class", "guide-line vertical end")
-      .attr("y1", -TOPIC_CONFIG.margin.top)
-      .attr("y2", height + TOPIC_CONFIG.margin.bottom + 1000)
-      .attr("stroke", "#3b82f6")
-      .attr("stroke-width", 2)
-      .style("display", "none");
-
-    // Single date guide line (fallback)
-    guideLine
-      .append("line")
-      .attr("class", "guide-line vertical")
-      .attr("y1", -TOPIC_CONFIG.margin.top)
-      .attr("y2", height + TOPIC_CONFIG.margin.bottom + 1000)
-      .attr("stroke", "#3b82f6")
-      .attr("stroke-width", 2);
-
-    // Start date label
-    guideLine
-      .append("text")
-      .attr("class", "guide-label start")
-      .attr("y", -TOPIC_CONFIG.margin.top + 12)
-      .attr("fill", "#3b82f6")
-      .attr("font-size", "12px")
-      .attr("font-weight", "500")
-      .attr("text-anchor", "end")
-      .style("display", "none");
-
-    // End date label
-    guideLine
-      .append("text")
-      .attr("class", "guide-label end")
-      .attr("y", -TOPIC_CONFIG.margin.top + 12)
-      .attr("fill", "#3b82f6")
-      .attr("font-size", "12px")
-      .attr("font-weight", "500")
-      .attr("text-anchor", "start")
-      .style("display", "none");
+    if ( SHOW_VERTICAL_TIME_GUIDES) {
+      guideLine
+        .append("line")
+        .attr("class", "guide-line vertical start")
+        .attr("y1", -TOPIC_CONFIG.margin.top)
+        .attr("y2", height + TOPIC_CONFIG.margin.bottom + 1000)
+        .attr("stroke", "#3b82f6")
+        .attr("stroke-width", 2);
+      guideLine
+        .append("line")
+        .attr("class", "guide-line vertical end")
+        .attr("y1", -TOPIC_CONFIG.margin.top)
+        .attr("y2", height + TOPIC_CONFIG.margin.bottom + 1000)
+        .attr("stroke", "#3b82f6")
+        .attr("stroke-width", 2)
+        .style("display", "none");
+      guideLine
+        .append("line")
+        .attr("class", "guide-line vertical")
+        .attr("y1", -TOPIC_CONFIG.margin.top)
+        .attr("y2", height + TOPIC_CONFIG.margin.bottom + 1000)
+        .attr("stroke", "#3b82f6")
+        .attr("stroke-width", 2);
+      guideLine
+        .append("text")
+        .attr("class", "guide-label start")
+        .attr("y", -TOPIC_CONFIG.margin.top + 12)
+        .attr("fill", "#3b82f6")
+        .attr("font-size", "12px")
+        .attr("font-weight", "500")
+        .attr("text-anchor", "end")
+        .style("display", "none");
+      guideLine
+        .append("text")
+        .attr("class", "guide-label end")
+        .attr("y", -TOPIC_CONFIG.margin.top + 12)
+        .attr("fill", "#3b82f6")
+        .attr("font-size", "12px")
+        .attr("font-weight", "500")
+        .attr("text-anchor", "start")
+        .style("display", "none");
+    }
 
     // Add y-axis
     g.append("g")
@@ -1084,7 +1072,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
   // Handle selection changes  
   useEffect(() => {
-    if (svgRef.current && selectedEventId !== undefined) {
+  if (svgRef.current && selectedEventId !== undefined) {
       // We need to access xScale from the latest render
       // Since we don't have direct access here, let's call updateVisualization which will handle it
       updateVisualization();

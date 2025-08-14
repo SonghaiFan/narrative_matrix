@@ -31,6 +31,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
   const headerRef = useRef<HTMLDivElement>(null);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const selectedNodeRef = useRef<SVGRectElement | null>(null);
+  const xScaleRef = useRef<any>(null); // store xScale for guide line calculations
   const { showTooltip, hideTooltip, updatePosition } = useTooltip();
 
   // Function to update node styles based on selectedEventId
@@ -46,7 +47,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
     // Get guide lines group
     const guideLines = d3.select(svgRef.current).select(".guide-lines");
 
-    // If we have a selected event, highlight it and show guide lines
+  // If we have a selected event, highlight it and show guide lines
     if (selectedEventId !== null && selectedEventId !== undefined) {
       // Find points with matching event index
       const selectedPoints = d3
@@ -64,25 +65,69 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         const y = parseFloat(selectedPoint.getAttribute("y") || "0");
         const height = parseFloat(selectedPoint.getAttribute("height") || "0");
 
-        // Find the center of the rect for horizontal guide and right edge for vertical guide
         const centerY = y + height / 2;
-        // For date ranges, use the right edge (excluding the end cap)
-        const isDateRange = width > TIME_CONFIG.point.radius * 2 + 2; // Add small epsilon for rounding
-        const rightEdgeX = isDateRange
-          ? x + width - TIME_CONFIG.point.radius // For date ranges, use position just before the end cap
-          : x + width / 2; // For single points, use the center
+        const datum: any = d3.select(selectedPoint).datum();
+        const scale = xScaleRef.current;
+        const hasRealTime = datum?.hasRealTime;
+        const realTime = datum?.realTime;
+        const isDateRange = hasRealTime && Array.isArray(realTime) && scale;
 
-        // Update guide lines position
+        // Always update horizontal line
         guideLines
           .style("display", "block")
           .select(".horizontal")
           .attr("y1", centerY)
           .attr("y2", centerY);
 
-        guideLines
-          .select(".vertical")
-          .attr("x1", rightEdgeX)
-          .attr("x2", rightEdgeX);
+        // Hide all vertical variants first
+        guideLines.selectAll(".guide-line.vertical").style("display", "none");
+        guideLines.selectAll(".guide-label").style("display", "none");
+
+        if (isDateRange) {
+          const [startDate, endDate] = realTime as [Date, Date];
+            const startX = scale(startDate);
+            const endX = scale(endDate);
+            // Start line
+            guideLines
+              .select(".vertical.start")
+              .style("display", "block")
+              .attr("x1", startX)
+              .attr("x2", startX);
+            // End line
+            guideLines
+              .select(".vertical.end")
+              .style("display", "block")
+              .attr("x1", endX)
+              .attr("x2", endX);
+            // Labels
+            guideLines
+              .select(".guide-label.start")
+              .style("display", "block")
+              .attr("x", startX - 5)
+              .text(startDate.toLocaleDateString());
+            guideLines
+              .select(".guide-label.end")
+              .style("display", "block")
+              .attr("x", endX + 5)
+              .text(endDate.toLocaleDateString());
+        } else {
+          // Single date vertical line at center (for single point pill center)
+          const singleX = x + width / 2;
+          guideLines
+            .select(".vertical.single")
+            .style("display", "block")
+            .attr("x1", singleX)
+            .attr("x2", singleX);
+          // Single date label if we have a date
+          if (hasRealTime && realTime && scale) {
+            const date = Array.isArray(realTime) ? realTime[0] : realTime;
+            guideLines
+              .select(".guide-label.start")
+              .style("display", "block")
+              .attr("x", singleX - 5)
+              .text(date.toLocaleDateString());
+          }
+        }
 
         // Store and scroll the selected node into view
         selectedNodeRef.current = selectedPoint;
@@ -187,8 +232,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         .append("g")
         .attr("class", "guide-lines")
         .style("display", "none");
-
-      // Add horizontal guide line
+      // Horizontal line (center alignment along narrative time row)
       guideLines
         .append("line")
         .attr("class", "guide-line horizontal")
@@ -196,15 +240,53 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         .attr("x2", width + TIME_CONFIG.margin.right)
         .attr("stroke", "#3b82f6")
         .attr("stroke-width", 2);
-
-      // Add vertical guide line
+      // Vertical start line
       guideLines
         .append("line")
-        .attr("class", "guide-line vertical")
+        .attr("class", "guide-line vertical start")
         .attr("y1", -TIME_CONFIG.margin.top)
         .attr("y2", height + TIME_CONFIG.margin.bottom + 1000)
         .attr("stroke", "#3b82f6")
-        .attr("stroke-width", 2);
+        .attr("stroke-width", 2)
+        .style("display", "none");
+      // Vertical end line for ranges
+      guideLines
+        .append("line")
+        .attr("class", "guide-line vertical end")
+        .attr("y1", -TIME_CONFIG.margin.top)
+        .attr("y2", height + TIME_CONFIG.margin.bottom + 1000)
+        .attr("stroke", "#3b82f6")
+        .attr("stroke-width", 2)
+        .style("display", "none");
+      // Single date vertical line
+      guideLines
+        .append("line")
+        .attr("class", "guide-line vertical single")
+        .attr("y1", -TIME_CONFIG.margin.top)
+        .attr("y2", height + TIME_CONFIG.margin.bottom + 1000)
+        .attr("stroke", "#3b82f6")
+        .attr("stroke-width", 2)
+        .style("display", "none");
+      // Start date label
+      guideLines
+        .append("text")
+        .attr("class", "guide-label start")
+        .attr("y", -TIME_CONFIG.margin.top + 12)
+        .attr("fill", "#3b82f6")
+        .attr("font-size", "12px")
+        .attr("font-weight", "500")
+        .attr("text-anchor", "end")
+        .style("display", "none");
+      // End date label
+      guideLines
+        .append("text")
+        .attr("class", "guide-label end")
+        .attr("y", -TIME_CONFIG.margin.top + 12)
+        .attr("fill", "#3b82f6")
+        .attr("font-size", "12px")
+        .attr("font-weight", "500")
+        .attr("text-anchor", "start")
+        .style("display", "none");
 
       return guideLines;
     },
@@ -410,7 +492,8 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
 
     // Create scales
     const publishDate = new Date(metadata.publishDate);
-    const { xScale, yScale } = getScales(dataPoints, width, height);
+  const { xScale, yScale } = getScales(dataPoints, width, height);
+  xScaleRef.current = xScale;
     const publishX = xScale(publishDate);
 
     // Setup SVG
