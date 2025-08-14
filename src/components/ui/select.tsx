@@ -18,7 +18,6 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      // Harmonized styling with pure text search input
       "flex w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm leading-5 shadow-sm placeholder:text-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50 h-[34px]",
       className
     )}
