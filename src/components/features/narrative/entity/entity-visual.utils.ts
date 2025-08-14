@@ -710,6 +710,33 @@ export function addEventGroupHoverEffects(
       hideTooltip();
     })
     .on("click", function () {
+      // Explicitly reset hover visuals BEFORE selection change so we don't get a stuck state
+      const group = d3.select(this as SVGGElement);
+      group
+        .selectAll(".event-node")
+        .interrupt()
+        .attr("r", ENTITY_CONFIG.point.radius);
+      group
+        .selectAll(".connector-outer")
+        .interrupt()
+        .attr(
+          "stroke-width",
+          ENTITY_CONFIG.event.connectorStrokeWidth +
+            ENTITY_CONFIG.point.strokeWidth * 1.25
+        );
+      group
+        .selectAll(".connector-inner")
+        .interrupt()
+        .attr(
+          "stroke-width",
+          ENTITY_CONFIG.event.connectorStrokeWidth *
+            ENTITY_CONFIG.event.innerConnectorScale
+        );
+
+      // Hide tooltip explicitly so mouseleave not firing won't leave it visible
+      hideTooltip();
+
+      // Toggle selection
       setSelectedEventId(selectedEventId === event.index ? null : event.index);
     });
 }
@@ -772,6 +799,19 @@ export function addTrackHoverEffects(
       hideTooltip();
     })
     .on("click", function () {
+      // Reset hover state immediately to avoid stuck thicker stroke
+      d3.select(this as SVGLineElement | SVGPathElement)
+        .interrupt()
+        .attr(
+          "stroke-width",
+          selectedTrackId === entity.id
+            ? ENTITY_CONFIG.track.strokeWidth * 1.5
+            : ENTITY_CONFIG.track.strokeWidth
+        )
+        .attr("opacity", selectedTrackId === entity.id ? 0.8 : 0.3);
+
+      hideTooltip();
+
       setSelectedTrackId(selectedTrackId === entity.id ? null : entity.id);
     });
 }

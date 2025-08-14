@@ -303,6 +303,35 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
       publishX: number
     ) => {
       // Define node interaction handlers
+      const resetNodeVisual = (
+        node: d3.Selection<SVGRectElement, any, any, any>,
+        d: any
+      ) => {
+        const originalWidth =
+          d.hasRealTime && Array.isArray(d.realTime)
+            ? Math.max(
+                xScale(d.realTime[1]) -
+                  xScale(d.realTime[0]) +
+                  TIME_CONFIG.point.radius * 2,
+                TIME_CONFIG.point.radius * 2
+              )
+            : TIME_CONFIG.point.radius * 2;
+        // Calculate proper x to keep center
+        const currentX = parseFloat(node.attr("x"));
+        const currentWidth = parseFloat(node.attr("width"));
+        const centerX = currentX + currentWidth / 2;
+        const newX = centerX - originalWidth / 2;
+
+        node
+          .transition()
+          .duration(120)
+          .attr("height", TIME_CONFIG.point.radius * 2)
+          .attr("width", originalWidth)
+          .attr("x", newX)
+          .attr("y", yScale(d.narrativeTime) - TIME_CONFIG.point.radius)
+          .attr("rx", TIME_CONFIG.point.radius)
+          .attr("ry", TIME_CONFIG.point.radius);
+      };
       const handleNodeInteraction = {
         // Mouse enter handler
         mouseEnter(this: any, event: MouseEvent, d: any) {
@@ -353,31 +382,7 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         // Mouse leave handler
         mouseLeave(this: any, event: MouseEvent, d: any) {
           const node = d3.select(this);
-          const originalWidth =
-            d.hasRealTime && Array.isArray(d.realTime)
-              ? Math.max(
-                  xScale(d.realTime[1]) -
-                    xScale(d.realTime[0]) +
-                    TIME_CONFIG.point.radius * 2,
-                  TIME_CONFIG.point.radius * 2
-                )
-              : TIME_CONFIG.point.radius * 2;
-
-          // Calculate proper x position to maintain center alignment
-          const hoverX = parseFloat(node.attr("x"));
-          const hoverWidth = parseFloat(node.attr("width"));
-          const centerX = hoverX + hoverWidth / 2;
-          const newX = centerX - originalWidth / 2;
-
-          node
-            .transition()
-            .duration(150)
-            .attr("height", TIME_CONFIG.point.radius * 2)
-            .attr("width", originalWidth)
-            .attr("x", newX)
-            .attr("y", yScale(d.narrativeTime) - TIME_CONFIG.point.radius)
-            .attr("rx", TIME_CONFIG.point.radius)
-            .attr("ry", TIME_CONFIG.point.radius);
+          resetNodeVisual(node as any, d);
 
           if (d.hasRealTime) {
             const label = labelsGroup.select(`.label-container-${d.index}`);
@@ -403,9 +408,13 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
 
         // Click handler
         click(this: any, event: MouseEvent, d: any) {
-          setSelectedEventId(
-            d.event.index === selectedEventId ? null : d.event.index
-          );
+          const node = d3.select(this);
+          // Clear hover visuals immediately so they don't get stuck if mouseleave doesn't fire after click
+          resetNodeVisual(node as any, d);
+          hideTooltip();
+          // Toggle selection
+          const newId = d.event.index === selectedEventId ? null : d.event.index;
+          setSelectedEventId(newId);
         },
       };
 

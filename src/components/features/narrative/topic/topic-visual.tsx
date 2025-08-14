@@ -877,6 +877,17 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
         hideTooltip();
 
+        // Reset any temporary hover sizing on this child rect
+        const rect = d3.select(this) as any;
+        rect
+          .transition()
+          .duration(120)
+          .attr("width", TOPIC_CONFIG.point.radius * 2)
+          .attr("height", TOPIC_CONFIG.point.radius * 2)
+          .attr("rx", TOPIC_CONFIG.point.radius)
+          .attr("ry", TOPIC_CONFIG.point.radius)
+          .style("opacity", 1);
+
         // Raise parent group
         const parentKey = d3.select(this).attr("data-parent-key");
         if (parentKey) {
@@ -894,6 +905,9 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         const isExpanded = !d.isExpanded;
         d.isExpanded = isExpanded;
         pointStatesRef.current.set(d.key, { x: d.x, y: d.y, isExpanded });
+
+  // Hide tooltip & clear hover state before toggling expansion
+  hideTooltip();
 
         const parent = d3.select(this);
         const children = parent.selectAll(".child-point");
