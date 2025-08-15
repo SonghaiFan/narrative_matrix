@@ -20,9 +20,9 @@ import {
   createEventGroup,
   addEventGroupHoverEffects,
   drawLinkConnectors,
-} from "./entity-visual.utils";
-import { createMetroTrack } from "./entity-visual.utils";
-import { createTrackWithHover } from "./entity-visual.utils";
+} from "./entity-visual-utils";
+import { createMetroTrack } from "./entity-visual-utils";
+import { createTrackWithHover } from "./entity-visual-utils";
 
 export interface EntityVisualProps {
   events: NarrativeEvent[];

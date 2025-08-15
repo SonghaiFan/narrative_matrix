@@ -1,12 +1,11 @@
 "use client";
-
-import { NarrativeEvent } from "@/types/lite";
-import { useEffect, useRef, useCallback } from "react";
-import * as d3 from "d3";
-import { TOPIC_CONFIG } from "./topic-config";
-import { useTooltip } from "@/contexts/tooltip-context";
 import { useCenterControl } from "@/contexts/center-control-context";
-import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
+import { useTooltip } from "@/contexts/tooltip-context";
+import * as d3 from "d3";
+import { useRef, useCallback, useEffect } from "react";
+import { getSentimentColor } from "../shared/color-utils";
+import { TOPIC_CONFIG } from "./topic-config";
+import { TopicVisualProps, PointState, ChildPoint } from "./topic-visual";
 import {
   processEvents,
   getTopicCounts,
@@ -14,34 +13,14 @@ import {
   getScales,
   createAxes,
   groupPointsByDistance,
-  calculateExpandedPositions,
+  type GroupedPoint,
   calculateRectDimensions,
   calculateRectPosition,
   calculateCenterPoint,
-  updateRectAndText,
   type DataPoint,
-  type GroupedPoint,
+  calculateExpandedPositions,
+  updateRectAndText,
 } from "./topic-visual-utils";
-
-interface TopicVisualProps {
-  events: NarrativeEvent[];
-  viewMode: "main" | "sub" | "sentiment";
-  metadata: {
-    publishDate: string;
-  };
-}
-
-interface PointState {
-  x: number;
-  y: number;
-  isExpanded: boolean;
-}
-
-interface ChildPoint extends DataPoint {
-  parentKey: string;
-  index: number;
-  total: number;
-}
 
 export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
   // Feature flag: disable x (vertical) guideline per request

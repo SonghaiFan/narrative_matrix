@@ -422,5 +422,3 @@ export function updateRectAndText(
 
   return { rectX, rectY, centerX, centerY };
 }
-
-// Helper function to calculate proper collapsed dimensions considering date range bounds

@@ -13,7 +13,7 @@ import {
   getTimeDimensions,
   createAxes,
   DataPoint,
-} from "./time-visual.utils";
+} from "./time-visual-utils";
 import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
 
 interface TimeVisualProps {

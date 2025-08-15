@@ -2,7 +2,7 @@
 
 import { NarrativeEvent } from "@/types/lite";
 import { VisualizationDisplay } from "@/components/features/narrative/shared/visualization-display";
-import { NarrativeTopicVisual } from "./topic-visual";
+import { NarrativeTopicVisual } from "./NarrativeTopicVisual";
 import { useState } from "react";
 import {
   Select,
