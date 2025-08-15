@@ -205,7 +205,10 @@ export function EntityVisual({ events }: EntityVisualProps) {
         .style("left", `${x}px`)
         .style("max-width", `${xScale.bandwidth()}px`)
         .on("click", () => {
-          setSelectedTrackId(selectedTrackId === entity.id ? null : entity.id);
+          // Toggle highlight only
+            setSelectedTrackId((prev) =>
+              prev === entity.id ? null : entity.id
+            );
         });
 
       // Show only the entity name with text wrapping
@@ -229,6 +232,27 @@ export function EntityVisual({ events }: EntityVisualProps) {
         .attr("title", entity.name)
         .text(entity.name);
     });
+
+    // Add vertical separator lines between entity columns (skip last)
+    if (allEntities.length > 1) {
+      const headerBarHeight = ENTITY_CONFIG.header.height * 0.7;
+      allEntities.slice(0, -1).forEach((entity) => {
+        const xRight = xScale(entity.id)! + xScale.bandwidth();
+        headerContent
+          .append("div")
+          .attr("class", "absolute")
+          .style("left", `${xRight}px`)
+          .style(
+            "top",
+            `${(ENTITY_CONFIG.header.height - headerBarHeight) / 2}px`
+          )
+          .style("width", "1px")
+          .style("height", `${headerBarHeight}px`)
+          .style("background-color", "#cbd5e1") // slate-300
+          .style("pointer-events", "none")
+          .style("transform", "translateX(-0.5px)");
+      });
+    }
 
     // Create SVG with proper dimensions
     const svg = d3

@@ -18,9 +18,9 @@
       },
       "entities": [
         {
-          "id": "ACTIVIST_1",
+          "id": "GROUP_1",
           "name": "Hamas",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
           "id": "GOVERNMENT_2",
@@ -73,9 +73,9 @@
           "social_role": "government"
         },
         {
-          "id": "ACTIVIST_1",
+          "id": "GROUP_1",
           "name": "Hamas",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
           "id": "OBJECT_8",
@@ -128,9 +128,9 @@
       },
       "entities": [
         {
-          "id": "ACTIVIST_1",
+          "id": "GROUP_1",
           "name": "Hamas",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
           "id": "PUBLIC_21",
@@ -233,14 +233,14 @@
           "social_role": "government"
         },
         {
-          "id": "ACTIVIST_11",
+          "id": "GROUP_11",
           "name": "Hezbollah",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
-          "id": "ACTIVIST_1",
+          "id": "GROUP_1",
           "name": "Hamas",
-          "social_role": "activist"
+          "social_role": "group"
         }
       ],
       "topic": {
@@ -263,9 +263,9 @@
       },
       "entities": [
         {
-          "id": "ACTIVIST_12",
+          "id": "GROUP_12",
           "name": "Houthi rebels",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
           "id": "GOVERNMENT_2",
@@ -278,9 +278,9 @@
           "social_role": "object"
         },
         {
-          "id": "ACTIVIST_14",
+          "id": "GROUP_14",
           "name": "Iran-backed groups",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
           "id": "GOVERNMENT_5",
@@ -917,9 +917,9 @@
       },
       "entities": [
         {
-          "id": "ACTIVIST_1",
+          "id": "GROUP_1",
           "name": "Hamas",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
           "id": "GOVERNMENT_32",
@@ -927,9 +927,9 @@
           "social_role": "government"
         },
         {
-          "id": "ACTIVIST_36",
+          "id": "GROUP_36",
           "name": "Fatah",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
           "id": "OBJECT_8",
@@ -967,9 +967,9 @@
           "social_role": "government"
         },
         {
-          "id": "ACTIVIST_1",
+          "id": "GROUP_1",
           "name": "Hamas",
-          "social_role": "activist"
+          "social_role": "group"
         }
       ],
       "topic": {
@@ -992,14 +992,14 @@
       },
       "entities": [
         {
-          "id": "ACTIVIST_1",
+          "id": "GROUP_1",
           "name": "Hamas",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
-          "id": "ACTIVIST_36",
+          "id": "GROUP_36",
           "name": "Fatah",
-          "social_role": "activist"
+          "social_role": "group"
         }
       ],
       "topic": {
@@ -1022,14 +1022,14 @@
       },
       "entities": [
         {
-          "id": "ACTIVIST_1",
+          "id": "GROUP_1",
           "name": "Hamas",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
-          "id": "ACTIVIST_36",
+          "id": "GROUP_36",
           "name": "Fatah",
-          "social_role": "activist"
+          "social_role": "group"
         }
       ],
       "topic": {
@@ -1052,14 +1052,14 @@
       },
       "entities": [
         {
-          "id": "ACTIVIST_36",
+          "id": "GROUP_36",
           "name": "Fatah",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
-          "id": "ACTIVIST_1",
+          "id": "GROUP_1",
           "name": "Hamas",
-          "social_role": "activist"
+          "social_role": "group"
         }
       ],
       "topic": {
@@ -1082,9 +1082,9 @@
       },
       "entities": [
         {
-          "id": "ACTIVIST_1",
+          "id": "GROUP_1",
           "name": "Hamas",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
           "id": "GOVERNMENT_2",
@@ -1162,9 +1162,9 @@
           "social_role": "government"
         },
         {
-          "id": "ACTIVIST_36",
+          "id": "GROUP_36",
           "name": "Fatah",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
           "id": "PUBLIC_45",
@@ -1242,9 +1242,9 @@
       },
       "entities": [
         {
-          "id": "ACTIVIST_1",
+          "id": "GROUP_1",
           "name": "Hamas",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
           "id": "GOVERNMENT_2",
@@ -1277,14 +1277,14 @@
       },
       "entities": [
         {
-          "id": "ACTIVIST_36",
+          "id": "GROUP_36",
           "name": "Fatah",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
-          "id": "ACTIVIST_1",
+          "id": "GROUP_1",
           "name": "Hamas",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
           "id": "GOVERNMENT_37",
@@ -1412,14 +1412,14 @@
           "social_role": "government"
         },
         {
-          "id": "ACTIVIST_36",
+          "id": "GROUP_36",
           "name": "Fatah",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
-          "id": "ACTIVIST_1",
+          "id": "GROUP_1",
           "name": "Hamas",
-          "social_role": "activist"
+          "social_role": "group"
         }
       ],
       "topic": {
@@ -1477,9 +1477,9 @@
       },
       "entities": [
         {
-          "id": "ACTIVIST_1",
+          "id": "GROUP_1",
           "name": "Hamas",
-          "social_role": "activist"
+          "social_role": "group"
         },
         {
           "id": "GOVERNMENT_2",
@@ -1547,9 +1547,9 @@
           "social_role": "government"
         },
         {
-          "id": "ACTIVIST_1",
+          "id": "GROUP_1",
           "name": "Hamas",
-          "social_role": "activist"
+          "social_role": "group"
         }
       ],
       "topic": {

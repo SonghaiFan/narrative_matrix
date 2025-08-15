@@ -30,6 +30,62 @@ interface EntityDisplayProps {
 export function EntityDisplay({ events }: EntityDisplayProps) {
   const [selectedAttribute, setSelectedAttribute] =
     useState<EntityAttribute>("");
+  // New: selected social roles filter (multi-select)
+  const [selectedRoles, setSelectedRoles] = useState<Set<string>>(new Set());
+
+  // Derive available social roles across events
+  const availableRoles = useMemo(() => {
+    const roles = new Set<string>();
+    events.forEach((e) => {
+      e.entities?.forEach((ent) => {
+        if (ent.social_role) roles.add(ent.social_role);
+      });
+    });
+    return Array.from(roles).sort();
+  }, [events]);
+
+  // Initialize selected roles to all when events / roles change
+  useEffect(() => {
+    if (availableRoles.length && selectedRoles.size === 0) {
+      setSelectedRoles(new Set(availableRoles));
+    } else {
+      // Remove roles that no longer exist
+      const next = new Set(
+        Array.from(selectedRoles).filter((r) => availableRoles.includes(r))
+      );
+      if (next.size !== selectedRoles.size) setSelectedRoles(next);
+    }
+  }, [availableRoles, selectedRoles]);
+
+  const toggleRole = (role: string) => {
+    setSelectedRoles((prev) => {
+      const next = new Set(prev);
+      if (next.has(role)) {
+        next.delete(role);
+      } else {
+        next.add(role);
+      }
+      // Prevent empty set: if user deselects last role, re-add it
+      if (next.size === 0) next.add(role);
+      return next;
+    });
+  };
+
+  // Filter events by selected roles (if not all selected)
+  const filteredEvents = useMemo(() => {
+    if (
+      selectedRoles.size === 0 ||
+      selectedRoles.size === availableRoles.length
+    ) {
+      return events;
+    }
+    return events.map((ev) => ({
+      ...ev,
+      entities: ev.entities.filter(
+        (ent) => ent.social_role && selectedRoles.has(ent.social_role)
+      ),
+    }));
+  }, [events, selectedRoles, availableRoles.length]);
 
   // Function to get available attributes in current entities
   const getAvailableAttributes = useCallback(() => {
@@ -96,10 +152,10 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
       isEmpty={!events.length}
       headerContent={
         <div
-          className="flex items-center gap-2"
+          className="flex items-center gap-4"
           style={{ height: `${SHARED_CONFIG.header.height * 0.8}px` }}
         >
-          {/* <Select
+          <Select
             value={selectedAttribute}
             onValueChange={setSelectedAttribute}
           >
@@ -116,11 +172,38 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select> */}
+          </Select>
+          <div className="flex items-center gap-2 flex-wrap text-[10px]">
+            {availableRoles.map((role) => {
+              const checked = selectedRoles.has(role);
+              return (
+                <label
+                  key={role}
+                  className={[
+                    "flex items-center gap-1 px-2 py-1 rounded border cursor-pointer select-none",
+                    checked
+                      ? "bg-blue-50 border-blue-400"
+                      : "bg-white border-gray-300",
+                    "hover:border-blue-400 transition-colors",
+                  ].join(" ")}
+                >
+                  <input
+                    type="checkbox"
+                    className="h-3 w-3"
+                    checked={checked}
+                    onChange={() => toggleRole(role)}
+                  />
+                  <span className={checked ? "text-blue-700" : "text-gray-600"}>
+                    {role}
+                  </span>
+                </label>
+              );
+            })}
+          </div>
         </div>
       }
     >
-      <EntityVisual events={events} />
+      <EntityVisual events={filteredEvents} />
     </VisualizationDisplay>
   );
 }
