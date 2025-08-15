@@ -206,9 +206,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
         .style("max-width", `${xScale.bandwidth()}px`)
         .on("click", () => {
           // Toggle highlight only
-            setSelectedTrackId((prev) =>
-              prev === entity.id ? null : entity.id
-            );
+          setSelectedTrackId((prev) => (prev === entity.id ? null : entity.id));
         });
 
       // Show only the entity name with text wrapping

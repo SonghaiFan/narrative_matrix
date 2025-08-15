@@ -104,13 +104,13 @@ export function getVisibleEntities(
   // Convert to array and sort
   const sortedEntities = Array.from(entityMentions.values())
     .sort((a, b) => {
-  // Priority: entities in selected event (track selection no longer reorders columns)
+      // Priority: entities in selected event (track selection no longer reorders columns)
       const aInSelectedEvent = selectedEventEntities.has(a.entity.id);
       const bInSelectedEvent = selectedEventEntities.has(b.entity.id);
       if (aInSelectedEvent && !bInSelectedEvent) return -1;
       if (!aInSelectedEvent && bInSelectedEvent) return 1;
 
-  // Next priority: count
+      // Next priority: count
       return b.count - a.count;
     })
     .map((item) => item.entity);
