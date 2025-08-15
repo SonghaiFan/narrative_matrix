@@ -462,13 +462,18 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         let rectX, rectY, width, height, rx, ry;
 
         if (hasDateRangeBounds && d.maxX! > d.minX!) {
-          // Group spans a date range - create capsule spanning the full range
+          // Group spans a date range - extend capsule beyond the first & last point by one extra radius each side
+          // Requested change: extend by an additional radius on BOTH sides for clearer separation.
+          const extraPadding = TOPIC_CONFIG.point.radius * 2; // one radius each side beyond existing cap
+          const coreSpan = d.maxX! - d.minX!; // distance between point centers
           const spanWidth = Math.max(
-            d.maxX! - d.minX! + TOPIC_CONFIG.point.radius * 2,
+            coreSpan +
+              TOPIC_CONFIG.point.radius * 2 /* end caps */ +
+              extraPadding,
             TOPIC_CONFIG.point.radius * 2
           );
 
-          rectX = d.minX! - TOPIC_CONFIG.point.radius;
+          rectX = d.minX! - TOPIC_CONFIG.point.radius - extraPadding / 2;
           rectY = d.y - TOPIC_CONFIG.point.radius;
           width = spanWidth;
           height = TOPIC_CONFIG.point.radius * 2;
