@@ -7,8 +7,8 @@ import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualizat
 export const TOPIC_CONFIG = merge({}, SHARED_CONFIG, {
   grouping: {
     proximityThreshold: 18,
-    main: { gapPx: 50 },
+    main: { gapPx: 25 },
     sub: { gapPx: 25 },
-    sentiment: { gapPx: 30 },
+    sentiment: { gapPx: 10 },
   },
 });

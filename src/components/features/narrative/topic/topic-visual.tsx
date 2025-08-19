@@ -23,7 +23,7 @@ import {
   type GroupedPoint,
 } from "./topic-visual-utils";
 
-interface TopicVisualProps {
+export interface TopicVisualProps {
   events: NarrativeEvent[];
   viewMode: "main" | "sub" | "sentiment";
   metadata: {
@@ -31,13 +31,13 @@ interface TopicVisualProps {
   };
 }
 
-interface PointState {
+export interface PointState {
   x: number;
   y: number;
   isExpanded: boolean;
 }
 
-interface ChildPoint extends DataPoint {
+export interface ChildPoint extends DataPoint {
   parentKey: string;
   index: number;
   total: number;
