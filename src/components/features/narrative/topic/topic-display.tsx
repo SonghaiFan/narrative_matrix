@@ -12,7 +12,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SHARED_CONFIG } from "@/components/features/narrative/shared/visualization-config";
-import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
 
 interface TopicDisplayProps {
   events: NarrativeEvent[];

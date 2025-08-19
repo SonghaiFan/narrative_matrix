@@ -4,7 +4,6 @@ import { TOPIC_CONFIG } from "./topic-config";
 import {
   createTimeScale,
   createTimeXAxis,
-  getDateFromRange,
   getTimeDomain,
   getXPosition,
   parseFlexibleDate,

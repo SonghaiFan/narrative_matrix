@@ -51,7 +51,7 @@ export const SHARED_CONFIG = {
   },
   // Scale settings
   scale: {
-    timeExponent: 3, // Power scale exponent for time distribution
+    timeExponent: 1, // Power scale exponent for time distribution
   },
   // Responsive layout settings
   responsive: {
