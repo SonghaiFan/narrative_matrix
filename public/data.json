@@ -21,19 +21,19 @@
           "id": "GROUP_1",
           "name": "Hamas",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "OBJECT_8",
           "name": "Gaza",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         }
       ],
       "topic": {
@@ -59,37 +59,37 @@
           "id": "GOVERNMENT_5",
           "name": "United States",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_6",
           "name": "Egypt",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_7",
           "name": "Qatar",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GROUP_1",
           "name": "Hamas",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "OBJECT_8",
           "name": "Gaza",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         }
       ],
       "topic": {
@@ -115,7 +115,7 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         }
       ],
       "topic": {
@@ -141,19 +141,19 @@
           "id": "GROUP_1",
           "name": "Hamas",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "PUBLIC_21",
           "name": "Palestinians",
           "social_role": "public",
-          "storyline_category": "Publics"
+          "storyline": "Publics"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         }
       ],
       "topic": {
@@ -179,13 +179,13 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "OBJECT_8",
           "name": "Gaza",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         }
       ],
       "topic": {
@@ -211,13 +211,13 @@
           "id": "GOVERNMENT_9",
           "name": "Netanyahu",
           "social_role": "government",
-          "storyline_category": "Figures"
+          "storyline": "Figures"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         }
       ],
       "topic": {
@@ -243,25 +243,25 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_10",
           "name": "Lebanon",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GROUP_11",
           "name": "Hezbollah",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GROUP_1",
           "name": "Hamas",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         }
       ],
       "topic": {
@@ -287,43 +287,43 @@
           "id": "GROUP_12",
           "name": "Houthi rebels",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "OBJECT_13",
           "name": "Red Sea",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         },
         {
           "id": "GROUP_14",
           "name": "Iran-backed groups",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_5",
           "name": "United States",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_15",
           "name": "Iraq",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_16",
           "name": "Syria",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         }
       ],
       "topic": {
@@ -349,13 +349,13 @@
           "id": "GOVERNMENT_17",
           "name": "Iran",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         }
       ],
       "topic": {
@@ -380,31 +380,31 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "PUBLIC_21",
           "name": "Palestinians",
           "social_role": "public",
-          "storyline_category": "Publics"
+          "storyline": "Publics"
         },
         {
           "id": "GOVERNMENT_18",
           "name": "United Nations",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "OBJECT_19",
           "name": "Resolution 181",
           "social_role": "object",
-          "storyline_category": "Milestones"
+          "storyline": "Milestones"
         },
         {
           "id": "OBJECT_20",
           "name": "Palestine",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         }
       ],
       "topic": {
@@ -430,7 +430,7 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         }
       ],
       "topic": {
@@ -456,31 +456,31 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "PUBLIC_21",
           "name": "Palestinians",
           "social_role": "public",
-          "storyline_category": "Publics"
+          "storyline": "Publics"
         },
         {
           "id": "OBJECT_22",
           "name": "State of Israel",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         },
         {
           "id": "OBJECT_23",
           "name": "West Bank",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         },
         {
           "id": "OBJECT_8",
           "name": "Gaza",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         }
       ],
       "topic": {
@@ -506,31 +506,31 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_6",
           "name": "Egypt",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_24",
           "name": "Jordan",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_16",
           "name": "Syria",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "OBJECT_25",
           "name": "Sinai Peninsula",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         }
       ],
       "topic": {
@@ -556,19 +556,19 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_6",
           "name": "Egypt",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_16",
           "name": "Syria",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         }
       ],
       "topic": {
@@ -594,55 +594,55 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "OBJECT_25",
           "name": "Sinai Peninsula",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         },
         {
           "id": "OBJECT_8",
           "name": "Gaza",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         },
         {
           "id": "OBJECT_23",
           "name": "West Bank",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         },
         {
           "id": "OBJECT_27",
           "name": "East Jerusalem",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         },
         {
           "id": "OBJECT_28",
           "name": "Golan Heights",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         },
         {
           "id": "GOVERNMENT_6",
           "name": "Egypt",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_24",
           "name": "Jordan",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_16",
           "name": "Syria",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         }
       ],
       "topic": {
@@ -668,25 +668,25 @@
           "id": "GOVERNMENT_6",
           "name": "Egypt",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_16",
           "name": "Syria",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "OBJECT_29",
           "name": "Yom Kippur War",
           "social_role": "object",
-          "storyline_category": "Milestones"
+          "storyline": "Milestones"
         }
       ],
       "topic": {
@@ -712,19 +712,19 @@
           "id": "GOVERNMENT_6",
           "name": "Egypt",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "OBJECT_30",
           "name": "Camp David Accords",
           "social_role": "object",
-          "storyline_category": "Milestones"
+          "storyline": "Milestones"
         }
       ],
       "topic": {
@@ -750,19 +750,19 @@
           "id": "OBJECT_30",
           "name": "Camp David Accords",
           "social_role": "object",
-          "storyline_category": "Milestones"
+          "storyline": "Milestones"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "PUBLIC_21",
           "name": "Palestinians",
           "social_role": "public",
-          "storyline_category": "Publics"
+          "storyline": "Publics"
         }
       ],
       "topic": {
@@ -788,25 +788,25 @@
           "id": "PUBLIC_21",
           "name": "Palestinians",
           "social_role": "public",
-          "storyline_category": "Publics"
+          "storyline": "Publics"
         },
         {
           "id": "OBJECT_23",
           "name": "West Bank",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         },
         {
           "id": "OBJECT_8",
           "name": "Gaza",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         }
       ],
       "topic": {
@@ -832,37 +832,37 @@
           "id": "OBJECT_31",
           "name": "Oslo I Accords",
           "social_role": "object",
-          "storyline_category": "Milestones"
+          "storyline": "Milestones"
         },
         {
           "id": "GOVERNMENT_32",
           "name": "Palestinian",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "OBJECT_23",
           "name": "West Bank",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         },
         {
           "id": "OBJECT_8",
           "name": "Gaza",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         },
         {
           "id": "PUBLIC_21",
           "name": "Palestinians",
           "social_role": "public",
-          "storyline_category": "Publics"
+          "storyline": "Publics"
         }
       ],
       "topic": {
@@ -888,19 +888,19 @@
           "id": "OBJECT_33",
           "name": "Oslo II Accords",
           "social_role": "object",
-          "storyline_category": "Milestones"
+          "storyline": "Milestones"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "OBJECT_23",
           "name": "West Bank",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         }
       ],
       "topic": {
@@ -926,31 +926,31 @@
           "id": "GOVERNMENT_32",
           "name": "Palestinian",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "OBJECT_23",
           "name": "West Bank",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         },
         {
           "id": "GOVERNMENT_34",
           "name": "Ariel Sharon",
           "social_role": "government",
-          "storyline_category": "Figures"
+          "storyline": "Figures"
         },
         {
           "id": "OBJECT_35",
           "name": "al-Aqsa mosque",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         }
       ],
       "topic": {
@@ -976,13 +976,13 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "OBJECT_23",
           "name": "West Bank",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         }
       ],
       "topic": {
@@ -1008,25 +1008,25 @@
           "id": "GROUP_1",
           "name": "Hamas",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_32",
           "name": "Palestinian",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GROUP_36",
           "name": "Fatah",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "OBJECT_8",
           "name": "Gaza",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         }
       ],
       "topic": {
@@ -1052,19 +1052,19 @@
           "id": "GOVERNMENT_32",
           "name": "Palestinian",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_5",
           "name": "United States",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GROUP_1",
           "name": "Hamas",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         }
       ],
       "topic": {
@@ -1090,13 +1090,13 @@
           "id": "GROUP_1",
           "name": "Hamas",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GROUP_36",
           "name": "Fatah",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         }
       ],
       "topic": {
@@ -1122,13 +1122,13 @@
           "id": "GROUP_1",
           "name": "Hamas",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GROUP_36",
           "name": "Fatah",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         }
       ],
       "topic": {
@@ -1154,13 +1154,13 @@
           "id": "GROUP_36",
           "name": "Fatah",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GROUP_1",
           "name": "Hamas",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         }
       ],
       "topic": {
@@ -1186,25 +1186,25 @@
           "id": "GROUP_1",
           "name": "Hamas",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "OBJECT_8",
           "name": "Gaza",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         },
         {
           "id": "GOVERNMENT_32",
           "name": "Palestinian",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         }
       ],
       "topic": {
@@ -1230,19 +1230,19 @@
           "id": "PUBLIC_45",
           "name": "Israelis",
           "social_role": "public",
-          "storyline_category": "Publics"
+          "storyline": "Publics"
         },
         {
           "id": "GOVERNMENT_6",
           "name": "Egypt",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "PUBLIC_21",
           "name": "Palestinians",
           "social_role": "public",
-          "storyline_category": "Publics"
+          "storyline": "Publics"
         }
       ],
       "topic": {
@@ -1268,37 +1268,37 @@
           "id": "GOVERNMENT_37",
           "name": "Mahmoud Abbas",
           "social_role": "government",
-          "storyline_category": "Figures"
+          "storyline": "Figures"
         },
         {
           "id": "GROUP_36",
           "name": "Fatah",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "PUBLIC_45",
           "name": "Israelis",
           "social_role": "public",
-          "storyline_category": "Publics"
+          "storyline": "Publics"
         },
         {
           "id": "GOVERNMENT_32",
           "name": "Palestinian",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "PUBLIC_21",
           "name": "Palestinians",
           "social_role": "public",
-          "storyline_category": "Publics"
+          "storyline": "Publics"
         },
         {
           "id": "OBJECT_38",
           "name": "Oslo Accords",
           "social_role": "object",
-          "storyline_category": "Milestones"
+          "storyline": "Milestones"
         }
       ],
       "topic": {
@@ -1324,19 +1324,19 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "PUBLIC_21",
           "name": "Palestinians",
           "social_role": "public",
-          "storyline_category": "Publics"
+          "storyline": "Publics"
         },
         {
           "id": "OBJECT_8",
           "name": "Gaza",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         }
       ],
       "topic": {
@@ -1362,19 +1362,19 @@
           "id": "GROUP_1",
           "name": "Hamas",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "OBJECT_8",
           "name": "Gaza",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         }
       ],
       "topic": {
@@ -1400,37 +1400,37 @@
           "id": "GROUP_36",
           "name": "Fatah",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GROUP_1",
           "name": "Hamas",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_37",
           "name": "Mahmoud Abbas",
           "social_role": "government",
-          "storyline_category": "Figures"
+          "storyline": "Figures"
         },
         {
           "id": "GOVERNMENT_32",
           "name": "Palestinian",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "OBJECT_23",
           "name": "West Bank",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         },
         {
           "id": "OBJECT_8",
           "name": "Gaza",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         }
       ],
       "topic": {
@@ -1456,19 +1456,19 @@
           "id": "GOVERNMENT_39",
           "name": "Trump administration",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_5",
           "name": "United States",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "PUBLIC_21",
           "name": "Palestinians",
           "social_role": "public",
-          "storyline_category": "Publics"
+          "storyline": "Publics"
         }
       ],
       "topic": {
@@ -1494,25 +1494,25 @@
           "id": "GOVERNMENT_39",
           "name": "Trump administration",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_41",
           "name": "Bahrain",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         },
         {
           "id": "GOVERNMENT_42",
           "name": "United Arab Emirates",
           "social_role": "government",
-          "storyline_category": "Mediators"
+          "storyline": "Mediators"
         }
       ],
       "topic": {
@@ -1538,25 +1538,25 @@
           "id": "GOVERNMENT_32",
           "name": "Palestinian",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_37",
           "name": "Mahmoud Abbas",
           "social_role": "government",
-          "storyline_category": "Figures"
+          "storyline": "Figures"
         },
         {
           "id": "GROUP_36",
           "name": "Fatah",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GROUP_1",
           "name": "Hamas",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         }
       ],
       "topic": {
@@ -1582,19 +1582,19 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "PUBLIC_21",
           "name": "Palestinians",
           "social_role": "public",
-          "storyline_category": "Publics"
+          "storyline": "Publics"
         },
         {
           "id": "OBJECT_27",
           "name": "East Jerusalem",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         }
       ],
       "topic": {
@@ -1620,19 +1620,19 @@
           "id": "GROUP_1",
           "name": "Hamas",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_32",
           "name": "Palestinian",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         }
       ],
       "topic": {
@@ -1658,13 +1658,13 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "PUBLIC_21",
           "name": "Palestinians",
           "social_role": "public",
-          "storyline_category": "Publics"
+          "storyline": "Publics"
         }
       ],
       "topic": {
@@ -1690,13 +1690,13 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GROUP_1",
           "name": "Hamas",
           "social_role": "group",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         }
       ],
       "topic": {
@@ -1722,13 +1722,13 @@
           "id": "PUBLIC_21",
           "name": "Palestinians",
           "social_role": "public",
-          "storyline_category": "Publics"
+          "storyline": "Publics"
         },
         {
           "id": "PUBLIC_45",
           "name": "Israelis",
           "social_role": "public",
-          "storyline_category": "Publics"
+          "storyline": "Publics"
         }
       ],
       "topic": {
@@ -1754,13 +1754,13 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "GOVERNMENT_9",
           "name": "Netanyahu",
           "social_role": "government",
-          "storyline_category": "Figures"
+          "storyline": "Figures"
         }
       ],
       "topic": {
@@ -1786,13 +1786,13 @@
           "id": "GOVERNMENT_2",
           "name": "Israel",
           "social_role": "government",
-          "storyline_category": "Actors"
+          "storyline": "Actors"
         },
         {
           "id": "OBJECT_23",
           "name": "West Bank",
           "social_role": "object",
-          "storyline_category": "Territories"
+          "storyline": "Territories"
         }
       ],
       "topic": {
