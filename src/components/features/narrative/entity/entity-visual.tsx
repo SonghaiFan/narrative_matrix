@@ -354,7 +354,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
       .attr("y", -40)
       .attr("fill", "#64748b")
       .attr("text-anchor", "middle")
-      .text("Narrative Time");
+      .text("Paragraph Index");
 
     // Create a map to store event groups
     const eventGroups = new Map();
