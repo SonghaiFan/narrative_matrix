@@ -26,9 +26,10 @@ import { createTrackWithHover } from "./entity-visual-utils";
 
 export interface EntityVisualProps {
   events: NarrativeEvent[];
+  selectedAttribute?: string;
 }
 
-export function EntityVisual({ events }: EntityVisualProps) {
+export function EntityVisual({ events, selectedAttribute = "name" }: EntityVisualProps) {
   const { selectedEventId, setSelectedEventId } = useCenterControl();
   const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -159,7 +160,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
     );
 
     // Get all entity mentions
-    const entityMentions = getEntityMentions(events, "name");
+    const entityMentions = getEntityMentions(events, selectedAttribute);
     const allEntities = getVisibleEntities(
       entityMentions,
       selectedTrackId,
@@ -287,7 +288,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
       allEntities,
       totalColumnsWidth,
       height,
-      "name"
+      selectedAttribute
     );
 
     // Draw entity track
@@ -436,6 +437,7 @@ export function EntityVisual({ events }: EntityVisualProps) {
     }
   }, [
     events,
+    selectedAttribute,
     showTooltip,
     hideTooltip,
     updatePosition,

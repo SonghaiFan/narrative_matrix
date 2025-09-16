@@ -33,29 +33,29 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
   // New: selected social roles filter (multi-select)
   const [selectedRoles, setSelectedRoles] = useState<Set<string>>(new Set());
 
-  // Derive available social roles across events
+  // Derive available values for the selected attribute across events
   const availableRoles = useMemo(() => {
     const roles = new Set<string>();
+    if (!selectedAttribute) return [];
+    
     events.forEach((e) => {
       e.entities?.forEach((ent) => {
-        if (ent.social_role) roles.add(ent.social_role);
+        const value = ent[selectedAttribute];
+        if (value && typeof value === 'string') {
+          roles.add(value);
+        }
       });
     });
     return Array.from(roles).sort();
-  }, [events]);
+  }, [events, selectedAttribute]);
 
   // Initialize selected roles to all when events / roles change
   useEffect(() => {
-    if (availableRoles.length && selectedRoles.size === 0) {
+    if (availableRoles.length > 0) {
+      // Always reset to all available roles when the attribute or available roles change
       setSelectedRoles(new Set(availableRoles));
-    } else {
-      // Remove roles that no longer exist
-      const next = new Set(
-        Array.from(selectedRoles).filter((r) => availableRoles.includes(r))
-      );
-      if (next.size !== selectedRoles.size) setSelectedRoles(next);
     }
-  }, [availableRoles, selectedRoles]);
+  }, [availableRoles]);
 
   const toggleRole = (role: string) => {
     setSelectedRoles((prev) => {
@@ -74,6 +74,7 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
   // Filter events by selected roles (if not all selected)
   const filteredEvents = useMemo(() => {
     if (
+      !selectedAttribute ||
       selectedRoles.size === 0 ||
       selectedRoles.size === availableRoles.length
     ) {
@@ -81,11 +82,12 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
     }
     return events.map((ev) => ({
       ...ev,
-      entities: ev.entities.filter(
-        (ent) => ent.social_role && selectedRoles.has(ent.social_role)
-      ),
+      entities: ev.entities.filter((ent) => {
+        const value = ent[selectedAttribute];
+        return value && selectedRoles.has(value);
+      }),
     }));
-  }, [events, selectedRoles, availableRoles.length]);
+  }, [events, selectedRoles, availableRoles.length, selectedAttribute]);
 
   // Function to get available attributes in current entities
   const getAvailableAttributes = useCallback(() => {
@@ -203,7 +205,7 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
         </div>
       }
     >
-      <EntityVisual events={filteredEvents} />
+      <EntityVisual events={filteredEvents} selectedAttribute={selectedAttribute} />
     </VisualizationDisplay>
   );
 }
