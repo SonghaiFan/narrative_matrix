@@ -878,7 +878,6 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       mouseMove(event: MouseEvent) {
         updatePosition(event.pageX, event.pageY);
       },
-
     };
 
     // Handle click events for parent nodes
@@ -1017,10 +1016,10 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
     childNodes
       .selectAll("rect.child-point-rect")
-      .on("mouseenter", childPillHandlers.mouseEnter)
-      .on("mouseleave", childPillHandlers.mouseLeave)
-      .on("mousemove", childPillHandlers.mouseMove)
-      .on("click", childPillHandlers.click);
+      .on("mouseenter", childPillHandlers.mouseEnter as any)
+      .on("mouseleave", childPillHandlers.mouseLeave as any)
+      .on("mousemove", childPillHandlers.mouseMove as any)
+      .on("click", childPillHandlers.click as any);
 
     // Restore expanded states
     currentExpandedStates.forEach((state, key) => {

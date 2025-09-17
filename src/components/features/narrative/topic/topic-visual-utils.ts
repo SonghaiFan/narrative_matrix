@@ -252,10 +252,7 @@ export function groupPointsByDistance(
     let maxDate: Date | null = null;
 
     g.pts.forEach((point) => {
-      const recordRange = (
-        start: Date | null,
-        end: Date | null
-      ) => {
+      const recordRange = (start: Date | null, end: Date | null) => {
         if (start && !Number.isNaN(start.getTime())) {
           minDate = minDate === null || start < minDate ? start : minDate;
         }
@@ -296,9 +293,10 @@ export function groupPointsByDistance(
 
     let realTime: Date | [Date, Date] | null = null;
     if (minDate && maxDate) {
-      realTime = minDate.getTime() === maxDate.getTime()
-        ? minDate
-        : [minDate, maxDate];
+      realTime =
+        (minDate as Date).getTime() === (maxDate as Date).getTime()
+          ? minDate
+          : [minDate, maxDate];
     }
 
     return {
