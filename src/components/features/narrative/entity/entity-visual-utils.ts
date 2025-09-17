@@ -15,6 +15,24 @@ export interface EntityMention {
   count: number;
 }
 
+export interface EntityColumn {
+  key: string;
+  label: string;
+  totalCount: number;
+  entities: Entity[];
+}
+
+export interface EventColumnNode {
+  columnKey: string;
+  count: number;
+  entities: Entity[];
+}
+
+export interface EventRowData {
+  event: NarrativeEvent;
+  nodes: EventColumnNode[];
+}
+
 // Remove the old calculateDimensions function and use the shared one
 export function getEntityDimensions(
   containerWidth: number,
@@ -23,108 +41,108 @@ export function getEntityDimensions(
   return calculateDimensions(containerWidth, eventsLength, ENTITY_CONFIG);
 }
 
-// Get entity mentions count from events
-export function getEntityMentions(
+export function buildEntityColumnData(
   events: NarrativeEvent[],
   selectedAttribute: string
-): Map<string, EntityMention> {
-  const entityMentions = new Map<string, EntityMention>();
+): { columns: EntityColumn[]; rows: EventRowData[] } {
+  const columnMap = new Map<
+    string,
+    {
+      key: string;
+      label: string;
+      totalCount: number;
+      entitySet: Map<string, Entity>;
+    }
+  >();
+  const rows: EventRowData[] = [];
 
-  // If no attribute is selected, return empty map
-  if (!selectedAttribute) {
-    return entityMentions;
-  }
-
-  // First, collect all unique entities by ID
-  const uniqueEntitiesById = new Map<string, Entity>();
-  const entityCounts = new Map<string, number>();
-
-  // Count occurrences of each entity across all events
   events.forEach((event) => {
-    // Track which entities we've already counted in this event
-    const countedInThisEvent = new Set<string>();
+    const nodesByColumn = new Map<string, EventColumnNode>();
 
     event.entities.forEach((entity) => {
-      // Skip entities that don't have the selected attribute
-      if (
-        entity[selectedAttribute] === undefined ||
-        entity[selectedAttribute] === null ||
-        entity[selectedAttribute] === ""
-      ) {
-        return;
+      let columnKey: string | null = null;
+      let columnLabel: string | null = null;
+
+      if (!selectedAttribute || selectedAttribute === "name") {
+        columnKey = entity.id;
+        columnLabel = entity.name || entity.id;
+      } else {
+        const rawValue = (entity as Record<string, unknown>)[selectedAttribute];
+        if (!rawValue) return;
+        columnKey = String(rawValue).trim();
+        if (!columnKey) return;
+        columnLabel = columnKey;
       }
 
-      // Store unique entity
-      if (!uniqueEntitiesById.has(entity.id)) {
-        uniqueEntitiesById.set(entity.id, entity);
-        entityCounts.set(entity.id, 0);
+      const columnEntry = columnMap.get(columnKey);
+      if (columnEntry) {
+        columnEntry.totalCount += 1;
+        columnEntry.entitySet.set(entity.id, entity);
+      } else {
+        columnMap.set(columnKey, {
+          key: columnKey,
+          label: columnLabel!,
+          totalCount: 1,
+          entitySet: new Map([[entity.id, entity]]),
+        });
       }
 
-      // Only count each unique entity once per event
-      if (!countedInThisEvent.has(entity.id)) {
-        const currentCount = entityCounts.get(entity.id) || 0;
-        entityCounts.set(entity.id, currentCount + 1);
-        countedInThisEvent.add(entity.id);
+      const nodeEntry = nodesByColumn.get(columnKey);
+      if (nodeEntry) {
+        nodeEntry.count += 1;
+        nodeEntry.entities.push(entity);
+      } else {
+        nodesByColumn.set(columnKey, {
+          columnKey,
+          count: 1,
+          entities: [entity],
+        });
       }
+    });
+
+    rows.push({
+      event,
+      nodes: Array.from(nodesByColumn.values()),
     });
   });
 
-  // Create the final EntityMention map using entity ID as the key
-  uniqueEntitiesById.forEach((entity, id) => {
-    const count = entityCounts.get(id) || 0;
-    entityMentions.set(id, { entity, count });
+  const columns = Array.from(columnMap.values())
+    .map((entry) => ({
+      key: entry.key,
+      label: entry.label,
+      totalCount: entry.totalCount,
+      entities: Array.from(entry.entitySet.values()),
+    }))
+    .sort((a, b) => {
+      if (b.totalCount !== a.totalCount) {
+        return b.totalCount - a.totalCount;
+      }
+      return a.label.localeCompare(b.label);
+    });
+
+  const columnIndexMap = new Map<string, number>();
+  columns.forEach((column, index) => {
+    columnIndexMap.set(column.key, index);
   });
 
-  return entityMentions;
-}
+  rows.forEach((row) => {
+    row.nodes.sort((a, b) => {
+      const indexA = columnIndexMap.get(a.columnKey) ?? Number.MAX_SAFE_INTEGER;
+      const indexB = columnIndexMap.get(b.columnKey) ?? Number.MAX_SAFE_INTEGER;
+      return indexA - indexB;
+    });
+  });
 
-// Get top entities by mention count
-export function getVisibleEntities(
-  entityMentions: Map<string, EntityMention>,
-  selectedTrackId: string | null = null,
-  selectedEventId: number | null = null,
-  events: NarrativeEvent[] = []
-): Entity[] {
-  // If no entity mentions, return empty array
-  if (entityMentions.size === 0) {
-    return [];
-  }
-
-  // Get entities related to selected event
-  const selectedEventEntities = new Set<string>();
-  if (selectedEventId !== null) {
-    const selectedEvent = events.find((e) => e.index === selectedEventId);
-    if (selectedEvent) {
-      selectedEvent.entities.forEach((entity) => {
-        selectedEventEntities.add(entity.id);
-      });
-    }
-  }
-
-  // Convert to array and sort
-  const sortedEntities = Array.from(entityMentions.values())
-    .sort((a, b) => {
-      // Priority: entities in selected event (track selection no longer reorders columns)
-      const aInSelectedEvent = selectedEventEntities.has(a.entity.id);
-      const bInSelectedEvent = selectedEventEntities.has(b.entity.id);
-      if (aInSelectedEvent && !bInSelectedEvent) return -1;
-      if (!aInSelectedEvent && bInSelectedEvent) return 1;
-
-      // Next priority: count
-      return b.count - a.count;
-    })
-    .map((item) => item.entity);
-
-  return sortedEntities;
+  return { columns, rows };
 }
 
 // Calculate column layout dimensions
-export function calculateColumnLayout(width: number, entities: Entity[]) {
+export function calculateColumnLayout(width: number, columnCount: number) {
   const { entity } = ENTITY_CONFIG;
 
   // Fixed layout: always use configured columnWidth & columnGap, no stretching.
   // Total width grows linearly with number of entities and can be smaller than container (leaving empty space) or larger (scrollable).
-  if (entities.length === 0) {
+  if (columnCount === 0) {
     return {
       totalColumnsWidth: 0,
       columnWidth: entity.columnWidth,
@@ -134,8 +152,8 @@ export function calculateColumnLayout(width: number, entities: Entity[]) {
   }
 
   const totalColumnsWidth =
-    entities.length * entity.columnWidth +
-    (entities.length - 1) * entity.columnGap;
+    columnCount * entity.columnWidth +
+    Math.max(0, columnCount - 1) * entity.columnGap;
 
   return {
     totalColumnsWidth,
@@ -147,11 +165,11 @@ export function calculateColumnLayout(width: number, entities: Entity[]) {
 
 // Create scale for x-axis
 export function createXScale(
-  visibleEntities: Entity[],
+  columns: EntityColumn[],
   totalColumnsWidth: number
 ) {
   // If no visible entities, return a default scale
-  if (visibleEntities.length === 0) {
+  if (columns.length === 0) {
     return d3
       .scaleBand()
       .domain(["Unknown"])
@@ -162,7 +180,7 @@ export function createXScale(
   // Use entity IDs as the domain to ensure consistent positioning
   return d3
     .scaleBand()
-    .domain(visibleEntities.map((e) => e.id))
+    .domain(columns.map((column) => column.key))
     .range([0, totalColumnsWidth])
     .padding(0.1);
 }

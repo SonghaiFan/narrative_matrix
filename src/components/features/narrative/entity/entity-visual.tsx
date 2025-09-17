@@ -8,28 +8,25 @@ import { useTooltip } from "@/contexts/tooltip-context";
 import { useCenterControl } from "@/contexts/center-control-context";
 import {
   getEntityDimensions,
-  getEntityMentions,
   calculateColumnLayout,
   createXScale,
   createYScale,
   createYAxis,
-  getVisibleEntities,
-  calculateForceLayout,
-  createEventNode,
-  getEventFromNodeId,
-  createEventGroup,
   addEventGroupHoverEffects,
-  drawLinkConnectors,
+  buildEntityColumnData,
+  EntityColumn,
 } from "./entity-visual-utils";
-import { createMetroTrack } from "./entity-visual-utils";
-import { createTrackWithHover } from "./entity-visual-utils";
+import { createEventNode } from "./entity-visual-utils";
 
 export interface EntityVisualProps {
   events: NarrativeEvent[];
   selectedAttribute?: string;
 }
 
-export function EntityVisual({ events, selectedAttribute = "name" }: EntityVisualProps) {
+export function EntityVisual({
+  events,
+  selectedAttribute = "name",
+}: EntityVisualProps) {
   const { selectedEventId, setSelectedEventId } = useCenterControl();
   const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -82,8 +79,14 @@ export function EntityVisual({ events, selectedAttribute = "name" }: EntityVisua
             .node() as SVGCircleElement;
           let y = 0;
 
-          // Get the y position from the node
-          y = parseFloat(node.getAttribute("cy") || "0");
+          // Determine absolute Y position by combining group translate and node position
+          const groupTransform = selectedGroup.attr("transform") || "";
+          const translateMatch = /translate\(\s*[^,]+,\s*([^)]+)\)/.exec(
+            groupTransform
+          );
+          const groupY = translateMatch ? parseFloat(translateMatch[1]) : 0;
+          const nodeY = parseFloat(node.getAttribute("cy") || "0");
+          y = groupY + nodeY;
 
           // Update guide line position and show it
           guideLine
@@ -151,35 +154,32 @@ export function EntityVisual({ events, selectedAttribute = "name" }: EntityVisua
 
     // Clear previous content
     d3.select(svgRef.current).selectAll("*").remove();
-    d3.select(headerRef.current).selectAll("*").remove();
-
-    // Setup dimensions first
     const { containerHeight, height } = getEntityDimensions(
       containerRef.current.clientWidth,
       events.length
     );
 
-    // Get all entity mentions
-    const entityMentions = getEntityMentions(events, selectedAttribute);
-    const allEntities = getVisibleEntities(
-      entityMentions,
-      selectedTrackId,
-      selectedEventId,
-      events
-    );
+    const { columns, rows } = buildEntityColumnData(events, selectedAttribute);
 
-    // Calculate layout dimensions for all entities
+    const activeTrackKey =
+      currentTrackSelection !== null &&
+      columns.some((column) => column.key === currentTrackSelection)
+        ? currentTrackSelection
+        : null;
+
+    if (activeTrackKey === null && currentTrackSelection !== null) {
+      setSelectedTrackId(null);
+    }
+
     const { totalColumnsWidth } = calculateColumnLayout(
       containerRef.current.clientWidth,
-      allEntities
+      columns.length
     );
 
-    // Create scales
-    const xScale = createXScale(allEntities, totalColumnsWidth);
+    const xScale = createXScale(columns, totalColumnsWidth);
     const yScale = createYScale(events, height);
     const yAxis = createYAxis(yScale);
 
-    // Create fixed header for entity labels
     const headerWidth =
       totalColumnsWidth +
       ENTITY_CONFIG.margin.left +
@@ -187,80 +187,138 @@ export function EntityVisual({ events, selectedAttribute = "name" }: EntityVisua
 
     const headerContainer = d3
       .select(headerRef.current)
-      .style("width", `${headerWidth}px`);
+      .style("width", `${headerWidth}px`)
+      .style("height", `${ENTITY_CONFIG.header.height}px`);
 
-    // Create header content container with proper margin
-    const headerContent = headerContainer
-      .append("div")
-      .style("position", "relative")
-      .style("margin-left", `${ENTITY_CONFIG.margin.left}px`)
-      .style("width", `${totalColumnsWidth}px`);
-
-    // Create entity labels in the fixed header
-    allEntities.forEach((entity) => {
-      const x = xScale(entity.id)! + xScale.bandwidth() / 2;
-
-      const labelContainer = headerContent
-        .append("div")
-        .attr("class", "absolute -translate-x-1/2 cursor-pointer")
-        .style("left", `${x}px`)
-        .style("max-width", `${xScale.bandwidth()}px`)
-        .on("click", () => {
-          // Toggle highlight only
-          setSelectedTrackId((prev) => (prev === entity.id ? null : entity.id));
-        });
-
-      // Show only the entity name with text wrapping
-      labelContainer
-        .append("div")
-        .attr(
-          "class",
-          [
-            "font-semibold",
-            `text-xs`,
-            selectedTrackId === entity.id ? "text-blue-600" : "text-gray-700",
-            "text-center",
-            "break-words",
-            "leading-tight",
-            "line-clamp-3",
-            "transition-colors",
-            "duration-200",
-            "hover:text-blue-600",
-          ].join(" ")
-        )
-        .attr("title", entity.name)
-        .text(entity.name);
-    });
-
-    // Add vertical separator lines between entity columns (skip last)
-    if (allEntities.length > 1) {
-      const headerBarHeight = ENTITY_CONFIG.header.height * 0.7;
-      allEntities.slice(0, -1).forEach((entity) => {
-        const xRight = xScale(entity.id)! + xScale.bandwidth();
-        headerContent
-          .append("div")
-          .attr("class", "absolute")
-          .style("left", `${xRight}px`)
-          .style(
-            "top",
-            `${(ENTITY_CONFIG.header.height - headerBarHeight) / 2}px`
-          )
-          .style("width", "1px")
-          .style("height", `${headerBarHeight}px`)
-          .style("background-color", "#cbd5e1") // slate-300
-          .style("pointer-events", "none")
-          .style("transform", "translateX(-0.5px)");
-      });
+    if (!headerContainer.select("div.entity-header-content").node()) {
+      headerContainer.selectAll("*").remove();
     }
 
-    // Create SVG with proper dimensions
+    const headerContent = headerContainer
+      .selectAll<HTMLDivElement, null>("div.entity-header-content")
+      .data([null])
+      .join("div")
+      .attr("class", "entity-header-content relative")
+      .style("position", "relative")
+      .style("margin-left", `${ENTITY_CONFIG.margin.left}px`)
+      .style("width", `${totalColumnsWidth}px`)
+      .style("height", `${ENTITY_CONFIG.header.height}px`);
+
+    const computeLabelLeft = (columnKey: string) =>
+      (xScale(columnKey) || 0) + xScale.bandwidth() / 2;
+
+    const getColumnTitle = (column: EntityColumn) => {
+      if (!selectedAttribute || selectedAttribute === "name") {
+        return column.label;
+      }
+      const names = Array.from(
+        new Set(
+          column.entities
+            .map((entity) => entity.name || entity.id)
+            .filter(Boolean)
+        )
+      );
+      if (names.length === 0) {
+        return column.label;
+      }
+      const preview = names.slice(0, 5).join(", ");
+      return `${column.label} (${names.length}) - ${
+        names.length > 5 ? `${preview}…` : preview
+      }`;
+    };
+
+    const labelTextClass = (columnKey: string) =>
+      [
+        "entity-label-text",
+        "font-semibold",
+        "text-xs",
+        activeTrackKey === columnKey ? "text-blue-600" : "text-gray-700",
+        "text-center",
+        "break-words",
+        "leading-tight",
+        "line-clamp-3",
+        "transition-colors",
+        "duration-200",
+        "hover:text-blue-600",
+      ].join(" ");
+
+    const labels = headerContent
+      .selectAll<HTMLDivElement, EntityColumn>("div.entity-label")
+      .data(columns, (d: any) => d.key);
+
+    labels.exit().transition().style("opacity", 0).remove();
+
+    const labelsEnter = labels
+      .enter()
+      .append("div")
+      .attr("class", "entity-label absolute -translate-x-1/2 cursor-pointer")
+      .style("opacity", 0)
+      .style("left", (d) => `${computeLabelLeft(d.key)}px`)
+      .style("max-width", () => `${xScale.bandwidth()}px`);
+
+    labelsEnter
+      .append("div")
+      .attr("class", (d) => labelTextClass(d.key))
+      .attr("title", (d) => getColumnTitle(d))
+      .text((d) => d.label);
+
+    const labelsMerge = labelsEnter.merge(labels as any);
+
+    labelsMerge
+      .style("max-width", () => `${xScale.bandwidth()}px`)
+      .on("click", (_event, column) => {
+        setSelectedTrackId((prev) => (prev === column.key ? null : column.key));
+      });
+
+    labelsMerge
+      .select<HTMLDivElement>("div.entity-label-text")
+      .attr("class", (d) => labelTextClass(d.key))
+      .attr("title", (d) => getColumnTitle(d))
+      .text((d) => d.label);
+
+    labelsMerge
+      .transition()
+      .duration(400)
+      .ease(d3.easeCubicOut)
+      .style("left", (d) => `${computeLabelLeft(d.key)}px`)
+      .style("opacity", 1);
+
+    const headerBarHeight = ENTITY_CONFIG.header.height * 0.7;
+    const separatorTop = (ENTITY_CONFIG.header.height - headerBarHeight) / 2;
+
+    const separators = headerContent
+      .selectAll<HTMLDivElement, EntityColumn>("div.entity-separator")
+      .data(columns.slice(0, -1), (d: any) => d.key);
+
+    separators.exit().transition().style("opacity", 0).remove();
+
+    const separatorsEnter = separators
+      .enter()
+      .append("div")
+      .attr("class", "entity-separator absolute")
+      .style("width", "1px")
+      .style("opacity", 0)
+      .style("background-color", "#cbd5e1")
+      .style("pointer-events", "none");
+
+    const separatorsMerge = separatorsEnter.merge(separators as any);
+
+    separatorsMerge
+      .style("top", `${separatorTop}px`)
+      .style("height", `${headerBarHeight}px`)
+      .style("pointer-events", "none")
+      .transition()
+      .duration(400)
+      .ease(d3.easeCubicOut)
+      .style("left", (d) => `${(xScale(d.key) || 0) + xScale.bandwidth()}px`)
+      .style("opacity", 0.6);
+
     const svg = d3
       .select(svgRef.current)
       .attr("width", headerWidth)
       .attr("height", containerHeight)
       .style("overflow", "visible");
 
-    // Create main group with proper margin
     const g = svg
       .append("g")
       .attr(
@@ -268,7 +326,30 @@ export function EntityVisual({ events, selectedAttribute = "name" }: EntityVisua
         `translate(${ENTITY_CONFIG.margin.left},${ENTITY_CONFIG.margin.top})`
       );
 
-    // Add horizontal guide line (hidden by default)
+    columns.forEach((column) => {
+      const xCenter = (xScale(column.key) || 0) + xScale.bandwidth() / 2;
+      g.append("line")
+        .attr("class", "entity-track")
+        .attr("data-column-key", column.key)
+        .attr("x1", xCenter)
+        .attr("x2", xCenter)
+        .attr("y1", 0)
+        .attr("y2", height)
+        .attr(
+          "stroke",
+          activeTrackKey === column.key
+            ? ENTITY_CONFIG.highlight.color
+            : ENTITY_CONFIG.track.color
+        )
+        .attr(
+          "stroke-width",
+          activeTrackKey === column.key
+            ? ENTITY_CONFIG.track.strokeWidth * 1.5
+            : ENTITY_CONFIG.track.strokeWidth
+        )
+        .attr("opacity", activeTrackKey === column.key ? 0.8 : 0.3);
+    });
+
     const guideLine = g
       .append("g")
       .attr("class", "guide-lines")
@@ -282,66 +363,6 @@ export function EntityVisual({ events, selectedAttribute = "name" }: EntityVisua
       .attr("stroke", ENTITY_CONFIG.highlight.color)
       .attr("stroke-width", 2);
 
-    // Apply force layout for all entities with connections
-    const forceLayout = calculateForceLayout(
-      events,
-      allEntities,
-      totalColumnsWidth,
-      height,
-      selectedAttribute
-    );
-
-    // Draw entity track
-    allEntities.forEach((entity) => {
-      const entitySlug = entity.id.replace(/\s+/g, "-");
-      const startX = xScale(entity.id)! + xScale.bandwidth() / 2;
-
-      // Get all nodes for this entity from the force layout
-      const entityNodes = forceLayout.nodes
-        .filter((node) => node.entity.id === entity.id)
-        .sort((a, b) => a.y - b.y);
-
-      if (entityNodes.length > 0) {
-        // Create points array including start point
-        const points = [
-          { x: startX, y: 0 },
-          ...entityNodes.map((node) => ({ x: node.x, y: node.y })),
-        ];
-
-        // Create the metro-style path
-        const metroPath = createMetroTrack(points, { yScale });
-
-        // Create the curved path with hover interaction
-        createTrackWithHover(
-          g,
-          entity,
-          entitySlug,
-          selectedTrackId,
-          showTooltip,
-          updatePosition,
-          hideTooltip,
-          setSelectedTrackId,
-          true,
-          { d: metroPath.toString() }
-        );
-      } else {
-        // If no nodes, draw a straight line as fallback
-        createTrackWithHover(
-          g,
-          entity,
-          entitySlug,
-          selectedTrackId,
-          showTooltip,
-          updatePosition,
-          hideTooltip,
-          setSelectedTrackId,
-          false,
-          { x1: startX, y1: 0, x2: startX, y2: height }
-        );
-      }
-    });
-
-    // Add y-axis with integer ticks
     g.append("g")
       .attr("class", "y-axis")
       .call(yAxis)
@@ -357,83 +378,120 @@ export function EntityVisual({ events, selectedAttribute = "name" }: EntityVisua
       .attr("text-anchor", "middle")
       .text("Paragraph Index");
 
-    // Create a map to store event groups
-    const eventGroups = new Map();
-
-    // 1. First draw the outer black connector
-    forceLayout.links.forEach((link) => {
-      drawLinkConnectors(
-        g,
-        link,
-        forceLayout.nodes,
-        events,
-        eventGroups,
-        selectedEventId,
-        "outer"
-      );
-    });
-
-    // 2. Draw nodes in the middle from the force simulation
-    forceLayout.nodes.forEach((node) => {
-      const event = getEventFromNodeId(node.id, events);
-
-      if (event) {
-        // Create or get the event group
-        if (!eventGroups.has(event.index)) {
-          eventGroups.set(event.index, createEventGroup(g, event.index));
-        }
-
-        const eventGroup = eventGroups.get(event.index);
-
-        // Extract entity ID from node ID (format: "eventIndex-entityId")
-        const entityId = node.id.split("-")[1];
-
-        // Create the event node
-        createEventNode(
-          eventGroup,
-          node.x,
-          node.y,
-          event,
-          selectedEventId,
-          entityId
-        );
-
-        // Add hover effects to the entire group
-        addEventGroupHoverEffects(
-          eventGroup,
-          event,
-          showTooltip,
-          updatePosition,
-          hideTooltip,
-          setSelectedEventId,
-          selectedEventId
-        );
+    rows.forEach((row) => {
+      if (row.nodes.length === 0) {
+        return;
       }
-    });
 
-    // 3. Finally draw the inner connector on top
-    forceLayout.links.forEach((link) => {
-      drawLinkConnectors(
-        g,
-        link,
-        forceLayout.nodes,
-        events,
-        eventGroups,
-        selectedEventId,
-        "inner"
+      const eventY = yScale(row.event.temporal_anchoring.narrative_time);
+      const eventGroup = g
+        .append("g")
+        .attr("class", `event-group event-group-${row.event.index}`)
+        .attr("transform", `translate(0, ${eventY})`);
+
+      const connectorSegments: Array<{ x1: number; x2: number }> = [];
+      const connectorsGroup = eventGroup
+        .append("g")
+        .attr("class", "event-connectors")
+        .style("pointer-events", "stroke");
+      const nodesGroup = eventGroup.append("g").attr("class", "event-nodes");
+      const connectorWidth = ENTITY_CONFIG.event.connectorStrokeWidth;
+      const innerWidth =
+        connectorWidth * ENTITY_CONFIG.event.innerConnectorScale;
+
+      for (let i = 0; i < row.nodes.length - 1; i++) {
+        const current = row.nodes[i];
+        const next = row.nodes[i + 1];
+        const x1 = (xScale(current.columnKey) || 0) + xScale.bandwidth() / 2;
+        const x2 = (xScale(next.columnKey) || 0) + xScale.bandwidth() / 2;
+        connectorSegments.push({ x1, x2 });
+
+        connectorsGroup
+          .append("line")
+          .attr("class", "connector-outer")
+          .attr("x1", x1)
+          .attr("y1", 0)
+          .attr("x2", x2)
+          .attr("y2", 0)
+          .attr("stroke", "#000")
+          .attr("stroke-width", connectorWidth)
+          .attr("stroke-linecap", "round");
+      }
+
+      connectorSegments.forEach(({ x1, x2 }) => {
+        connectorsGroup
+          .append("line")
+          .attr("class", "connector-inner")
+          .attr("x1", x1)
+          .attr("y1", 0)
+          .attr("x2", x2)
+          .attr("y2", 0)
+          .attr("stroke", "#fff")
+          .attr("stroke-width", innerWidth)
+          .attr("stroke-linecap", "round");
+      });
+
+      const firstNode = row.nodes[0];
+      const lastNode = row.nodes[row.nodes.length - 1];
+      const leftBound =
+        (xScale(firstNode.columnKey) || 0) - xScale.bandwidth() * 0.15;
+      const rightBound =
+        (xScale(lastNode.columnKey) || 0) + xScale.bandwidth() * 1.15;
+
+      eventGroup
+        .insert("rect", ":first-child")
+        .attr("class", "event-hit-area")
+        .attr("x", leftBound)
+        .attr("y", -ENTITY_CONFIG.point.radius * 1.8)
+        .attr("width", rightBound - leftBound)
+        .attr("height", ENTITY_CONFIG.point.radius * 3.6)
+        .style("fill", "transparent");
+
+      row.nodes.forEach((node) => {
+        const xCenter = (xScale(node.columnKey) || 0) + xScale.bandwidth() / 2;
+
+        createEventNode(
+          nodesGroup,
+          xCenter,
+          0,
+          row.event,
+          selectedEventId,
+          node.columnKey
+        );
+
+        if (node.count > 1) {
+          nodesGroup
+            .append("text")
+            .attr("class", "event-node-count")
+            .attr("x", xCenter)
+            .attr("y", 0)
+            .attr("dy", "0.35em")
+            .attr("text-anchor", "middle")
+            .attr("fill", "#1f2933")
+            .attr("font-size", "9px")
+            .style("pointer-events", "none")
+            .text(node.count);
+        }
+      });
+
+      addEventGroupHoverEffects(
+        eventGroup as d3.Selection<SVGGElement, unknown, null, undefined>,
+        row.event,
+        showTooltip,
+        updatePosition,
+        hideTooltip,
+        setSelectedEventId,
+        selectedEventId
       );
     });
 
-    // After visualization is complete, reapply selection if it exists
     if (currentSelection !== null && currentSelection !== undefined) {
       updateSelectedEventStyles(currentSelection);
     }
 
-    // Reapply track selection if it exists
-    if (currentTrackSelection !== null) {
-      setSelectedTrackId(currentTrackSelection);
-      // Apply track styling after setting the track ID
-      updateSelectedTrackStyles(currentTrackSelection, currentSelection);
+    if (activeTrackKey !== null) {
+      setSelectedTrackId(activeTrackKey);
+      updateSelectedTrackStyles(activeTrackKey, currentSelection);
     }
   }, [
     events,
