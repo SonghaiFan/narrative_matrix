@@ -28,8 +28,89 @@ export function EntityVisual({
   selectedAttribute = "name",
 }: EntityVisualProps) {
   const { selectedEventId, setSelectedEventId } = useCenterControl();
-  const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null);
+  const [selectedTrackIds, setSelectedTrackIds] = useState<Set<string>>(
+    new Set()
+  );
+  const [nailedColumns, setNailedColumns] = useState<Set<string>>(new Set());
+  const [columnOrder, setColumnOrder] = useState<string[]>([]);
   const svgRef = useRef<SVGSVGElement>(null);
+
+  // Function to reorder columns based on selected event, selected tracks, and nailed columns
+  const reorderColumns = useCallback(
+    (originalColumns: EntityColumn[], eventId: number | null) => {
+      // Get entity keys from the selected event (if any)
+      let eventEntityKeys = new Set<string>();
+      if (eventId !== null) {
+        const event = events.find((e) => e.index === eventId);
+        if (event) {
+          eventEntityKeys = new Set(
+            event.entities
+              .map((entity) => {
+                if (!selectedAttribute || selectedAttribute === "name") {
+                  return entity.id;
+                } else {
+                  const rawValue = (entity as Record<string, unknown>)[
+                    selectedAttribute
+                  ];
+                  return rawValue ? String(rawValue).trim() : null;
+                }
+              })
+              .filter((key): key is string => key !== null && key !== undefined)
+          );
+        }
+      }
+
+      // Separate columns by priority (highest to lowest)
+      const selectedCols = originalColumns.filter((col) =>
+        selectedTrackIds.has(col.key)
+      );
+      const nailedCols = originalColumns.filter(
+        (col) => nailedColumns.has(col.key) && !selectedTrackIds.has(col.key)
+      );
+      const relatedCols = originalColumns.filter(
+        (col) =>
+          !selectedTrackIds.has(col.key) &&
+          !nailedColumns.has(col.key) &&
+          eventEntityKeys.has(col.key)
+      );
+      const unrelatedCols = originalColumns.filter(
+        (col) =>
+          !selectedTrackIds.has(col.key) &&
+          !nailedColumns.has(col.key) &&
+          !eventEntityKeys.has(col.key)
+      );
+
+      // Combine in order: selected tracks (highest priority), nailed columns, related columns, unrelated columns
+      return [...selectedCols, ...nailedCols, ...relatedCols, ...unrelatedCols];
+    },
+    [events, selectedAttribute, nailedColumns, selectedTrackIds]
+  );
+
+  // Function to toggle track selection
+  const toggleTrackSelection = useCallback((columnKey: string) => {
+    setSelectedTrackIds((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(columnKey)) {
+        newSet.delete(columnKey);
+      } else {
+        newSet.add(columnKey);
+      }
+      return newSet;
+    });
+  }, []);
+
+  // Function to toggle column nailing
+  const toggleColumnNailing = useCallback((columnKey: string) => {
+    setNailedColumns((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(columnKey)) {
+        newSet.delete(columnKey);
+      } else {
+        newSet.add(columnKey);
+      }
+      return newSet;
+    });
+  }, []);
   const containerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
@@ -110,22 +191,22 @@ export function EntityVisual({
     []
   );
 
-  // Function to update node styles based on selectedTrackId
+  // Function to update node styles based on selectedTrackIds
   const updateSelectedTrackStyles = useCallback(
-    (trackId: string | null, selectedEventId: number | null) => {
-      if (!svgRef.current || trackId === null) return;
+    (selectedTrackIds: Set<string>, selectedEventId: number | null) => {
+      if (!svgRef.current || selectedTrackIds.size === 0) return;
 
-      // Find all nodes associated with the selected track using the data-entity-id attribute
+      // Find all nodes associated with the selected tracks using the data-entity-id attribute
       const selectedNodes = d3
         .select(svgRef.current)
         .selectAll(".event-node")
         .filter(function () {
           // Get the entity ID from the node
           const entityId = d3.select(this).attr("data-entity-id");
-          return entityId === trackId;
+          return selectedTrackIds.has(entityId);
         });
 
-      // Apply highlight border to all nodes on the selected track
+      // Apply highlight border to all nodes on the selected tracks
       // but skip the selected event node
       selectedNodes
         .filter(function () {
@@ -150,7 +231,7 @@ export function EntityVisual({
 
     // Store current selection before clearing
     const currentSelection = selectedEventId;
-    const currentTrackSelection = selectedTrackId;
+    const currentTrackSelections = selectedTrackIds;
 
     // Clear previous content
     d3.select(svgRef.current).selectAll("*").remove();
@@ -159,16 +240,22 @@ export function EntityVisual({
       events.length
     );
 
-    const { columns, rows } = buildEntityColumnData(events, selectedAttribute);
+    const { columns: originalColumns, rows } = buildEntityColumnData(
+      events,
+      selectedAttribute
+    );
+    const columns = reorderColumns(originalColumns, currentSelection);
 
-    const activeTrackKey =
-      currentTrackSelection !== null &&
-      columns.some((column) => column.key === currentTrackSelection)
-        ? currentTrackSelection
-        : null;
+    // Filter out any selected tracks that no longer exist in the columns
+    const validSelectedTracks = new Set(
+      Array.from(currentTrackSelections).filter((trackId) =>
+        columns.some((column) => column.key === trackId)
+      )
+    );
 
-    if (activeTrackKey === null && currentTrackSelection !== null) {
-      setSelectedTrackId(null);
+    // Update selectedTrackIds if any tracks were removed
+    if (validSelectedTracks.size !== currentTrackSelections.size) {
+      setSelectedTrackIds(validSelectedTracks);
     }
 
     const { totalColumnsWidth } = calculateColumnLayout(
@@ -227,12 +314,18 @@ export function EntityVisual({
       }`;
     };
 
-    const labelTextClass = (columnKey: string) =>
-      [
+    const labelTextClass = (columnKey: string) => {
+      const isNailed = nailedColumns.has(columnKey);
+      const isSelected = validSelectedTracks.has(columnKey);
+      return [
         "entity-label-text",
         "font-semibold",
         "text-xs",
-        activeTrackKey === columnKey ? "text-blue-600" : "text-gray-700",
+        isSelected
+          ? "text-blue-600"
+          : isNailed
+          ? "text-orange-600"
+          : "text-gray-700",
         "text-center",
         "break-words",
         "leading-tight",
@@ -240,7 +333,11 @@ export function EntityVisual({
         "transition-colors",
         "duration-200",
         "hover:text-blue-600",
-      ].join(" ");
+        isNailed ? "font-bold" : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+    };
 
     const labels = headerContent
       .selectAll<HTMLDivElement, EntityColumn>("div.entity-label")
@@ -266,8 +363,15 @@ export function EntityVisual({
 
     labelsMerge
       .style("max-width", () => `${xScale.bandwidth()}px`)
-      .on("click", (_event, column) => {
-        setSelectedTrackId((prev) => (prev === column.key ? null : column.key));
+      .on("click", (event, column) => {
+        event.stopPropagation();
+        // Ctrl/Cmd click to nail/un-nail column
+        if (event.ctrlKey || event.metaKey) {
+          toggleColumnNailing(column.key);
+        } else {
+          // Regular click to toggle track selection
+          toggleTrackSelection(column.key);
+        }
       });
 
     labelsMerge
@@ -328,6 +432,9 @@ export function EntityVisual({
 
     columns.forEach((column) => {
       const xCenter = (xScale(column.key) || 0) + xScale.bandwidth() / 2;
+      const isNailed = nailedColumns.has(column.key);
+      const isSelected = validSelectedTracks.has(column.key);
+
       g.append("line")
         .attr("class", "entity-track")
         .attr("data-column-key", column.key)
@@ -337,17 +444,26 @@ export function EntityVisual({
         .attr("y2", height)
         .attr(
           "stroke",
-          activeTrackKey === column.key
+          isSelected
             ? ENTITY_CONFIG.highlight.color
+            : isNailed
+            ? "#ff6b35" // Orange color for nailed columns
             : ENTITY_CONFIG.track.color
         )
         .attr(
           "stroke-width",
-          activeTrackKey === column.key
+          isSelected
             ? ENTITY_CONFIG.track.strokeWidth * 1.5
+            : isNailed
+            ? ENTITY_CONFIG.track.strokeWidth * 2 // Thicker for nailed columns
             : ENTITY_CONFIG.track.strokeWidth
         )
-        .attr("opacity", activeTrackKey === column.key ? 0.8 : 0.3);
+        .attr("opacity", isSelected ? 0.8 : isNailed ? 0.6 : 0.3)
+        .style("cursor", "pointer")
+        .on("click", (event) => {
+          event.stopPropagation();
+          toggleColumnNailing(column.key);
+        });
     });
 
     const guideLine = g
@@ -395,9 +511,12 @@ export function EntityVisual({
         .attr("class", "event-connectors")
         .style("pointer-events", "stroke");
       const nodesGroup = eventGroup.append("g").attr("class", "event-nodes");
-      const connectorWidth = ENTITY_CONFIG.event.connectorStrokeWidth;
+      const connectorWidth =
+        ENTITY_CONFIG.event.connectorStrokeWidth +
+        ENTITY_CONFIG.point.strokeWidth * 1.25;
       const innerWidth =
-        connectorWidth * ENTITY_CONFIG.event.innerConnectorScale;
+        ENTITY_CONFIG.event.connectorStrokeWidth *
+        ENTITY_CONFIG.event.innerConnectorScale;
 
       for (let i = 0; i < row.nodes.length - 1; i++) {
         const current = row.nodes[i];
@@ -418,19 +537,6 @@ export function EntityVisual({
           .attr("stroke-linecap", "round");
       }
 
-      connectorSegments.forEach(({ x1, x2 }) => {
-        connectorsGroup
-          .append("line")
-          .attr("class", "connector-inner")
-          .attr("x1", x1)
-          .attr("y1", 0)
-          .attr("x2", x2)
-          .attr("y2", 0)
-          .attr("stroke", "#fff")
-          .attr("stroke-width", innerWidth)
-          .attr("stroke-linecap", "round");
-      });
-
       const firstNode = row.nodes[0];
       const lastNode = row.nodes[row.nodes.length - 1];
       const leftBound =
@@ -447,6 +553,9 @@ export function EntityVisual({
         .attr("height", ENTITY_CONFIG.point.radius * 3.6)
         .style("fill", "transparent");
 
+      // Collect label data for later creation
+      const labelData: Array<{ x: number; count: number }> = [];
+
       row.nodes.forEach((node) => {
         const xCenter = (xScale(node.columnKey) || 0) + xScale.bandwidth() / 2;
 
@@ -460,18 +569,41 @@ export function EntityVisual({
         );
 
         if (node.count > 1) {
-          nodesGroup
-            .append("text")
-            .attr("class", "event-node-count")
-            .attr("x", xCenter)
-            .attr("y", 0)
-            .attr("dy", "0.35em")
-            .attr("text-anchor", "middle")
-            .attr("fill", "#1f2933")
-            .attr("font-size", "9px")
-            .style("pointer-events", "none")
-            .text(node.count);
+          labelData.push({ x: xCenter, count: node.count });
         }
+      });
+
+      // Add inner connectors after nodes so they appear on top of nodes but below labels
+      const innerConnectorsGroup = eventGroup
+        .append("g")
+        .attr("class", "inner-connectors");
+      connectorSegments.forEach(({ x1, x2 }) => {
+        innerConnectorsGroup
+          .append("line")
+          .attr("class", "connector-inner")
+          .attr("x1", x1)
+          .attr("y1", 0)
+          .attr("x2", x2)
+          .attr("y2", 0)
+          .attr("stroke", "#fff")
+          .attr("stroke-width", innerWidth)
+          .attr("stroke-linecap", "round");
+      });
+
+      // Add labels after inner connectors so they appear on top of everything
+      const labelsGroup = eventGroup.append("g").attr("class", "event-labels");
+      labelData.forEach(({ x, count }) => {
+        labelsGroup
+          .append("text")
+          .attr("class", "event-node-count")
+          .attr("x", x)
+          .attr("y", 0)
+          .attr("dy", "0.35em")
+          .attr("text-anchor", "middle")
+          .attr("fill", "#1f2933")
+          .attr("font-size", "9px")
+          .style("pointer-events", "none")
+          .text(count);
       });
 
       addEventGroupHoverEffects(
@@ -489,9 +621,8 @@ export function EntityVisual({
       updateSelectedEventStyles(currentSelection);
     }
 
-    if (activeTrackKey !== null) {
-      setSelectedTrackId(activeTrackKey);
-      updateSelectedTrackStyles(activeTrackKey, currentSelection);
+    if (validSelectedTracks.size > 0) {
+      updateSelectedTrackStyles(validSelectedTracks, currentSelection);
     }
   }, [
     events,
@@ -502,9 +633,13 @@ export function EntityVisual({
     setSelectedEventId,
     selectedEventId,
     updateSelectedEventStyles,
-    selectedTrackId,
-    setSelectedTrackId,
+    selectedTrackIds,
+    setSelectedTrackIds,
     updateSelectedTrackStyles,
+    reorderColumns,
+    nailedColumns,
+    toggleColumnNailing,
+    toggleTrackSelection,
   ]);
 
   // Keep selection handling in a separate effect
@@ -512,19 +647,19 @@ export function EntityVisual({
     if (svgRef.current && selectedEventId !== undefined) {
       updateSelectedEventStyles(selectedEventId);
 
-      // If a track is also selected, apply track styling after event styling
-      if (selectedTrackId !== null) {
-        updateSelectedTrackStyles(selectedTrackId, selectedEventId);
+      // If tracks are also selected, apply track styling after event styling
+      if (selectedTrackIds.size > 0) {
+        updateSelectedTrackStyles(selectedTrackIds, selectedEventId);
       }
     }
   }, [
     selectedEventId,
     updateSelectedEventStyles,
-    selectedTrackId,
+    selectedTrackIds,
     updateSelectedTrackStyles,
   ]);
 
-  // Add effect to highlight nodes on selected track
+  // Add effect to highlight nodes on selected tracks
   useEffect(() => {
     if (!svgRef.current) return;
 
@@ -534,11 +669,11 @@ export function EntityVisual({
       .attr("stroke", "black")
       .attr("stroke-width", ENTITY_CONFIG.point.strokeWidth);
 
-    // If a track is selected, apply track styling
-    if (selectedTrackId !== null) {
-      updateSelectedTrackStyles(selectedTrackId, selectedEventId);
+    // If tracks are selected, apply track styling
+    if (selectedTrackIds.size > 0) {
+      updateSelectedTrackStyles(selectedTrackIds, selectedEventId);
     }
-  }, [selectedTrackId, selectedEventId, updateSelectedTrackStyles]);
+  }, [selectedTrackIds, selectedEventId, updateSelectedTrackStyles]);
 
   // Initial setup and cleanup with resize observer
   useEffect(() => {

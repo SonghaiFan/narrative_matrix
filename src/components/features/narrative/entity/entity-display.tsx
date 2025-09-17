@@ -180,7 +180,7 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
               ))}
             </SelectContent>
           </Select>
-          {availableRoles.length > 0 ? (
+          {/* {availableRoles.length > 0 ? (
             <div className="flex items-center gap-2 flex-wrap text-[10px]">
               {availableRoles.map((role) => {
                 const checked = selectedRoles.has(role);
@@ -210,7 +210,7 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
                 );
               })}
             </div>
-          ) : null}
+          ) : null} */}
         </div>
       }
     >
