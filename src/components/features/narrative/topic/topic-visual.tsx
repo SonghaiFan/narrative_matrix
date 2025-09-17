@@ -884,6 +884,76 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     parentNodes.on("click", function (event: MouseEvent, d: GroupedPoint) {
       if (d.points.length > 1) {
         const isExpanded = !d.isExpanded;
+
+        // If expanding this node, collapse all other expanded nodes first
+        if (isExpanded) {
+          // Collapse all other expanded nodes
+          d3.select(svgRef.current)
+            .selectAll(".point-group")
+            .each(function (otherD: any) {
+              if (otherD.key !== d.key && otherD.isExpanded) {
+                otherD.isExpanded = false;
+                pointStatesRef.current.set(otherD.key, {
+                  x: otherD.x,
+                  y: otherD.y,
+                  isExpanded: false,
+                });
+
+                // Update the visual state of the other node
+                const otherParent = d3.select(this);
+                const otherChildren = otherParent.selectAll(".child-point");
+                const otherParentRect = otherParent.select("rect");
+                const otherCountText = otherParent.select("text");
+
+                // Use consistent pill system for collapsed state
+                const collapsed = calculateGroupedPillMetrics({
+                  x: otherD.x,
+                  y: otherD.y,
+                  radius: TOPIC_CONFIG.point.radius,
+                  minX: otherD.minX,
+                  maxX: otherD.maxX,
+                  realTime: otherD.realTime ?? null,
+                });
+
+                updateRectAndText(
+                  otherParentRect,
+                  otherCountText,
+                  collapsed.centerX,
+                  collapsed.centerY,
+                  collapsed.width,
+                  collapsed.height,
+                  collapsed.rx,
+                  collapsed.ry,
+                  200,
+                  1,
+                  "pointer"
+                );
+
+                otherParentRect.attr(
+                  "data-has-real-time",
+                  collapsed.hasRange ? "true" : "false"
+                );
+
+                // Re-enable mouse events on parent when collapsed
+                otherParentRect
+                  .style("pointer-events", "all")
+                  .style("cursor", "pointer");
+
+                // Re-add mouse event handlers to parent
+                otherParentRect
+                  .on("mouseover", handleNodeInteraction.mouseOver)
+                  .on("mouseout", handleNodeInteraction.mouseOut)
+                  .on("mousemove", handleNodeInteraction.mouseMove);
+
+                otherChildren
+                  .transition()
+                  .duration(200)
+                  .style("opacity", 0)
+                  .style("pointer-events", "none");
+              }
+            });
+        }
+
         d.isExpanded = isExpanded;
         pointStatesRef.current.set(d.key, { x: d.x, y: d.y, isExpanded });
 
@@ -1085,6 +1155,68 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           gp.points.some((p) => p.event.index === currentSelection)
       );
       if (targetGroup && !targetGroup.isExpanded) {
+        // First, collapse any other expanded nodes to maintain single-expand behavior
+        d3.select(svgRef.current)
+          .selectAll(".point-group")
+          .each(function (otherD: any) {
+            if (otherD.key !== targetGroup.key && otherD.isExpanded) {
+              otherD.isExpanded = false;
+              pointStatesRef.current.set(otherD.key, {
+                x: otherD.x,
+                y: otherD.y,
+                isExpanded: false,
+              });
+
+              // Update the visual state of the other node
+              const otherParent = d3.select(this);
+              const otherChildren = otherParent.selectAll(".child-point");
+              const otherParentRect = otherParent.select("rect");
+              const otherCountText = otherParent.select("text");
+
+              // Use consistent pill system for collapsed state
+              const collapsed = calculateGroupedPillMetrics({
+                x: otherD.x,
+                y: otherD.y,
+                radius: TOPIC_CONFIG.point.radius,
+                minX: otherD.minX,
+                maxX: otherD.maxX,
+                realTime: otherD.realTime ?? null,
+              });
+
+              updateRectAndText(
+                otherParentRect,
+                otherCountText,
+                collapsed.centerX,
+                collapsed.centerY,
+                collapsed.width,
+                collapsed.height,
+                collapsed.rx,
+                collapsed.ry,
+                0, // No transition for auto-collapse
+                1,
+                "pointer"
+              );
+
+              otherParentRect.attr(
+                "data-has-real-time",
+                collapsed.hasRange ? "true" : "false"
+              );
+
+              // Re-enable mouse events on parent when collapsed
+              otherParentRect
+                .style("pointer-events", "all")
+                .style("cursor", "pointer");
+
+              // Re-add mouse event handlers to parent
+              otherParentRect
+                .on("mouseover", handleNodeInteraction.mouseOver)
+                .on("mouseout", handleNodeInteraction.mouseOut)
+                .on("mousemove", handleNodeInteraction.mouseMove);
+
+              otherChildren.style("opacity", 0).style("pointer-events", "none");
+            }
+          });
+
         // Mark expanded in state map
         targetGroup.isExpanded = true;
         pointStatesRef.current.set(targetGroup.key, {

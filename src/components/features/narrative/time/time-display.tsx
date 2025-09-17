@@ -13,7 +13,7 @@ interface TimeDisplayProps {
 
 export function TimeDisplay({ events, metadata }: TimeDisplayProps) {
   return (
-    <VisualizationDisplay title="Time" isEmpty={!events.length}>
+    <VisualizationDisplay title="Time X Paragraph" isEmpty={!events.length}>
       <NarrativeTimeVisual events={events} metadata={metadata} />
     </VisualizationDisplay>
   );

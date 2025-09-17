@@ -27,7 +27,7 @@ export function TopicDisplay({ events, metadata }: TopicDisplayProps) {
 
   return (
     <VisualizationDisplay
-      title="Topic "
+      title="Topic X Time"
       isEmpty={!events.length}
       headerContent={
         <div

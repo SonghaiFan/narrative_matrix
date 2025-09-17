@@ -36,12 +36,12 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
   // Derive available values for the selected attribute across events
   const availableRoles = useMemo(() => {
     const roles = new Set<string>();
-    if (!selectedAttribute) return [];
-    
+    if (!selectedAttribute || selectedAttribute === "name") return [];
+
     events.forEach((e) => {
       e.entities?.forEach((ent) => {
         const value = ent[selectedAttribute];
-        if (value && typeof value === 'string') {
+        if (value && typeof value === "string") {
           roles.add(value);
         }
       });
@@ -52,8 +52,9 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
   // Initialize selected roles to all when events / roles change
   useEffect(() => {
     if (availableRoles.length > 0) {
-      // Always reset to all available roles when the attribute or available roles change
       setSelectedRoles(new Set(availableRoles));
+    } else {
+      setSelectedRoles(new Set());
     }
   }, [availableRoles]);
 
@@ -97,10 +98,8 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
     // First pass: collect all possible attributes from entities
     events.forEach((event) => {
       event.entities.forEach((entity) => {
-        // Get all keys from the entity object
         Object.keys(entity).forEach((key) => {
-          // Skip 'id' and 'name' as they're not visualization attributes
-          if (key !== "id" && key !== "name") {
+          if (key !== "id") {
             allAttributes.add(key);
           }
         });
@@ -128,7 +127,13 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
     }
 
     // Convert to array and sort alphabetically
-    return Array.from(availableAttrs).sort();
+    const attrs = Array.from(availableAttrs);
+    attrs.sort((a, b) => {
+      if (a === "name") return -1;
+      if (b === "name") return 1;
+      return a.localeCompare(b);
+    });
+    return attrs;
   }, [events]);
 
   // Memoize the available attributes to avoid recalculation
@@ -175,37 +180,44 @@ export function EntityDisplay({ events }: EntityDisplayProps) {
               ))}
             </SelectContent>
           </Select>
-          <div className="flex items-center gap-2 flex-wrap text-[10px]">
-            {availableRoles.map((role) => {
-              const checked = selectedRoles.has(role);
-              return (
-                <label
-                  key={role}
-                  className={[
-                    "flex items-center gap-1 px-2 py-1 rounded border cursor-pointer select-none",
-                    checked
-                      ? "bg-blue-50 border-blue-400"
-                      : "bg-white border-gray-300",
-                    "hover:border-blue-400 transition-colors",
-                  ].join(" ")}
-                >
-                  <input
-                    type="checkbox"
-                    className="h-3 w-3"
-                    checked={checked}
-                    onChange={() => toggleRole(role)}
-                  />
-                  <span className={checked ? "text-blue-700" : "text-gray-600"}>
-                    {role}
-                  </span>
-                </label>
-              );
-            })}
-          </div>
+          {availableRoles.length > 0 ? (
+            <div className="flex items-center gap-2 flex-wrap text-[10px]">
+              {availableRoles.map((role) => {
+                const checked = selectedRoles.has(role);
+                return (
+                  <label
+                    key={role}
+                    className={[
+                      "flex items-center gap-1 px-2 py-1 rounded border cursor-pointer select-none",
+                      checked
+                        ? "bg-blue-50 border-blue-400"
+                        : "bg-white border-gray-300",
+                      "hover:border-blue-400 transition-colors",
+                    ].join(" ")}
+                  >
+                    <input
+                      type="checkbox"
+                      className="h-3 w-3"
+                      checked={checked}
+                      onChange={() => toggleRole(role)}
+                    />
+                    <span
+                      className={checked ? "text-blue-700" : "text-gray-600"}
+                    >
+                      {role}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          ) : null}
         </div>
       }
     >
-      <EntityVisual events={filteredEvents} selectedAttribute={selectedAttribute} />
+      <EntityVisual
+        events={filteredEvents}
+        selectedAttribute={selectedAttribute}
+      />
     </VisualizationDisplay>
   );
 }
