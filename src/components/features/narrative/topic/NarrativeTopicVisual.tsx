@@ -14,8 +14,6 @@ import {
   createAxes,
   groupPointsByDistance,
   type GroupedPoint,
-  calculateRectDimensions,
-  calculateRectPosition,
   calculateCenterPoint,
   type DataPoint,
   calculateExpandedPositions,
@@ -44,6 +42,39 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     return `child-node-${eventIndex}`;
   }, []);
 
+  const getCollapsedParentMetrics = useCallback((group: GroupedPoint) => {
+    const radius = TOPIC_CONFIG.point.radius;
+    const baseHeight = radius * 2;
+    const baseWidth = radius * 3;
+    const hasRange =
+      group.minX !== undefined &&
+      group.maxX !== undefined &&
+      group.maxX > group.minX + 0.5;
+
+    let spanWidth = baseWidth;
+    if (hasRange) {
+      spanWidth = Math.max(group.maxX! - group.minX! + radius * 4, baseWidth);
+    }
+
+    const centerX = group.x;
+    const centerY = group.y;
+    const rectX = centerX - spanWidth / 2;
+    const rectY = centerY - baseHeight / 2;
+    const cornerRadius = baseHeight / 2;
+
+    return {
+      rectX,
+      rectY,
+      width: spanWidth,
+      height: baseHeight,
+      rx: cornerRadius,
+      ry: cornerRadius,
+      centerX,
+      centerY,
+      hasRange,
+    };
+  }, []);
+
   // Update node styles based on selectedEventId
   const updateSelectedEventStyles = useCallback(
     (newSelectedId: number | null, xScale?: any) => {
@@ -65,34 +96,41 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
       if (newSelectedId === null) return;
 
-      // Try to find and highlight the parent node
-      const parentNode = d3
+      const highlightedParents = d3
         .select(svgRef.current)
         .selectAll(".parent-point")
         .filter(function () {
           return (
             d3.select(this).attr("data-event-index") === String(newSelectedId)
           );
-        });
+        })
+        .attr("stroke", TOPIC_CONFIG.highlight.color);
 
-      // Try to find and highlight the child node
-      const childNode = d3
+      const highlightedChildren = d3
         .select(svgRef.current)
         .selectAll(".child-point-rect")
         .filter(function () {
           return (
             d3.select(this).attr("data-event-index") === String(newSelectedId)
           );
+        })
+        .attr("stroke", TOPIC_CONFIG.highlight.color)
+        .each(function () {
+          const parentKey = d3.select(this).attr("data-parent-key");
+          if (parentKey) {
+            d3
+              .select(`#${getParentNodeId(parentKey)}`)
+              .select("rect")
+              .attr("stroke", TOPIC_CONFIG.highlight.color);
+          }
         });
 
       // Show guide lines for the selected node
-      let selectedNode = null;
-      if (!parentNode.empty()) {
-        selectedNode = parentNode.node() as SVGRectElement;
-        parentNode.attr("stroke", TOPIC_CONFIG.highlight.color);
-      } else if (!childNode.empty()) {
-        selectedNode = childNode.node() as SVGRectElement;
-        childNode.attr("stroke", TOPIC_CONFIG.highlight.color);
+      let selectedNode: SVGRectElement | null = null;
+      if (!highlightedChildren.empty()) {
+        selectedNode = highlightedChildren.node() as SVGRectElement;
+      } else if (!highlightedParents.empty()) {
+        selectedNode = highlightedParents.node() as SVGRectElement;
       }
 
       if (SHOW_VERTICAL_TIME_GUIDES && selectedNode && xScale) {
@@ -399,9 +437,6 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         return getSentimentColor(d.points[0].sentimentPolarity);
       }
 
-      const avgIntensity =
-        d.points.reduce((sum, p) => sum + p.sentiment, 0) / d.points.length;
-
       const polarityCounts = {
         positive: 0,
         negative: 0,
@@ -433,51 +468,8 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .append("rect")
       .attr("class", "parent-point")
       .each(function (d: GroupedPoint) {
-        // Check if this group has calculated date range bounds
-        const hasDateRangeBounds = d.minX !== undefined && d.maxX !== undefined;
-        const firstPoint = d.points[0];
-        const isDateRange = Array.isArray(firstPoint.realTime);
-
-        let rectX, rectY, width, height, rx, ry;
-
-        if (hasDateRangeBounds && d.maxX! > d.minX!) {
-          // Group spans a date range - extend capsule beyond the first & last point by one extra radius each side
-          // Requested change: extend by an additional radius on BOTH sides for clearer separation.
-          const extraPadding = TOPIC_CONFIG.point.radius * 2; // one radius each side beyond existing cap
-          const coreSpan = d.maxX! - d.minX!; // distance between point centers
-          const spanWidth = Math.max(
-            coreSpan +
-              TOPIC_CONFIG.point.radius * 2 /* end caps */ +
-              extraPadding,
-            TOPIC_CONFIG.point.radius * 2
-          );
-
-          rectX = d.minX! - TOPIC_CONFIG.point.radius - extraPadding / 2;
-          rectY = d.y - TOPIC_CONFIG.point.radius;
-          width = spanWidth;
-          height = TOPIC_CONFIG.point.radius * 2;
-          rx = TOPIC_CONFIG.point.radius;
-          ry = TOPIC_CONFIG.point.radius;
-        } else {
-          // Single point group - use existing logic
-          const dimensions = calculateRectDimensions(
-            d.points.length,
-            TOPIC_CONFIG.point.radius
-          );
-          const position = calculateRectPosition(
-            d.x,
-            d.y,
-            dimensions.width,
-            dimensions.height
-          );
-
-          rectX = position.rectX;
-          rectY = position.rectY;
-          width = dimensions.width;
-          height = dimensions.height;
-          rx = dimensions.rx;
-          ry = dimensions.ry;
-        }
+        const { rectX, rectY, width, height, rx, ry, hasRange } =
+          getCollapsedParentMetrics(d);
 
         d3.select(this)
           .attr("x", rectX)
@@ -493,7 +485,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           .attr("data-group-key", d.key.replace(/[^a-zA-Z0-9-_]/g, "_"))
           .attr("data-event-index", d.points[0].event.index)
           .attr("data-point-count", d.points.length)
-          .attr("data-has-real-time", hasDateRangeBounds || isDateRange);
+          .attr("data-has-real-time", hasRange ? "true" : "false");
 
         if (d.points.length > 1) {
           const { centerX, centerY } = calculateCenterPoint(
@@ -592,209 +584,6 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
     // Node interaction handlers
     const handleNodeInteraction = {
-      // Highlight node on hover
-      highlightNode(node: d3.Selection<any, any, any, any>, isParent: boolean) {
-        const d = node.datum();
-        const pointCount = isParent && d.points ? d.points.length : 1;
-        const x =
-          parseFloat(node.attr("x") || "0") +
-          parseFloat(node.attr("width") || "0") / 2;
-        const y =
-          parseFloat(node.attr("y") || "0") +
-          parseFloat(node.attr("height") || "0") / 2;
-
-        // Only apply hover scaling if the parent is not expanded
-        const isExpanded = isParent && d.isExpanded;
-        // Preserve pill length for date range groups: detect via data-has-real-time and width > base
-        const hasRealTimeRange = node.attr("data-has-real-time") === "true";
-        const originalWidth = parseFloat(node.attr("width") || "0");
-        const baseWidth = TOPIC_CONFIG.point.radius * 2;
-        const isRangePill = hasRealTimeRange && originalWidth > baseWidth + 2; // epsilon
-        if (!isExpanded) {
-          if (isRangePill) {
-            // Keep width; only subtly thicken height for emphasis
-            const newHeight = baseWidth * 1.2;
-            const rx = TOPIC_CONFIG.point.radius;
-            const ry = TOPIC_CONFIG.point.radius;
-            updateRectAndText(
-              node,
-              null,
-              x,
-              y,
-              originalWidth, // unchanged width
-              newHeight,
-              rx,
-              ry
-            );
-          } else {
-            const { width, height, rx, ry } = calculateRectDimensions(
-              pointCount,
-              TOPIC_CONFIG.point.hoverRadius,
-              false,
-              true
-            );
-            updateRectAndText(node, null, x, y, width, height, rx, ry);
-          }
-        }
-
-        if (!isParent) {
-          const parentKey = node.attr("data-parent-key");
-          if (parentKey) {
-            const parentNode = d3
-              .select(`#${getParentNodeId(parentKey)}`)
-              .select("rect");
-            const parentData = parentNode.datum() as GroupedPoint;
-
-            if (parentData && !parentData.isExpanded) {
-              const parentX =
-                parseFloat(parentNode.attr("x") || "0") +
-                parseFloat(parentNode.attr("width") || "0") / 2;
-              const parentY =
-                parseFloat(parentNode.attr("y") || "0") +
-                parseFloat(parentNode.attr("height") || "0") / 2;
-
-              const {
-                width: parentWidth,
-                height: parentHeight,
-                rx: parentRx,
-                ry: parentRy,
-              } = calculateRectDimensions(
-                parentData.points.length,
-                TOPIC_CONFIG.point.hoverRadius,
-                false,
-                true
-              );
-
-              updateRectAndText(
-                parentNode,
-                null,
-                parentX,
-                parentY,
-                parentWidth,
-                parentHeight,
-                parentRx,
-                parentRy
-              );
-            }
-          }
-        }
-      },
-
-      // Reset node highlighting
-      resetNode(
-        node: d3.Selection<any, any, any, any>,
-        d: any,
-        isParent: boolean
-      ) {
-        const pointCount = isParent && d.points ? d.points.length : 1;
-        const radius =
-          isParent && pointCount > 1
-            ? TOPIC_CONFIG.point.radius * 1.2
-            : TOPIC_CONFIG.point.radius;
-
-        const x =
-          parseFloat(node.attr("x") || "0") +
-          parseFloat(node.attr("width") || "0") / 2;
-        const y =
-          parseFloat(node.attr("y") || "0") +
-          parseFloat(node.attr("height") || "0") / 2;
-
-        // Only reset if the parent is not expanded
-        const isExpanded = isParent && d.isExpanded;
-        if (!isExpanded) {
-          const hasRealTimeRange = node.attr("data-has-real-time") === "true";
-          const originalWidth = parseFloat(node.attr("width") || "0");
-          const baseWidth = TOPIC_CONFIG.point.radius * 2;
-          const isRangePill = hasRealTimeRange && originalWidth > baseWidth + 2;
-          if (isRangePill) {
-            // Restore to pill height exactly baseWidth (capsule) while keeping width
-            updateRectAndText(
-              node,
-              null,
-              x,
-              y,
-              originalWidth,
-              baseWidth,
-              TOPIC_CONFIG.point.radius,
-              TOPIC_CONFIG.point.radius
-            );
-          } else {
-            const { width, height, rx, ry } = calculateRectDimensions(
-              pointCount,
-              radius
-            );
-            updateRectAndText(node, null, x, y, width, height, rx, ry);
-          }
-        }
-
-        if (!isParent) {
-          const parentKey = node.attr("data-parent-key");
-          if (parentKey) {
-            const parentGroup = d3.select(`#${getParentNodeId(parentKey)}`);
-            if (!parentGroup.empty()) {
-              const parentData = parentGroup.datum() as GroupedPoint;
-
-              // Only reset parent if it's not expanded
-              if (!parentData.isExpanded) {
-                const parentRect = parentGroup.select("rect");
-                const hasRealTimeRange =
-                  parentRect.attr("data-has-real-time") === "true";
-                const originalWidth = parseFloat(
-                  parentRect.attr("width") || "0"
-                );
-                const baseWidth = TOPIC_CONFIG.point.radius * 2;
-                const isRangePill =
-                  hasRealTimeRange && originalWidth > baseWidth + 2;
-
-                const parentX =
-                  parseFloat(parentRect.attr("x") || "0") +
-                  parseFloat(parentRect.attr("width") || "0") / 2;
-                const parentY =
-                  parseFloat(parentRect.attr("y") || "0") +
-                  parseFloat(parentRect.attr("height") || "0") / 2;
-
-                if (isRangePill) {
-                  updateRectAndText(
-                    parentRect,
-                    null,
-                    parentX,
-                    parentY,
-                    originalWidth,
-                    baseWidth,
-                    TOPIC_CONFIG.point.radius,
-                    TOPIC_CONFIG.point.radius
-                  );
-                } else {
-                  const parentRadius =
-                    parentData.points.length > 1
-                      ? TOPIC_CONFIG.point.radius * 1.2
-                      : TOPIC_CONFIG.point.radius;
-                  const {
-                    width: parentWidth,
-                    height: parentHeight,
-                    rx: parentRx,
-                    ry: parentRy,
-                  } = calculateRectDimensions(
-                    parentData.points.length,
-                    parentRadius
-                  );
-                  updateRectAndText(
-                    parentRect,
-                    null,
-                    parentX,
-                    parentY,
-                    parentWidth,
-                    parentHeight,
-                    parentRx,
-                    parentRy
-                  );
-                }
-              }
-            }
-          }
-        }
-      },
-
       // Mouse over handler
       mouseOver(this: any, event: MouseEvent, d: any) {
         const node = d3.select(this);
@@ -816,8 +605,6 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           }
         }
 
-        handleNodeInteraction.highlightNode(node, isParent);
-
         // Show tooltip
         const eventData = d.event || d.points[0].event;
         showTooltip(eventData, event.pageX, event.pageY, "topic");
@@ -834,8 +621,6 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           return;
         }
 
-        handleNodeInteraction.resetNode(node, d, isParent);
-
         hideTooltip();
       },
 
@@ -850,17 +635,6 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         const isDeselecting = eventData.index === selectedEventId;
 
         hideTooltip();
-
-        // Reset any temporary hover sizing on this child rect
-        const rect = d3.select(this) as any;
-        rect
-          .transition()
-          .duration(120)
-          .attr("width", TOPIC_CONFIG.point.radius * 2)
-          .attr("height", TOPIC_CONFIG.point.radius * 2)
-          .attr("rx", TOPIC_CONFIG.point.radius)
-          .attr("ry", TOPIC_CONFIG.point.radius)
-          .style("opacity", 1);
 
         // Raise parent group
         const parentKey = d3.select(this).attr("data-parent-key");
@@ -880,7 +654,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         d.isExpanded = isExpanded;
         pointStatesRef.current.set(d.key, { x: d.x, y: d.y, isExpanded });
 
-        // Hide tooltip & clear hover state before toggling expansion
+        // Hide tooltip before toggling expansion
         hideTooltip();
 
         const parent = d3.select(this);
@@ -943,56 +717,23 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             .style("opacity", 1)
             .style("pointer-events", "all");
         } else {
-          // Determine if this group represents a date span (has stored min/max X bounds)
-          const hasDateRangeBounds =
-            d.minX !== undefined &&
-            d.maxX !== undefined &&
-            d.maxX > d.minX + 0.5; // small epsilon
+          const collapsed = getCollapsedParentMetrics(d);
 
-          if (hasDateRangeBounds) {
-            // Recreate original pill spanning the date range
-            const spanWidth = Math.max(
-              d.maxX! - d.minX! + TOPIC_CONFIG.point.radius * 2,
-              TOPIC_CONFIG.point.radius * 2
-            );
-            const rectX = d.minX! - TOPIC_CONFIG.point.radius;
-            const rectY = d.y - TOPIC_CONFIG.point.radius;
-            const centerX = rectX + spanWidth / 2;
-            const centerY = rectY + TOPIC_CONFIG.point.radius; // since height = diameter
+          updateRectAndText(
+            parentRect,
+            countText,
+            collapsed.centerX,
+            collapsed.centerY,
+            collapsed.width,
+            collapsed.height,
+            collapsed.rx,
+            collapsed.ry,
+            200,
+            1,
+            "pointer"
+          );
 
-            updateRectAndText(
-              parentRect,
-              countText,
-              centerX,
-              centerY,
-              spanWidth,
-              TOPIC_CONFIG.point.radius * 2,
-              TOPIC_CONFIG.point.radius,
-              TOPIC_CONFIG.point.radius,
-              200,
-              1,
-              "pointer"
-            );
-          } else {
-            const { width, height, rx, ry } = calculateRectDimensions(
-              d.points.length,
-              TOPIC_CONFIG.point.radius
-            );
-
-            updateRectAndText(
-              parentRect,
-              countText,
-              x,
-              y,
-              width,
-              height,
-              rx,
-              ry,
-              200,
-              1,
-              "pointer"
-            );
-          }
+          parentRect.attr("data-has-real-time", collapsed.hasRange ? "true" : "false");
 
           // Re-enable mouse events on parent when collapsed
           parentRect.style("pointer-events", "all").style("cursor", "pointer");
@@ -1224,62 +965,23 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             const parentRect = parent.select("rect");
             const countText = parent.select("text");
 
-            const x =
-              parseFloat(parentRect.attr("x") || "0") +
-              parseFloat(parentRect.attr("width") || "0") / 2;
-            const y =
-              parseFloat(parentRect.attr("y") || "0") +
-              parseFloat(parentRect.attr("height") || "0") / 2;
+            const collapsed = getCollapsedParentMetrics(d);
 
-            const { width, height, rx, ry } = calculateRectDimensions(
-              d.points.length,
-              TOPIC_CONFIG.point.radius
+            updateRectAndText(
+              parentRect,
+              countText,
+              collapsed.centerX,
+              collapsed.centerY,
+              collapsed.width,
+              collapsed.height,
+              collapsed.rx,
+              collapsed.ry,
+              200,
+              1,
+              "pointer"
             );
 
-            // Determine if this group represents a date span (has stored min/max X bounds)
-            const hasDateRangeBounds =
-              d.minX !== undefined &&
-              d.maxX !== undefined &&
-              d.maxX > d.minX + 0.5; // epsilon
-
-            if (hasDateRangeBounds) {
-              const spanWidth = Math.max(
-                d.maxX! - d.minX! + TOPIC_CONFIG.point.radius * 2,
-                TOPIC_CONFIG.point.radius * 2
-              );
-              const rectX = d.minX! - TOPIC_CONFIG.point.radius;
-              const rectY = d.y - TOPIC_CONFIG.point.radius;
-              const centerX = rectX + spanWidth / 2;
-              const centerY = rectY + TOPIC_CONFIG.point.radius;
-
-              updateRectAndText(
-                parentRect,
-                countText,
-                centerX,
-                centerY,
-                spanWidth,
-                TOPIC_CONFIG.point.radius * 2,
-                TOPIC_CONFIG.point.radius,
-                TOPIC_CONFIG.point.radius,
-                200,
-                1,
-                "pointer"
-              );
-            } else {
-              updateRectAndText(
-                parentRect,
-                countText,
-                x,
-                y,
-                width,
-                height,
-                rx,
-                ry,
-                200,
-                1,
-                "pointer"
-              );
-            }
+            parentRect.attr("data-has-real-time", collapsed.hasRange ? "true" : "false");
 
             // Re-enable mouse events on parent when collapsed
             parentRect
