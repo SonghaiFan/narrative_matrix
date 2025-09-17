@@ -15,6 +15,10 @@ import {
   DataPoint,
 } from "./time-visual-utils";
 import { getSentimentColor } from "@/components/features/narrative/shared/color-utils";
+import {
+  calculatePillDimensions,
+  calculatePillPosition,
+} from "@/components/features/narrative/shared/visualization-utils";
 
 interface TimeVisualProps {
   events: NarrativeEvent[];
@@ -425,35 +429,28 @@ export function NarrativeTimeVisual({ events, metadata }: TimeVisualProps) {
         .enter()
         .append("rect")
         .attr("class", (d) => `point point-${d.index}`)
-        .attr("x", (d) => {
-          if (d.hasRealTime) {
-            if (Array.isArray(d.realTime)) {
-              // For date ranges: Position at the start date
-              return xScale(d.realTime[0]) - TIME_CONFIG.point.radius;
-            }
-            // For single date: Center the rectangle on the point
-            return xScale(d.realTime!) - TIME_CONFIG.point.radius;
-          }
-          // For no dates: Center the rectangle on the publish line
-          return publishX - TIME_CONFIG.point.radius;
+        .each(function (d) {
+          const position = calculatePillPosition(
+            d.realTime,
+            xScale,
+            yScale(d.narrativeTime),
+            TIME_CONFIG.point.radius,
+            publishX
+          );
+          const dimensions = calculatePillDimensions(
+            d.realTime,
+            xScale,
+            TIME_CONFIG.point.radius
+          );
+
+          d3.select(this)
+            .attr("x", position.x)
+            .attr("y", position.y)
+            .attr("width", dimensions.width)
+            .attr("height", dimensions.height)
+            .attr("rx", dimensions.rx)
+            .attr("ry", dimensions.ry);
         })
-        .attr("y", (d) => yScale(d.narrativeTime) - TIME_CONFIG.point.radius)
-        .attr("width", (d) => {
-          if (d.hasRealTime && Array.isArray(d.realTime)) {
-            // For date ranges: Calculate width + add radius on both ends to create circular caps
-            return Math.max(
-              xScale(d.realTime[1]) -
-                xScale(d.realTime[0]) +
-                TIME_CONFIG.point.radius * 2,
-              TIME_CONFIG.point.radius * 2 // Minimum size
-            );
-          }
-          // For single dates or no dates, use constant size
-          return TIME_CONFIG.point.radius * 2;
-        })
-        .attr("height", TIME_CONFIG.point.radius * 2)
-        .attr("rx", TIME_CONFIG.point.radius)
-        .attr("ry", TIME_CONFIG.point.radius)
         .attr("fill", (d) =>
           getSentimentColor(d.event.topic.sentiment.polarity)
         )

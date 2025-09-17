@@ -37,6 +37,7 @@ export interface GroupedPoint {
   isExpanded: boolean;
   minX?: number; // For date range bounds
   maxX?: number; // For date range bounds
+  realTime?: Date | [Date, Date] | null; // Calculated date range from children
 }
 
 // Process events into data points
@@ -243,8 +244,63 @@ export function groupPointsByDistance(
     cat: string,
     y: number
   ): GroupedPoint {
-    const centerX = (g.start + g.end) / 2;
+    const radius = TOPIC_CONFIG.point.radius;
+
+    let minPx = Number.POSITIVE_INFINITY;
+    let maxPx = Number.NEGATIVE_INFINITY;
+    let minDate: Date | null = null;
+    let maxDate: Date | null = null;
+
+    g.pts.forEach((point) => {
+      const recordRange = (
+        start: Date | null,
+        end: Date | null
+      ) => {
+        if (start && !Number.isNaN(start.getTime())) {
+          minDate = minDate === null || start < minDate ? start : minDate;
+        }
+        if (end && !Number.isNaN(end.getTime())) {
+          maxDate = maxDate === null || end > maxDate ? end : maxDate;
+        }
+      };
+
+      if (Array.isArray(point.realTime)) {
+        let [start, end] = point.realTime;
+        if (end < start) {
+          const tmp = start;
+          start = end;
+          end = tmp;
+        }
+        const startX = getXPosition(xScale, start);
+        const endX = getXPosition(xScale, end);
+        minPx = Math.min(minPx, startX - radius);
+        maxPx = Math.max(maxPx, endX + radius);
+        recordRange(start, end);
+      } else {
+        const time = point.realTime as Date;
+        const center = getXPosition(xScale, time);
+        minPx = Math.min(minPx, center - radius);
+        maxPx = Math.max(maxPx, center + radius);
+        recordRange(time, time);
+      }
+    });
+
+    if (!Number.isFinite(minPx) || !Number.isFinite(maxPx)) {
+      const fallback = getXPosition(xScale, g.pts[0].realTime);
+      minPx = fallback - radius;
+      maxPx = fallback + radius;
+    }
+
+    const centerX = (minPx + maxPx) / 2;
     const key = `${cat}-dgrp-${groups.length}-${g.pts[0].index}`;
+
+    let realTime: Date | [Date, Date] | null = null;
+    if (minDate && maxDate) {
+      realTime = minDate.getTime() === maxDate.getTime()
+        ? minDate
+        : [minDate, maxDate];
+    }
+
     return {
       key,
       points: g.pts,
@@ -252,8 +308,9 @@ export function groupPointsByDistance(
       x: centerX,
       y,
       isExpanded: false,
-      minX: g.start + TOPIC_CONFIG.point.radius, // store boundaries aligning with prior logic expectations (center + radius offset)
-      maxX: g.end - TOPIC_CONFIG.point.radius,
+      minX: minPx,
+      maxX: maxPx,
+      realTime,
     };
   }
 }
@@ -296,128 +353,5 @@ export function createTopicYAxis(
     .tickPadding(config.axis.tickPadding);
 }
 
-// Utility functions for rectangle and text positioning
-export function calculateRectDimensions(
-  pointCount: number,
-  radius: number,
-  isExpanded: boolean = false,
-  isHovered: boolean = false,
-  childCount: number = 0
-) {
-  let width, height, rx, ry;
-
-  if (isHovered) {
-    width = radius * 2;
-    height = radius * 2;
-    rx = radius;
-    ry = radius;
-  } else if (isExpanded) {
-    // When expanded, make the rectangle taller to encompass all child nodes
-    // Calculate height based on number of child nodes
-    const verticalSpacing = radius * 2.5; // Same as in calculateExpandedPositions
-    const childHeight = childCount > 0 ? (childCount - 1) * verticalSpacing : 0;
-
-    // Increase base size for expanded parent nodes
-    const expandedBaseSize = radius * 3;
-
-    // Base height plus space for children with additional padding
-    height = Math.max(expandedBaseSize, childHeight + radius * 3);
-    width = expandedBaseSize;
-
-    // Keep corner radius proportional but smaller for the expanded state
-    rx = radius * 0.8;
-    ry = radius * 0.8;
-  } else {
-    // Scale parent node size based on child count
-    const baseSize = radius * 2;
-    const scaleFactor = Math.min(1 + (pointCount - 1) * 0.2, 2.5); // Scale up to 2.5x for larger groups
-
-    width = pointCount > 1 ? baseSize * scaleFactor : baseSize;
-    height = pointCount > 1 ? baseSize * scaleFactor : baseSize;
-
-    // Corner radius scales proportionally with the size
-    // Use a percentage of the width/height to maintain consistent rounded corners
-    const cornerRadiusPercentage = 0.5; // 50% of the smaller dimension
-    rx =
-      pointCount > 1
-        ? Math.min(width, height) * cornerRadiusPercentage
-        : radius;
-    ry =
-      pointCount > 1
-        ? Math.min(width, height) * cornerRadiusPercentage
-        : radius;
-  }
-
-  return { width, height, rx, ry };
-}
-
-export function calculateRectPosition(
-  x: number,
-  y: number,
-  width: number,
-  height: number
-) {
-  const rectX = x - width / 2;
-  const rectY = y - height / 2;
-  return { rectX, rectY };
-}
-
-export function calculateCenterPoint(
-  rectX: number,
-  rectY: number,
-  width: number,
-  height: number
-) {
-  const centerX = rectX + width / 2;
-  const centerY = rectY + height / 2;
-  return { centerX, centerY };
-}
-
-export function updateRectAndText(
-  rect: d3.Selection<any, any, any, any>,
-  text: d3.Selection<any, any, any, any> | null,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  rx: number,
-  ry: number,
-  duration: number = 150,
-  opacity: number = 1,
-  cursor: string = "pointer"
-) {
-  const { rectX, rectY } = calculateRectPosition(x, y, width, height);
-  const { centerX, centerY } = calculateCenterPoint(
-    rectX,
-    rectY,
-    width,
-    height
-  );
-
-  const transition = rect.transition().duration(duration);
-
-  transition
-    .attr("width", width)
-    .attr("height", height)
-    .attr("x", rectX)
-    .attr("y", rectY)
-    .attr("rx", rx)
-    .attr("ry", ry)
-    .style("opacity", opacity)
-    .style("cursor", cursor);
-
-  if (text) {
-    // Get the point count from the data attribute if available
-    const pointCount = parseInt(rect.attr("data-point-count") || "1", 10);
-    const fontSize = Math.min(10 + (pointCount - 1) * 0.5, 14);
-
-    text
-      .transition()
-      .duration(duration)
-      .attr("x", centerX)
-      .attr("y", centerY)
-      .style("font-size", `${fontSize}px`);
-  }
-
-  return { rectX, rectY, centerX, centerY };
-}
+// Note: Rectangle and text positioning utilities have been moved to shared/visualization-utils.ts
+// to ensure consistency across all visualization components.

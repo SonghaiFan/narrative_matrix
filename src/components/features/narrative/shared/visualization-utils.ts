@@ -262,3 +262,246 @@ export function calculateDimensions(
     height,
   };
 }
+
+// ============================================================================
+// UNIFIED PILL POSITIONING AND SIZING UTILITIES
+// ============================================================================
+
+/**
+ * Calculate pill dimensions for any node (child or parent)
+ * @param realTime - Date, date range, or null (for child nodes)
+ * @param xScale - D3 scale function
+ * @param radius - Base radius for the pill
+ * @param pointCount - Number of points in group (for parent nodes)
+ * @param isExpanded - Whether parent node is expanded
+ * @param isHovered - Whether node is being hovered
+ * @param childCount - Number of child nodes (for expanded parent state)
+ * @returns Object with width, height, rx, ry
+ */
+export function calculatePillDimensions(
+  realTime: Date | [Date, Date] | null,
+  xScale: any,
+  radius: number,
+  pointCount: number = 1,
+  isExpanded: boolean = false,
+  isHovered: boolean = false,
+  childCount: number = 0
+) {
+  const baseSize = radius * 2;
+
+  // Handle hover state first (applies to all nodes)
+  if (isHovered) {
+    return {
+      width: baseSize,
+      height: baseSize,
+      rx: radius,
+      ry: radius,
+    };
+  }
+
+  // Handle expanded parent state
+  if (isExpanded && pointCount > 1) {
+    const verticalSpacing = radius * 2.5;
+    const childHeight = childCount > 0 ? (childCount - 1) * verticalSpacing : 0;
+    const expandedBaseSize = radius * 3;
+    const height = Math.max(expandedBaseSize, childHeight + radius * 3);
+
+    return {
+      width: expandedBaseSize,
+      height,
+      rx: radius * 0.8,
+      ry: radius * 0.8,
+    };
+  }
+
+  let rangeWidth: number | null = null;
+  if (realTime && typeof xScale === "function") {
+    if (Array.isArray(realTime)) {
+      const startX = xScale(realTime[0]);
+      const endX = xScale(realTime[1]);
+      if (Number.isFinite(startX) && Number.isFinite(endX)) {
+        rangeWidth = Math.max(Math.abs(endX - startX) + baseSize, baseSize);
+      }
+    } else {
+      const centerX = xScale(realTime);
+      if (Number.isFinite(centerX)) {
+        rangeWidth = baseSize;
+      }
+    }
+  }
+
+  if (rangeWidth !== null) {
+    return {
+      width: rangeWidth,
+      height: baseSize,
+      rx: radius,
+      ry: radius,
+    };
+  }
+
+  // Handle collapsed parent nodes (fallback when no range is available)
+  if (pointCount > 1) {
+    return {
+      width: baseSize,
+      height: baseSize,
+      rx: radius,
+      ry: radius,
+    };
+  }
+
+  // Default single-date sizing
+  return {
+    width: baseSize,
+    height: baseSize,
+    rx: radius,
+    ry: radius,
+  };
+}
+
+/**
+ * Calculate pill position for any node (child or parent)
+ * @param realTime - Date, date range, or null (for child nodes)
+ * @param xScale - D3 scale function
+ * @param y - Y coordinate
+ * @param radius - Base radius for the pill
+ * @param fallbackX - Fallback X position when no realTime (e.g., publish line)
+ * @param centerX - Center X coordinate (for parent nodes with calculated position)
+ * @returns Object with x, y coordinates
+ */
+export function calculatePillPosition(
+  realTime: Date | [Date, Date] | null,
+  xScale: any,
+  y: number,
+  radius: number,
+  fallbackX?: number,
+  centerX?: number
+) {
+  let x: number;
+
+  // Use provided centerX for parent nodes
+  if (centerX !== undefined) {
+    x = centerX - radius;
+  } else if (realTime) {
+    if (Array.isArray(realTime)) {
+      // Date range: position at start date
+      x = xScale(realTime[0]) - radius;
+    } else {
+      // Single date: center the rectangle on the point
+      x = xScale(realTime) - radius;
+    }
+  } else {
+    // No date: use fallback position (e.g., publish line)
+    x = (fallbackX || 0) - radius;
+  }
+
+  return {
+    x,
+    y: y - radius,
+  };
+}
+
+// Legacy function names for backward compatibility
+export const calculateRectDimensions = calculatePillDimensions;
+export const calculateRectPosition = calculatePillPosition;
+
+/**
+ * Calculate rectangle position from center coordinates
+ * @param x - Center X coordinate
+ * @param y - Center Y coordinate
+ * @param width - Rectangle width
+ * @param height - Rectangle height
+ * @returns Object with rectX, rectY (top-left coordinates)
+ */
+export function calculateRectPositionFromCenter(
+  x: number,
+  y: number,
+  width: number,
+  height: number
+) {
+  const rectX = x - width / 2;
+  const rectY = y - height / 2;
+  return { rectX, rectY };
+}
+
+/**
+ * Calculate center point from rectangle coordinates
+ * @param rectX - Rectangle top-left X coordinate
+ * @param rectY - Rectangle top-left Y coordinate
+ * @param width - Rectangle width
+ * @param height - Rectangle height
+ * @returns Object with centerX, centerY
+ */
+export function calculateCenterPoint(
+  rectX: number,
+  rectY: number,
+  width: number,
+  height: number
+) {
+  const centerX = rectX + width / 2;
+  const centerY = rectY + height / 2;
+  return { centerX, centerY };
+}
+
+/**
+ * Update rectangle and text with smooth transitions
+ * @param rect - D3 selection of rectangle element
+ * @param text - D3 selection of text element (optional)
+ * @param x - Center X coordinate
+ * @param y - Center Y coordinate
+ * @param width - Rectangle width
+ * @param height - Rectangle height
+ * @param rx - Rectangle corner radius X
+ * @param ry - Rectangle corner radius Y
+ * @param duration - Transition duration in ms
+ * @param opacity - Opacity value
+ * @param cursor - Cursor style
+ * @returns Object with final rectangle coordinates
+ */
+export function updateRectAndText(
+  rect: any,
+  text: any | null,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  rx: number,
+  ry: number,
+  duration: number = 150,
+  opacity: number = 1,
+  cursor: string = "pointer"
+) {
+  const { rectX, rectY } = calculateRectPositionFromCenter(x, y, width, height);
+  const { centerX, centerY } = calculateCenterPoint(
+    rectX,
+    rectY,
+    width,
+    height
+  );
+
+  const transition = rect.transition().duration(duration);
+
+  transition
+    .attr("width", width)
+    .attr("height", height)
+    .attr("x", rectX)
+    .attr("y", rectY)
+    .attr("rx", rx)
+    .attr("ry", ry)
+    .style("opacity", opacity)
+    .style("cursor", cursor);
+
+  if (text) {
+    // Get the point count from the data attribute if available
+    const pointCount = parseInt(rect.attr("data-point-count") || "1", 10);
+    const fontSize = Math.min(10 + (pointCount - 1) * 0.5, 14);
+
+    text
+      .transition()
+      .duration(duration)
+      .attr("x", centerX)
+      .attr("y", centerY)
+      .style("font-size", `${fontSize}px`);
+  }
+
+  return { rectX, rectY, centerX, centerY };
+}
