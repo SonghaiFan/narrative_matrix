@@ -19,10 +19,14 @@ import {
 } from "./topic-visual-utils";
 import {
   calculatePillDimensions,
-  calculatePillPosition,
   calculateCenterPoint,
   updateRectAndText,
 } from "../shared/visualization-utils";
+import {
+  applyPillGeometry,
+  createSinglePillHandlers,
+  calculateGroupedPillMetrics,
+} from "../shared/pill-component";
 
 export interface TopicVisualProps {
   events: NarrativeEvent[];
@@ -42,6 +46,7 @@ export interface ChildPoint extends DataPoint {
   parentKey: string;
   index: number;
   total: number;
+  centerY?: number;
 }
 
 export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
@@ -64,30 +69,6 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
   const getChildNodeId = useCallback((eventIndex: number) => {
     return `child-node-${eventIndex}`;
-  }, []);
-
-  const getCollapsedParentMetrics = useCallback((group: GroupedPoint) => {
-    const radius = TOPIC_CONFIG.point.radius;
-    const baseHeight = radius * 2;
-    const defaultLeft = group.x - radius;
-    const defaultRight = group.x + radius;
-    const left = typeof group.minX === "number" ? group.minX : defaultLeft;
-    const right = typeof group.maxX === "number" ? group.maxX : defaultRight;
-    const width = Math.max(right - left, baseHeight);
-    const centerX = (left + right) / 2;
-    return {
-      rectX: centerX - width / 2,
-      rectY: group.y - baseHeight / 2,
-      width,
-      height: baseHeight,
-      rx: baseHeight / 2,
-      ry: baseHeight / 2,
-      centerX,
-      centerY: group.y,
-      hasRange:
-        Array.isArray(group.realTime) ||
-        Math.abs(right - left) > baseHeight + 0.5,
-    };
   }, []);
 
   // Update node styles based on selectedEventId
@@ -516,7 +497,14 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .append("rect")
       .attr("class", "parent-point")
       .each(function (d: GroupedPoint) {
-        const metrics = getCollapsedParentMetrics(d);
+        const metrics = calculateGroupedPillMetrics({
+          x: d.x,
+          y: d.y,
+          radius: TOPIC_CONFIG.point.radius,
+          minX: d.minX,
+          maxX: d.maxX,
+          realTime: d.realTime ?? null,
+        });
 
         d3.select(this)
           .attr("x", metrics.rectX)
@@ -561,14 +549,19 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     // Add child nodes
     const childNodes = parentNodes
       .selectAll(".child-point")
-      .data((d: GroupedPoint) =>
-        d.points.map((p: DataPoint, i: number) => ({
+      .data((d: GroupedPoint) => {
+        const positions = calculateExpandedPositions(
+          d,
+          TOPIC_CONFIG.point.radius
+        );
+        return d.points.map((p: DataPoint, i: number) => ({
           ...p,
           parentKey: d.key.replace(/[^a-zA-Z0-9-_]/g, "_"),
           index: i,
           total: d.points.length,
-        }))
-      )
+          centerY: positions[i].y,
+        }));
+      })
       .enter()
       .append("g")
       .attr("class", "child-point")
@@ -580,41 +573,47 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .attr("class", "child-point-rect")
       .attr("id", (d: ChildPoint) => getChildNodeId(d.event.index))
       .each(function (d: ChildPoint) {
-        const parent = groupedPoints.find(
-          (g) => g.key.replace(/[^a-zA-Z0-9-_]/g, "_") === d.parentKey
-        )!;
-        const positions = calculateExpandedPositions(
-          parent,
-          TOPIC_CONFIG.point.radius
-        );
-
-        const position = calculatePillPosition(
-          d.realTime,
+        applyPillGeometry(d3.select(this), {
+          realTime: d.realTime,
           xScale,
-          positions[d.index].y,
-          TOPIC_CONFIG.point.radius
-        );
-        const dimensions = calculatePillDimensions(
-          d.realTime,
-          xScale,
-          TOPIC_CONFIG.point.radius
-        );
-
-        d3.select(this)
-          .attr("x", position.x)
-          .attr("y", position.y)
-          .attr("width", dimensions.width)
-          .attr("height", dimensions.height)
-          .attr("rx", dimensions.rx)
-          .attr("ry", dimensions.ry);
+          radius: TOPIC_CONFIG.point.radius,
+          baseY: d.centerY!,
+        });
       })
       .attr("fill", (d: ChildPoint) => getSentimentColor(d.sentimentPolarity))
       .attr("stroke", "black")
       .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth)
       .style("cursor", "pointer")
       .attr("data-parent-key", (d: ChildPoint) => d.parentKey)
-      .attr("data-event-index", (d: ChildPoint) => d.event.index)
-      .attr("data-has-real-time", (d: ChildPoint) => Array.isArray(d.realTime));
+      .attr("data-event-index", (d: ChildPoint) => d.event.index);
+
+    const childPillHandlers = createSinglePillHandlers<ChildPoint>({
+      radius: TOPIC_CONFIG.point.radius,
+      hoverRadius: TOPIC_CONFIG.point.hoverRadius,
+      xScale,
+      getBaseY: (d) => d.centerY!,
+      showTooltip: (d, event) =>
+        showTooltip(d.event, event.pageX, event.pageY, "topic"),
+      hideTooltip,
+      updatePosition,
+      onMouseEnterExtra: (_node, _event, d) => {
+        const parentNode = d3.select(`#${getParentNodeId(d.parentKey)}`);
+        if (!parentNode.empty()) {
+          parentNode.raise();
+        }
+      },
+      onClick: (_node, event, d) => {
+        hideTooltip();
+        const parentNode = d3.select(`#${getParentNodeId(d.parentKey)}`);
+        if (!parentNode.empty()) {
+          parentNode.raise();
+        }
+
+        const isDeselecting = d.event.index === selectedEventId;
+        setSelectedEventId(isDeselecting ? null : d.event.index);
+        event.stopPropagation();
+      },
+    });
 
     // Node interaction handlers
     const handleNodeInteraction = {
@@ -880,33 +879,6 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         updatePosition(event.pageX, event.pageY);
       },
 
-      // Child node click handler
-      childClick(this: any, event: MouseEvent, d: any) {
-        const eventData = d.event;
-        const isDeselecting = eventData.index === selectedEventId;
-
-        hideTooltip();
-
-        // Reset any temporary hover sizing on this child rect
-        const rect = d3.select(this) as any;
-        rect
-          .transition()
-          .duration(120)
-          .attr("width", TOPIC_CONFIG.point.radius * 2)
-          .attr("height", TOPIC_CONFIG.point.radius * 2)
-          .attr("rx", TOPIC_CONFIG.point.radius)
-          .attr("ry", TOPIC_CONFIG.point.radius)
-          .style("opacity", 1);
-
-        // Raise parent group
-        const parentKey = d3.select(this).attr("data-parent-key");
-        if (parentKey) {
-          d3.select(`#${getParentNodeId(parentKey)}`).raise();
-        }
-
-        setSelectedEventId(isDeselecting ? null : eventData.index);
-        event.stopPropagation();
-      },
     };
 
     // Handle click events for parent nodes
@@ -984,7 +956,14 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             .style("opacity", 1)
             .style("pointer-events", "all");
         } else {
-          const collapsed = getCollapsedParentMetrics(d);
+          const collapsed = calculateGroupedPillMetrics({
+            x: d.x,
+            y: d.y,
+            radius: TOPIC_CONFIG.point.radius,
+            minX: d.minX,
+            maxX: d.maxX,
+            realTime: d.realTime ?? null,
+          });
 
           updateRectAndText(
             parentRect,
@@ -1038,10 +1017,10 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
 
     childNodes
       .selectAll("rect.child-point-rect")
-      .on("mouseover", handleNodeInteraction.mouseOver)
-      .on("mouseout", handleNodeInteraction.mouseOut)
-      .on("mousemove", handleNodeInteraction.mouseMove)
-      .on("click", handleNodeInteraction.childClick);
+      .on("mouseenter", childPillHandlers.mouseEnter)
+      .on("mouseleave", childPillHandlers.mouseLeave)
+      .on("mousemove", childPillHandlers.mouseMove)
+      .on("click", childPillHandlers.click);
 
     // Restore expanded states
     currentExpandedStates.forEach((state, key) => {
@@ -1170,7 +1149,6 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
   }, [
     events,
     getParentNodeId,
-    getCollapsedParentMetrics,
     viewMode,
     selectedEventId,
     updateSelectedEventStyles,
@@ -1237,7 +1215,14 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
             const countText = parent.select("text");
 
             // Use consistent pill system for collapsed state (same as initialization)
-            const collapsed = getCollapsedParentMetrics(d);
+            const collapsed = calculateGroupedPillMetrics({
+              x: d.x,
+              y: d.y,
+              radius: TOPIC_CONFIG.point.radius,
+              minX: d.minX,
+              maxX: d.maxX,
+              realTime: d.realTime ?? null,
+            });
 
             updateRectAndText(
               parentRect,
@@ -1271,7 +1256,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           }
         });
     }
-  }, [setSelectedEventId, hideTooltip, getCollapsedParentMetrics]);
+  }, [setSelectedEventId, hideTooltip]);
 
   return (
     <div className="w-full h-full flex flex-col">
