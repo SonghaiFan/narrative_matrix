@@ -27,6 +27,11 @@ import {
   createSinglePillHandlers,
   calculateGroupedPillMetrics,
 } from "../shared/pill-component";
+import {
+  applySelectedEventStyles,
+  collapseExpandedGroups,
+  type PointState,
+} from "./topic-visual-renderers";
 
 export interface TopicVisualProps {
   events: NarrativeEvent[];
@@ -34,12 +39,6 @@ export interface TopicVisualProps {
   metadata: {
     publishDate: string;
   };
-}
-
-export interface PointState {
-  x: number;
-  y: number;
-  isExpanded: boolean;
 }
 
 export interface ChildPoint extends DataPoint {
@@ -71,159 +70,25 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
     return `child-node-${eventIndex}`;
   }, []);
 
-  // Update node styles based on selectedEventId
-  const updateSelectedEventStyles = useCallback(
-    (newSelectedId: number | null, xScale?: any) => {
-      if (!svgRef.current) return;
 
-      // Reset all nodes to default stroke style
-      d3.select(svgRef.current)
-        .selectAll(".parent-point, .child-point-rect")
-        .attr("stroke", "black")
-        .attr("stroke-width", TOPIC_CONFIG.point.strokeWidth);
+  // Handle background click to deselect
+  const handleBackgroundClick = useCallback(() => {
+    setSelectedEventId(null);
+    hideTooltip();
 
-      const guideLine = d3.select(svgRef.current).select(".guide-lines");
-      if (SHOW_VERTICAL_TIME_GUIDES) {
-        // Reset visibility (they will be re-shown for selected node)
-        guideLine.style("display", "none");
-        guideLine.selectAll(".guide-line.vertical").style("display", "none");
-        guideLine.selectAll(".guide-label").style("display", "none");
-      }
+    collapseExpandedGroups({
+      svg: svgRef.current,
+      pointStates: pointStatesRef.current,
+      getParentNodeId,
+    });
 
-      if (newSelectedId === null) return;
-
-      const highlightedParents = d3
-        .select(svgRef.current)
-        .selectAll(".parent-point")
-        .filter(function () {
-          return (
-            d3.select(this).attr("data-event-index") === String(newSelectedId)
-          );
-        })
-        .attr("stroke", TOPIC_CONFIG.highlight.color);
-
-      const highlightedChildren = d3
-        .select(svgRef.current)
-        .selectAll(".child-point-rect")
-        .filter(function () {
-          return (
-            d3.select(this).attr("data-event-index") === String(newSelectedId)
-          );
-        })
-        .attr("stroke", TOPIC_CONFIG.highlight.color)
-        .each(function () {
-          const parentKey = d3.select(this).attr("data-parent-key");
-          if (parentKey) {
-            d3.select(`#${getParentNodeId(parentKey)}`)
-              .select("rect")
-              .attr("stroke", TOPIC_CONFIG.highlight.color);
-          }
-        });
-
-      // Show guide lines for the selected node
-      let selectedNode: SVGRectElement | null = null;
-      if (!highlightedChildren.empty()) {
-        selectedNode = highlightedChildren.node() as SVGRectElement;
-      } else if (!highlightedParents.empty()) {
-        selectedNode = highlightedParents.node() as SVGRectElement;
-      }
-
-      if (SHOW_VERTICAL_TIME_GUIDES && selectedNode && xScale) {
-        // Get the selected node's position and dimensions
-        const x = parseFloat(selectedNode.getAttribute("x") || "0");
-        const width = parseFloat(selectedNode.getAttribute("width") || "0");
-        const y = parseFloat(selectedNode.getAttribute("y") || "0");
-        const height = parseFloat(selectedNode.getAttribute("height") || "0");
-
-        // Calculate guide line positions
-        const centerY = y + height / 2;
-
-        // For date ranges, use the right edge (excluding the end cap)
-        // For single points, use the center
-        const isDateRange = width > TOPIC_CONFIG.point.radius * 2 + 2; // Add small epsilon for rounding
-        const rightEdgeX = isDateRange
-          ? x + width - TOPIC_CONFIG.point.radius // For date ranges, use position just before the end cap
-          : x + width / 2; // For single points, use the center
-
-        // Show and position guide lines
-        guideLine.style("display", "block");
-
-        // Update horizontal guide line
-        guideLine
-          .select(".guide-line.horizontal")
-          .style("display", "block")
-          .attr("y1", centerY)
-          .attr("y2", centerY);
-
-        // Update vertical guide line
-        guideLine
-          .select(".guide-line.vertical")
-          .style("display", "block")
-          .attr("x1", rightEdgeX)
-          .attr("x2", rightEdgeX);
-
-        // Get the selected node's data to show date labels
-        const nodeData = d3.select(selectedNode).datum() as any;
-        if (nodeData) {
-          const startDate = nodeData.realTime || nodeData.points?.[0]?.realTime;
-
-          if (startDate && xScale) {
-            if (Array.isArray(startDate)) {
-              // Date range - show both start and end labels
-              const [start, end] = startDate;
-              const startX = xScale(start);
-              const endX = xScale(end);
-
-              // Start date label
-              guideLine
-                .select(".guide-label.start")
-                .style("display", "block")
-                .attr("x", startX - 5)
-                .text(start.toLocaleDateString());
-
-              // End date label
-              guideLine
-                .select(".guide-label.end")
-                .style("display", "block")
-                .attr("x", endX + 5)
-                .text(end.toLocaleDateString());
-
-              // Show both vertical lines for date ranges
-              guideLine
-                .select(".guide-line.vertical.start")
-                .style("display", "block")
-                .attr("x1", startX)
-                .attr("x2", startX);
-
-              guideLine
-                .select(".guide-line.vertical.end")
-                .style("display", "block")
-                .attr("x1", endX)
-                .attr("x2", endX);
-            } else {
-              // Single date - show single label
-              const dateX = xScale(startDate);
-
-              // Single date label
-              guideLine
-                .select(".guide-label.start")
-                .style("display", "block")
-                .attr("x", dateX - 5)
-                .text(startDate.toLocaleDateString());
-
-              // Single vertical line
-              guideLine
-                .select(".guide-line.vertical")
-                .style("display", "block")
-                .attr("x1", dateX)
-                .attr("x2", dateX);
-            }
-          }
-        }
-      }
-    },
-    []
-  );
+    applySelectedEventStyles({
+      svg: svgRef.current,
+      selectedEventId: null,
+      showVerticalTimeGuides: SHOW_VERTICAL_TIME_GUIDES,
+      getParentNodeId,
+    });
+  }, [setSelectedEventId, hideTooltip, getParentNodeId]);
 
   // Update visualization
   const updateVisualization = useCallback(() => {
@@ -1270,23 +1135,29 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       }
     }
 
-    // Reapply selection if exists
-    if (currentSelection !== null && currentSelection !== undefined) {
-      updateSelectedEventStyles(currentSelection, xScale);
-    }
+    applySelectedEventStyles({
+      svg: svgRef.current,
+      selectedEventId: currentSelection ?? null,
+      xScale,
+      showVerticalTimeGuides: SHOW_VERTICAL_TIME_GUIDES,
+      getParentNodeId,
+    });
   }, [
     events,
     getParentNodeId,
     viewMode,
     selectedEventId,
-    updateSelectedEventStyles,
+    getChildNodeId,
+    showTooltip,
+    hideTooltip,
+    updatePosition,
+    setSelectedEventId,
+    handleBackgroundClick,
   ]);
 
-  // Handle selection changes
+  // Handle selection changes to keep expansion and highlight in sync
   useEffect(() => {
     if (svgRef.current && selectedEventId !== undefined) {
-      // We need to access xScale from the latest render
-      // Since we don't have direct access here, let's call updateVisualization which will handle it
       updateVisualization();
     }
   }, [selectedEventId, updateVisualization]);
@@ -1309,83 +1180,6 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       resizeObserverRef.current?.disconnect();
     };
   }, [updateVisualization]);
-
-  // Handle background click to deselect
-  const handleBackgroundClick = useCallback(() => {
-    // Deselect any selected event
-    setSelectedEventId(null);
-    hideTooltip();
-
-    // Close all expanded parent nodes
-    if (svgRef.current) {
-      // Reset all parent nodes to collapsed state
-      d3.select(svgRef.current)
-        .selectAll(".point-group")
-        .each(function (d: any) {
-          if (d.isExpanded) {
-            d.isExpanded = false;
-
-            // Update the pointStatesRef to reflect the collapsed state
-            if (d.key) {
-              const currentState = pointStatesRef.current.get(d.key);
-              if (currentState) {
-                pointStatesRef.current.set(d.key, {
-                  ...currentState,
-                  isExpanded: false,
-                });
-              }
-            }
-
-            // Update the visual state
-            const parent = d3.select(this);
-            const children = parent.selectAll(".child-point");
-            const parentRect = parent.select("rect");
-            const countText = parent.select("text");
-
-            // Use consistent pill system for collapsed state (same as initialization)
-            const collapsed = calculateGroupedPillMetrics({
-              x: d.x,
-              y: d.y,
-              radius: TOPIC_CONFIG.point.radius,
-              minX: d.minX,
-              maxX: d.maxX,
-              realTime: d.realTime ?? null,
-            });
-
-            updateRectAndText(
-              parentRect,
-              countText,
-              collapsed.centerX,
-              collapsed.centerY,
-              collapsed.width,
-              collapsed.height,
-              collapsed.rx,
-              collapsed.ry,
-              200,
-              1,
-              "pointer"
-            );
-
-            parentRect.attr(
-              "data-has-real-time",
-              collapsed.hasRange ? "true" : "false"
-            );
-
-            // Re-enable mouse events on parent when collapsed
-            parentRect
-              .style("pointer-events", "all")
-              .style("cursor", "pointer");
-
-            children
-              .transition()
-              .duration(200)
-              .style("opacity", 0)
-              .style("pointer-events", "none");
-          }
-        });
-    }
-  }, [setSelectedEventId, hideTooltip]);
-
   return (
     <div className="w-full h-full flex flex-col">
       <div className="flex-none bg-white sticky top-0 z-10 shadow-sm">
