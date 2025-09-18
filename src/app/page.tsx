@@ -10,7 +10,7 @@ const DEMO_SCENARIOS = [
     color: "bg-green-50 border-green-200 hover:bg-green-100 text-green-800",
   },
   {
-    id: "text-visual", 
+    id: "text-visual",
     name: "Text + Visual",
     description: "Text with interactive visualizations",
     route: "/text-visual",
@@ -19,7 +19,7 @@ const DEMO_SCENARIOS = [
   {
     id: "text-chat",
     name: "Text + Chat",
-    description: "Text with AI chat interface", 
+    description: "Text with AI chat interface",
     route: "/text-chat",
     color: "bg-purple-50 border-purple-200 hover:bg-purple-100 text-purple-800",
   },
@@ -27,7 +27,7 @@ const DEMO_SCENARIOS = [
     id: "mixed",
     name: "Mixed Mode",
     description: "Combined visualizations and AI chat",
-    route: "/mixed", 
+    route: "/mixed",
     color: "bg-orange-50 border-orange-200 hover:bg-orange-100 text-orange-800",
   },
 ];
@@ -37,9 +37,7 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">
-            Narrative Matrix
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900">Narrative Grid</h1>
           <p className="text-gray-500">Interactive Demo Platform</p>
         </div>
 
@@ -49,7 +47,8 @@ export default function Home() {
               Choose a Demo Scenario
             </h2>
             <p className="text-sm text-gray-600">
-              Click any scenario to start exploring different narrative visualization approaches
+              Click any scenario to start exploring different narrative
+              visualization approaches
             </p>
           </div>
 
@@ -63,7 +62,9 @@ export default function Home() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="font-medium text-sm">{scenario.name}</h3>
-                    <p className="text-xs opacity-80 mt-1">{scenario.description}</p>
+                    <p className="text-xs opacity-80 mt-1">
+                      {scenario.description}
+                    </p>
                   </div>
                   <svg
                     className="w-5 h-5 opacity-60"

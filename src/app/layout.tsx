@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Narrative Matrix",
+  title: "Narrative Grid",
   description: "Interactive visualization of narrative data",
 };
 

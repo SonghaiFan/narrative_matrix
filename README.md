@@ -1,10 +1,10 @@
-# Narrative Matrix
+# Narrative Grid
 
 A user study platform for exploring different narrative visualization approaches, designed to compare various storytelling techniques in data visualization.
 
 ## Project Overview
 
-Narrative Matrix is a Next.js application that provides different narrative visualization approaches for user studies. The platform allows researchers to compare how users interact with and understand data through different visualization techniques, including pure text narratives and interactive visualizations.
+Narrative Grid is a Next.js application that provides different narrative visualization approaches for user studies. The platform allows researchers to compare how users interact with and understand data through different visualization techniques, including pure text narratives and interactive visualizations.
 
 ## Technologies Used
 
@@ -43,9 +43,9 @@ Narrative Matrix is a Next.js application that provides different narrative visu
 
 All accounts use the same password: `study`
 
-| Username | Description                      |
-| -------- | -------------------------------- |
-| `demo`   | Demo user with access to all scenarios |
+| Username | Description                             |
+| -------- | --------------------------------------- |
+| `demo`   | Demo user with access to all scenarios  |
 | `admin`  | Admin user with access to all scenarios |
 
 ## Quick Start
@@ -96,15 +96,16 @@ narrative_subway/
 - `/` - Home page with login
 - `/dashboard` - Main dashboard with scenario selection
 - `/pure-text` - Text-only narrative visualization
-- `/text-visual` - Text with interactive visualizations  
+- `/text-visual` - Text with interactive visualizations
 - `/text-chat` - Text with AI chat interface
 - `/mixed` - Combined visualizations and AI chat
 
 ## Navigation Flow
 
 Simple three-step navigation:
+
 1. **Login** - Enter credentials on the home page
-2. **Dashboard** - Select from four available scenarios  
+2. **Dashboard** - Select from four available scenarios
 3. **Scenario** - Interact with the chosen visualization approach
 
 ## Key Features
