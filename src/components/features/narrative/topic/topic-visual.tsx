@@ -506,7 +506,8 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           realTime: d.realTime ?? null,
         });
 
-        d3.select(this)
+        const parentRect = d3
+          .select(this)
           .attr("x", metrics.rectX)
           .attr("y", metrics.rectY)
           .attr("width", metrics.width)
@@ -522,28 +523,33 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
           .attr("data-point-count", d.points.length)
           .attr("data-has-real-time", metrics.hasRange ? "true" : "false");
 
-        if (d.points.length > 1) {
-          const { centerX, centerY } = calculateCenterPoint(
-            metrics.rectX,
-            metrics.rectY,
-            metrics.width,
-            metrics.height
-          );
-
-          d3.select(this.parentElement)
-            .append("text")
-            .attr("x", centerX)
-            .attr("y", centerY)
-            .attr("dy", "0.35em")
-            .attr("text-anchor", "middle")
-            .style(
-              "font-size",
-              `${Math.min(10 + (d.points.length - 1) * 0.5, 14)}px`
-            )
-            .style("fill", "black")
-            .style("pointer-events", "none")
-            .text(d.points.length);
+        // If this group only has a single child, hide the parent pill
+        if (d.points.length === 1) {
+          parentRect.style("opacity", 0).style("pointer-events", "none");
+          return;
         }
+
+        // Multi-child group: show count label on parent
+        const { centerX, centerY } = calculateCenterPoint(
+          metrics.rectX,
+          metrics.rectY,
+          metrics.width,
+          metrics.height
+        );
+
+        d3.select(this.parentElement)
+          .append("text")
+          .attr("x", centerX)
+          .attr("y", centerY)
+          .attr("dy", "0.35em")
+          .attr("text-anchor", "middle")
+          .style(
+            "font-size",
+            `${Math.min(10 + (d.points.length - 1) * 0.5, 14)}px`
+          )
+          .style("fill", "black")
+          .style("pointer-events", "none")
+          .text(d.points.length);
       });
 
     // Add child nodes
@@ -565,8 +571,9 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
       .enter()
       .append("g")
       .attr("class", "child-point")
-      .style("opacity", 0)
-      .style("pointer-events", "none");
+      // Show child immediately when group has only one child; otherwise hide until expanded
+      .style("opacity", (d: any) => (d.total === 1 ? 1 : 0))
+      .style("pointer-events", (d: any) => (d.total === 1 ? "all" : "none"));
 
     childNodes
       .append("rect")
@@ -631,17 +638,18 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         // Only apply hover scaling if the parent is not expanded
         const isExpanded = isParent && d.isExpanded;
         // Preserve pill length for date range groups: detect via stored realTime range and width > base
-        const datum: any = node.datum();
-        const hasRealTimeRange = Array.isArray(datum?.realTime);
-        const originalWidth = parseFloat(node.attr("width") || "0");
-        const baseWidth = TOPIC_CONFIG.point.radius * 2;
-        const isRangePill = hasRealTimeRange && originalWidth > baseWidth + 2; // epsilon
         if (!isExpanded) {
+          // For parent nodes, preserve the date range span but apply hover styling
+          const hasRealTimeRange = Array.isArray(d.realTime);
+          const originalWidth = parseFloat(node.attr("width") || "0");
+          const baseWidth = TOPIC_CONFIG.point.radius * 2;
+          const isRangePill = hasRealTimeRange && originalWidth > baseWidth + 2;
+
           if (isRangePill) {
-            // Keep width; only subtly thicken height for emphasis
+            // Keep width for date range pills; only subtly thicken height for emphasis
             const newHeight = baseWidth * 1.2;
-            const rx = TOPIC_CONFIG.point.radius;
-            const ry = TOPIC_CONFIG.point.radius;
+            const rx = TOPIC_CONFIG.point.hoverRadius;
+            const ry = TOPIC_CONFIG.point.hoverRadius;
             updateRectAndText(
               node,
               null,
@@ -650,18 +658,20 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
               originalWidth, // unchanged width
               newHeight,
               rx,
-              ry
+              ry,
+              150
             );
           } else {
+            // For non-range parent pills, use standard hover dimensions
             const { width, height, rx, ry } = calculatePillDimensions(
-              d.realTime || null, // Use calculated date range from children
-              xScale, // Use xScale for date-based sizing
+              d.realTime || null,
+              xScale,
               TOPIC_CONFIG.point.hoverRadius,
               pointCount,
               false, // isExpanded
               true // isHovered
             );
-            updateRectAndText(node, null, x, y, width, height, rx, ry);
+            updateRectAndText(node, null, x, y, width, height, rx, ry, 150);
           }
         }
 
@@ -687,12 +697,12 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
                 rx: parentRx,
                 ry: parentRy,
               } = calculatePillDimensions(
-                null, // realTime not needed for hover
-                null, // xScale not needed for hover
+                parentData.realTime || null,
+                xScale,
                 TOPIC_CONFIG.point.hoverRadius,
                 parentData.points.length,
-                false, // isExpanded
-                true // isHovered
+                false,
+                true
               );
 
               updateRectAndText(
@@ -703,7 +713,8 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
                 parentWidth,
                 parentHeight,
                 parentRx,
-                parentRy
+                parentRy,
+                150
               );
             }
           }
@@ -717,10 +728,7 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         isParent: boolean
       ) {
         const pointCount = isParent && d.points ? d.points.length : 1;
-        const radius =
-          isParent && pointCount > 1
-            ? TOPIC_CONFIG.point.radius * 1.2
-            : TOPIC_CONFIG.point.radius;
+        const radius = TOPIC_CONFIG.point.radius;
 
         const x =
           parseFloat(node.attr("x") || "0") +
@@ -732,31 +740,55 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
         // Only reset if the parent is not expanded
         const isExpanded = isParent && d.isExpanded;
         if (!isExpanded) {
-          const datum: any = node.datum();
-          const hasRealTimeRange = Array.isArray(datum?.realTime);
-          const originalWidth = parseFloat(node.attr("width") || "0");
-          const baseWidth = TOPIC_CONFIG.point.radius * 2;
-          const isRangePill = hasRealTimeRange && originalWidth > baseWidth + 2;
-          if (isRangePill) {
-            // Restore to pill height exactly baseWidth (capsule) while keeping width
+          if (isParent) {
+            // For parent (group) nodes, reset using the same system as initialization
+            const collapsed = calculateGroupedPillMetrics({
+              x: d.x,
+              y: d.y,
+              radius: TOPIC_CONFIG.point.radius,
+              minX: d.minX,
+              maxX: d.maxX,
+              realTime: d.realTime ?? null,
+            });
+
             updateRectAndText(
               node,
               null,
-              x,
-              y,
-              originalWidth,
-              baseWidth,
-              TOPIC_CONFIG.point.radius,
-              TOPIC_CONFIG.point.radius
+              collapsed.centerX,
+              collapsed.centerY,
+              collapsed.width,
+              collapsed.height,
+              collapsed.rx,
+              collapsed.ry
             );
           } else {
-            const { width, height, rx, ry } = calculatePillDimensions(
-              d.realTime || null, // Use calculated date range from children
-              xScale, // Use xScale for date-based sizing
-              radius,
-              pointCount
-            );
-            updateRectAndText(node, null, x, y, width, height, rx, ry);
+            // Child nodes reset via the same pill dimension logic as initialization
+            const datum: any = node.datum();
+            const hasRealTimeRange = Array.isArray(datum?.realTime);
+            const originalWidth = parseFloat(node.attr("width") || "0");
+            const baseWidth = TOPIC_CONFIG.point.radius * 2;
+            const isRangePill =
+              hasRealTimeRange && originalWidth > baseWidth + 2;
+            if (isRangePill) {
+              updateRectAndText(
+                node,
+                null,
+                x,
+                y,
+                originalWidth,
+                baseWidth,
+                TOPIC_CONFIG.point.radius,
+                TOPIC_CONFIG.point.radius
+              );
+            } else {
+              const { width, height, rx, ry } = calculatePillDimensions(
+                d.realTime || null,
+                xScale,
+                radius,
+                pointCount
+              );
+              updateRectAndText(node, null, x, y, width, height, rx, ry);
+            }
           }
         }
 
@@ -770,60 +802,25 @@ export function NarrativeTopicVisual({ events, viewMode }: TopicVisualProps) {
               // Only reset parent if it's not expanded
               if (!parentData.isExpanded) {
                 const parentRect = parentGroup.select("rect");
-                const parentDatum: any = parentRect.datum();
-                const hasRealTimeRange = Array.isArray(parentDatum?.realTime);
-                const originalWidth = parseFloat(
-                  parentRect.attr("width") || "0"
+                const collapsed = calculateGroupedPillMetrics({
+                  x: parentData.x,
+                  y: parentData.y,
+                  radius: TOPIC_CONFIG.point.radius,
+                  minX: parentData.minX,
+                  maxX: parentData.maxX,
+                  realTime: parentData.realTime ?? null,
+                });
+
+                updateRectAndText(
+                  parentRect,
+                  null,
+                  collapsed.centerX,
+                  collapsed.centerY,
+                  collapsed.width,
+                  collapsed.height,
+                  collapsed.rx,
+                  collapsed.ry
                 );
-                const baseWidth = TOPIC_CONFIG.point.radius * 2;
-                const isRangePill =
-                  hasRealTimeRange && originalWidth > baseWidth + 2;
-
-                const parentX =
-                  parseFloat(parentRect.attr("x") || "0") +
-                  parseFloat(parentRect.attr("width") || "0") / 2;
-                const parentY =
-                  parseFloat(parentRect.attr("y") || "0") +
-                  parseFloat(parentRect.attr("height") || "0") / 2;
-
-                if (isRangePill) {
-                  updateRectAndText(
-                    parentRect,
-                    null,
-                    parentX,
-                    parentY,
-                    originalWidth,
-                    baseWidth,
-                    TOPIC_CONFIG.point.radius,
-                    TOPIC_CONFIG.point.radius
-                  );
-                } else {
-                  const parentRadius =
-                    parentData.points.length > 1
-                      ? TOPIC_CONFIG.point.radius * 1.2
-                      : TOPIC_CONFIG.point.radius;
-                  const {
-                    width: parentWidth,
-                    height: parentHeight,
-                    rx: parentRx,
-                    ry: parentRy,
-                  } = calculatePillDimensions(
-                    null, // realTime not needed for reset
-                    null, // xScale not needed for reset
-                    parentRadius,
-                    parentData.points.length
-                  );
-                  updateRectAndText(
-                    parentRect,
-                    null,
-                    parentX,
-                    parentY,
-                    parentWidth,
-                    parentHeight,
-                    parentRx,
-                    parentRy
-                  );
-                }
               }
             }
           }

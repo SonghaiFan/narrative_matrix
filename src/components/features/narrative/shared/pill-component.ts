@@ -80,7 +80,8 @@ export function calculateGroupedPillMetrics(
   const centerX = (left + right) / 2;
   const rectX = centerX - width / 2;
   const rectY = y - baseHeight / 2;
-  const hasRange = Array.isArray(realTime) || Math.abs(right - left) > baseHeight + 0.5;
+  const hasRange =
+    Array.isArray(realTime) || Math.abs(right - left) > baseHeight + 0.5;
 
   return {
     rectX,
@@ -111,9 +112,9 @@ export interface SinglePillHandlersOptions<TDatum> {
   onClick?: (node: D3Rect, event: MouseEvent, datum: TDatum) => void;
 }
 
-export function createSinglePillHandlers<TDatum extends { realTime?: Date | [Date, Date] | null }>(
-  options: SinglePillHandlersOptions<TDatum>
-) {
+export function createSinglePillHandlers<
+  TDatum extends { realTime?: Date | [Date, Date] | null }
+>(options: SinglePillHandlersOptions<TDatum>) {
   const {
     radius,
     hoverRadius,
@@ -128,11 +129,7 @@ export function createSinglePillHandlers<TDatum extends { realTime?: Date | [Dat
     onClick,
   } = options;
 
-  const reset = (
-    node: D3Rect,
-    datum: TDatum,
-    duration: number = 120
-  ) => {
+  const reset = (node: D3Rect, datum: TDatum, duration: number = 120) => {
     const baseY = getBaseY(datum);
     const fallbackX = getFallbackX?.(datum);
     const position = calculatePillPosition(
@@ -145,7 +142,11 @@ export function createSinglePillHandlers<TDatum extends { realTime?: Date | [Dat
     const dimensions = calculatePillDimensions(
       datum.realTime ?? null,
       xScale,
-      radius
+      radius,
+      1, // pointCount
+      false, // isExpanded
+      false, // isHovered
+      0 // childCount
     );
 
     node
@@ -170,8 +171,9 @@ export function createSinglePillHandlers<TDatum extends { realTime?: Date | [Dat
 
       let newWidth = hoverRadius * 2;
       if (datum.realTime && Array.isArray(datum.realTime)) {
-        const span =
-          Math.abs(xScale(datum.realTime[1]) - xScale(datum.realTime[0]));
+        const span = Math.abs(
+          xScale(datum.realTime[1]) - xScale(datum.realTime[0])
+        );
         newWidth = span + hoverRadius * 2;
       }
 
